@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+	<Version>1.0.0</Version>
+	<Product>Leosac Key Manager</Product>
+	<Description>Key Manager for Access Control and RFID related technologies, by Leosac.</Description>
+	<Company>Leosac SAS</Company>
+	<AssemblyTitle>Leosac Key Manager</AssemblyTitle>
+	<Copyright>Copyright © Leosac 2022</Copyright>
+	<RootNamespace>Leosac.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="images\leosac_key.png" />
+    <None Remove="leosac.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MaterialDesignThemes" Version="4.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KeyManager.Library\KeyManager.Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="images\leosac_key.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="images\leosac.png" />
+  </ItemGroup>
+
+</Project>

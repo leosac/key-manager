@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyManager", "KeyManager\KeyManager.csproj", "{12FB89A0-8374-4A28-B0FA-DF85060860AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyManager.Library", "KeyManager.Library\KeyManager.Library.csproj", "{DC65E52C-5632-4D21-8E4D-9439AEE71FEE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12FB89A0-8374-4A28-B0FA-DF85060860AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12FB89A0-8374-4A28-B0FA-DF85060860AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12FB89A0-8374-4A28-B0FA-DF85060860AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12FB89A0-8374-4A28-B0FA-DF85060860AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC65E52C-5632-4D21-8E4D-9439AEE71FEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC65E52C-5632-4D21-8E4D-9439AEE71FEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC65E52C-5632-4D21-8E4D-9439AEE71FEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC65E52C-5632-4D21-8E4D-9439AEE71FEE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {991DF8DB-0844-4CCB-B0FE-97C38EAC223C}
+	EndGlobalSection
+EndGlobal
