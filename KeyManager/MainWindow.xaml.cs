@@ -1,4 +1,5 @@
-﻿using MaterialDesignThemes.Wpf;
+﻿using Leosac.KeyManager.Domain;
+using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,8 @@ namespace Leosac.KeyManager
         public MainWindow()
         {
             InitializeComponent();
+
+            DataContext = new MainWindowViewModel(MainSnackbar.MessageQueue!);
         }
 
         private void MenuDarkModeButton_Click(object sender, RoutedEventArgs e)

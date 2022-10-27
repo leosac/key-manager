@@ -1,0 +1,26 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Leosac.KeyManager"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="Leosac.KeyManager.HomeControl"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+
+        <materialDesign:Card HorizontalAlignment="Left" VerticalAlignment="Center" Height="175" Width="175" Margin="183,0,0,0">
+            <StackPanel HorizontalAlignment="Center">
+                <Label Content="Create a new Key Store" HorizontalAlignment="Center" Margin="0,24,0,0" VerticalAlignment="Top"/>
+                <materialDesign:PackIcon  Kind="CreateNewFolder" Height="87" Width="132"/>
+            </StackPanel>
+        </materialDesign:Card>
+        <materialDesign:Card HorizontalAlignment="Left" VerticalAlignment="Center" Height="175" Width="175" Margin="460,0,0,0">
+            <StackPanel HorizontalAlignment="Center">
+                <Label Content="Open an existing Key Store" HorizontalAlignment="Center" Margin="0,24,0,0" VerticalAlignment="Top"/>
+                <materialDesign:PackIcon  Kind="FolderOpen" Height="87" Width="132"/>
+            </StackPanel>
+        </materialDesign:Card>
+
+    </Grid>
+</UserControl>
