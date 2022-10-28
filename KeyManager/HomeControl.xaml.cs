@@ -1,4 +1,5 @@
-﻿using Leosac.KeyManager.Domain;
+﻿using Leosac.KeyManager.Library.UI;
+using Leosac.KeyManager.Library.UI.Domain;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
@@ -30,19 +31,24 @@ namespace Leosac.KeyManager
 
         private async void createKeyStore_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            var model = new KeyStoreSelectorDialogViewModel() { Message = "Create a new Key Store" };
             var dialog = new KeyStoreSelectorDialog
             {
-                DataContext = new KeyStoreSelectorDialogViewModel() { Message = "Create a new Key Store" }
+                DataContext = model
             };
 
-            await DialogHost.Show(dialog, "RootDialog");
+            if (await DialogHost.Show(dialog, "RootDialog") == (object)true)
+            {
+
+            }
         }
 
         private async void openKeyStore_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            var model = new KeyStoreSelectorDialogViewModel() { Message = "Open an existing Key Store" };
             var dialog = new KeyStoreSelectorDialog
             {
-                DataContext = new KeyStoreSelectorDialogViewModel() { Message = "Open an existing Key Store" }
+                DataContext = model
             };
 
             await DialogHost.Show(dialog, "RootDialog");

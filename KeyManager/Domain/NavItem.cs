@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows;
+using Leosac.KeyManager.Library.UI.Domain;
 
 namespace Leosac.KeyManager.Domain
 {

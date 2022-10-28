@@ -6,8 +6,19 @@ using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
-    public abstract class KeyStoreProperties
+    public abstract class KeyStoreProperties : KMObject
     {
-        public Key? WrappingKey { get; set; }
+        public KeyStoreProperties()
+        {
+
+        }
+
+        private Key? _wrappingKey;
+
+        public Key? WrappingKey
+        {
+            get => _wrappingKey;
+            set => SetProperty(ref _wrappingKey, value);
+        }
     }
 }

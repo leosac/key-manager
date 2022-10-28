@@ -5,7 +5,27 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyManager", "KeyManager\KeyManager.csproj", "{12FB89A0-8374-4A28-B0FA-DF85060860AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyManager.Library", "KeyManager.Library\KeyManager.Library.csproj", "{DC65E52C-5632-4D21-8E4D-9439AEE71FEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyManager.Library", "KeyManager.Library\KeyManager.Library.csproj", "{DC65E52C-5632-4D21-8E4D-9439AEE71FEE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "KeyStore", "KeyStore", "{E13D01DB-9ADA-4C08-BD35-BE0D1D071896}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyManager.Library.KeyStore.Memory", "KeyManager.Library.KeyStore.Memory\KeyManager.Library.KeyStore.Memory.csproj", "{55F25426-4305-4E2B-8664-7A9C6F3D5FFE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyManager.Library.KeyStore.File", "KeyManager.Library.KeyStore.File\KeyManager.Library.KeyStore.File.csproj", "{FBF88D78-8165-4F4C-9CD2-0873F4E6A54B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyManager.Library.KeyStore.NXP_SAM", "KeyManager.Library.KeyStore.NXP_SAM\KeyManager.Library.KeyStore.NXP_SAM.csproj", "{3B4E90DE-1671-4654-B4B8-A25B8CB00F24}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyManager.Library.UI", "KeyManager.Library.UI\KeyManager.Library.UI.csproj", "{15123309-8695-4D44-857D-F9C6E44296B0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyManager.Library.KeyStore.File.UI", "KeyManager.Library.KeyStore.File.UI\KeyManager.Library.KeyStore.File.UI.csproj", "{D9863530-C6F3-4479-AF94-A435C43AD066}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyManager.Library.KeyStore.Memory.UI", "KeyManager.Library.KeyStore.Memory.UI\KeyManager.Library.KeyStore.Memory.UI.csproj", "{364909BB-18CE-45DA-B4C8-60DF98FCBFC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyManager.Library.KeyStore.NXP_SAM.UI", "KeyManager.Library.KeyStore.NXP_SAM.UI\KeyManager.Library.KeyStore.NXP_SAM.UI.csproj", "{2E826BDF-4186-4725-9380-9AD18E4BB5F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyManager.Library.KeyStore.HSM_PKCS11", "KeyManager.Library.KeyStore.HSM_PKCS11\KeyManager.Library.KeyStore.HSM_PKCS11.csproj", "{AFB28B07-2FBE-4C6C-809C-1FC51AA18905}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyManager.Library.KeyStore.HSM_PKCS11.UI", "KeyManager.Library.KeyStore.HSM_PKCS11.UI\KeyManager.Library.KeyStore.HSM_PKCS11.UI.csproj", "{AD05527B-B52D-41C9-A5A8-983516AAC84E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +41,55 @@ Global
 		{DC65E52C-5632-4D21-8E4D-9439AEE71FEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC65E52C-5632-4D21-8E4D-9439AEE71FEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC65E52C-5632-4D21-8E4D-9439AEE71FEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55F25426-4305-4E2B-8664-7A9C6F3D5FFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55F25426-4305-4E2B-8664-7A9C6F3D5FFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55F25426-4305-4E2B-8664-7A9C6F3D5FFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55F25426-4305-4E2B-8664-7A9C6F3D5FFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBF88D78-8165-4F4C-9CD2-0873F4E6A54B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBF88D78-8165-4F4C-9CD2-0873F4E6A54B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBF88D78-8165-4F4C-9CD2-0873F4E6A54B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBF88D78-8165-4F4C-9CD2-0873F4E6A54B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B4E90DE-1671-4654-B4B8-A25B8CB00F24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B4E90DE-1671-4654-B4B8-A25B8CB00F24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B4E90DE-1671-4654-B4B8-A25B8CB00F24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B4E90DE-1671-4654-B4B8-A25B8CB00F24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15123309-8695-4D44-857D-F9C6E44296B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15123309-8695-4D44-857D-F9C6E44296B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15123309-8695-4D44-857D-F9C6E44296B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15123309-8695-4D44-857D-F9C6E44296B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9863530-C6F3-4479-AF94-A435C43AD066}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9863530-C6F3-4479-AF94-A435C43AD066}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9863530-C6F3-4479-AF94-A435C43AD066}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9863530-C6F3-4479-AF94-A435C43AD066}.Release|Any CPU.Build.0 = Release|Any CPU
+		{364909BB-18CE-45DA-B4C8-60DF98FCBFC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{364909BB-18CE-45DA-B4C8-60DF98FCBFC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{364909BB-18CE-45DA-B4C8-60DF98FCBFC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{364909BB-18CE-45DA-B4C8-60DF98FCBFC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E826BDF-4186-4725-9380-9AD18E4BB5F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E826BDF-4186-4725-9380-9AD18E4BB5F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E826BDF-4186-4725-9380-9AD18E4BB5F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E826BDF-4186-4725-9380-9AD18E4BB5F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFB28B07-2FBE-4C6C-809C-1FC51AA18905}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFB28B07-2FBE-4C6C-809C-1FC51AA18905}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFB28B07-2FBE-4C6C-809C-1FC51AA18905}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFB28B07-2FBE-4C6C-809C-1FC51AA18905}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD05527B-B52D-41C9-A5A8-983516AAC84E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD05527B-B52D-41C9-A5A8-983516AAC84E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD05527B-B52D-41C9-A5A8-983516AAC84E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD05527B-B52D-41C9-A5A8-983516AAC84E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{55F25426-4305-4E2B-8664-7A9C6F3D5FFE} = {E13D01DB-9ADA-4C08-BD35-BE0D1D071896}
+		{FBF88D78-8165-4F4C-9CD2-0873F4E6A54B} = {E13D01DB-9ADA-4C08-BD35-BE0D1D071896}
+		{3B4E90DE-1671-4654-B4B8-A25B8CB00F24} = {E13D01DB-9ADA-4C08-BD35-BE0D1D071896}
+		{D9863530-C6F3-4479-AF94-A435C43AD066} = {E13D01DB-9ADA-4C08-BD35-BE0D1D071896}
+		{364909BB-18CE-45DA-B4C8-60DF98FCBFC9} = {E13D01DB-9ADA-4C08-BD35-BE0D1D071896}
+		{2E826BDF-4186-4725-9380-9AD18E4BB5F8} = {E13D01DB-9ADA-4C08-BD35-BE0D1D071896}
+		{AFB28B07-2FBE-4C6C-809C-1FC51AA18905} = {E13D01DB-9ADA-4C08-BD35-BE0D1D071896}
+		{AD05527B-B52D-41C9-A5A8-983516AAC84E} = {E13D01DB-9ADA-4C08-BD35-BE0D1D071896}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {991DF8DB-0844-4CCB-B0FE-97C38EAC223C}

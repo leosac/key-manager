@@ -13,5 +13,12 @@ namespace KeyManager
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            Leosac.KeyManager.Library.UI.KeyStoreFactory.Register(new Leosac.KeyManager.Library.KeyStore.Memory.UI.MemoryKeyStoreFactory());
+            Leosac.KeyManager.Library.UI.KeyStoreFactory.Register(new Leosac.KeyManager.Library.KeyStore.File.UI.FileKeyStoreFactory());
+            Leosac.KeyManager.Library.UI.KeyStoreFactory.Register(new Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.SAMKeyStoreFactory());
+            Leosac.KeyManager.Library.UI.KeyStoreFactory.Register(new Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.PKCSC11KeyStoreFactory());
+        }
     }
 }

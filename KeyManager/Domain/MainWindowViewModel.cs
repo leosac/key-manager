@@ -1,4 +1,5 @@
-﻿using MaterialDesignThemes.Wpf.Transitions;
+﻿using Leosac.KeyManager.Library.UI.Domain;
+using MaterialDesignThemes.Wpf.Transitions;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
