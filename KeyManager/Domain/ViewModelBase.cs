@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Domain
 {
-    public class ViewModelBase
+    public class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 

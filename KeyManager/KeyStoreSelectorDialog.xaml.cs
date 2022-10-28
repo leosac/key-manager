@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,11 +15,11 @@ using System.Windows.Shapes;
 namespace Leosac.KeyManager
 {
     /// <summary>
-    /// Interaction logic for FolderBrowserDialog.xaml
+    /// Interaction logic for KeyStoreSelector.xaml
     /// </summary>
-    public partial class FolderBrowserDialog : Window
+    public partial class KeyStoreSelectorDialog : UserControl
     {
-        public FolderBrowserDialog()
+        public KeyStoreSelectorDialog()
         {
             InitializeComponent();
         }

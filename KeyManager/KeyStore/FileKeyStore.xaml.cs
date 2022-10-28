@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using Leosac.KeyManager.Domain;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,10 +29,12 @@ namespace Leosac.KeyManager.KeyStore
 
         private void BtnBrowse_Click(object sender, RoutedEventArgs e)
         {
-            var ofd = new FolderBrowserDialog();
-            if (ofd.ShowDialog() == true)
+            var fbdm = new FolderBrowserDialogViewModel();
+            var fbd = new FolderBrowserDialog();
+            fbd.DataContext = fbdm;
+            if (fbd.ShowDialog() == true)
             {
-                tbxDirectory.Text = ofd.SelectedFolder;
+                tbxDirectory.Text = fbdm.SelectedFolder;
             }
         }
     }

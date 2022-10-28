@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Leosac.KeyManager
 {
     /// <summary>
-    /// Interaction logic for FolderBrowserDialog.xaml
+    /// Interaction logic for KeyGenerationDialog.xaml
     /// </summary>
-    public partial class FolderBrowserDialog : Window
+    public partial class KeyGenerationDialog : UserControl
     {
-        public FolderBrowserDialog()
+        public KeyGenerationDialog()
         {
             InitializeComponent();
         }

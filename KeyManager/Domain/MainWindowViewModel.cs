@@ -26,6 +26,8 @@ namespace Leosac.KeyManager.Domain
                     typeof(HomeControl)
                 )
             });
+            SelectedItem = MenuItems[0];
+            SelectedIndex = 0;
 
             _navItemsView = CollectionViewSource.GetDefaultView(MenuItems);
 
