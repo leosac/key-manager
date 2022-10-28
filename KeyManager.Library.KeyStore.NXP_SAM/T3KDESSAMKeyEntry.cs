@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 {
-    public abstract class SAMKeyEntry : KeyEntry
+    public class T3KDESSAMKeyEntry : SAMKeyEntry
     {
-        public SAMKeyEntry()
+        public T3KDESSAMKeyEntry() : base()
         {
-            Properties = new SAMKeyEntryProperties();
+            KeyVersions.Add(new KeyVersion(0));
+            KeyVersions.Add(new KeyVersion(0));
         }
     }
 }
