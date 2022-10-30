@@ -13,5 +13,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             KeyVersions.Add(new KeyVersion(0));
             KeyVersions.Add(new KeyVersion(0));
         }
+
+        public override string Name => "SAM T3KDES";
     }
 }

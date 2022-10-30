@@ -10,6 +10,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
 {
     public class AES128SAMKeyEntryFactory : SAMKeyEntryFactory
     {
+        public override string Name => "SAM AES128";
+
         public override KeyEntry CreateKeyEntry()
         {
             return new AES128SAMKeyEntry();

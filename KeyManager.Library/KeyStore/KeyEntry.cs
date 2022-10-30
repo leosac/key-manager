@@ -20,6 +20,8 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         private KeyEntryProperties? _properties;
 
+        public abstract string Name { get; }
+
         public ObservableCollection<KeyVersion> KeyVersions { get; set; }
 
         public string Identifier

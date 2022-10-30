@@ -14,29 +14,29 @@ namespace Leosac.KeyManager.Library.UI.Domain
     {
         public KeyStoreSelectorDialogViewModel()
         {
-            KeyStores = new ObservableCollection<KeyStoreItem>();
+            KeyStoreFactories = new ObservableCollection<KeyStoreItem>();
             foreach (var factory in KeyStoreFactory.RegisteredFactories)
             {
-                KeyStores.Add(new KeyStoreItem(factory));
+                KeyStoreFactories.Add(new KeyStoreItem(factory));
             }
         }
 
-        private KeyStoreItem? _selectedItem;
-        private int _selectedIndex;
+        private KeyStoreItem? _selectedFactoryItem;
+        private int _selectedFactoryIndex;
         private string? _message;
 
-        public ObservableCollection<KeyStoreItem> KeyStores { get; }
+        public ObservableCollection<KeyStoreItem> KeyStoreFactories { get; }
 
-        public KeyStoreItem? SelectedItem
+        public KeyStoreItem? SelectedFactoryItem
         {
-            get => _selectedItem;
-            set => SetProperty(ref _selectedItem, value);
+            get => _selectedFactoryItem;
+            set => SetProperty(ref _selectedFactoryItem, value);
         }
 
-        public int SelectedIndex
+        public int SelectedFactoryIndex
         {
-            get => _selectedIndex;
-            set => SetProperty(ref _selectedIndex, value);
+            get => _selectedFactoryIndex;
+            set => SetProperty(ref _selectedFactoryIndex, value);
         }
 
         public string? Message

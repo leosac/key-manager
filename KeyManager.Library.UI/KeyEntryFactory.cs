@@ -10,6 +10,8 @@ namespace Leosac.KeyManager.Library.UI
 {
     public abstract class KeyEntryFactory
     {
+        public abstract string Name { get; }
+
         public abstract KeyEntry CreateKeyEntry();
 
         public abstract KeyEntryProperties CreateKeyEntryProperties();
