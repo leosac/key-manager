@@ -35,10 +35,15 @@ namespace Leosac.KeyManager.Domain
                 newKeyStore =>
                 {
                     SelectedIndex = 2;
-                    var editModel = _selectedItem?.DataContext as EditKeyStoreViewModel;
+                    var editModel = _selectedItem?.DataContext as EditKeyStoreControlViewModel;
                     if (editModel != null)
                     {
-                        editModel.KeyStore = newKeyStore as KeyStore    ;
+                        if (newKeyStore != null)
+                        {
+                            editModel.KeyStore = newKeyStore as KeyStore;
+                            editModel.KeyStore?.Open();
+                            editModel.RefreshKeyEntries();
+                        }
                     }
                 });
 
@@ -48,7 +53,7 @@ namespace Leosac.KeyManager.Domain
                     "Home",
                     typeof(HomeControl),
                     "House",
-                    new HomeViewModel(snackbarMessageQueue)
+                    new HomeControlViewModel(snackbarMessageQueue)
                     {
                         KeyStoreCommand = KeyStoreCommand,
                         FavoritesCommand = FavoritesCommand
@@ -63,7 +68,7 @@ namespace Leosac.KeyManager.Domain
                     "Current Key Store",
                     typeof(EditKeyStoreControl),
                     "ShieldKeyOutline",
-                    new EditKeyStoreViewModel(snackbarMessageQueue)
+                    new EditKeyStoreControlViewModel(snackbarMessageQueue)
                 )
             });
             SelectedItem = MenuItems[0];

@@ -5,22 +5,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Navigation;
 
 namespace Leosac.KeyManager.Library.KeyStore.File.UI.Domain
 {
-    public class FileKeyStorePropertiesControlViewModel : ViewModelBase
+    public class FileKeyStorePropertiesControlViewModel : KeyStorePropertiesControlViewModel
     {
         public FileKeyStorePropertiesControlViewModel()
         {
             _properties = new FileKeyStoreProperties();
         }
 
-        private FileKeyStoreProperties _properties;
-
-        public FileKeyStoreProperties Properties
+        public FileKeyStoreProperties? FileProperties
         {
-            get => _properties;
-            set => SetProperty(ref _properties, value);
+            get { return Properties as FileKeyStoreProperties; }
         }
     }
 }

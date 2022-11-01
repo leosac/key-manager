@@ -1,4 +1,5 @@
-﻿using Leosac.KeyManager.Library.UI;
+﻿using Leosac.KeyManager.Library.KeyStore.File.UI.Domain;
+using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using Microsoft.Win32;
 using System;
@@ -35,7 +36,11 @@ namespace Leosac.KeyManager.Library.KeyStore.File.UI
             fbd.DataContext = fbdm;
             if (fbd.ShowDialog() == true)
             {
-                tbxDirectory.Text = fbdm.SelectedFolder;
+                var model = DataContext as FileKeyStorePropertiesControlViewModel;
+                if (model != null && model.FileProperties != null)
+                {
+                    model.FileProperties.Directory = fbdm.SelectedFolder;
+                }
             }
         }
     }

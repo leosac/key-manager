@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Leosac.KeyManager.Library.UI.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,8 @@ namespace Leosac.KeyManager.Library.UI
         public abstract KeyStore.KeyStoreProperties CreateKeyStoreProperties();
 
         public abstract UserControl CreateKeyStorePropertiesControl();
+
+        public abstract KeyStorePropertiesControlViewModel CreateKeyStorePropertiesControlViewModel();
 
         public static IList<KeyStoreFactory> RegisteredFactories { get; } = new List<KeyStoreFactory>();
         public static void Register(KeyStoreFactory factory)

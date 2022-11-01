@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:Leosac.KeyManager"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance domain:FavoritesViewModel}"
+             d:DataContext="{d:DesignInstance domain:FavoritesControlViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel LastChildFill="True">
         <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Left">

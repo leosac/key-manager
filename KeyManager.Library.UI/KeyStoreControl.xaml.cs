@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Leosac.KeyManager.Library.UI.Domain;
+using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +25,50 @@ namespace Leosac.KeyManager.Library.UI
         public KeyStoreControl()
         {
             InitializeComponent();
+        }
+
+        public KeyStoreControlViewModel? KeyStoreDataContext => DataContext as KeyStoreControlViewModel;
+
+        private async void btnCreateKeyEntry_Click(object sender, RoutedEventArgs e)
+        {
+            var model = new KeyEntryDialogViewModel();
+            var dialog = new KeyEntryDialog()
+            {
+                DataContext = model
+            };
+            object? ret = await DialogHost.Show(dialog, "RootDialog");
+            if (ret != null && model.KeyEntry != null)
+            {
+                KeyStoreDataContext?.KeyStore?.Create(model.KeyEntry);
+            }
+        }
+
+        private async void btnEditKeyEntry_Click(object sender, RoutedEventArgs e)
+        {
+            var model = new KeyEntryDialogViewModel()
+            {
+                KeyEntry = KeyStoreDataContext?.SelectedKeyEntry,
+                CanChangeFactory = false
+            };
+            var dialog = new KeyEntryDialog()
+            {
+                DataContext = model
+            };
+            object? ret = await DialogHost.Show(dialog, "RootDialog");
+            if (ret != null && model.KeyEntry != null)
+            {
+                KeyStoreDataContext?.KeyStore?.Update(model.KeyEntry);
+            }
+        }
+
+        private void btnDeleteKeyEntry_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            KeyStoreDataContext?.RefreshKeyEntries();
         }
     }
 }

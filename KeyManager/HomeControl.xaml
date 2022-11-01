@@ -8,7 +8,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              x:Class="Leosac.KeyManager.HomeControl"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance domain:HomeViewModel}"
+             d:DataContext="{d:DesignInstance domain:HomeControlViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
         <WrapPanel.Resources>

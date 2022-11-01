@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Domain
 {
-    public class HomeViewModel : ViewModelBase
+    public class HomeControlViewModel : ViewModelBase
     {
-        public HomeViewModel(ISnackbarMessageQueue snackbarMessageQueue)
+        public HomeControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
 
         }

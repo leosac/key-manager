@@ -38,9 +38,10 @@ namespace Leosac.KeyManager
                 DataContext = model
             };
 
-            if (await DialogHost.Show(dialog, "RootDialog") == (object)true)
+            object? ret = await DialogHost.Show(dialog, "RootDialog");
+            if (ret != null)
             {
-                var homeModel = DataContext as HomeViewModel;
+                var homeModel = DataContext as HomeControlViewModel;
                 if (homeModel != null)
                 {
                     var store = model.CreateKeyStore();
@@ -60,10 +61,10 @@ namespace Leosac.KeyManager
             {
                 DataContext = model
             };
-            object ret = await DialogHost.Show(dialog, "RootDialog");
+            object? ret = await DialogHost.Show(dialog, "RootDialog");
             if (ret != null)
             {
-                var homeModel = DataContext as HomeViewModel;
+                var homeModel = DataContext as HomeControlViewModel;
                 if (homeModel != null)
                 {
                     var store = model.CreateKeyStore();
@@ -74,7 +75,7 @@ namespace Leosac.KeyManager
 
         private void favoritesKeyStore_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var homeModel = DataContext as HomeViewModel;
+            var homeModel = DataContext as HomeControlViewModel;
             if (homeModel != null)
             {
                 homeModel.FavoritesCommand?.Execute(null);

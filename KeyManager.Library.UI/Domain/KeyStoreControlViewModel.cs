@@ -1,5 +1,4 @@
-﻿using Leosac.KeyManager.Library.KeyStore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -13,19 +12,14 @@ namespace Leosac.KeyManager.Library.UI.Domain
     {
         public KeyStoreControlViewModel()
         {
-            KeyEntryFactories = new ObservableCollection<KeyEntryItem>();
-            foreach (var factory in KeyEntryFactory.RegisteredFactories)
-            {
-                KeyEntryFactories.Add(new KeyEntryItem(factory));
-            }
+            KeyEntryIdentifiers = new ObservableCollection<string>();
         }
 
         private KeyStore.KeyStore? _keyStore;
-        private KeyEntryItem? _selectedFactoryItem;
-        private int _selectedFactoryIndex;
-        private string _searchTerm;
+        private KeyStore.KeyEntry? _selectedKeyEntry;
+        private string? _searchTerm;
 
-        public ObservableCollection<KeyEntryItem> KeyEntryFactories { get; }
+        public ObservableCollection<string> KeyEntryIdentifiers { get; }
 
         public KeyStore.KeyStore? KeyStore
         {
@@ -33,22 +27,28 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _keyStore, value);
         }
 
-        public KeyEntryItem? SelectedFactoryItem
+        public KeyStore.KeyEntry? SelectedKeyEntry
         {
-            get => _selectedFactoryItem;
-            set => SetProperty(ref _selectedFactoryItem, value);
+            get => _selectedKeyEntry;
+            set => SetProperty(ref _selectedKeyEntry, value);
         }
 
-        public int SelectedFactoryIndex
-        {
-            get => _selectedFactoryIndex;
-            set => SetProperty(ref _selectedFactoryIndex, value);
-        }
-
-        public string SearchTerm
+        public string? SearchTerm
         {
             get => _searchTerm;
             set => SetProperty(ref _searchTerm, value);
+        }
+
+        public void RefreshKeyEntries()
+        {
+            KeyEntryIdentifiers.Clear();
+            if (KeyStore != null)
+            {
+                foreach (var id in KeyStore.GetAll())
+                {
+                    KeyEntryIdentifiers.Add(id);
+                }
+            }
         }
     }
 }

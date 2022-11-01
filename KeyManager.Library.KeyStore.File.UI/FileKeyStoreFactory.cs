@@ -1,4 +1,6 @@
-﻿using Leosac.KeyManager.Library.UI;
+﻿using Leosac.KeyManager.Library.KeyStore.File.UI.Domain;
+using Leosac.KeyManager.Library.UI;
+using Leosac.KeyManager.Library.UI.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +27,11 @@ namespace Leosac.KeyManager.Library.KeyStore.File.UI
         public override UserControl CreateKeyStorePropertiesControl()
         {
             return new FileKeyStorePropertiesControl();
+        }
+
+        public override KeyStorePropertiesControlViewModel CreateKeyStorePropertiesControlViewModel()
+        {
+            return new FileKeyStorePropertiesControlViewModel();
         }
     }
 }

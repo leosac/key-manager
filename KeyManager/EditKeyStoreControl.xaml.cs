@@ -26,9 +26,14 @@ namespace Leosac.KeyManager
             InitializeComponent();
         }
 
-        private void CloseKeyStore_Click(object sender, RoutedEventArgs e)
+        private void btnCloseKeyStore_Click(object sender, RoutedEventArgs e)
         {
-            var model = DataContext as EditKeyStoreViewModel;
+            CloseKeyStore();
+        }
+
+        private void CloseKeyStore()
+        {
+            var model = DataContext as EditKeyStoreControlViewModel;
             if (model != null)
             {
                 model.KeyStore?.Close();

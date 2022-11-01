@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Domain
 {
-    public class FavoritesViewModel : ViewModelBase
+    public class FavoritesControlViewModel : ViewModelBase
     {
-        public FavoritesViewModel(ISnackbarMessageQueue snackbarMessageQueue)
+        public FavoritesControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
             _favorites = new Favorites(); //Favorites.LoadFromFile();
         }

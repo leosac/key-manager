@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="Leosac.KeyManager.Library.UI.KeyEntryDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
+             xmlns:lib="clr-namespace:Leosac.KeyManager.Library"
+             xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             d:DataContext="{d:DesignInstance domain:KeyEntryDialogViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="500">
+    <UserControl.Resources>
+        <s:Boolean x:Key="True">True</s:Boolean>
+        <s:Boolean x:Key="False">False</s:Boolean>
+    </UserControl.Resources>
+    <DockPanel LastChildFill="True">
+        <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,5">
+            <Button Width="100" IsDefault="True" Content="OK" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{StaticResource True}"/>
+            <Button Width="100" IsCancel="True" Content="Cancel" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
+        </WrapPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Text="Key Entry Type"/>
+            <ComboBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" ItemsSource="{Binding KeyEntryFactories}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate DataType="domain:KeyEntryFactory">
+                        <TextBlock Margin="24,4,0,4" Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <TextBlock Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Text="Key Entry Identifier"/>
+            <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" TextWrapping="Wrap" Text="{Binding KeyEntry.Identifier}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}"/>
+            <ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding KeyEntry.KeyVersions}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="lib:Key">
+                        <local:KeyControl DataContext="{Binding}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <materialDesign:Card Grid.Row="3" Grid.ColumnSpan="2">
+                <StackPanel>
+                    <Expander HorizontalAlignment="Stretch" Header="Properties">
+                        <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                            <ContentControl Margin="{Binding MarginRequirement, FallbackValue=16}"
+                                Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"
+                                DataContext="{Binding SelectedFactoryItem}" >
+                            </ContentControl>
+                        </StackPanel>
+                    </Expander>
+                </StackPanel>
+            </materialDesign:Card>
+        </Grid>
+    </DockPanel>
+</UserControl>

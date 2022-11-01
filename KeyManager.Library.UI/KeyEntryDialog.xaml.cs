@@ -18,9 +18,9 @@ namespace Leosac.KeyManager.Library.UI
     /// <summary>
     /// Interaction logic for KeyEntryControl.xaml
     /// </summary>
-    public partial class KeyEntryControl : UserControl
+    public partial class KeyEntryDialog : UserControl
     {
-        public KeyEntryControl()
+        public KeyEntryDialog()
         {
             InitializeComponent();
         }

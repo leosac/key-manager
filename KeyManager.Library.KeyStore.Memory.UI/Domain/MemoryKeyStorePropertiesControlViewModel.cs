@@ -8,19 +8,11 @@ using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library.KeyStore.Memory.UI.Domain
 {
-    public class MemoryKeyStorePropertiesControlViewModel : ViewModelBase
+    public class MemoryKeyStorePropertiesControlViewModel : KeyStorePropertiesControlViewModel
     {
         public MemoryKeyStorePropertiesControlViewModel()
         {
             _properties = new MemoryKeyStoreProperties();
-        }
-
-        private MemoryKeyStoreProperties _properties;
-
-        public MemoryKeyStoreProperties Properties
-        {
-            get => _properties;
-            set => SetProperty(ref _properties, value);
         }
     }
 }

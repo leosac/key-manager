@@ -1,4 +1,5 @@
-﻿using Leosac.KeyManager.Library.UI;
+﻿using Leosac.KeyManager.Library.KeyStore;
+using Leosac.KeyManager.Library.UI;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         private KeyStoreItem? _selectedFactoryItem;
         private int _selectedFactoryIndex;
+        private KeyStoreProperties? _keyStoreProperties;
         private string? _message;
 
         public ObservableCollection<KeyStoreItem> KeyStoreFactories { get; }
@@ -51,10 +53,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             if (SelectedFactoryItem != null)
             {
                 store = SelectedFactoryItem.Factory.CreateKeyStore();
-                if (SelectedFactoryItem.Content != null)
-                {
-                    store.Properties = SelectedFactoryItem.Content as KeyStore.KeyStoreProperties;
-                }
+                store.Properties = SelectedFactoryItem.DataContext?.Properties;
             }
             return store;
         }
