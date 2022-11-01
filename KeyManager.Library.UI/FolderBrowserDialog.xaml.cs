@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Leosac.KeyManager.Library.UI.Domain;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,6 +24,43 @@ namespace Leosac.KeyManager.Library.UI
         public FolderBrowserDialog()
         {
             InitializeComponent();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            var model = DataContext as FolderBrowserDialogViewModel;
+            if (model != null)
+            {
+                if (model.SelectedDrive == null)
+                {
+                    if (model.Drives.Count > 0)
+                    {
+                        model.SelectedDrive = model.Drives[0];
+                    }
+                }
+            }
+        }
+
+        private void TextBlock_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var model = DataContext as FolderBrowserDialogViewModel;
+            if (model != null)
+            {
+                if (model.SelectedDirectory?.Parent != null)
+                {
+                    model.SelectedDirectory = model.SelectedDirectory.Parent;
+                }
+            }
+        }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void btnOk_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = true;
         }
     }
 }

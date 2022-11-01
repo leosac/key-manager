@@ -44,5 +44,19 @@ namespace Leosac.KeyManager.Library.UI.Domain
             get => _message;
             set => SetProperty(ref _message, value);
         }
+
+        public KeyStore.KeyStore? CreateKeyStore()
+        {
+            KeyStore.KeyStore? store = null;
+            if (SelectedFactoryItem != null)
+            {
+                store = SelectedFactoryItem.Factory.CreateKeyStore();
+                if (SelectedFactoryItem.Content != null)
+                {
+                    store.Properties = SelectedFactoryItem.Content as KeyStore.KeyStoreProperties;
+                }
+            }
+            return store;
+        }
     }
 }

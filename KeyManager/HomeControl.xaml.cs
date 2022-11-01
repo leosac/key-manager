@@ -1,4 +1,5 @@
-﻿using Leosac.KeyManager.Library.UI;
+﻿using Leosac.KeyManager.Domain;
+using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using MaterialDesignThemes.Wpf;
 using System;
@@ -39,7 +40,16 @@ namespace Leosac.KeyManager
 
             if (await DialogHost.Show(dialog, "RootDialog") == (object)true)
             {
-
+                var homeModel = DataContext as HomeViewModel;
+                if (homeModel != null)
+                {
+                    var store = model.CreateKeyStore();
+                    if (store != null)
+                    {
+                        store.CreateIfMissing = true;
+                        homeModel.KeyStoreCommand?.Execute(store);
+                    }
+                }
             }
         }
 
@@ -50,8 +60,25 @@ namespace Leosac.KeyManager
             {
                 DataContext = model
             };
+            object ret = await DialogHost.Show(dialog, "RootDialog");
+            if (ret != null)
+            {
+                var homeModel = DataContext as HomeViewModel;
+                if (homeModel != null)
+                {
+                    var store = model.CreateKeyStore();
+                    homeModel.KeyStoreCommand?.Execute(store);
+                }
+            }
+        }
 
-            await DialogHost.Show(dialog, "RootDialog");
+        private void favoritesKeyStore_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var homeModel = DataContext as HomeViewModel;
+            if (homeModel != null)
+            {
+                homeModel.FavoritesCommand?.Execute(null);
+            }
         }
     }
 }

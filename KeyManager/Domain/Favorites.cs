@@ -5,12 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Leosac.KeyManager
+namespace Leosac.KeyManager.Domain
 {
     public class Favorites
     {
-        public Dictionary<string, KeyStoreProperties> KeyStores { get; set; } = new Dictionary<string, KeyStoreProperties>();
-
-
+        public List<Favorite> KeyStores { get; set; } = new List<Favorite>();
     }
 }

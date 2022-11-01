@@ -29,35 +29,6 @@
                             IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}"
                             Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
 
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                        <Button Margin="24,0,0,0"
-                          materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
-                          Command="{Binding MovePrevCommand}"
-                          Content="{materialDesign:PackIcon Kind=ArrowLeft,
-                                                            Size=24}"
-                          Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
-                          Style="{StaticResource MaterialDesignToolButton}"
-                          ToolTip="Previous Item" />
-
-                        <Button Margin="16,0,0,0"
-                          materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
-                          Command="{Binding MoveNextCommand}"
-                          Content="{materialDesign:PackIcon Kind=ArrowRight,
-                                                            Size=24}"
-                          Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
-                          Style="{StaticResource MaterialDesignToolButton}"
-                          ToolTip="Next Item" />
-
-                        <Button Margin="16,0,0,0"
-                          materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
-                          Command="{Binding HomeCommand}"
-                          Content="{materialDesign:PackIcon Kind=Home,
-                                                            Size=24}"
-                          Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
-                          Style="{StaticResource MaterialDesignToolButton}"
-                          ToolTip="Home" />
-                    </StackPanel>
-
                     <ListBox x:Name="MenuItemsListBox"
                        Margin="0,16,0,16"
                        AutomationProperties.Name="MenuPagesListBox"
@@ -71,9 +42,17 @@
                         </ListBox.Resources>
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="domain:NavItem">
-                                <TextBlock Margin="24,4,0,4"
-                               AutomationProperties.AutomationId="NavItemPage"
-                               Text="{Binding Name}" />
+                                <Grid Margin="24,4,0,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="64" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <materialDesign:PackIcon Grid.Row="0" Grid.Column="0" Kind="{Binding Icon}" Height="32" Width="64" Padding="3,3,3,3" />
+                                    <TextBlock Grid.Row="0" Grid.Column="1" AutomationProperties.AutomationId="NavItemPage" Text="{Binding Name}" Padding="3,3,3,3" VerticalAlignment="Center" />
+                                </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>

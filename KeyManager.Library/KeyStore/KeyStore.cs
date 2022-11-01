@@ -11,11 +11,16 @@ namespace Leosac.KeyManager.Library.KeyStore
         public abstract string Name { get; }
 
         public KeyStoreProperties? Properties { get; set; }
+        public bool CreateIfMissing { get; set; } = false;
 
         public bool CheckKeyEntryExists(KeyEntry keyEntry)
         {
             return CheckKeyEntryExists(keyEntry.Identifier);
         }
+
+        public abstract void Open();
+
+        public abstract void Close();
 
         public abstract bool CheckKeyEntryExists(string identifier);
 

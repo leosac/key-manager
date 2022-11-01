@@ -17,6 +17,16 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
 
         public override string Name => "Memory";
 
+        public override void Open()
+        {
+
+        }
+
+        public override void Close()
+        {
+
+        }
+
         public override bool CheckKeyEntryExists(string identifier)
         {
             KeyEntry? keyEntry;

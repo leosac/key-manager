@@ -8,18 +8,24 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         d:DataContext="{d:DesignInstance domain:FolderBrowserDialogViewModel}"
         mc:Ignorable="d"
-        Title="Select Target Folder" Height="450" Width="800">
+        Title="Select Target Folder" Height="450" Width="800" Loaded="Window_Loaded"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}">
+    <Window.Resources>
+        <materialDesign:BooleanToVisibilityConverter x:Key="BoolToVisibleConverter" />
+    </Window.Resources>
     <Grid>
         <DockPanel LastChildFill="True">
             <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,5">
-                <Button Width="100" IsDefault="True" Content="OK" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
-                <Button Width="100" IsCancel="True" Content="Cancel" Margin="15,0,0,0"/>
+                <Button x:Name="btnOk" Width="100" IsDefault="True" Content="OK" Click="btnOk_Click"/>
+                <Button x:Name="btnCancel" Width="100" IsCancel="True" Content="Cancel" Margin="15,0,0,0" Click="btnCancel_Click"/>
             </WrapPanel>
             <GroupBox Header="Drives" Width="200">
-                <ListBox ItemsSource="{Binding Drives, Mode=OneWay}">
+                <ListBox x:Name="lbDrives" ItemsSource="{Binding Drives, Mode=OneWay}" SelectedItem="{Binding SelectedDrive}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
+                            <Grid Cursor="Hand">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
@@ -31,16 +37,29 @@
             </GroupBox>
             <WrapPanel DockPanel.Dock="Bottom" Margin="10,10,10,10">
                 <Label Content="Selected Folder:" />
-                <TextBox Width="400" IsReadOnly="True"/>
+                <TextBox Width="400" IsReadOnly="True" Text="{Binding SelectedDirectory.FullName, Mode=OneWay}" />
             </WrapPanel>
-            <GroupBox Header="Folders">
-                <ListView d:ItemsSource="{d:SampleData ItemCount=5}">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+            <Grid DockPanel.Dock="Bottom">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" TextDecorations="Underline" Cursor="Hand" MouseUp="TextBlock_MouseUp" Padding="5,5,5,5">Go to parent</TextBlock>
+                <TextBlock Grid.Column="1" TextWrapping="Wrap" Foreground="{DynamicResource MaterialDesignValidationErrorBrush}" Visibility="{Binding HasError, Converter={StaticResource BoolToVisibleConverter}}" Text="{Binding IOError}" Padding="5,5,5,5" />
+            </Grid>
+            <GroupBox Header="Directories">
+                <ListBox x:Name="lbDirectories" ItemsSource="{Binding Directories, Mode=OneWay}" SelectedItem="{Binding SelectedDirectory}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Cursor="Hand">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding Name}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </GroupBox>
         </DockPanel>
 

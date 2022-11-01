@@ -26,6 +26,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         private object? CreateContent()
         {
             var content = _factory.CreateKeyEntryPropertiesControl();
+            content.DataContext = _factory.CreateKeyEntryProperties();
             return content;
         }
     }

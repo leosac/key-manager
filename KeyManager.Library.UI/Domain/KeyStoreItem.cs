@@ -21,6 +21,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public string Name { get => _factory.Name; }
 
+        public KeyStoreFactory Factory { get => _factory; }
+
         public object? Content => _content ??= CreateContent();
 
         private object? CreateContent()

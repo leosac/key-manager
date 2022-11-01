@@ -27,6 +27,16 @@ namespace Leosac.KeyManager.Library.KeyStore.File
 
         public override string Name => "File";
 
+        public override void Open()
+        {
+            
+        }
+
+        public override void Close()
+        {
+            
+        }
+
         protected string GetKeyEntryFile(string identifier)
         {
             return System.IO.Path.Combine(GetFileProperties().Directory, identifier);

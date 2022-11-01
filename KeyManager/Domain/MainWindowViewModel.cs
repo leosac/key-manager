@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using Leosac.KeyManager.Library.KeyStore;
 
 namespace Leosac.KeyManager.Domain
 {
@@ -20,37 +21,55 @@ namespace Leosac.KeyManager.Domain
     {
         public MainWindowViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
+            HomeCommand = new KeyManagerCommandImplementation(
+                _ =>
+                {
+                    SelectedIndex = 0;
+                });
+            FavoritesCommand = new KeyManagerCommandImplementation(
+                _ =>
+                {
+                    SelectedIndex = 1;
+                });
+            KeyStoreCommand = new KeyManagerCommandImplementation(
+                newKeyStore =>
+                {
+                    SelectedIndex = 2;
+                    var editModel = _selectedItem?.DataContext as EditKeyStoreViewModel;
+                    if (editModel != null)
+                    {
+                        editModel.KeyStore = newKeyStore as KeyStore    ;
+                    }
+                });
+
             MenuItems = new ObservableCollection<NavItem>(new[]
             {
                 new NavItem(
                     "Home",
-                    typeof(HomeControl)
+                    typeof(HomeControl),
+                    "House",
+                    new HomeViewModel(snackbarMessageQueue)
+                    {
+                        KeyStoreCommand = KeyStoreCommand,
+                        FavoritesCommand = FavoritesCommand
+                    }
+                ),
+                new NavItem(
+                    "Favorites",
+                    typeof(FavoritesControl),
+                    "Star"
+                ),
+                new NavItem(
+                    "Current Key Store",
+                    typeof(EditKeyStoreControl),
+                    "ShieldKeyOutline",
+                    new EditKeyStoreViewModel(snackbarMessageQueue)
                 )
             });
             SelectedItem = MenuItems[0];
             SelectedIndex = 0;
 
             _navItemsView = CollectionViewSource.GetDefaultView(MenuItems);
-
-            HomeCommand = new KeyManagerCommandImplementation(
-                _ =>
-                {
-                    SelectedIndex = 0;
-                });
-
-            MovePrevCommand = new KeyManagerCommandImplementation(
-                _ =>
-                {
-                    SelectedIndex--;
-                },
-                _ => SelectedIndex > 0);
-
-            MoveNextCommand = new KeyManagerCommandImplementation(
-               _ =>
-               {
-                   SelectedIndex++;
-               },
-               _ => SelectedIndex < MenuItems.Count - 1);
         }
 
         private readonly ICollectionView _navItemsView;
@@ -72,7 +91,7 @@ namespace Leosac.KeyManager.Domain
         }
 
         public KeyManagerCommandImplementation HomeCommand { get; }
-        public KeyManagerCommandImplementation MovePrevCommand { get; }
-        public KeyManagerCommandImplementation MoveNextCommand { get; }
+        public KeyManagerCommandImplementation FavoritesCommand { get; }
+        public KeyManagerCommandImplementation KeyStoreCommand { get; }
     }
 }

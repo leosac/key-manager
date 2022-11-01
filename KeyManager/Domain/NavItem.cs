@@ -6,29 +6,38 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows;
 using Leosac.KeyManager.Library.UI.Domain;
+using System.Reflection.Metadata;
 
 namespace Leosac.KeyManager.Domain
 {
     public class NavItem : ViewModelBase
     {
         private readonly Type _contentType;
-        private readonly object? _dataContext;
+        private object? _dataContext;
 
         private object? _content;
         private ScrollBarVisibility _horizontalScrollBarVisibilityRequirement = ScrollBarVisibility.Auto;
         private ScrollBarVisibility _verticalScrollBarVisibilityRequirement = ScrollBarVisibility.Auto;
         private Thickness _marginRequirement = new(16);
 
-        public NavItem(string name, Type contentType, object? dataContext = null)
+        public NavItem(string name, Type contentType, string icon, object? dataContext = null)
         {
             Name = name;
             _contentType = contentType;
+            Icon = icon;
             _dataContext = dataContext;
         }
 
         public string Name { get; }
 
+        public string Icon { get; }
+
         public object? Content => _content ??= CreateContent();
+
+        public object? DataContext
+        {
+            get => _dataContext;
+        }
 
         public ScrollBarVisibility HorizontalScrollBarVisibilityRequirement
         {
