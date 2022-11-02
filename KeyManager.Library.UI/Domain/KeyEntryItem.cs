@@ -22,6 +22,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
             _dataContext = dataContext ?? factory.CreateKeyEntryPropertiesControlViewModel();
         }
 
+        public KeyEntryFactory Factory
+        {
+            get => _factory;
+        }
+
         public string Name { get => _factory.Name; }
 
         public KeyEntryPropertiesControlViewModel? DataContext { get => _dataContext; }

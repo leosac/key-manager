@@ -44,7 +44,14 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public KeyEntryItem? SelectedFactoryItem
         {
             get => _selectedFactoryItem;
-            set => SetProperty(ref _selectedFactoryItem, value);
+            set
+            {
+                SetProperty(ref _selectedFactoryItem, value);
+                if (value != null && value?.GetType() != KeyEntry?.GetType())
+                {
+                    KeyEntry = _selectedFactoryItem.Factory.CreateKeyEntry();
+                }
+            }
         }
 
         public bool CanChangeFactory

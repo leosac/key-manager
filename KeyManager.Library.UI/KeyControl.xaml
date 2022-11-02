@@ -45,7 +45,7 @@
             <ColumnDefinition MinWidth="250" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding KeyName}" Width="Auto" />
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Value" Width="Auto" />
         <TextBox Grid.Column="1" Text="{Binding Key.Value, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ShowPassword, Converter={StaticResource BoolToVisibleConverter}}"/>
         <PasswordBox Name="KeyValue" Grid.Row="0" Grid.Column="1" Width="Auto" Visibility="{Binding ShowPassword, Converter={StaticResource BoolToCollapsedConverter}}" PasswordChanged="KeyValue_PasswordChanged" />
         <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">

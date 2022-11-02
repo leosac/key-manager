@@ -10,9 +10,9 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
     {
         public AES128SAMKeyEntry() : base()
         {
-            KeyVersions.Add(new KeyVersion(0));
-            KeyVersions.Add(new KeyVersion(0));
-            KeyVersions.Add(new KeyVersion(0));
+            KeyVersions.Add(new KeyVersion("Key Version A", 0));
+            KeyVersions.Add(new KeyVersion("Key Version B", 0));
+            KeyVersions.Add(new KeyVersion("Key Version C", 0));
         }
 
         public override string Name => "SAM AES128";

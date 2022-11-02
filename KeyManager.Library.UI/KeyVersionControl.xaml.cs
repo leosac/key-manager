@@ -31,7 +31,7 @@ namespace Leosac.KeyManager.Library.UI
             set { SetValue(KeyVersionProperty, value); }
         }
 
-        public static readonly DependencyProperty KeyVersionProperty = DependencyProperty.Register("KeyVersion", typeof(KeyManager.Library.KeyStore.KeyVersion), typeof(KeyVersionControl),
+        public static readonly DependencyProperty KeyVersionProperty = DependencyProperty.Register(nameof(KeyVersion), typeof(KeyManager.Library.KeyStore.KeyVersion), typeof(KeyVersionControl),
             new FrameworkPropertyMetadata(new KeyManager.Library.KeyStore.KeyVersion()));
     }
 }

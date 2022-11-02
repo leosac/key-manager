@@ -12,7 +12,7 @@ namespace Leosac.KeyManager.Library.KeyStore
     {
         public KeyEntry()
         {
-            _identifier = new Guid().ToString();
+            _identifier = Guid.NewGuid().ToString();
             KeyVersions = new ObservableCollection<KeyVersion>();
         }
 

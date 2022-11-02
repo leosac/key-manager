@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
@@ -10,22 +11,26 @@ namespace Leosac.KeyManager.Library.KeyStore
     {
         public KeyVersion()
         {
+            _name = "Key Version";
             _version = 0;
             _key = new Key();
         }
 
-        public KeyVersion(int version)
+        public KeyVersion(string name, int version)
         {
+            _name = name;
             _version = version;
             _key = new Key();
         }
 
-        public KeyVersion(int version, Key key)
+        public KeyVersion(string name, int version, Key key)
         {
+            _name = name;
             _version = version;
             _key = key;
         }
 
+        private string _name;
         private int _version;
         private Key _key;
 
@@ -39,6 +44,12 @@ namespace Leosac.KeyManager.Library.KeyStore
         {
             get => _key;
             set => SetProperty(ref _key, value);
+        }
+
+        public string Name
+        {
+            get => _name;
+            set => SetProperty(ref _name, value);
         }
     }
 }

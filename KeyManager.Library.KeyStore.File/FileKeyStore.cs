@@ -55,7 +55,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
 
         public override void Create(KeyEntry keyEntry)
         {
-            if (!CheckKeyEntryExists(keyEntry.Identifier))
+            if (CheckKeyEntryExists(keyEntry.Identifier))
                 throw new KeyStoreException("A key entry with the same identifier already exists.");
 
             string serialized = JsonConvert.SerializeObject(keyEntry, _jsonSettings);
