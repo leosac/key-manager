@@ -9,13 +9,14 @@ namespace Leosac.KeyManager.Library.KeyStore.File
 {
     public class FileKeyStore : KeyStore
     {
-        JsonSerializerSettings _jsonSettings;
-
+        public const string LeosacKeyFileExtension = ".leok";
         public FileKeyStore()
         {
             Properties = new FileKeyStoreProperties();
             _jsonSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
         }
+
+        JsonSerializerSettings _jsonSettings;
 
         public FileKeyStoreProperties GetFileProperties()
         {
@@ -29,17 +30,22 @@ namespace Leosac.KeyManager.Library.KeyStore.File
 
         public override void Open()
         {
-            
+            if (!System.IO.Directory.Exists(GetFileProperties().Fullpath))
+            {
+                if (CreateIfMissing)
+                    System.IO.Directory.CreateDirectory(GetFileProperties().Fullpath);
+                else
+                    throw new KeyStoreException("Cannot open the key sore.");
+            }
         }
 
         public override void Close()
         {
-            
         }
 
         protected string GetKeyEntryFile(string identifier)
         {
-            return System.IO.Path.Combine(GetFileProperties().Directory, identifier);
+            return System.IO.Path.Combine(GetFileProperties().Fullpath, identifier + LeosacKeyFileExtension);
         }
 
         public override bool CheckKeyEntryExists(string identifier)
@@ -80,7 +86,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
         public override IList<string> GetAll()
         {
             var keyEntries = new List<string>();
-            var files = System.IO.Directory.GetFiles(GetFileProperties().Directory);
+            var files = System.IO.Directory.GetFiles(GetFileProperties().Fullpath, "*" + LeosacKeyFileExtension);
             foreach (var file in files)
             {
                 string identifier = System.IO.Path.GetFileName(file);
@@ -91,9 +97,6 @@ namespace Leosac.KeyManager.Library.KeyStore.File
 
         public override void Store(IList<KeyEntry> keyEntries)
         {
-            if (!System.IO.Directory.Exists(GetFileProperties().Directory))
-                System.IO.Directory.CreateDirectory(GetFileProperties().Directory);
-
             foreach (var keyEntry in keyEntries)
             {
                 Update(keyEntry, true);

@@ -10,6 +10,34 @@
              d:DataContext="{d:DesignInstance domain:SAMKeyEntryPropertiesControlViewModel}"
              d:DesignHeight="450" d:DesignWidth="500">
     <Grid>
-            
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="SAM Key Entry Type" />
+        <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding SAMKeyEntryTypes}" SelectedItem="{Binding Properties.SAMKeyEntryType}"></ComboBox>
+        <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding Properties.EnableDumpSessionKey}">Enable Dump SessionKey</CheckBox>
+        <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding Properties.CryptoBasedOnSecretKey}">Crypto based on SecretKey</CheckBox>
+        <CheckBox Grid.Row="3" Grid.Column="0" IsChecked="{Binding Properties.KeepIV}">Keep IV</CheckBox>
+        <CheckBox Grid.Row="4" Grid.Column="0" IsChecked="{Binding Properties.LockUnlock}">Lock / Unlock</CheckBox>
+        <CheckBox Grid.Row="5" Grid.Column="0" IsChecked="{Binding Properties.AuthenticateHost}">Authenticate Host</CheckBox>
+        <CheckBox Grid.Row="6" Grid.Column="0" IsChecked="{Binding Properties.AllowDumpSecretKey}">Allow dump SecretKey</CheckBox>
+        <CheckBox Grid.Row="7" Grid.Column="0" IsChecked="{Binding Properties.AllowDumpSecretKeyWithDiv}">Allow dump SecretKey with Div</CheckBox>
+        <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding Properties.DisableChangeKeyPICC}">Disable Change Key PICC</CheckBox>
+        <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding Properties.DisableDecryptData}">Disable Decrypt Data</CheckBox>
+        <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding Properties.DisableEncryptData}">Disable Encrypt Data</CheckBox>
+        <CheckBox Grid.Row="4" Grid.Column="1" IsChecked="{Binding Properties.DisableVerifyMACFromPICC}">Disable Verify MAC From PICC</CheckBox>
+        <CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{Binding Properties.DisableGenerateMACFromPICC}">Disable Generate MAC From PICC</CheckBox>
+        <CheckBox Grid.Row="6" Grid.Column="1" IsChecked="{Binding Properties.DisableKeyEntry}">Disable Key Entry</CheckBox>
     </Grid>
 </UserControl>

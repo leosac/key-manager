@@ -1,4 +1,6 @@
-﻿using Leosac.KeyManager.Library.UI;
+﻿using Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain;
+using Leosac.KeyManager.Library.UI;
+using Leosac.KeyManager.Library.UI.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +19,12 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
 
         public override UserControl CreateKeyEntryPropertiesControl()
         {
-            return null;
+            return new SAMKeyEntryPropertiesControl();
+        }
+
+        public override KeyEntryPropertiesControlViewModel CreateKeyEntryPropertiesControlViewModel()
+        {
+            return new SAMKeyEntryPropertiesControlViewModel();
         }
     }
 }

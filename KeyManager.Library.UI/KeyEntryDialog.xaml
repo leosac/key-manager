@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
-             xmlns:lib="clr-namespace:Leosac.KeyManager.Library"
+             xmlns:kslib="clr-namespace:Leosac.KeyManager.Library.KeyStore;assembly=KeyManager.Library"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:s="clr-namespace:System;assembly=mscorlib"
@@ -20,7 +20,7 @@
             <Button Width="100" IsDefault="True" Content="OK" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{StaticResource True}"/>
             <Button Width="100" IsCancel="True" Content="Cancel" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
         </WrapPanel>
-        <Grid>
+        <Grid Margin="10,10,10,10">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
@@ -32,7 +32,7 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Text="Key Entry Type"/>
-            <ComboBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" ItemsSource="{Binding KeyEntryFactories}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}">
+            <ComboBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" ItemsSource="{Binding KeyEntryFactories}" SelectedItem="{Binding SelectedFactoryItem, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate DataType="domain:KeyEntryFactory">
                         <TextBlock Margin="24,4,0,4" Text="{Binding Name}" />
@@ -43,8 +43,8 @@
             <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" TextWrapping="Wrap" Text="{Binding KeyEntry.Identifier}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}"/>
             <ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding KeyEntry.KeyVersions}">
                 <ListBox.ItemTemplate>
-                    <DataTemplate DataType="lib:Key">
-                        <local:KeyControl DataContext="{Binding}" />
+                    <DataTemplate DataType="kslib:KeyVersion">
+                        <local:KeyVersionControl KeyVersion="{Binding}" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
@@ -52,7 +52,7 @@
                 <StackPanel>
                     <Expander HorizontalAlignment="Stretch" Header="Properties">
                         <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                            <ContentControl Margin="{Binding MarginRequirement, FallbackValue=16}"
+                            <ContentControl Margin="16"
                                 Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"
                                 DataContext="{Binding SelectedFactoryItem}" >
                             </ContentControl>

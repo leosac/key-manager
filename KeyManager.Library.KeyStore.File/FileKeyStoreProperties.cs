@@ -10,15 +10,15 @@ namespace Leosac.KeyManager.Library.KeyStore.File
     {
         public FileKeyStoreProperties() : base()
         {
-            _directory = String.Empty;
+            _fullpath = String.Empty;
         }
 
-        private string _directory;
+        private string _fullpath;
 
-        public string Directory
+        public string Fullpath
         {
-            get => _directory;
-            set => SetProperty(ref _directory, value);
+            get => _fullpath;
+            set => SetProperty(ref _fullpath, value);
         }
     }
 }

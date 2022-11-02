@@ -27,6 +27,24 @@ namespace Leosac.KeyManager.Library.UI
             InitializeComponent();
         }
 
+        public bool ShowPassword
+        {
+            get { return (bool)GetValue(ShowPasswordProperty); }
+            set { SetValue(ShowPasswordProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowPasswordProperty = DependencyProperty.Register("ShowPassword", typeof(bool), typeof(KeyControl),
+            new FrameworkPropertyMetadata(false));
+
+        public KeyManager.Library.Key Key
+        {
+            get { return (KeyManager.Library.Key)GetValue(KeyProperty); }
+            set { SetValue(KeyProperty, value); }
+        }
+
+        public static readonly DependencyProperty KeyProperty = DependencyProperty.Register("Key", typeof(KeyManager.Library.Key), typeof(KeyControl),
+            new FrameworkPropertyMetadata(new KeyManager.Library.Key()));
+
         private void CopyBtn_MouseUp(object sender, MouseButtonEventArgs e)
         {
             Clipboard.SetText(KeyValue.Password);
@@ -34,18 +52,14 @@ namespace Leosac.KeyManager.Library.UI
 
         private void KeyValue_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            var model = DataContext as KeyControlViewModel;
-            if (model != null)
+            try
             {
-                try
-                {
-                    model.Key?.ValidatePolicies();
-                    tbxKeyError.Text = String.Empty;
-                }
-                catch (KeyPolicyException ex)
-                {
-                    tbxKeyError.Text = ex.Message;
-                }
+                Key?.ValidatePolicies();
+                tbxKeyError.Text = String.Empty;
+            }
+            catch (KeyPolicyException ex)
+            {
+                tbxKeyError.Text = ex.Message;
             }
         }
     }

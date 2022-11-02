@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="Leosac.KeyManager.Library.UI.KeyVersionControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="150" d:DesignWidth="500">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Version" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <local:NumericUpDownControl Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Width="150" MaxValue="255" StartValue="0" CurrentValue="{Binding KeyVersion.Version}" VerticalAlignment="Center"/>
+
+        <local:KeyControl Grid.Row="1" Grid.ColumnSpan="2" Key="{Binding KeyVersion.Key}" />
+    </Grid>
+</UserControl>

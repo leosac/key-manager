@@ -20,7 +20,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 KeyStoreFactories.Add(new KeyStoreItem(factory));
             }
-        }
+        }   
 
         private KeyStoreItem? _selectedFactoryItem;
         private int _selectedFactoryIndex;

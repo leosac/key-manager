@@ -19,7 +19,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        private bool _canChangeFactory = false;
+        private bool _canChangeFactory = true;
         private KeyEntry? _keyEntry;
         private KeyEntryItem? _selectedFactoryItem;
 
@@ -28,7 +28,17 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public KeyEntry? KeyEntry
         {
             get => _keyEntry;
-            set => SetProperty(ref _keyEntry, value);
+            set
+            {
+                SetProperty(ref _keyEntry, value);
+                if (_selectedFactoryItem != null)
+                {
+                    if (_selectedFactoryItem?.DataContext != null)
+                    {
+                        _selectedFactoryItem.DataContext.Properties = _keyEntry?.Properties;
+                    }
+                }
+            }
         }
 
         public KeyEntryItem? SelectedFactoryItem
