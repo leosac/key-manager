@@ -21,17 +21,17 @@ namespace Leosac.KeyManager.Domain
     {
         public MainWindowViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
-            HomeCommand = new KeyManagerCommandImplementation(
+            HomeCommand = new KeyManagerCommand(
                 _ =>
                 {
                     SelectedIndex = 0;
                 });
-            FavoritesCommand = new KeyManagerCommandImplementation(
+            FavoritesCommand = new KeyManagerCommand(
                 _ =>
                 {
                     SelectedIndex = 1;
                 });
-            KeyStoreCommand = new KeyManagerCommandImplementation(
+            KeyStoreCommand = new KeyManagerCommand(
                 newKeyStore =>
                 {
                     SelectedIndex = 2;
@@ -95,8 +95,8 @@ namespace Leosac.KeyManager.Domain
             set => SetProperty(ref _selectedIndex, value);
         }
 
-        public KeyManagerCommandImplementation HomeCommand { get; }
-        public KeyManagerCommandImplementation FavoritesCommand { get; }
-        public KeyManagerCommandImplementation KeyStoreCommand { get; }
+        public KeyManagerCommand HomeCommand { get; }
+        public KeyManagerCommand FavoritesCommand { get; }
+        public KeyManagerCommand KeyStoreCommand { get; }
     }
 }

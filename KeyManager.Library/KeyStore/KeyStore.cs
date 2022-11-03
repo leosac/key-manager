@@ -10,7 +10,10 @@ namespace Leosac.KeyManager.Library.KeyStore
     {
         public abstract string Name { get; }
 
+        public abstract bool CanDeleteKeyEntries { get; }
+
         public KeyStoreProperties? Properties { get; set; }
+
         public bool CreateIfMissing { get; set; } = false;
 
         public bool CheckKeyEntryExists(KeyEntry keyEntry)

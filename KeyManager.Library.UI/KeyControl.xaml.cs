@@ -45,11 +45,6 @@ namespace Leosac.KeyManager.Library.UI
         public static readonly DependencyProperty KeyProperty = DependencyProperty.Register("Key", typeof(KeyManager.Library.Key), typeof(KeyControl),
             new FrameworkPropertyMetadata(new KeyManager.Library.Key()));
 
-        private void CopyBtn_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            Clipboard.SetText(KeyValue.Password);
-        }
-
         private void KeyValue_PasswordChanged(object sender, RoutedEventArgs e)
         {
             try
@@ -61,6 +56,16 @@ namespace Leosac.KeyManager.Library.UI
             {
                 tbxKeyError.Text = ex.Message;
             }
+        }
+
+        private void btnCopy_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(KeyValue.Password);
+        }
+
+        private void btnEdit_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

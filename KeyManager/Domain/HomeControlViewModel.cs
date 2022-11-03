@@ -15,8 +15,8 @@ namespace Leosac.KeyManager.Domain
 
         }
 
-        public KeyManagerCommandImplementation? KeyStoreCommand { get; set; }
+        public KeyManagerCommand? KeyStoreCommand { get; set; }
 
-        public KeyManagerCommandImplementation? FavoritesCommand { get; set; }
+        public KeyManagerCommand? FavoritesCommand { get; set; }
     }
 }

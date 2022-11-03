@@ -31,12 +31,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set
             {
                 SetProperty(ref _keyEntry, value);
-                if (_selectedFactoryItem != null)
+                if (_selectedFactoryItem?.DataContext != null)
                 {
-                    if (_selectedFactoryItem?.DataContext != null)
-                    {
-                        _selectedFactoryItem.DataContext.Properties = _keyEntry?.Properties;
-                    }
+                    _selectedFactoryItem.DataContext.Properties = _keyEntry?.Properties;
                 }
             }
         }
@@ -49,7 +46,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 SetProperty(ref _selectedFactoryItem, value);
                 if (value != null && value?.GetType() != KeyEntry?.GetType())
                 {
-                    KeyEntry = _selectedFactoryItem.Factory.CreateKeyEntry();
+                    KeyEntry = _selectedFactoryItem?.Factory.CreateKeyEntry();
                 }
             }
         }

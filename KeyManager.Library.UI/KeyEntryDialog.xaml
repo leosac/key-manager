@@ -17,7 +17,7 @@
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
         <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,5">
-            <Button Width="100" IsDefault="True" Content="OK" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{StaticResource True}"/>
+            <Button Width="100" IsDefault="True" Content="OK" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding KeyEntry}"/>
             <Button Width="100" IsCancel="True" Content="Cancel" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
         </WrapPanel>
         <Grid Margin="10,10,10,10">
@@ -41,32 +41,33 @@
             </ComboBox>
             <TextBlock Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Text="Key Entry Identifier" Padding="5"/>
             <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" TextWrapping="Wrap" Text="{Binding KeyEntry.Identifier}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}" Padding="5"/>
-            <TabControl Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding KeyEntry.KeyVersions}">
-                <TabControl.ItemTemplate>
-                    <DataTemplate DataType="kslib:KeyVersion">
-                        <WrapPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Name}" Height="50" />
-                        </WrapPanel>
-                    </DataTemplate>
-                </TabControl.ItemTemplate>
-                <TabControl.ContentTemplate>
-                    <DataTemplate DataType="kslib:KeyVersion">
-                        <local:KeyVersionControl KeyVersion="{Binding}" />
-                    </DataTemplate>
-                </TabControl.ContentTemplate>
-            </TabControl>
-            <materialDesign:Card Grid.Row="3" Grid.ColumnSpan="2">
-                <StackPanel>
-                    <Expander HorizontalAlignment="Stretch" Header="Properties">
-                        <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                            <ContentControl Margin="16"
+            <TextBlock Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Text="Label" Padding="5"/>
+            <TextBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" TextWrapping="Wrap" Text="{Binding KeyEntry.Label}" Padding="5"/>
+            <TabControl Grid.Row="3" Grid.ColumnSpan="2" MinHeight="100">
+                <TabItem Header="Key Version">
+                    <ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding KeyEntry.KeyVersions}" Padding="5">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="kslib:KeyVersion">
+                                <materialDesign:Card Grid.Row="3" Grid.ColumnSpan="2">
+                                    <StackPanel>
+                                        <Expander HorizontalAlignment="Stretch" Header="{Binding Name}">
+                                            <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                                                <local:KeyVersionControl KeyVersion="{Binding}" />
+                                            </StackPanel>
+                                        </Expander>
+                                    </StackPanel>
+                                </materialDesign:Card>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </TabItem>
+                <TabItem Header="Properties">
+                    <ContentControl Margin="16"
                                 Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"
                                 DataContext="{Binding SelectedFactoryItem}" >
-                            </ContentControl>
-                        </StackPanel>
-                    </Expander>
-                </StackPanel>
-            </materialDesign:Card>
+                    </ContentControl>
+                </TabItem>
+            </TabControl>
         </Grid>
     </DockPanel>
 </UserControl>

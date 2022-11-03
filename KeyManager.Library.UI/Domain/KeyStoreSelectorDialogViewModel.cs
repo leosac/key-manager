@@ -24,7 +24,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         private KeyStoreItem? _selectedFactoryItem;
         private int _selectedFactoryIndex;
-        private KeyStoreProperties? _keyStoreProperties;
         private string? _message;
 
         public ObservableCollection<KeyStoreItem> KeyStoreFactories { get; }

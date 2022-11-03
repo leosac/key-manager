@@ -5,18 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Leosac.KeyManager.Domain
+namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public class KeyManagerCommandImplementation
+    public class KeyManagerCommand
     {
         private readonly Action<object?> _execute;
         private readonly Func<object?, bool> _canExecute;
 
-        public KeyManagerCommandImplementation(Action<object?> execute)
+        public KeyManagerCommand(Action<object?> execute)
             : this(execute, null)
         { }
 
-        public KeyManagerCommandImplementation(Action<object?> execute, Func<object?, bool>? canExecute)
+        public KeyManagerCommand(Action<object?> execute, Func<object?, bool>? canExecute)
         {
             if (execute is null) throw new ArgumentNullException(nameof(execute));
 

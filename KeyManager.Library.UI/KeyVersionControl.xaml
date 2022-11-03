@@ -6,10 +6,11 @@
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="150" d:DesignWidth="500">
+             d:DesignHeight="150" d:DesignWidth="500"
+             x:Name="keyVersionControl">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
+            <ColumnDefinition Width="150" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -17,8 +18,9 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0" Text="Version" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <local:NumericUpDownControl Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Width="150" MaxValue="255" StartValue="0" CurrentValue="{Binding KeyVersion.Version}" VerticalAlignment="Center"/>
+        <local:NumericUpDownControl Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Width="250" MaxValue="255" StartValue="0" CurrentValue="{Binding KeyVersion.Version, ElementName=keyVersionControl}" VerticalAlignment="Center"/>
 
-        <local:KeyControl Grid.Row="1" Grid.ColumnSpan="2" Key="{Binding KeyVersion.Key}" />
+        <local:KeyControl Grid.Row="1" Grid.Column="2"  HorizontalAlignment="Left" VerticalAlignment="Center" Key="{Binding KeyVersion.Key, ElementName=keyVersionControl}" />
+        <TextBlock Text="Value" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" />
     </Grid>
 </UserControl>

@@ -15,7 +15,7 @@
             <RowDefinition Height="13" />
             <RowDefinition Height="13" />
         </Grid.RowDefinitions>
-        <TextBox Name="NUDTextBox"  Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" TextAlignment="Right" PreviewKeyDown="NUDTextBox_PreviewKeyDown" PreviewKeyUp="NUDTextBox_PreviewKeyUp" TextChanged="NUDTextBox_TextChanged"/>
+        <TextBox Name="NUDTextBox"  Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" TextAlignment="Center" PreviewKeyDown="NUDTextBox_PreviewKeyDown" PreviewKeyUp="NUDTextBox_PreviewKeyUp" TextChanged="NUDTextBox_TextChanged"/>
         <RepeatButton Name="NUDButtonUP"  Grid.Column="1" Grid.Row="0" FontSize="8" FontFamily="Marlett" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Click="NUDButtonUP_Click">5</RepeatButton>
         <RepeatButton Name="NUDButtonDown"  Grid.Column="1" Grid.Row="1" FontSize="8"  FontFamily="Marlett" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Height="13" VerticalAlignment="Bottom" Click="NUDButtonDown_Click">6</RepeatButton>
     </Grid>

@@ -28,6 +28,8 @@ namespace Leosac.KeyManager.Library.KeyStore.File
 
         public override string Name => "File";
 
+        public override bool CanDeleteKeyEntries => true;
+
         public override void Open()
         {
             if (!System.IO.Directory.Exists(GetFileProperties().Fullpath))
@@ -89,7 +91,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             var files = System.IO.Directory.GetFiles(GetFileProperties().Fullpath, "*" + LeosacKeyFileExtension);
             foreach (var file in files)
             {
-                string identifier = System.IO.Path.GetFileName(file);
+                string identifier = System.IO.Path.GetFileNameWithoutExtension(file);
                 keyEntries.Add(identifier);
             }
             return keyEntries;

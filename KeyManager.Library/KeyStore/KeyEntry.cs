@@ -17,10 +17,8 @@ namespace Leosac.KeyManager.Library.KeyStore
         }
 
         private string _identifier;
-
+        private string? _label;
         private KeyEntryProperties? _properties;
-
-        public abstract string Name { get; }
 
         public ObservableCollection<KeyVersion> KeyVersions { get; set; }
 
@@ -28,6 +26,12 @@ namespace Leosac.KeyManager.Library.KeyStore
         {
             get => _identifier;
             set => SetProperty(ref _identifier, value);
+        }
+
+        public string? Label
+        {
+            get => _label;
+            set => SetProperty(ref _label, value);
         }
 
         public KeyEntryProperties? Properties

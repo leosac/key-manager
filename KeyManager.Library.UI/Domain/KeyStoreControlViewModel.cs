@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MaterialDesignThemes.Wpf;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -13,10 +15,29 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public KeyStoreControlViewModel()
         {
             KeyEntryIdentifiers = new ObservableCollection<string>();
+
+            EditKeyEntryCommand = new KeyManagerAsyncCommand<string>(async
+                keyEntryIdentifier =>
+                {
+                    var model = new KeyEntryDialogViewModel()
+                    {
+                        KeyEntry = KeyStore?.Get(keyEntryIdentifier),
+                        CanChangeFactory = false
+                    };
+                    var dialog = new KeyEntryDialog()
+                    {
+                        DataContext = model
+                    };
+                    object? ret = await DialogHost.Show(dialog, "RootDialog");
+                    if (ret != null && model.KeyEntry != null)
+                    {
+                        KeyStore?.Update(model.KeyEntry);
+                    }
+                });
         }
 
         private KeyStore.KeyStore? _keyStore;
-        private KeyStore.KeyEntry? _selectedKeyEntry;
+        private string? _selectedKeyEntryIdentifier;
         private string? _searchTerm;
 
         public ObservableCollection<string> KeyEntryIdentifiers { get; }
@@ -27,10 +48,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _keyStore, value);
         }
 
-        public KeyStore.KeyEntry? SelectedKeyEntry
+        public string? SelectedKeyEntryIdentifier
         {
-            get => _selectedKeyEntry;
-            set => SetProperty(ref _selectedKeyEntry, value);
+            get => _selectedKeyEntryIdentifier;
+            set => SetProperty(ref _selectedKeyEntryIdentifier, value);
         }
 
         public string? SearchTerm
@@ -38,6 +59,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
             get => _searchTerm;
             set => SetProperty(ref _searchTerm, value);
         }
+
+        public KeyManagerAsyncCommand<string> EditKeyEntryCommand { get; }
 
         public void RefreshKeyEntries()
         {

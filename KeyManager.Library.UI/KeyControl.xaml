@@ -14,10 +14,12 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type CheckBox}">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon x:Name="chkIcon" Kind="Eye" Cursor="Hand" Height="32" Width="32"/>
-                            <ContentPresenter/>
-                        </StackPanel>
+                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Margin="3">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon x:Name="chkIcon" Kind="Eye" Cursor="Hand" Height="32" Width="32"/>
+                                <ContentPresenter/>
+                            </StackPanel>
+                        </Button>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter TargetName="chkIcon" Property="Kind" Value="EyeCheck"/>
@@ -41,18 +43,20 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
             <ColumnDefinition MinWidth="250" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="Value" Width="Auto" />
-        <TextBox Grid.Column="1" Text="{Binding Key.Value, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ShowPassword, Converter={StaticResource BoolToVisibleConverter}}"/>
-        <PasswordBox Name="KeyValue" Grid.Row="0" Grid.Column="1" Width="Auto" Visibility="{Binding ShowPassword, Converter={StaticResource BoolToCollapsedConverter}}" PasswordChanged="KeyValue_PasswordChanged" />
-        <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+        <TextBox Grid.Column="0" Text="{Binding Key.Value, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ShowPassword, Converter={StaticResource BoolToVisibleConverter}}"/>
+        <PasswordBox Name="KeyValue" Grid.Row="0" Grid.Column="0" Width="Auto" Visibility="{Binding ShowPassword, Converter={StaticResource BoolToCollapsedConverter}}" PasswordChanged="KeyValue_PasswordChanged" />
+        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
             <CheckBox Style="{StaticResource ViewPasswordStyle}" IsChecked="{Binding ShowPassword}" />
-            <materialDesign:PackIcon Kind="Create" Cursor="Hand" Height="32" Width="32"/>
-            <materialDesign:PackIcon x:Name="CopyBtn" Kind="ContentCopy"  Cursor="Hand" Height="32" Width="32" MouseUp="CopyBtn_MouseUp"/>
+            <Button x:Name="btnEdit" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnEdit_Click" Margin="3">
+                <materialDesign:PackIcon Kind="Create" Cursor="Hand" Height="24" Width="24"/>
+            </Button>
+            <Button x:Name="btnCopy" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnCopy_Click" Margin="3">
+                <materialDesign:PackIcon Kind="ContentCopy" Cursor="Hand" Height="24" Width="24"/>
+            </Button>
         </StackPanel>
-        <TextBlock x:Name="tbxKeyError" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center" Height="30" Width="230" Foreground="Red"/>
+        <TextBlock x:Name="tbxKeyError" Grid.Column="0" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center" Height="30" Width="230" Foreground="Red"/>
     </Grid>
 </UserControl>

@@ -2,6 +2,7 @@
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,33 +43,30 @@ namespace Leosac.KeyManager.Library.UI
                 KeyStoreDataContext?.KeyStore?.Create(model.KeyEntry);
             }
         }
-
         private async void btnEditKeyEntry_Click(object sender, RoutedEventArgs e)
         {
-            var model = new KeyEntryDialogViewModel()
-            {
-                KeyEntry = KeyStoreDataContext?.SelectedKeyEntry,
-                CanChangeFactory = false
-            };
-            var dialog = new KeyEntryDialog()
-            {
-                DataContext = model
-            };
-            object? ret = await DialogHost.Show(dialog, "RootDialog");
-            if (ret != null && model.KeyEntry != null)
-            {
-                KeyStoreDataContext?.KeyStore?.Update(model.KeyEntry);
-            }
-        }
-
-        private void btnDeleteKeyEntry_Click(object sender, RoutedEventArgs e)
-        {
-
+            await KeyStoreDataContext?.EditKeyEntryCommand?.ExecuteAsync(KeyStoreDataContext?.SelectedKeyEntryIdentifier);
         }
 
         private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             KeyStoreDataContext?.RefreshKeyEntries();
+        }
+
+        private void KeyEntryEdit_OnDialogClosed(object sender, DialogClosedEventArgs e)
+        {
+            if (e.Parameter is KeyStore.KeyEntry keyEntry)
+            {
+                KeyStoreDataContext?.KeyStore?.Update(keyEntry);
+            }
+        }
+
+        private void KeyEntryDeletion_OnDialogClosed(object sender, DialogClosedEventArgs e)
+        {
+            if (e.Parameter is string identifier)
+            {
+                KeyStoreDataContext?.KeyStore?.Delete(identifier);
+            }
         }
     }
 }
