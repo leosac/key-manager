@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MaterialDesignThemes.Wpf;
 
 namespace Leosac.KeyManager.Library.UI
 {
@@ -27,15 +28,6 @@ namespace Leosac.KeyManager.Library.UI
             InitializeComponent();
         }
 
-        public bool ShowPassword
-        {
-            get { return (bool)GetValue(ShowPasswordProperty); }
-            set { SetValue(ShowPasswordProperty, value); }
-        }
-
-        public static readonly DependencyProperty ShowPasswordProperty = DependencyProperty.Register("ShowPassword", typeof(bool), typeof(KeyControl),
-            new FrameworkPropertyMetadata(false));
-
         public KeyManager.Library.Key Key
         {
             get { return (KeyManager.Library.Key)GetValue(KeyProperty); }
@@ -45,27 +37,14 @@ namespace Leosac.KeyManager.Library.UI
         public static readonly DependencyProperty KeyProperty = DependencyProperty.Register("Key", typeof(KeyManager.Library.Key), typeof(KeyControl),
             new FrameworkPropertyMetadata(new KeyManager.Library.Key()));
 
-        private void KeyValue_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Key?.ValidatePolicies();
-                tbxKeyError.Text = String.Empty;
-            }
-            catch (KeyPolicyException ex)
-            {
-                tbxKeyError.Text = ex.Message;
-            }
-        }
-
         private void btnCopy_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(KeyValue.Password);
+            Clipboard.SetText(Key?.Value);
         }
 
-        private void btnEdit_Click(object sender, RoutedEventArgs e)
+        private void btnKeyStoreLink_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
     }
 }

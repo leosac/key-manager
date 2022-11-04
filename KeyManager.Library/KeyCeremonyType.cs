@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library
 {
-    public class SymmetricKey : Key
+    public enum KeyCeremonyType
     {
+        Concat,
+        Xor,
+        Shamir
     }
 }

@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KeyManager"
         mc:Ignorable="d"
-        Title="Leosac Key Manager" Height="450" Width="800" Icon="/images/leosac_key.png"
+        Title="Leosac Key Manager" Height="600" Width="800" Icon="/images/leosac_key.png"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         d:DataContext="{d:DesignInstance domain:MainWindowViewModel}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"

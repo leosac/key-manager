@@ -1,4 +1,5 @@
-﻿using Leosac.KeyManager.Library.UI.Domain;
+﻿using Leosac.KeyManager.Library.KeyStore;
+using Leosac.KeyManager.Library.UI.Domain;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
@@ -41,11 +42,8 @@ namespace Leosac.KeyManager.Library.UI
             if (ret != null && model.KeyEntry != null)
             {
                 KeyStoreDataContext?.KeyStore?.Create(model.KeyEntry);
+                KeyStoreDataContext?.KeyEntryIdentifiers.Add(model.KeyEntry.Identifier);
             }
-        }
-        private async void btnEditKeyEntry_Click(object sender, RoutedEventArgs e)
-        {
-            await KeyStoreDataContext?.EditKeyEntryCommand?.ExecuteAsync(KeyStoreDataContext?.SelectedKeyEntryIdentifier);
         }
 
         private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -66,6 +64,7 @@ namespace Leosac.KeyManager.Library.UI
             if (e.Parameter is string identifier)
             {
                 KeyStoreDataContext?.KeyStore?.Delete(identifier);
+                KeyStoreDataContext?.KeyEntryIdentifiers.Remove(identifier);
             }
         }
     }

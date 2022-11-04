@@ -8,7 +8,7 @@ namespace Leosac.KeyManager.Library.Policy
 {
     public class HexadecimalPolicy : IKeyPolicy
     {
-        public void Validate(Key key)
+        public void Validate(string? key)
         {
             throw new NotImplementedException();
         }

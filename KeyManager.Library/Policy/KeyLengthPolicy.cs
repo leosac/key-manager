@@ -13,13 +13,16 @@ namespace Leosac.KeyManager.Library.Policy
             ByteLength = byteLength;
         }
 
-        public void Validate(Key key)
+        public void Validate(string? key)
         {
-            if (key.Value.Length % 2 != 0)
-                throw new KeyPolicyException("Key is not correctly formated to be parsed to a byte array.");
+            if (!string.IsNullOrEmpty(key))
+            {
+                if (key.Length % 2 != 0)
+                    throw new KeyPolicyException("Key is not correctly formated to be parsed to a byte array.");
 
-            if (key.Value.Length / 2 != ByteLength)
-                throw new KeyPolicyException("Wrong key length.");
+                if (key.Length / 2 != ByteLength)
+                    throw new KeyPolicyException("Wrong key length.");
+            }
         }
 
         public int ByteLength { get; set; }

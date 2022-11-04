@@ -16,6 +16,7 @@
         <s:Boolean x:Key="False">False</s:Boolean>
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
+        <TextBlock DockPanel.Dock="Top" Text="Key Entry" FontSize="18" Margin="5" />
         <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,5">
             <Button Width="100" IsDefault="True" Content="OK" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding KeyEntry}"/>
             <Button Width="100" IsCancel="True" Content="Cancel" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
@@ -28,22 +29,28 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Text="Key Entry Type" Padding="5"/>
-            <ComboBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" ItemsSource="{Binding KeyEntryFactories}" SelectedItem="{Binding SelectedFactoryItem, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}" Padding="5">
+            <ComboBox Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="6"
+                      ItemsSource="{Binding KeyEntryFactories}"
+                      SelectedItem="{Binding SelectedFactoryItem, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}"
+                      materialDesign:HintAssist.HelperText="The key entry type"
+                      materialDesign:HintAssist.Hint="Type">
                 <ComboBox.ItemTemplate>
                     <DataTemplate DataType="domain:KeyEntryFactory">
                         <TextBlock Margin="24,4,0,4" Text="{Binding Name}" />
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <TextBlock Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Text="Key Entry Identifier" Padding="5"/>
-            <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" TextWrapping="Wrap" Text="{Binding KeyEntry.Identifier}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}" Padding="5"/>
-            <TextBlock Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Text="Label" Padding="5"/>
-            <TextBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" TextWrapping="Wrap" Text="{Binding KeyEntry.Label}" Padding="5"/>
-            <TabControl Grid.Row="3" Grid.ColumnSpan="2" MinHeight="100">
+            <TextBox Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding KeyEntry.Identifier}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}" Margin="6"
+                     materialDesign:HintAssist.HelperText="Unique identifier for the key entry"
+                     materialDesign:HintAssist.Hint="Key Entry Identifier"
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+            <TextBox Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding KeyEntry.Label}" Margin="6"
+                     materialDesign:HintAssist.HelperText="Label/note about the key entry"
+                     materialDesign:HintAssist.Hint="Label"
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+            <TabControl Grid.Row="3" MinHeight="100">
                 <TabItem Header="Key Version">
                     <ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding KeyEntry.KeyVersions}" Padding="5">
                         <ListBox.ItemTemplate>

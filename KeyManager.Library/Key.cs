@@ -16,16 +16,25 @@ namespace Leosac.KeyManager.Library
         public string Value
         {
             get => _value;
-            set => SetProperty(ref _value, value);
+            set
+            {
+                ValidatePolicies(Value);
+                SetProperty(ref _value, value);
+            }
         }
 
         public ObservableCollection<IKeyPolicy> Policies { get; set; }
 
         public void ValidatePolicies()
         {
+            ValidatePolicies(this.Value);
+        }
+
+        public void ValidatePolicies(string key)
+        {
             foreach (var policy in Policies)
             {
-                policy.Validate(this);
+                policy.Validate(key);
             }
         }
     }

@@ -13,7 +13,11 @@ namespace Leosac.KeyManager.Library.KeyStore.File
         public FileKeyStore()
         {
             Properties = new FileKeyStoreProperties();
-            _jsonSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All };
+            _jsonSettings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All,
+                ObjectCreationHandling = ObjectCreationHandling.Replace
+            };
         }
 
         JsonSerializerSettings _jsonSettings;
@@ -82,7 +86,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
                 throw new KeyStoreException("The key entry do not exists.");
 
             string serialized = System.IO.File.ReadAllText(GetKeyEntryFile(identifier));
-            return JsonConvert.DeserializeObject<KeyEntry>(serialized);
+            return JsonConvert.DeserializeObject<KeyEntry>(serialized, _jsonSettings);
         }
 
         public override IList<string> GetAll()

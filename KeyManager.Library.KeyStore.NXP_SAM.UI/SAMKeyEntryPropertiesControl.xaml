@@ -24,20 +24,60 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="SAM Key Entry Type" />
-        <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding SAMKeyEntryTypes}" SelectedItem="{Binding Properties.SAMKeyEntryType}"></ComboBox>
-        <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding Properties.EnableDumpSessionKey}">Enable Dump SessionKey</CheckBox>
-        <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding Properties.CryptoBasedOnSecretKey}">Crypto based on SecretKey</CheckBox>
-        <CheckBox Grid.Row="3" Grid.Column="0" IsChecked="{Binding Properties.KeepIV}">Keep IV</CheckBox>
-        <CheckBox Grid.Row="4" Grid.Column="0" IsChecked="{Binding Properties.LockUnlock}">Lock / Unlock</CheckBox>
-        <CheckBox Grid.Row="5" Grid.Column="0" IsChecked="{Binding Properties.AuthenticateHost}">Authenticate Host</CheckBox>
-        <CheckBox Grid.Row="6" Grid.Column="0" IsChecked="{Binding Properties.AllowDumpSecretKey}">Allow dump SecretKey</CheckBox>
-        <CheckBox Grid.Row="7" Grid.Column="0" IsChecked="{Binding Properties.AllowDumpSecretKeyWithDiv}">Allow dump SecretKey with Div</CheckBox>
-        <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding Properties.DisableChangeKeyPICC}">Disable Change Key PICC</CheckBox>
-        <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding Properties.DisableDecryptData}">Disable Decrypt Data</CheckBox>
-        <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding Properties.DisableEncryptData}">Disable Encrypt Data</CheckBox>
-        <CheckBox Grid.Row="4" Grid.Column="1" IsChecked="{Binding Properties.DisableVerifyMACFromPICC}">Disable Verify MAC From PICC</CheckBox>
-        <CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{Binding Properties.DisableGenerateMACFromPICC}">Disable Generate MAC From PICC</CheckBox>
-        <CheckBox Grid.Row="6" Grid.Column="1" IsChecked="{Binding Properties.DisableKeyEntry}">Disable Key Entry</CheckBox>
+        <ComboBox Grid.Row="0" Grid.ColumnSpan="2" ItemsSource="{Binding SAMKeyEntryTypes}" SelectedItem="{Binding Properties.SAMKeyEntryType}"
+                  materialDesign:HintAssist.HelperText="SAM Key Entry Type"
+                  materialDesign:HintAssist.Hint="Type" Margin="5,5,5,10" />
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="5">
+            <ToggleButton IsChecked="{Binding Properties.EnableDumpSessionKey}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+            <TextBlock Text="Enable Dump SessionKey" Padding="3" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Margin="5">
+            <ToggleButton IsChecked="{Binding Properties.CryptoBasedOnSecretKey}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+            <TextBlock Text="Crypto based on SecretKey" Padding="3" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Margin="5">
+            <ToggleButton IsChecked="{Binding Properties.KeepIV}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+            <TextBlock Text="Keep IV" Padding="3" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="4" Grid.Column="0" Margin="5">
+            <ToggleButton IsChecked="{Binding Properties.LockUnlock}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+            <TextBlock Text="Lock / Unlock" Padding="3" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="5" Grid.Column="0" Margin="5">
+            <ToggleButton IsChecked="{Binding Properties.AuthenticateHost}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+            <TextBlock Text="Authenticate Host" Padding="3" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="6" Grid.Column="0" Margin="5">
+            <ToggleButton IsChecked="{Binding Properties.AllowDumpSecretKey}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+            <TextBlock Text="Allow dump SecretKey" Padding="3" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="7" Grid.Column="0" Margin="5">
+            <ToggleButton IsChecked="{Binding Properties.AllowDumpSecretKeyWithDiv}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+            <TextBlock Text="Allow dump SecretKey with Div" Padding="3" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Margin="5">
+            <ToggleButton IsChecked="{Binding Properties.DisableChangeKeyPICC}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+            <TextBlock Text="Disable Change Key PICC" Padding="3" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="5">
+            <ToggleButton IsChecked="{Binding Properties.DisableDecryptData}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+            <TextBlock Text="Disable Decrypt Data" Padding="3" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Margin="5">
+            <ToggleButton IsChecked="{Binding Properties.DisableEncryptData}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+            <TextBlock Text="Disable Encrypt Data" Padding="3" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Margin="5">
+            <ToggleButton IsChecked="{Binding Properties.DisableVerifyMACFromPICC}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+            <TextBlock Text="Disable Verify MAC From PICC" Padding="3" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" Margin="5">
+            <ToggleButton IsChecked="{Binding Properties.DisableGenerateMACFromPICC}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+            <TextBlock Text="Disable Generate MAC From PICC" Padding="3" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="6" Grid.Column="1" Margin="5">
+            <ToggleButton IsChecked="{Binding Properties.DisableKeyEntry}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+            <TextBlock Text="Disable Key Entry" Padding="3" />
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -3,60 +3,50 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="500">
-    <UserControl.Resources>
-        <materialDesign:BooleanToVisibilityConverter x:Key="BoolToVisibleConverter" />
-        <materialDesign:BooleanToVisibilityConverter x:Key="BoolToCollapsedConverter" TrueValue="Collapsed" FalseValue="Visible" />
-        <Style TargetType="{x:Type CheckBox}" x:Key="ViewPasswordStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type CheckBox}">
-                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Margin="3">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon x:Name="chkIcon" Kind="Eye" Cursor="Hand" Height="32" Width="32"/>
-                                <ContentPresenter/>
-                            </StackPanel>
-                        </Button>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="chkIcon" Property="Kind" Value="EyeCheck"/>
-                            </Trigger>
-                            <!--<MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver" Value="True"/>
-                                    <Condition Property="IsChecked" Value="False"/>
-                                </MultiTrigger.Conditions>
-                                <Setter TargetName="chkIcon" Property="BorderThickness" Value="1"/>
-                            </MultiTrigger>-->
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="250" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <TextBox Grid.Column="0" Text="{Binding Key.Value, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ShowPassword, Converter={StaticResource BoolToVisibleConverter}}"/>
-        <PasswordBox Name="KeyValue" Grid.Row="0" Grid.Column="0" Width="Auto" Visibility="{Binding ShowPassword, Converter={StaticResource BoolToCollapsedConverter}}" PasswordChanged="KeyValue_PasswordChanged" />
+        <PasswordBox x:Name="tbxKeyValue" Grid.Column="0"
+                     materialDesign:HintAssist.HelperText="The secret value for the key"
+                     materialDesign:HintAssist.Hint="Key Value"
+                     materialDesign:TextFieldAssist.HasClearButton="True"
+                     materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
+                     Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
+                     materialDesign:PasswordBoxAssist.Password="{Binding Path=Key.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-            <CheckBox Style="{StaticResource ViewPasswordStyle}" IsChecked="{Binding ShowPassword}" />
-            <Button x:Name="btnEdit" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnEdit_Click" Margin="3">
-                <materialDesign:PackIcon Kind="Create" Cursor="Hand" Height="24" Width="24"/>
+            <materialDesign:DialogHost DialogTheme="Inherit">
+                <materialDesign:DialogHost.DialogContent>
+                    <local:KeyGenerationDialog KeyLength="{Binding Path=Key.MaxLength}" KeyValue="{Binding Path=Key.Value}" />
+                </materialDesign:DialogHost.DialogContent>
+                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" Width="24" Height="24" Margin="3">
+                    <Button.ToolTip>
+                        <TextBlock Text="Generate new key" />
+                    </Button.ToolTip>
+                    <materialDesign:PackIcon Kind="ShuffleVariant" Height="16" Width="16"/>
+                </Button>
+            </materialDesign:DialogHost>
+            <Button x:Name="btnKeyStoreLink" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnKeyStoreLink_Click" Width="24" Height="24" Margin="3">
+                <Button.ToolTip>
+                    <TextBlock Text="Link to another Key Store" />
+                </Button.ToolTip>
+                <materialDesign:PackIcon Kind="KeyLink" Height="16" Width="16"/>
             </Button>
-            <Button x:Name="btnCopy" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnCopy_Click" Margin="3">
-                <materialDesign:PackIcon Kind="ContentCopy" Cursor="Hand" Height="24" Width="24"/>
+            <Button x:Name="btnCopy" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnCopy_Click" Width="24" Height="24" Margin="3">
+                <Button.ToolTip>
+                    <TextBlock Text="Copy to clipboard" />
+                </Button.ToolTip>
+                <materialDesign:PackIcon Kind="ContentCopy" Height="16" Width="16"/>
             </Button>
         </StackPanel>
-        <TextBlock x:Name="tbxKeyError" Grid.Column="0" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center" Height="30" Width="230" Foreground="Red"/>
     </Grid>
 </UserControl>

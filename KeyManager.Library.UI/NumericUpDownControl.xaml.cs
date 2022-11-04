@@ -24,9 +24,23 @@ namespace Leosac.KeyManager.Library.UI
         public NumericUpDownControl()
         {
             InitializeComponent();
-
-            NUDTextBox.Text = StartValue.ToString();
         }
+
+        public string? Hint
+        {
+            get { return (string)GetValue(HintProperty); }
+            set { SetValue(HintProperty, value); }
+        }
+
+        public static readonly DependencyProperty HintProperty = DependencyProperty.Register(nameof(Hint), typeof(string), typeof(NumericUpDownControl));
+
+        public string? HelperText
+        {
+            get { return (string)GetValue(HelperTextProperty); }
+            set { SetValue(HelperTextProperty, value); }
+        }
+
+        public static readonly DependencyProperty HelperTextProperty = DependencyProperty.Register(nameof(HelperText), typeof(string), typeof(NumericUpDownControl));
 
         public int MinValue
         {
@@ -45,15 +59,6 @@ namespace Leosac.KeyManager.Library.UI
 
         public static readonly DependencyProperty MaxValueProperty = DependencyProperty.Register(nameof(MaxValue), typeof(int), typeof(NumericUpDownControl),
             new FrameworkPropertyMetadata(100));
-
-        public int StartValue
-        {
-            get { return (int)GetValue(StartValueProperty); }
-            set { SetValue(StartValueProperty, value); }
-        }
-
-        public static readonly DependencyProperty StartValueProperty = DependencyProperty.Register(nameof(StartValue), typeof(int), typeof(NumericUpDownControl),
-            new FrameworkPropertyMetadata(0));
 
         public int CurrentValue
         {
@@ -115,8 +120,8 @@ namespace Leosac.KeyManager.Library.UI
         private void NUDTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             int number = 0;
-            if (NUDTextBox.Text != "")
-                if (!int.TryParse(NUDTextBox.Text, out number)) NUDTextBox.Text = StartValue.ToString();
+            if (!string.IsNullOrEmpty(NUDTextBox.Text))
+                if (!int.TryParse(NUDTextBox.Text, out number)) NUDTextBox.Text = MinValue.ToString();
             if (number > MaxValue) NUDTextBox.Text = MaxValue.ToString();
             if (number < MinValue) NUDTextBox.Text = MinValue.ToString();
             NUDTextBox.SelectionStart = NUDTextBox.Text.Length;
