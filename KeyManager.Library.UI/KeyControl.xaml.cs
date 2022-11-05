@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MaterialDesignThemes.Wpf;
+using Microsoft.Win32;
 
 namespace Leosac.KeyManager.Library.UI
 {
@@ -34,7 +35,7 @@ namespace Leosac.KeyManager.Library.UI
             set { SetValue(KeyProperty, value); }
         }
 
-        public static readonly DependencyProperty KeyProperty = DependencyProperty.Register("Key", typeof(KeyManager.Library.Key), typeof(KeyControl),
+        public static readonly DependencyProperty KeyProperty = DependencyProperty.Register(nameof(Key), typeof(KeyManager.Library.Key), typeof(KeyControl),
             new FrameworkPropertyMetadata(new KeyManager.Library.Key()));
 
         private void btnCopy_Click(object sender, RoutedEventArgs e)
@@ -44,7 +45,17 @@ namespace Leosac.KeyManager.Library.UI
 
         private void btnKeyStoreLink_Click(object sender, RoutedEventArgs e)
         {
+            
+        }
 
+        private void btnImport_Click(object sender, RoutedEventArgs e)
+        {
+            var ofd = new OpenFileDialog();
+            if (ofd.ShowDialog() == true)
+            {
+                var key = System.IO.File.ReadAllBytes(ofd.FileName);
+                Key.Value = Convert.ToHexString(key);
+            }
         }
     }
 }

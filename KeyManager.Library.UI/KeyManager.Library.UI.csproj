@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="MaterialDesignThemes" Version="4.6.1" />
+    <PackageReference Include="SecretSharingDotNet" Version="0.9.0" />
   </ItemGroup>
 
   <ItemGroup>

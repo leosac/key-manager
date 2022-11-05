@@ -1,8 +1,14 @@
 ﻿using Leosac.KeyManager.Library;
+using Leosac.KeyManager.Library.UI.Domain;
+using MaterialDesignThemes.Wpf;
+using SecretSharingDotNet.Cryptography;
+using SecretSharingDotNet.Math;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Numerics;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,6 +17,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -68,12 +75,85 @@ namespace Leosac.KeyManager.Library.UI
 
         private void btnRandom_Click(object sender, RoutedEventArgs e)
         {
-
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                var key = new byte[KeyLength];
+                rng.GetBytes(key);
+                KeyValue = Convert.ToHexString(key);
+            }
         }
 
         private void btnPassword_Click(object sender, RoutedEventArgs e)
         {
+            var deriv = new Rfc2898DeriveBytes(tbxPassword.Password, Encoding.UTF8.GetBytes(tbxSalt.Text));
+            var key = deriv.GetBytes(KeyLength);
+            KeyValue = Convert.ToHexString(key);
+        }
 
+        public static byte[] CreateRandomSalt(int length)
+        {
+            byte[] randBytes = (length >= 1) ? new byte[length] : new byte[1];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randBytes);
+            }
+            return randBytes;
+        }
+
+        private void btnCeremony_Click(object sender, RoutedEventArgs e)
+        {
+            var model = new KeyCeremonyDialogViewModel()
+            {
+                Fragments = new ObservableCollection<string>(new string[Fragments])
+            };
+            var dialog = new KeyCeremonyDialog()
+            {
+                DataContext = model
+            };
+            if (dialog.ShowDialog() == true)
+            {
+                KeyValue = ComputeKeyCeremony(SelectedCeremonyType, model.Fragments.ToArray());
+            }
+        }
+
+        private string ComputeKeyCeremony(KeyCeremonyType ceremonyType, string[] fragments)
+        {
+            string keystr = string.Empty;
+            switch (ceremonyType)
+            {
+                case KeyCeremonyType.Concat:
+                    {
+                        keystr = String.Join("", fragments);
+                    }
+                    break;
+
+                case KeyCeremonyType.Xor:
+                    {
+                        var key = new byte[KeyLength];
+                        foreach (string fragment in fragments)
+                        {
+                            var keyb = Convert.FromHexString(fragment);
+                            for (int i = 0; i < key.Length && i < keyb.Length; ++i)
+                            {
+                                key[i] ^= keyb[i];
+                            }
+                        }
+                        keystr = Convert.ToHexString(key);
+                    }
+                    break;
+
+                case KeyCeremonyType.Shamir:
+                    {
+                        var gcd = new ExtendedEuclideanAlgorithm<BigInteger>();
+                        var combine = new ShamirsSecretSharing<BigInteger>(gcd);
+                        var shares = String.Join(Environment.NewLine, fragments);
+                        var secret = combine.Reconstruction(shares);
+                        var key = secret.ToByteArray();
+                        keystr = Convert.ToHexString(key);
+                    }
+                    break;
+            }
+            return keystr;
         }
     }
 }

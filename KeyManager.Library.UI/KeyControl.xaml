@@ -8,6 +8,14 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="500">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -24,9 +32,9 @@
                      Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
                      materialDesign:PasswordBoxAssist.Password="{Binding Path=Key.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-            <materialDesign:DialogHost DialogTheme="Inherit">
+            <materialDesign:DialogHost Identifier="KeyGenerationDialog" DialogTheme="Inherit">
                 <materialDesign:DialogHost.DialogContent>
-                    <local:KeyGenerationDialog KeyLength="{Binding Path=Key.MaxLength}" KeyValue="{Binding Path=Key.Value}" />
+                    <local:KeyGenerationDialog KeyLength="{Binding Path=Key.MaxLength}" KeyValue="{Binding Path=Key.Value, Mode=TwoWay}" />
                 </materialDesign:DialogHost.DialogContent>
                 <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" Width="24" Height="24" Margin="3">
                     <Button.ToolTip>
@@ -41,12 +49,22 @@
                 </Button.ToolTip>
                 <materialDesign:PackIcon Kind="KeyLink" Height="16" Width="16"/>
             </Button>
-            <Button x:Name="btnCopy" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnCopy_Click" Width="24" Height="24" Margin="3">
-                <Button.ToolTip>
-                    <TextBlock Text="Copy to clipboard" />
-                </Button.ToolTip>
-                <materialDesign:PackIcon Kind="ContentCopy" Height="16" Width="16"/>
-            </Button>
+            <materialDesign:PopupBox PlacementMode="BottomAndAlignCentres" ToolTip="Export the key value" ToolTipService.Placement="Right">
+                <StackPanel>
+                    <Button x:Name="btnCopy" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnCopy_Click" Width="24" Height="24" Margin="3">
+                        <Button.ToolTip>
+                            <TextBlock Text="Copy to clipboard" />
+                        </Button.ToolTip>
+                        <materialDesign:PackIcon Kind="ContentCopy" Height="16" Width="16"/>
+                    </Button>
+                    <Button x:Name="btnImport" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnImport_Click" Width="24" Height="24" Margin="3">
+                        <Button.ToolTip>
+                            <TextBlock Text="Import from file" />
+                        </Button.ToolTip>
+                        <materialDesign:PackIcon Kind="Import" Height="16" Width="16"/>
+                    </Button>
+                </StackPanel>
+            </materialDesign:PopupBox>
         </StackPanel>
     </Grid>
 </UserControl>

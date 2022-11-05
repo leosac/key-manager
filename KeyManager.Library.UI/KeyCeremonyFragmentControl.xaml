@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="Leosac.KeyManager.Library.UI.KeyCeremonyFragmentControl"
+             x:Name="userControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="500">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Flipper.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <WrapPanel Orientation="Horizontal">
+            <TextBlock Text="Please input the Key Fragment #" FontSize="18" Margin="5,5,0,5" />
+            <TextBlock Text="{Binding Fragment, ElementName=userControl}" FontSize="18" Margin="0,5,5,5" />
+        </WrapPanel>
+        <WrapPanel Orientation="Horizontal">
+            <materialDesign:Flipper Style="{StaticResource MaterialDesignCardFlipper}" Margin="3">
+                <materialDesign:Flipper.FrontContent>
+                    <Button Width="200" MinHeight="100" Margin="8" Command="{x:Static materialDesign:Flipper.FlipCommand}" Style="{StaticResource MaterialDesignFlatButton}">
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="TextBox" Width="64" Height="64" HorizontalAlignment="Center" />
+                            <TextBlock Text="Manual Input" HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </materialDesign:Flipper.FrontContent>
+                <materialDesign:Flipper.BackContent>
+                    <DockPanel LastChildFill="True" Width="200" MinHeight="100" Margin="8">
+                        <Button DockPanel.Dock="Bottom" Width="184" Margin="5" Command="{x:Static materialDesign:Flipper.FlipCommand}" Content="Back" Style="{StaticResource MaterialDesignFlatButton}" />
+                        <PasswordBox
+                            materialDesign:HintAssist.HelperText="The secret value for the key fragment"
+                            materialDesign:HintAssist.Hint="Fragment Value"
+                            materialDesign:TextFieldAssist.HasClearButton="True"
+                            materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
+                            Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
+                            materialDesign:PasswordBoxAssist.Password="{Binding Path=FragmentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ElementName=userControl}" />
+                    </DockPanel>
+                </materialDesign:Flipper.BackContent>
+            </materialDesign:Flipper>
+            <materialDesign:Flipper Style="{StaticResource MaterialDesignCardFlipper}" Margin="3">
+                <materialDesign:Flipper.FrontContent>
+                    <Button Width="200" MinHeight="100" Margin="8" Command="{x:Static materialDesign:Flipper.FlipCommand}" Style="{StaticResource MaterialDesignFlatButton}">
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="File" Width="64" Height="64" HorizontalAlignment="Center" />
+                            <TextBlock Text="From File" HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </materialDesign:Flipper.FrontContent>
+                <materialDesign:Flipper.BackContent>
+                    <DockPanel LastChildFill="True" Width="200" MinHeight="100" Margin="8">
+                        <Button DockPanel.Dock="Bottom" Width="184" Margin="5" Command="{x:Static materialDesign:Flipper.FlipCommand}" Content="Back" Style="{StaticResource MaterialDesignFlatButton}" />
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="{Binding Path=FilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ElementName=userControl}" HorizontalAlignment="Center" />
+                            <Button x:Name="btnBrowseFile" Content="Browse" HorizontalAlignment="Center" Click="btnBrowseFile_Click" />
+                        </StackPanel>
+                    </DockPanel>
+                </materialDesign:Flipper.BackContent>
+            </materialDesign:Flipper>
+        </WrapPanel>
+        <Button Margin="48"
+              Command="{x:Static materialDesign:Transitioner.MoveNextCommand}"
+              Style="{StaticResource MaterialDesignFloatingActionButton}">
+            <materialDesign:PackIcon Kind="PageNextOutline" Width="24" Height="24" />
+        </Button>
+    </StackPanel>
+</UserControl>

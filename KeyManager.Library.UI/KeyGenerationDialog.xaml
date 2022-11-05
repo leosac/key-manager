@@ -16,7 +16,7 @@
     </UserControl.Resources>
     <Grid>
         <DockPanel LastChildFill="True">
-            <TextBlock DockPanel.Dock="Top" Text="Key Generation" FontSize="18" Margin="8" />
+            <TextBlock DockPanel.Dock="Top" Text="Local Key Generation" FontSize="18" Margin="8" />
             <StackPanel DockPanel.Dock="Top" Orientation="Vertical" Margin="5">
                 <local:NumericUpDownControl Hint="Length" HelperText="Key Length" MinValue="8" CurrentValue="{Binding KeyLength, ElementName=userControl, Mode=TwoWay}" Margin="8" />
                 <PasswordBox Margin="5"
@@ -42,12 +42,19 @@
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Text="Derivate a Key from a Password (using RFC 2898)" Margin="10"/>
-                        <TextBox Grid.Row="1" Margin="10"
+                        <TextBox x:Name="tbxSalt" Grid.Row="1" Margin="10"
+                                 materialDesign:HintAssist.HelperText="The salt to use for key derivation"
+                                 materialDesign:HintAssist.Hint="Salt"
+                                 Text="Security Freedom" />
+                        <PasswordBox x:Name="tbxPassword" Grid.Row="2" Margin="10"
                                  materialDesign:HintAssist.HelperText="The password to derivate the key from"
-                                 materialDesign:HintAssist.Hint="Password" />
-                        <Button x:Name="btnPassword" Grid.Row="2" Content="Create" Width="150" Click="btnPassword_Click" Margin="10" />
+                                 materialDesign:HintAssist.Hint="Password"
+                                 materialDesign:TextFieldAssist.HasClearButton="True"
+                                 Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}" />
+                        <Button x:Name="btnPassword" Grid.Row="3" Content="Create" Width="150" Click="btnPassword_Click" Margin="10" />
                     </Grid>
                 </TabItem>
                 <TabItem Header="Key Ceremony">
@@ -65,7 +72,7 @@
                           SelectedItem="{Binding SelectedCeremonyType, ElementName=userControl}"
                           materialDesign:HintAssist.HelperText="Ceremony Type"
                           materialDesign:HintAssist.Hint="Type" />
-                        <Button x:Name="btnCeremony" Grid.Row="3" Content="Start the Ceremony" Width="200" Margin="10" />
+                        <Button x:Name="btnCeremony" Grid.Row="3" Content="Start the Ceremony" Width="200" Margin="10" Click="btnCeremony_Click" />
                     </Grid>
                 </TabItem>
             </TabControl>
