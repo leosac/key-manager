@@ -21,11 +21,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyManager.Library.KeyStore
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyManager.Library.KeyStore.Memory.UI", "KeyManager.Library.KeyStore.Memory.UI\KeyManager.Library.KeyStore.Memory.UI.csproj", "{364909BB-18CE-45DA-B4C8-60DF98FCBFC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyManager.Library.KeyStore.NXP_SAM.UI", "KeyManager.Library.KeyStore.NXP_SAM.UI\KeyManager.Library.KeyStore.NXP_SAM.UI.csproj", "{2E826BDF-4186-4725-9380-9AD18E4BB5F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyManager.Library.KeyStore.NXP_SAM.UI", "KeyManager.Library.KeyStore.NXP_SAM.UI\KeyManager.Library.KeyStore.NXP_SAM.UI.csproj", "{2E826BDF-4186-4725-9380-9AD18E4BB5F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyManager.Library.KeyStore.HSM_PKCS11", "KeyManager.Library.KeyStore.HSM_PKCS11\KeyManager.Library.KeyStore.HSM_PKCS11.csproj", "{AFB28B07-2FBE-4C6C-809C-1FC51AA18905}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyManager.Library.KeyStore.HSM_PKCS11", "KeyManager.Library.KeyStore.HSM_PKCS11\KeyManager.Library.KeyStore.HSM_PKCS11.csproj", "{AFB28B07-2FBE-4C6C-809C-1FC51AA18905}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyManager.Library.KeyStore.HSM_PKCS11.UI", "KeyManager.Library.KeyStore.HSM_PKCS11.UI\KeyManager.Library.KeyStore.HSM_PKCS11.UI.csproj", "{AD05527B-B52D-41C9-A5A8-983516AAC84E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyManager.Library.KeyStore.HSM_PKCS11.UI", "KeyManager.Library.KeyStore.HSM_PKCS11.UI\KeyManager.Library.KeyStore.HSM_PKCS11.UI.csproj", "{AD05527B-B52D-41C9-A5A8-983516AAC84E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyManager.Library.Tests", "KeyManager.Library.Tests\KeyManager.Library.Tests.csproj", "{0A32D255-4377-4427-8571-A88D451048BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +79,10 @@ Global
 		{AD05527B-B52D-41C9-A5A8-983516AAC84E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD05527B-B52D-41C9-A5A8-983516AAC84E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD05527B-B52D-41C9-A5A8-983516AAC84E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A32D255-4377-4427-8571-A88D451048BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A32D255-4377-4427-8571-A88D451048BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A32D255-4377-4427-8571-A88D451048BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A32D255-4377-4427-8571-A88D451048BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

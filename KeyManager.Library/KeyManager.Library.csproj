@@ -8,6 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Mnemonic\Words\English.txt" />
+    <None Remove="Mnemonic\Words\Francais.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Mnemonic\Words\English.txt" />
+    <EmbeddedResource Include="Mnemonic\Words\Francais.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 

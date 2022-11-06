@@ -32,6 +32,7 @@ namespace Leosac.KeyManager.Library.UI
         public KeyGenerationDialog()
         {
             CeremonyTypes = new ObservableCollection<KeyCeremonyType>(Enum.GetValues<KeyCeremonyType>());
+            MnemonicLanguages = new ObservableCollection<Mnemonic.WordlistLang>(Enum.GetValues<Mnemonic.WordlistLang>());
 
             InitializeComponent();
         }
@@ -45,7 +46,7 @@ namespace Leosac.KeyManager.Library.UI
         }
 
         public static readonly DependencyProperty SelectedCeremonyTypeProperty = DependencyProperty.Register(nameof(SelectedCeremonyType), typeof(KeyCeremonyType), typeof(KeyGenerationDialog),
-            new FrameworkPropertyMetadata(KeyCeremonyType.Shamir));
+            new FrameworkPropertyMetadata(KeyCeremonyType.ShamirSecretSharing));
 
         public int Fragments
         {
@@ -55,6 +56,17 @@ namespace Leosac.KeyManager.Library.UI
 
         public static readonly DependencyProperty FragmentsProperty = DependencyProperty.Register(nameof(Fragments), typeof(int), typeof(KeyGenerationDialog),
             new FrameworkPropertyMetadata(3));
+
+        public ObservableCollection<Mnemonic.WordlistLang> MnemonicLanguages { get; set; }
+
+        public Mnemonic.WordlistLang SelectedMnemonicLanguage
+        {
+            get { return (Mnemonic.WordlistLang)GetValue(SelectedMnemonicLanguageProperty); }
+            set { SetValue(SelectedMnemonicLanguageProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedMnemonicLanguageProperty = DependencyProperty.Register(nameof(SelectedMnemonicLanguage), typeof(Mnemonic.WordlistLang), typeof(KeyGenerationDialog),
+            new FrameworkPropertyMetadata(Mnemonic.WordlistLang.English));
 
         public int KeySize
         {
@@ -142,7 +154,7 @@ namespace Leosac.KeyManager.Library.UI
                     }
                     break;
 
-                case KeyCeremonyType.Shamir:
+                case KeyCeremonyType.ShamirSecretSharing:
                     {
                         var gcd = new ExtendedEuclideanAlgorithm<BigInteger>();
                         var combine = new ShamirsSecretSharing<BigInteger>(gcd);
@@ -154,6 +166,18 @@ namespace Leosac.KeyManager.Library.UI
                     break;
             }
             return keystr;
+        }
+
+        private void btnImportMnemonic_Click(object sender, RoutedEventArgs e)
+        {
+            var bip39 = new Mnemonic.BIP39();
+            KeyValue = bip39.MnemonicToSeedHex(tbxMnemonicWords.Text, tbxMnemonicPassphrase.Password, KeySize);
+        }
+
+        private void btnGenerateMnemonic_Click(object sender, RoutedEventArgs e)
+        {
+            var bip39 = new Mnemonic.BIP39();
+            tbxMnemonicWords.Text = bip39.GenerateMnemonic(256, SelectedMnemonicLanguage);
         }
     }
 }

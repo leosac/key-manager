@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Leosac.KeyManager.Library.UI
+namespace Leosac.KeyManager.Library.Mnemonic
 {
-    public enum KeyCeremonyType
+    public enum WordlistLang
     {
-        Concat,
-        Xor,
-        ShamirSecretSharing
+        English,
+        Francais
     }
 }
