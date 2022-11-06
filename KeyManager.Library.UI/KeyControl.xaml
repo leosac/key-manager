@@ -68,6 +68,18 @@
                         </Button.ToolTip>
                         <materialDesign:PackIcon Kind="Import" Height="16" Width="16"/>
                     </Button>
+                    <Button x:Name="btnExport" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnExport_Click" Width="24" Height="24" Margin="3">
+                        <Button.ToolTip>
+                            <TextBlock Text="Export to file" />
+                        </Button.ToolTip>
+                        <materialDesign:PackIcon Kind="Export" Height="16" Width="16"/>
+                    </Button>
+                    <Button x:Name="btnPrint" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnPrint_Click" Width="24" Height="24" Margin="3">
+                        <Button.ToolTip>
+                            <TextBlock Text="Print" />
+                        </Button.ToolTip>
+                        <materialDesign:PackIcon Kind="Printer" Height="16" Width="16"/>
+                    </Button>
                 </StackPanel>
             </materialDesign:PopupBox>
         </StackPanel>

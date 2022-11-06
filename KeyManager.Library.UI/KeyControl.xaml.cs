@@ -75,10 +75,32 @@ namespace Leosac.KeyManager.Library.UI
         private void btnImport_Click(object sender, RoutedEventArgs e)
         {
             var ofd = new OpenFileDialog();
+            ofd.CheckFileExists = true;
             if (ofd.ShowDialog() == true)
             {
                 var key = System.IO.File.ReadAllBytes(ofd.FileName);
                 Key.Value = Convert.ToHexString(key);
+            }
+        }
+
+        private void btnExport_Click(object sender, RoutedEventArgs e)
+        {
+            var sfd = new SaveFileDialog();
+            if (sfd.ShowDialog() == true)
+            {
+                System.IO.File.WriteAllBytes(sfd.FileName, Convert.FromHexString(Key.Value));
+            }
+        }
+
+        private void btnPrint_Click(object sender, RoutedEventArgs e)
+        {
+            PrintDialog printDialog = new PrintDialog();
+            if (printDialog.ShowDialog() == true)
+            {
+                var control = new KeyPrintControl();
+                control.KeyValue = Key.Value;
+                control.KeyChecksum = tbxKCV.Text;
+                printDialog.PrintVisual(control, "Leosac Key Manager - Key Printing");
             }
         }
     }

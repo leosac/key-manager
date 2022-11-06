@@ -22,6 +22,14 @@ namespace Leosac.KeyManager.Library
             var result = new byte[0];
             var data = new byte[KeyHelper.GetBlockSize(tags)];
             var paddediv = new byte[KeyHelper.GetBlockSize(tags)];
+            if ((tags & KeyTag.AES) == KeyTag.AES)
+            {
+                // For AES, GlobalPlatform specification is using a default byte value set to 0x01 and not 0x00
+                for (var i = 0; i < paddediv.Length; i++)
+                {
+                    paddediv[i] = 0x01;
+                }
+            }
             if (iv != null)
             {
                 Array.Copy(iv, paddediv, iv.Length > paddediv.Length ? paddediv.Length : iv.Length);
