@@ -56,13 +56,13 @@ namespace Leosac.KeyManager.Library.UI
         public static readonly DependencyProperty FragmentsProperty = DependencyProperty.Register(nameof(Fragments), typeof(int), typeof(KeyGenerationDialog),
             new FrameworkPropertyMetadata(3));
 
-        public int KeyLength
+        public int KeySize
         {
-            get { return (int)GetValue(KeyLengthProperty); }
-            set { SetValue(KeyLengthProperty, value); }
+            get { return (int)GetValue(KeySizeProperty); }
+            set { SetValue(KeySizeProperty, value); }
         }
 
-        public static readonly DependencyProperty KeyLengthProperty = DependencyProperty.Register(nameof(KeyLength), typeof(int), typeof(KeyGenerationDialog),
+        public static readonly DependencyProperty KeySizeProperty = DependencyProperty.Register(nameof(KeySize), typeof(int), typeof(KeyGenerationDialog),
             new FrameworkPropertyMetadata(16));
 
         public string? KeyValue
@@ -77,7 +77,7 @@ namespace Leosac.KeyManager.Library.UI
         {
             using (var rng = RandomNumberGenerator.Create())
             {
-                var key = new byte[KeyLength];
+                var key = new byte[KeySize];
                 rng.GetBytes(key);
                 KeyValue = Convert.ToHexString(key);
             }
@@ -86,7 +86,7 @@ namespace Leosac.KeyManager.Library.UI
         private void btnPassword_Click(object sender, RoutedEventArgs e)
         {
             var deriv = new Rfc2898DeriveBytes(tbxPassword.Password, Encoding.UTF8.GetBytes(tbxSalt.Text));
-            var key = deriv.GetBytes(KeyLength);
+            var key = deriv.GetBytes(KeySize);
             KeyValue = Convert.ToHexString(key);
         }
 
@@ -129,7 +129,7 @@ namespace Leosac.KeyManager.Library.UI
 
                 case KeyCeremonyType.Xor:
                     {
-                        var key = new byte[KeyLength];
+                        var key = new byte[KeySize];
                         foreach (string fragment in fragments)
                         {
                             var keyb = Convert.FromHexString(fragment);

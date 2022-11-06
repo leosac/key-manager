@@ -1,5 +1,6 @@
 ﻿using Leosac.KeyManager.Library.Policy;
 using System.Collections.ObjectModel;
+using System.Security.Cryptography;
 
 namespace Leosac.KeyManager.Library
 {
@@ -7,8 +8,17 @@ namespace Leosac.KeyManager.Library
     {
         public Key()
         {
-            Policies = new ObservableCollection<IKeyPolicy>();
             _value = String.Empty;
+            Policies = new ObservableCollection<IKeyPolicy>();
+        }
+
+        public Key(KeyTag tags, uint keySize)
+        {
+            _tags = tags;
+            _keySize = keySize;
+            _value = String.Empty;
+            Policies = new ObservableCollection<IKeyPolicy>();
+            Policies.Add(new KeyLengthPolicy(keySize));
         }
 
         private string _value;
@@ -18,9 +28,25 @@ namespace Leosac.KeyManager.Library
             get => _value;
             set
             {
-                ValidatePolicies(Value);
+                ValidatePolicies(value);
                 SetProperty(ref _value, value);
             }
+        }
+
+        private KeyTag _tags;
+
+        public KeyTag Tags
+        {
+            get => _tags;
+            set => SetProperty(ref _tags, value);
+        }
+
+        private uint _keySize;
+
+        public uint KeySize
+        {
+            get => _keySize;
+            set => SetProperty(ref _keySize, value);
         }
 
         public ObservableCollection<IKeyPolicy> Policies { get; set; }

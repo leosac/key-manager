@@ -8,66 +8,61 @@ using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library
 {
-    public static class KCV
+    /// <summary>
+    /// Key Checksum Value calculation.
+    /// This KCV algorithm is something used by the security industry manufacturers (SIM/SmartCard/HSM/...) but not realy standardized afaik (sigh...).
+    /// The logic is simple: we encrypt a block of bytes, each set to value 0x00 or 0x01, using the cryptographic key and keep only the first 3 resulting bytes as the KCV.
+    /// </summary>
+    public class KCV : KeyChecksum
     {
-        /*static public byte[] ComputeKCV(KeyHelper.KeyType keytype, byte[] key)
+        public override string Name => "KCV";
+
+        public override byte[] ComputeKCV(KeyTag tags, byte[] key, uint keySize, byte[]? iv = null)
         {
-            byte[] data, result ;
-            byte[] iv = new byte[KeyHelper.GetIVSize(keytype)];            
-            MemoryStream ms = new MemoryStream();
-            CryptoStream cs;
-
-
-            if (keytype == KeyHelper.KeyType.AES128 || keytype == KeyHelper.KeyType.AES192 || keytype == KeyHelper.KeyType.AES256)
+            var result = new byte[0];
+            var data = new byte[KeyHelper.GetBlockSize(tags)];
+            var paddediv = new byte[KeyHelper.GetBlockSize(tags)];
+            if (iv != null)
             {
-                data = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-                RijndaelManaged rijndael = new RijndaelManaged();
-                rijndael.Mode = CipherMode.ECB;
-
-                ICryptoTransform aesEncryptor = rijndael.CreateEncryptor(key, iv);
-
-                cs = new CryptoStream(ms, aesEncryptor, CryptoStreamMode.Write);
+                Array.Copy(iv, paddediv, iv.Length > paddediv.Length ? paddediv.Length : iv.Length);
             }
-            else if (keytype == KeyHelper.KeyType.T2KDES || keytype == KeyHelper.KeyType.T3KDES)
+            using (var ms = new MemoryStream())
             {
-                data = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+                SymmetricAlgorithm? crypto = null;
+                if ((tags & KeyTag.AES) == KeyTag.AES)
+                {
+                    crypto = Aes.Create();
+                }
+                else if ((tags & KeyTag.DES) == KeyTag.DES && keySize > 8)
+                {
+                    crypto = TripleDES.Create();
+                }
+                else if ((tags & KeyTag.DES) == KeyTag.DES)
+                {
+                    crypto = DES.Create();
+                }
+                else
+                    throw new Exception("Unsupported key for KCV calcul.");
 
-
-                TripleDES tripleDESalg = TripleDES.Create();
-                TripleDESCryptoServiceProvider provider = tripleDESalg as TripleDESCryptoServiceProvider;
-                MethodInfo mi = provider.GetType().GetMethod("_NewEncryptor", BindingFlags.NonPublic | BindingFlags.Instance);
-                provider.Mode = CipherMode.ECB;
-                object[] Par = { key, provider.Mode, iv, provider.FeedbackSize, 0 };
-                ICryptoTransform desEncryptor = mi.Invoke(provider, Par) as ICryptoTransform;
-
-                cs = new CryptoStream(ms, desEncryptor, CryptoStreamMode.Write);
+                if (crypto != null)
+                {
+                    crypto.Mode = CipherMode.ECB;
+                    using (var encryptor = crypto.CreateEncryptor(key, paddediv))
+                    {
+                        using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                        {
+                            cs.Write(data, 0, data.Length);
+                            cs.FlushFinalBlock();
+                            result = ms.ToArray();
+                            Array.Resize(ref result, 3);
+                            cs.Close();
+                        }
+                    }
+                    crypto.Dispose();
+                }
             }
-            else if (keytype == KeyHelper.KeyType.DES)
-            {
-                data = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 };
 
-                DES DESalg = DES.Create();
-                DESCryptoServiceProvider provider = DESalg as DESCryptoServiceProvider;
-                MethodInfo mi = provider.GetType().GetMethod("_NewEncryptor", BindingFlags.NonPublic | BindingFlags.Instance);
-                provider.Mode = CipherMode.ECB;
-                object[] Par = { key, provider.Mode, iv, provider.FeedbackSize, 0 };
-                ICryptoTransform desEncryptor = mi.Invoke(provider, Par) as ICryptoTransform;
-
-                cs = new CryptoStream(ms, desEncryptor, CryptoStreamMode.Write);
-            }
-            else
-                throw new Exception("No supported KeyType for KCV calcul.");
-
-            cs.Write(data, 0, data.Length);
-            cs.FlushFinalBlock();
-
-            result = ms.ToArray();
-
-            ms.Close();
-            cs.Close();
-
-            Array.Resize(ref result, 3);
             return result;
-        }*/
+        }
     }
 }

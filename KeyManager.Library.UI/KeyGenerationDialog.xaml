@@ -18,7 +18,7 @@
         <DockPanel LastChildFill="True">
             <TextBlock DockPanel.Dock="Top" Text="Local Key Generation" FontSize="18" Margin="8" />
             <StackPanel DockPanel.Dock="Top" Orientation="Vertical" Margin="5">
-                <local:NumericUpDownControl Hint="Length" HelperText="Key Length" MinValue="8" CurrentValue="{Binding KeyLength, ElementName=userControl, Mode=TwoWay}" Margin="8" />
+                <local:NumericUpDownControl Hint="Length" HelperText="Key Length" MinValue="8" CurrentValue="{Binding KeySize, ElementName=userControl, Mode=TwoWay}" Margin="8" />
                 <PasswordBox Margin="5"
                      materialDesign:HintAssist.HelperText="The secret value for the key"
                      materialDesign:HintAssist.Hint="Key Value"

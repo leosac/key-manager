@@ -10,9 +10,9 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
     {
         public DESSAMKeyEntry() : base()
         {
-            KeyVersions.Add(new KeyVersion("Key Version A", 0));
-            KeyVersions.Add(new KeyVersion("Key Version B", 0));
-            KeyVersions.Add(new KeyVersion("Key Version C", 0));
+            KeyVersions.Add(new KeyVersion("Key Version A", 0, new Key(KeyTag.DES, 16)));
+            KeyVersions.Add(new KeyVersion("Key Version B", 0, new Key(KeyTag.DES, 16)));
+            KeyVersions.Add(new KeyVersion("Key Version C", 0, new Key(KeyTag.DES, 16)));
         }
     }
 }

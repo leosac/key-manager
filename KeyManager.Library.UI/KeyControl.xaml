@@ -1,4 +1,5 @@
 ﻿<UserControl x:Class="Leosac.KeyManager.Library.UI.KeyControl"
+             x:Name="userControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -14,27 +15,31 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <domain:ByteLengthToCharLengthConverter x:Key="ByteLengthToCharLengthConverter" />
+            <domain:KeyChecksumConverter x:Key="KeyChecksumConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="250" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <PasswordBox x:Name="tbxKeyValue" Grid.Column="0"
-                     materialDesign:HintAssist.HelperText="The secret value for the key"
-                     materialDesign:HintAssist.Hint="Key Value"
-                     materialDesign:TextFieldAssist.HasClearButton="True"
-                     materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
-                     Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
-                     materialDesign:PasswordBoxAssist.Password="{Binding Path=Key.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
-        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+        <PasswordBox x:Name="tbxKeyValue" Grid.Row="0" Grid.Column="0" Margin="8,8,8,20"
+                    materialDesign:HintAssist.HelperText="The secret value for the key"
+                    materialDesign:HintAssist.Hint="Key Value"
+                    materialDesign:TextFieldAssist.HasClearButton="True"
+                    materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
+                    MaxLength="{Binding Path=Key.KeySize, Converter={StaticResource ByteLengthToCharLengthConverter}}"
+                    Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
+                    materialDesign:PasswordBoxAssist.Password="{Binding Path=Key.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="8">
             <materialDesign:DialogHost Identifier="KeyGenerationDialog" DialogTheme="Inherit">
                 <materialDesign:DialogHost.DialogContent>
-                    <local:KeyGenerationDialog KeyLength="{Binding Path=Key.MaxLength}" KeyValue="{Binding Path=Key.Value, Mode=TwoWay}" />
+                    <local:KeyGenerationDialog KeySize="{Binding Path=Key.KeySize}" KeyValue="{Binding Path=Key.Value, Mode=TwoWay}" />
                 </materialDesign:DialogHost.DialogContent>
                 <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" Width="24" Height="24" Margin="3">
                     <Button.ToolTip>
@@ -66,5 +71,30 @@
                 </StackPanel>
             </materialDesign:PopupBox>
         </StackPanel>
+        <TextBox x:Name="tbxKCV" Grid.Column="0" Grid.Row="1" Margin="8"
+                     materialDesign:HintAssist.HelperText="The Key Checksum Value"
+                     materialDesign:HintAssist.Hint="KCV"
+                     IsReadOnly="True">
+            <TextBox.Text>
+                <MultiBinding Converter="{StaticResource KeyChecksumConverter}" Mode="OneWay">
+                    <Binding Path="SelectedKeyChecksumAlgorithm" ElementName="userControl" />
+                    <Binding Path="Key" ElementName="userControl" />
+                    <Binding Path="KeyChecksumIV" ElementName="userControl" />
+                    <Binding Path="Key.Value" ElementName="userControl" />
+                </MultiBinding>
+                
+            </TextBox.Text>
+        </TextBox>
+        <ComboBox Grid.Column="1" Grid.Row="1" Margin="8"
+                  ItemsSource="{Binding Path=KeyChecksumAlgorithms, Mode=OneWay, ElementName=userControl}"
+                  SelectedItem="{Binding Path=SelectedKeyChecksumAlgorithm, Mode=TwoWay, ElementName=userControl}"
+                  materialDesign:HintAssist.HelperText="The Key Checksum algorithm to use"
+                  materialDesign:HintAssist.Hint="KCV Algorithm">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
     </Grid>
 </UserControl>

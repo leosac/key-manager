@@ -8,7 +8,7 @@ namespace Leosac.KeyManager.Library.Policy
 {
     public class KeyLengthPolicy : IKeyPolicy
     {
-        public KeyLengthPolicy(int byteLength)
+        public KeyLengthPolicy(uint byteLength)
         {
             ByteLength = byteLength;
         }
@@ -25,6 +25,6 @@ namespace Leosac.KeyManager.Library.Policy
             }
         }
 
-        public int ByteLength { get; set; }
+        public uint ByteLength { get; set; }
     }
 }

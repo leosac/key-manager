@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
+using System.Collections.ObjectModel;
 
 namespace Leosac.KeyManager.Library.UI
 {
@@ -27,6 +28,10 @@ namespace Leosac.KeyManager.Library.UI
         public KeyControl()
         {
             InitializeComponent();
+
+            KeyChecksumAlgorithms.Add(new KCV());
+            KeyChecksumAlgorithms.Add(new Sha256Checksum());
+            SelectedKeyChecksumAlgorithm = KeyChecksumAlgorithms[0];
         }
 
         public KeyManager.Library.Key Key
@@ -37,6 +42,25 @@ namespace Leosac.KeyManager.Library.UI
 
         public static readonly DependencyProperty KeyProperty = DependencyProperty.Register(nameof(Key), typeof(KeyManager.Library.Key), typeof(KeyControl),
             new FrameworkPropertyMetadata(new KeyManager.Library.Key()));
+
+        public KeyManager.Library.KeyChecksum SelectedKeyChecksumAlgorithm
+        {
+            get { return (KeyManager.Library.KeyChecksum)GetValue(SelectedKeyChecksumAlgorithmProperty); }
+            set { SetValue(SelectedKeyChecksumAlgorithmProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedKeyChecksumAlgorithmProperty = DependencyProperty.Register(nameof(SelectedKeyChecksumAlgorithm), typeof(KeyManager.Library.KeyChecksum), typeof(KeyControl));
+
+        public string? KeyChecksumIV
+        {
+            get { return (string)GetValue(KeyChecksumIVProperty); }
+            set { SetValue(KeyChecksumIVProperty, value); }
+        }
+
+        public static readonly DependencyProperty KeyChecksumIVProperty = DependencyProperty.Register(nameof(KeyChecksumIV), typeof(string), typeof(KeyControl),
+            new FrameworkPropertyMetadata(""));
+
+        public ObservableCollection<KeyManager.Library.KeyChecksum> KeyChecksumAlgorithms { get; set; } = new ObservableCollection<KeyChecksum>();
 
         private void btnCopy_Click(object sender, RoutedEventArgs e)
         {
