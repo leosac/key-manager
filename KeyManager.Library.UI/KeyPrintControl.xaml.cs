@@ -25,14 +25,13 @@ namespace Leosac.KeyManager.Library.UI
             InitializeComponent();
         }
 
-        public string KeyValue
+        public Key Key
         {
-            get { return (string)GetValue(KeyValueProperty); }
-            set { SetValue(KeyValueProperty, value); }
+            get { return (Key)GetValue(KeyProperty); }
+            set { SetValue(KeyProperty, value); }
         }
 
-        public static readonly DependencyProperty KeyValueProperty = DependencyProperty.Register(nameof(KeyValue), typeof(string), typeof(KeyPrintControl),
-            new FrameworkPropertyMetadata(""));
+        public static readonly DependencyProperty KeyProperty = DependencyProperty.Register(nameof(Key), typeof(Key), typeof(KeyPrintControl));
 
         public string KeyChecksum
         {

@@ -7,14 +7,24 @@
 	<UseWPF>true</UseWPF>
     <RootNamespace>Leosac.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <None Remove="images\confidential.png" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MaterialDesignThemes" Version="4.6.1" />
+    <PackageReference Include="Net.Codecrete.QrCodeGenerator" Version="2.0.3" />
     <PackageReference Include="SecretSharingDotNet" Version="0.9.0" />
+    <PackageReference Include="SkiaSharp" Version="2.88.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\KeyManager.Library\KeyManager.Library.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Resource Include="images\confidential.png" />
   </ItemGroup>
 
 </Project>

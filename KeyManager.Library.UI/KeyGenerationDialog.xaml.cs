@@ -33,6 +33,7 @@ namespace Leosac.KeyManager.Library.UI
         {
             CeremonyTypes = new ObservableCollection<KeyCeremonyType>(Enum.GetValues<KeyCeremonyType>());
             MnemonicLanguages = new ObservableCollection<Mnemonic.WordlistLang>(Enum.GetValues<Mnemonic.WordlistLang>());
+            MnemonicWords = new ObservableCollection<string>();
 
             InitializeComponent();
         }
@@ -84,6 +85,16 @@ namespace Leosac.KeyManager.Library.UI
         }
 
         public static readonly DependencyProperty KeyValueProperty = DependencyProperty.Register(nameof(KeyValue), typeof(string), typeof(KeyGenerationDialog));
+
+        public ObservableCollection<string> MnemonicWords { get; set; }
+
+        public int SelectedWordIndex
+        {
+            get { return (int)GetValue(SelectedWordIndexProperty); }
+            set { SetValue(SelectedWordIndexProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedWordIndexProperty = DependencyProperty.Register(nameof(SelectedWordIndex), typeof(int), typeof(KeyGenerationDialog));
 
         private void btnRandom_Click(object sender, RoutedEventArgs e)
         {
@@ -171,13 +182,63 @@ namespace Leosac.KeyManager.Library.UI
         private void btnImportMnemonic_Click(object sender, RoutedEventArgs e)
         {
             var bip39 = new Mnemonic.BIP39();
-            KeyValue = bip39.MnemonicToSeedHex(tbxMnemonicWords.Text, tbxMnemonicPassphrase.Password, KeySize);
+            KeyValue = bip39.MnemonicToSeedHex(String.Join(" ", MnemonicWords), tbxMnemonicPassphrase.Password, KeySize);
         }
 
         private void btnGenerateMnemonic_Click(object sender, RoutedEventArgs e)
         {
             var bip39 = new Mnemonic.BIP39();
-            tbxMnemonicWords.Text = bip39.GenerateMnemonic(256, SelectedMnemonicLanguage);
+            MnemonicWords.Clear();
+            var words = bip39.GenerateMnemonic(256, SelectedMnemonicLanguage).Split(' ');
+            foreach(var word in words)
+            {
+                MnemonicWords.Add(word);
+            }
+        }
+
+        private void tbxNewWord_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var words = tbxNewWord.Text.Split(' ');
+            if (words.Length > 1)
+            {
+                AddWordInput(words);
+                tbxNewWord.Text = String.Empty;
+            }
+        }
+
+        private void AddWordInput(params string[] words)
+        {
+            foreach (string word in words)
+            {
+                var w = word.Trim();
+                if (!string.IsNullOrEmpty(w))
+                {
+                    MnemonicWords.Add(w);
+                }
+            }
+        }
+
+        private void RemoveWordClick(object sender, RoutedEventArgs e)
+        {
+            if (e.Source is MaterialDesignThemes.Wpf.Chip chip)
+            {
+                MnemonicWords.Remove(chip.Content as string);
+            }
+        }
+
+        private void tbxNewWord_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                AddWordInput(tbxNewWord.Text);
+                tbxNewWord.Text = String.Empty;
+                e.Handled = true;
+            }
+        }
+
+        private void btnCopyMnemonic_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(String.Join(" ", MnemonicWords));
         }
     }
 }

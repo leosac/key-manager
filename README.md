@@ -22,4 +22,4 @@ Leosac Key Manager is a standalone application to generate, manage and re-deploy
 
 ## Operating System support
 
-Only **Windows** is supported. See https://github.com/leosac/key-manager/#1 for more information and to vote for Linux support.
+Only **Windows** is supported. See [this thread](https://github.com/leosac/key-manager/issues/1) for more information and to vote for Linux support.

@@ -127,6 +127,9 @@ namespace Leosac.KeyManager.Library.Mnemonic
 
         private byte[] MnemonicToSeed(string mnemonic, string password, int keySize = 64)
         {
+            if (mnemonic == null)
+                throw new ArgumentNullException(nameof(mnemonic));
+
             var mnemonicBytes = Encoding.UTF8.GetBytes(mnemonic.Normalize(NormalizationForm.FormKD));
             var saltBytes = Encoding.UTF8.GetBytes(Salt(password.Normalize(NormalizationForm.FormKD)));
 

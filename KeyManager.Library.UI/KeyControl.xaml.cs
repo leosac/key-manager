@@ -98,7 +98,7 @@ namespace Leosac.KeyManager.Library.UI
             if (printDialog.ShowDialog() == true)
             {
                 var control = new KeyPrintControl();
-                control.KeyValue = Key.Value;
+                control.Key = Key;
                 control.KeyChecksum = tbxKCV.Text;
                 printDialog.PrintVisual(control, "Leosac Key Manager - Key Printing");
             }
