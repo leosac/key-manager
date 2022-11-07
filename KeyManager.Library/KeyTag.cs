@@ -9,7 +9,7 @@ namespace Leosac.KeyManager.Library
     [Flags]
     public enum KeyTag
     {
-        AES,
-        DES
+        AES = 1,
+        DES = 2
     }
 }

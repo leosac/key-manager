@@ -11,7 +11,7 @@ namespace Leosac.KeyManager.Library
     {
         public override string Name => "SHA256";
 
-        public override byte[] ComputeKCV(KeyTag keytags, byte[] key, uint keySize, byte[]? iv = null)
+        public override byte[] ComputeKCV(KeyTag keytags, byte[] key, byte[]? iv = null)
         {
             using (var hash = SHA256.Create())
             {

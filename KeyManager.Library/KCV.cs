@@ -17,7 +17,7 @@ namespace Leosac.KeyManager.Library
     {
         public override string Name => "KCV";
 
-        public override byte[] ComputeKCV(KeyTag tags, byte[] key, uint keySize, byte[]? iv = null)
+        public override byte[] ComputeKCV(KeyTag tags, byte[] key, byte[]? iv = null)
         {
             var result = new byte[0];
             var data = new byte[KeyHelper.GetBlockSize(tags)];
@@ -41,7 +41,7 @@ namespace Leosac.KeyManager.Library
                 {
                     crypto = Aes.Create();
                 }
-                else if ((tags & KeyTag.DES) == KeyTag.DES && keySize > 8)
+                else if ((tags & KeyTag.DES) == KeyTag.DES && key.Length > 8)
                 {
                     crypto = TripleDES.Create();
                 }

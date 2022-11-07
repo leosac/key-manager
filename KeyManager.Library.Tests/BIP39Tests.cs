@@ -16,8 +16,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -30,8 +30,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -44,8 +44,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -58,8 +58,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -72,8 +72,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -86,8 +86,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -100,8 +100,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -114,8 +114,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -128,8 +128,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -142,8 +142,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -156,8 +156,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -170,8 +170,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -184,8 +184,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -198,8 +198,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -212,8 +212,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -226,8 +226,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -240,8 +240,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -254,8 +254,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -268,8 +268,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -282,8 +282,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -296,8 +296,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -310,8 +310,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
@@ -324,8 +324,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic, seedHex);
 
-            Assert.AreEqual(result.entropy, entropy);
-            Assert.AreEqual(result.seedHex, seedHex);
+            Assert.AreEqual(result.entropy.ToLower(), entropy);
+            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 
