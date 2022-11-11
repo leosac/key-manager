@@ -67,5 +67,21 @@ namespace Leosac.KeyManager.Library.UI
                 KeyStoreDataContext?.KeyEntryIdentifiers.Remove(identifier);
             }
         }
+
+        private void btnSearch_Click(object sender, RoutedEventArgs e)
+        {
+            KeyStoreDataContext!.SearchTerms = SearchTerms.Text;
+            KeyStoreDataContext.RefreshKeyEntriesView();
+        }
+
+        private void SearchTerms_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                KeyStoreDataContext!.SearchTerms = SearchTerms.Text;
+                KeyStoreDataContext.RefreshKeyEntriesView();
+                e.Handled = true;
+            }
+        }
     }
 }

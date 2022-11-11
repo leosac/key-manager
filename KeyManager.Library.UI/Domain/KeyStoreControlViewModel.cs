@@ -1,44 +1,62 @@
-﻿using MaterialDesignThemes.Wpf;
+﻿using Leosac.KeyManager.Library.KeyStore;
+using MaterialDesignThemes.Wpf;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
     public class KeyStoreControlViewModel : ViewModelBase
     {
-        public KeyStoreControlViewModel()
+        public KeyStoreControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
             KeyEntryIdentifiers = new ObservableCollection<string>();
 
             EditKeyEntryCommand = new KeyManagerAsyncCommand<string>(async
                 keyEntryIdentifier =>
                 {
-                    var model = new KeyEntryDialogViewModel()
+                    try
                     {
-                        KeyEntry = KeyStore?.Get(keyEntryIdentifier),
-                        CanChangeFactory = false
-                    };
-                    var dialog = new KeyEntryDialog()
+                        var model = new KeyEntryDialogViewModel()
+                        {
+                            KeyEntry = KeyStore?.Get(keyEntryIdentifier),
+                            CanChangeFactory = false
+                        };
+                        var dialog = new KeyEntryDialog()
+                        {
+                            DataContext = model
+                        };
+                        object? ret = await DialogHost.Show(dialog, "RootDialog");
+                        if (ret != null && model.KeyEntry != null)
+                        {
+                            KeyStore?.Update(model.KeyEntry);
+                        }
+                    }
+                    catch (KeyStoreException ex)
                     {
-                        DataContext = model
-                    };
-                    object? ret = await DialogHost.Show(dialog, "RootDialog");
-                    if (ret != null && model.KeyEntry != null)
+                        snackbarMessageQueue.Enqueue(String.Format("Key Store Error: {0}", ex.Message), new PackIcon { Kind = PackIconKind.CloseBold }, (object? p) => { }, null, false, true, TimeSpan.FromSeconds(5));
+                    }
+                    catch (Exception ex)
                     {
-                        KeyStore?.Update(model.KeyEntry);
+                        snackbarMessageQueue.Enqueue(ex.Message, new PackIcon { Kind = PackIconKind.CloseBold }, (object? p) => { }, null, false, true, TimeSpan.FromSeconds(5));
                     }
                 });
+
+            _keyEntryIdentifiersView = CollectionViewSource.GetDefaultView(KeyEntryIdentifiers);
+            _keyEntryIdentifiersView.Filter = KeyEntryIdentifiersFilter;
         }
 
         private KeyStore.KeyStore? _keyStore;
+        private readonly ICollectionView _keyEntryIdentifiersView;
         private string? _selectedKeyEntryIdentifier;
-        private string? _searchTerm;
+        private string? _searchTerms;
 
         public ObservableCollection<string> KeyEntryIdentifiers { get; }
 
@@ -54,10 +72,16 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _selectedKeyEntryIdentifier, value);
         }
 
-        public string? SearchTerm
+        public string? SearchTerms
         {
-            get => _searchTerm;
-            set => SetProperty(ref _searchTerm, value);
+            get => _searchTerms;
+            set
+            {
+                if (SetProperty(ref _searchTerms, value))
+                {
+                    RefreshKeyEntriesView();
+                }
+            }
         }
 
         public KeyManagerAsyncCommand<string> EditKeyEntryCommand { get; }
@@ -72,6 +96,22 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     KeyEntryIdentifiers.Add(id);
                 }
             }
+        }
+
+        public void RefreshKeyEntriesView()
+        {
+            _keyEntryIdentifiersView.Refresh();
+        }
+
+        private bool KeyEntryIdentifiersFilter(object obj)
+        {
+            if (string.IsNullOrWhiteSpace(_searchTerms))
+            {
+                return true;
+            }
+
+            return obj is string item
+                   && item.ToLower().Contains(_searchTerms!.ToLower());
         }
     }
 }

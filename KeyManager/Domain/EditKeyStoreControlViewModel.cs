@@ -12,7 +12,7 @@ namespace Leosac.KeyManager.Domain
     public class EditKeyStoreControlViewModel : KeyStoreControlViewModel
     {
         public EditKeyStoreControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
-            : base()
+            : base(snackbarMessageQueue)
         {
 
         }

@@ -1,4 +1,5 @@
-﻿using Leosac.KeyManager.Library.UI;
+﻿using Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain;
+using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using System;
 using System.Collections.Generic;
@@ -15,22 +16,22 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
 
         public override KeyStore CreateKeyStore()
         {
-            return null;
+            return new SAMKeyStore();
         }
 
         public override KeyStoreProperties CreateKeyStoreProperties()
         {
-            return null;
+            return new SAMKeyStoreProperties();
         }
 
         public override UserControl CreateKeyStorePropertiesControl()
         {
-            return null;
+            return new SAMKeyStorePropertiesControl();
         }
 
         public override KeyStorePropertiesControlViewModel CreateKeyStorePropertiesControlViewModel()
         {
-            return null;
+            return new SAMKeyStorePropertiesControlViewModel();
         }
     }
 }

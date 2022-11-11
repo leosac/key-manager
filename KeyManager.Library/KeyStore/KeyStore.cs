@@ -10,6 +10,8 @@ namespace Leosac.KeyManager.Library.KeyStore
     {
         public abstract string Name { get; }
 
+        public abstract bool CanCreateKeyEntries { get; }
+
         public abstract bool CanDeleteKeyEntries { get; }
 
         public KeyStoreProperties? Properties { get; set; }

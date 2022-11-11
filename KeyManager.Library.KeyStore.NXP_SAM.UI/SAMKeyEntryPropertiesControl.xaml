@@ -5,79 +5,156 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:domain="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI"
+             xmlns:libuidomain="clr-namespace:Leosac.KeyManager.Library.UI.Domain;assembly=KeyManager.Library.UI"
+             xmlns:libui="clr-namespace:Leosac.KeyManager.Library.UI;assembly=KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance domain:SAMKeyEntryPropertiesControlViewModel}"
-             d:DesignHeight="450" d:DesignWidth="500">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <ComboBox Grid.Row="0" Grid.ColumnSpan="2" ItemsSource="{Binding SAMKeyEntryTypes}" SelectedItem="{Binding Properties.SAMKeyEntryType}"
+             d:DesignHeight="500" d:DesignWidth="500">
+    <UserControl.Resources>
+        <libuidomain:ByteArrayToStringConverter x:Key="ByteArrayToStringConverter" />
+        <libuidomain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+    </UserControl.Resources>
+    <StackPanel>
+        <materialDesign:Card>
+            <StackPanel>
+                <Expander HorizontalAlignment="Stretch" Header="Options" IsExpanded="True">
+                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <ComboBox Grid.Row="0" Grid.ColumnSpan="2" ItemsSource="{Binding SAMKeyEntryTypes}" SelectedItem="{Binding Properties.SAMKeyEntryType}"
                   materialDesign:HintAssist.HelperText="SAM Key Entry Type"
                   materialDesign:HintAssist.Hint="Type" Margin="5,5,5,10" />
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="5">
-            <ToggleButton IsChecked="{Binding Properties.EnableDumpSessionKey}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-            <TextBlock Text="Enable Dump SessionKey" Padding="3" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Margin="5">
-            <ToggleButton IsChecked="{Binding Properties.CryptoBasedOnSecretKey}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-            <TextBlock Text="Crypto based on SecretKey" Padding="3" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Margin="5">
-            <ToggleButton IsChecked="{Binding Properties.KeepIV}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-            <TextBlock Text="Keep IV" Padding="3" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="4" Grid.Column="0" Margin="5">
-            <ToggleButton IsChecked="{Binding Properties.LockUnlock}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-            <TextBlock Text="Lock / Unlock" Padding="3" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="5" Grid.Column="0" Margin="5">
-            <ToggleButton IsChecked="{Binding Properties.AuthenticateHost}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-            <TextBlock Text="Authenticate Host" Padding="3" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="6" Grid.Column="0" Margin="5">
-            <ToggleButton IsChecked="{Binding Properties.AllowDumpSecretKey}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-            <TextBlock Text="Allow dump SecretKey" Padding="3" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="7" Grid.Column="0" Margin="5">
-            <ToggleButton IsChecked="{Binding Properties.AllowDumpSecretKeyWithDiv}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-            <TextBlock Text="Allow dump SecretKey with Div" Padding="3" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Margin="5">
-            <ToggleButton IsChecked="{Binding Properties.DisableChangeKeyPICC}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-            <TextBlock Text="Disable Change Key PICC" Padding="3" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="5">
-            <ToggleButton IsChecked="{Binding Properties.DisableDecryptData}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-            <TextBlock Text="Disable Decrypt Data" Padding="3" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Margin="5">
-            <ToggleButton IsChecked="{Binding Properties.DisableEncryptData}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-            <TextBlock Text="Disable Encrypt Data" Padding="3" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Margin="5">
-            <ToggleButton IsChecked="{Binding Properties.DisableVerifyMACFromPICC}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-            <TextBlock Text="Disable Verify MAC From PICC" Padding="3" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" Margin="5">
-            <ToggleButton IsChecked="{Binding Properties.DisableGenerateMACFromPICC}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-            <TextBlock Text="Disable Generate MAC From PICC" Padding="3" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="6" Grid.Column="1" Margin="5">
-            <ToggleButton IsChecked="{Binding Properties.DisableKeyEntry}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-            <TextBlock Text="Disable Key Entry" Padding="3" />
-        </StackPanel>
-    </Grid>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.EnableDumpSessionKey}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="Enable Dump SessionKey" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.CryptoBasedOnSecretKey}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="Crypto based on SecretKey" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.KeepIV}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="Keep IV" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="4" Grid.Column="0" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.LockUnlock}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="Lock / Unlock" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="5" Grid.Column="0" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.AuthenticateHost}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="Authenticate Host" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="6" Grid.Column="0" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.AllowDumpSecretKey}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="Allow dump SecretKey" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="7" Grid.Column="0" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.AllowDumpSecretKeyWithDiv}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="Allow dump SecretKey with Div" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.DisableChangeKeyPICC}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="Disable Change Key PICC" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.DisableDecryptData}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="Disable Decrypt Data" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.DisableEncryptData}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="Disable Encrypt Data" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.DisableVerifyMACFromPICC}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="Disable Verify MAC From PICC" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.DisableGenerateMACFromPICC}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="Disable Generate MAC From PICC" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="6" Grid.Column="1" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.DisableKeyEntry}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="Disable Key Entry" Padding="3" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </materialDesign:Card>
+        <materialDesign:Card>
+            <StackPanel>
+                <Expander HorizontalAlignment="Stretch" Header="Key Usage Counter">
+                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="0" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.KeyUsageCounter, Mode=TwoWay, Converter={StaticResource NullToBooleanConverter}}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="Enabled" Padding="3" />
+                            </StackPanel>
+                            <libui:NumericUpDownControl MinValue="0" MaxValue="15" CurrentValue="{Binding Properties.KeyUsageCounter, Mode=TwoWay}" Grid.Row="1"
+                                                        HelperText="The Key Usage Counter reference"
+                                                        Hint="Counter #"/>
+                        </Grid>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </materialDesign:Card>
+        <materialDesign:Card>
+            <StackPanel>
+                <Expander HorizontalAlignment="Stretch" Header="DESFire">
+                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <TextBox Grid.Row="0" Text="{Binding Properties.DESFireAID, Mode=TwoWay, Converter={StaticResource ByteArrayToStringConverter}}"
+                                     materialDesign:HintAssist.HelperText="The DESFire Application Identifier"
+                                     materialDesign:HintAssist.Hint="AID" Margin="0,0,0,10"/>
+                            <libui:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding Properties.DESFireKeyNum, Mode=TwoWay}" Grid.Row="1"
+                                                        HelperText="The DESFire Key Number"
+                                                        Hint="Key Number"/>
+                        </Grid>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </materialDesign:Card>
+        <materialDesign:Card>
+            <StackPanel>
+                <Expander HorizontalAlignment="Stretch" Header="Change Key Reference">
+                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <libui:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding Properties.ChangeKeyRefId, Mode=TwoWay}" Grid.Row="0"
+                                                        HelperText="The Key Entry Identifier"
+                                                        Hint="Key Entry"/>
+                            <libui:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding Properties.ChangeKeyRefVersion, Mode=TwoWay}" Grid.Row="1"
+                                                        HelperText="The Key Version"
+                                                        Hint="Key Version"/>
+                        </Grid>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </materialDesign:Card>
+    </StackPanel>
 </UserControl>

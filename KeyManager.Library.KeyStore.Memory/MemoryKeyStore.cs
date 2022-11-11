@@ -17,6 +17,8 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
 
         public override string Name => "Memory";
 
+        public override bool CanCreateKeyEntries => true;
+
         public override bool CanDeleteKeyEntries => true;
 
         public override void Open()

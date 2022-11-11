@@ -12,7 +12,10 @@
              d:DataContext="{d:DesignInstance domain:KeyCeremonyDialogViewModel}"
              d:DesignHeight="450" d:DesignWidth="800"
              Height="450" Width="800"
-             DataContextChanged="UserControl_DataContextChanged">
+             DataContextChanged="UserControl_DataContextChanged"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}">
     <Window.Resources>
         <s:Boolean x:Key="True">True</s:Boolean>
         <s:Boolean x:Key="False">False</s:Boolean>

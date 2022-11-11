@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using Leosac.KeyManager.Library.KeyStore;
+using System.Windows;
 
 namespace Leosac.KeyManager.Domain
 {
@@ -34,17 +35,31 @@ namespace Leosac.KeyManager.Domain
             KeyStoreCommand = new KeyManagerCommand(
                 newKeyStore =>
                 {
-                    SelectedIndex = 2;
-                    var editModel = _selectedItem?.DataContext as EditKeyStoreControlViewModel;
-                    if (editModel != null)
+                    if (newKeyStore != null)
                     {
-                        if (newKeyStore != null)
+                        var ks = newKeyStore as KeyStore;
+                        try
                         {
-                            editModel.KeyStore = newKeyStore as KeyStore;
-                            editModel.KeyStore?.Open();
-                            editModel.RefreshKeyEntries();
+                            ks?.Open();
+
+                            SelectedIndex = 2;
+                            var editModel = _selectedItem?.DataContext as EditKeyStoreControlViewModel;
+                            if (editModel != null)
+                            {
+                                editModel.KeyStore = ks;
+                                editModel.RefreshKeyEntries();
+                            }
+                        }
+                        catch (KeyStoreException ex)
+                        {
+                            snackbarMessageQueue.Enqueue(String.Format("Key Store Error: {0}", ex.Message), new PackIcon { Kind = PackIconKind.CloseBold }, (object? p) => { }, null, false, true, TimeSpan.FromSeconds(5));
+                        }
+                        catch (Exception ex)
+                        {
+                            snackbarMessageQueue.Enqueue(ex.Message, new PackIcon { Kind = PackIconKind.CloseBold }, (object? p) => { }, null, false, true, TimeSpan.FromSeconds(5));
                         }
                     }
+
                 });
 
             MenuItems = new ObservableCollection<NavItem>(new[]

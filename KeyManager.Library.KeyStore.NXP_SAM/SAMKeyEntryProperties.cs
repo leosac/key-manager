@@ -35,5 +35,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         public bool AllowDumpSecretKey { get; set; } = false;
 
         public bool AllowDumpSecretKeyWithDiv { get; set; } = false;
+
+        public byte[] DESFireAID { get; set; } = new byte[3];
+
+        public byte DESFireKeyNum { get; set; } = 0;
+
+        public byte? KeyUsageCounter { get; set; } = null;
+
+        public byte ChangeKeyRefId { get; set; } = 0;
+
+        public byte ChangeKeyRefVersion { get; set; } = 0;
     }
 }

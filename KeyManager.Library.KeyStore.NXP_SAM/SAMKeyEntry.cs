@@ -12,5 +12,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         {
             Properties = new SAMKeyEntryProperties();
         }
+
+        public SAMKeyEntryProperties? SAMProperties
+        {
+            get { return Properties as SAMKeyEntryProperties; }
+        }
     }
 }
