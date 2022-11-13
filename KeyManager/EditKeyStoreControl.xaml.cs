@@ -1,4 +1,8 @@
 ﻿using Leosac.KeyManager.Domain;
+using Leosac.KeyManager.Library;
+using Leosac.KeyManager.Library.UI;
+using Leosac.KeyManager.Library.UI.Domain;
+using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,11 +37,79 @@ namespace Leosac.KeyManager
 
         private void CloseKeyStore()
         {
-            var model = DataContext as EditKeyStoreControlViewModel;
-            if (model != null)
+            if (DataContext is EditKeyStoreControlViewModel model)
             {
                 model.KeyStore?.Close();
                 model.KeyStore = null;
+                model.KeyEntryIdentifiers.Clear();
+                model.Favorite = null;
+
+                model.HomeCommand?.Execute(null);
+            }
+        }
+
+        private void btnToggleFavorite_Checked(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is EditKeyStoreControlViewModel model)
+            {
+                if (model.Favorite == null)
+                {
+                    var favorites = Favorites.LoadFromFile();
+                    model.Favorite = favorites?.CreateFromKeyStore(model.KeyStore!);
+                }
+            }
+        }
+
+        private void btnToggleFavorite_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is EditKeyStoreControlViewModel model)
+            {
+                if (model.Favorite != null)
+                {
+                    var favorites = Favorites.LoadFromFile();
+                    if (favorites!.KeyStores.Contains(model.Favorite))
+                    {
+                        favorites.KeyStores.Remove(model.Favorite);
+                        favorites.SaveToFile();
+                    }
+                    model.Favorite = null;
+                }
+            }
+        }
+
+        private async void btnEdit_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is EditKeyStoreControlViewModel cmodel && cmodel.Favorite != null)
+            {
+                var factory = KeyStoreFactory.GetFactoryFromPropertyType(cmodel.Favorite.Properties?.GetType());
+                if (factory != null)
+                {
+                    var favorites = Favorites.LoadFromFile();
+                    if (favorites != null)
+                    {
+                        int favindex = favorites.KeyStores.IndexOf(cmodel.Favorite);
+                        var model = new KeyStoreSelectorDialogViewModel()
+                        {
+                            Message = "Edit the Key Store Favorite"
+                        };
+                        model.SelectedFactoryItem = model.KeyStoreFactories.Where(item => item.Factory == factory).FirstOrDefault();
+                        model.SelectedFactoryItem!.DataContext!.Properties = cmodel.Favorite.Properties;
+                        var dialog = new KeyStoreSelectorDialog
+                        {
+                            DataContext = model
+                        };
+                        object? ret = await DialogHost.Show(dialog, "RootDialog");
+                        if (ret != null)
+                        {
+                            if (favindex > -1)
+                            {
+                                favorites.KeyStores.RemoveAt(favindex);
+                            }
+                            favorites.KeyStores.Add(cmodel.Favorite);
+                            favorites.SaveToFile();
+                        }
+                    }
+                }
             }
         }
     }

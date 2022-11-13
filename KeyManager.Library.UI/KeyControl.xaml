@@ -94,7 +94,7 @@
                     <Binding Path="KeyChecksumIV" ElementName="userControl" />
                     <Binding Path="Key.Value" ElementName="userControl" />
                 </MultiBinding>
-                
+
             </TextBox.Text>
         </TextBox>
         <ComboBox Grid.Column="1" Grid.Row="1" Margin="8"

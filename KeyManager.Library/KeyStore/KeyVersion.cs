@@ -16,14 +16,14 @@ namespace Leosac.KeyManager.Library.KeyStore
             _key = new Key();
         }
 
-        public KeyVersion(string name, int version)
+        public KeyVersion(string name, byte version)
         {
             _name = name;
             _version = version;
             _key = new Key();
         }
 
-        public KeyVersion(string name, int version, Key key)
+        public KeyVersion(string name, byte version, Key key)
         {
             _name = name;
             _version = version;
@@ -31,10 +31,10 @@ namespace Leosac.KeyManager.Library.KeyStore
         }
 
         private string _name;
-        private int _version;
+        private byte _version;
         private Key _key;
 
-        public int Version
+        public byte Version
         {
             get => _version;
             set => SetProperty(ref _version, value);

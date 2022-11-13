@@ -19,6 +19,10 @@ namespace Leosac.KeyManager.Library.KeyStore.File.UI
             return new FileKeyStore();
         }
 
+        public override Type GetKeyStorePropertiesType()
+        {
+            return typeof(FileKeyStoreProperties);
+        }
         public override KeyStoreProperties CreateKeyStoreProperties()
         {
             return new FileKeyStoreProperties();

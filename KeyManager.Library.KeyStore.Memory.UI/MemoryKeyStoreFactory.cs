@@ -19,6 +19,11 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory.UI
             return new MemoryKeyStore();
         }
 
+        public override Type GetKeyStorePropertiesType()
+        {
+            return typeof(MemoryKeyStoreProperties);
+        }
+
         public override KeyStoreProperties CreateKeyStoreProperties()
         {
             return new MemoryKeyStoreProperties();

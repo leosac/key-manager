@@ -18,6 +18,11 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI
             return null;
         }
 
+        public override Type GetKeyStorePropertiesType()
+        {
+            return null;
+        }
+
         public override KeyStoreProperties CreateKeyStoreProperties()
         {
             return null;

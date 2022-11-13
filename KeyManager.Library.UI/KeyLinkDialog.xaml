@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="Leosac.KeyManager.Library.UI.KeyLinkDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
+             xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             d:DataContext="{d:DesignInstance domain:KeyLinkDialogViewModel}"
+             mc:Ignorable="d"
+             MinWidth="300"
+             d:DesignHeight="300" d:DesignWidth="500">
+    <UserControl.Resources>
+        <s:Boolean x:Key="True">True</s:Boolean>
+        <s:Boolean x:Key="False">False</s:Boolean>
+        <domain:KeyStoreFavoriteConverter x:Key="KeyStoreFavoriteConverter" />
+    </UserControl.Resources>
+    <DockPanel LastChildFill="True">
+        <TextBlock DockPanel.Dock="Top" Text="Key Link" FontSize="18" Margin="5" />
+        <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,20,5,5">
+            <Button Width="100" IsDefault="True" Content="Close" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding KeyLink}"/>
+        </WrapPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <local:FavoriteKeyStoreSelectionControl Grid.Row="0" SelectedKeyStoreFavorite="{Binding KeyLink.KeyStoreFavorite, Mode=TwoWay, Converter={StaticResource KeyStoreFavoriteConverter}}" />
+            <TextBox Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding KeyLink.KeyIdentifier, Mode=TwoWay}" Margin="5"
+                     materialDesign:HintAssist.HelperText="The key entry identifier on the key store"
+                     materialDesign:HintAssist.Hint="Identifier"
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+            <local:NumericUpDownControl Grid.Row="2" Hint="Version" HelperText="Key version" MaxValue="255" CurrentValue="{Binding KeyLink.KeyVersion, Mode=TwoWay}" VerticalAlignment="Center" Margin="5"/>
+        </Grid>
+    </DockPanel>
+</UserControl>

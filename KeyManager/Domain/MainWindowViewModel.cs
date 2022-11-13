@@ -15,6 +15,8 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using Leosac.KeyManager.Library.KeyStore;
 using System.Windows;
+using Leosac.KeyManager.Library.UI;
+using Leosac.KeyManager.Library;
 
 namespace Leosac.KeyManager.Domain
 {
@@ -33,30 +35,50 @@ namespace Leosac.KeyManager.Domain
                     SelectedIndex = 1;
                 });
             KeyStoreCommand = new KeyManagerCommand(
-                newKeyStore =>
+                parameter =>
                 {
-                    if (newKeyStore != null)
+                    if (parameter != null)
                     {
-                        var ks = newKeyStore as KeyStore;
-                        try
+                        KeyStore? ks = null;
+                        Favorite? fav = null;
+                        if (parameter is KeyStore)
                         {
-                            ks?.Open();
-
-                            SelectedIndex = 2;
-                            var editModel = _selectedItem?.DataContext as EditKeyStoreControlViewModel;
-                            if (editModel != null)
+                            ks = parameter as KeyStore;
+                        }
+                        else if(parameter is Favorite)
+                        {
+                            fav = parameter as Favorite;
+                            var factory = KeyStoreFactory.GetFactoryFromPropertyType(fav!.Properties!.GetType());
+                            if (factory != null)
                             {
-                                editModel.KeyStore = ks;
-                                editModel.RefreshKeyEntries();
+                                ks = factory.CreateKeyStore();
+                                ks.Properties = fav.Properties;
                             }
                         }
-                        catch (KeyStoreException ex)
+
+                        if (ks != null)
                         {
-                            snackbarMessageQueue.Enqueue(String.Format("Key Store Error: {0}", ex.Message), new PackIcon { Kind = PackIconKind.CloseBold }, (object? p) => { }, null, false, true, TimeSpan.FromSeconds(5));
-                        }
-                        catch (Exception ex)
-                        {
-                            snackbarMessageQueue.Enqueue(ex.Message, new PackIcon { Kind = PackIconKind.CloseBold }, (object? p) => { }, null, false, true, TimeSpan.FromSeconds(5));
+                            try
+                            {
+                                ks?.Open();
+
+                                SelectedIndex = 2;
+                                var editModel = _selectedItem?.DataContext as EditKeyStoreControlViewModel;
+                                if (editModel != null)
+                                {
+                                    editModel.KeyStore = ks;
+                                    editModel.Favorite = fav;
+                                    editModel.RefreshKeyEntries();
+                                }
+                            }
+                            catch (KeyStoreException ex)
+                            {
+                                SnackbarHelper.EnqueueError(snackbarMessageQueue, ex, "Key Store Error");
+                            }
+                            catch (Exception ex)
+                            {
+                                SnackbarHelper.EnqueueError(snackbarMessageQueue, ex);
+                            }
                         }
                     }
 
@@ -77,13 +99,20 @@ namespace Leosac.KeyManager.Domain
                 new NavItem(
                     "Favorites",
                     typeof(FavoritesControl),
-                    "Star"
+                    "Star",
+                    new FavoritesControlViewModel(snackbarMessageQueue)
+                    {
+                        KeyStoreCommand = KeyStoreCommand
+                    }
                 ),
                 new NavItem(
                     "Current Key Store",
                     typeof(EditKeyStoreControl),
                     "ShieldKeyOutline",
                     new EditKeyStoreControlViewModel(snackbarMessageQueue)
+                    {
+                        HomeCommand = HomeCommand
+                    }
                 )
             });
             SelectedItem = MenuItems[0];

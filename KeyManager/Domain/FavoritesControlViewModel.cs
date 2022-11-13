@@ -1,4 +1,6 @@
-﻿using Leosac.KeyManager.Library.UI.Domain;
+﻿using Leosac.KeyManager.Library;
+using Leosac.KeyManager.Library.UI;
+using Leosac.KeyManager.Library.UI.Domain;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
@@ -12,15 +14,17 @@ namespace Leosac.KeyManager.Domain
     {
         public FavoritesControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
-            _favorites = new Favorites(); //Favorites.LoadFromFile();
+            _favorites = Favorites.LoadFromFile();
         }
 
-        private Favorites _favorites;
+        private Favorites? _favorites;
 
-        public Favorites Favorites
+        public Favorites? Favorites
         {
             get => _favorites;
             set => SetProperty(ref _favorites, value);
         }
+
+        public KeyManagerCommand? KeyStoreCommand { get; set; }
     }
 }

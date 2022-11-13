@@ -17,42 +17,47 @@ namespace Leosac.KeyManager.Library.UI.Domain
     {
         public KeyStoreControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
+            _snackbarMessageQueue = snackbarMessageQueue;
             KeyEntryIdentifiers = new ObservableCollection<string>();
+
+            CreateKeyEntryCommand = new KeyManagerAsyncCommand<string>(async
+                keyEntryIdentifier =>
+            {
+                var model = new KeyEntryDialogViewModel();
+                var dialog = new KeyEntryDialog()
+                {
+                    DataContext = model
+                };
+                CreateKeyEntry(dialog);
+            });
 
             EditKeyEntryCommand = new KeyManagerAsyncCommand<string>(async
                 keyEntryIdentifier =>
+            {
+                var model = new KeyEntryDialogViewModel()
                 {
-                    try
-                    {
-                        var model = new KeyEntryDialogViewModel()
-                        {
-                            KeyEntry = KeyStore?.Get(keyEntryIdentifier),
-                            CanChangeFactory = false
-                        };
-                        var dialog = new KeyEntryDialog()
-                        {
-                            DataContext = model
-                        };
-                        object? ret = await DialogHost.Show(dialog, "RootDialog");
-                        if (ret != null && model.KeyEntry != null)
-                        {
-                            KeyStore?.Update(model.KeyEntry);
-                        }
-                    }
-                    catch (KeyStoreException ex)
-                    {
-                        snackbarMessageQueue.Enqueue(String.Format("Key Store Error: {0}", ex.Message), new PackIcon { Kind = PackIconKind.CloseBold }, (object? p) => { }, null, false, true, TimeSpan.FromSeconds(5));
-                    }
-                    catch (Exception ex)
-                    {
-                        snackbarMessageQueue.Enqueue(ex.Message, new PackIcon { Kind = PackIconKind.CloseBold }, (object? p) => { }, null, false, true, TimeSpan.FromSeconds(5));
-                    }
-                });
+                    KeyEntry = KeyStore?.Get(keyEntryIdentifier),
+                    CanChangeFactory = false
+                };
+                var dialog = new KeyEntryDialog()
+                {
+                    DataContext = model
+                };
+
+                UpdateKeyEntry(dialog);
+            });
+
+            DeleteKeyEntryCommand = new KeyManagerAsyncCommand<string>(async
+                keyEntryIdentifier =>
+            {
+                DeleteKeyEntry(keyEntryIdentifier);
+            });
 
             _keyEntryIdentifiersView = CollectionViewSource.GetDefaultView(KeyEntryIdentifiers);
             _keyEntryIdentifiersView.Filter = KeyEntryIdentifiersFilter;
         }
 
+        private ISnackbarMessageQueue _snackbarMessageQueue;
         private KeyStore.KeyStore? _keyStore;
         private readonly ICollectionView _keyEntryIdentifiersView;
         private string? _selectedKeyEntryIdentifier;
@@ -84,7 +89,79 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
+        public KeyManagerAsyncCommand<string> CreateKeyEntryCommand { get; }
+
+        private async void CreateKeyEntry(KeyEntryDialog dialog)
+        {
+            object? ret = await DialogHost.Show(dialog, "KeyStoreDialog");
+            if (ret != null && dialog.DataContext is KeyEntryDialogViewModel model)
+            {
+                if (model.KeyEntry != null)
+                {
+                    try
+                    {
+                        KeyStore?.Create(model.KeyEntry);
+                        KeyEntryIdentifiers.Add(model.KeyEntry.Identifier);
+                    }
+                    catch (KeyStoreException ex)
+                    {
+                        SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
+                        CreateKeyEntry(dialog);
+                    }
+                    catch (Exception ex)
+                    {
+                        SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
+                        CreateKeyEntry(dialog);
+                    }
+                }
+            }
+        }
+
         public KeyManagerAsyncCommand<string> EditKeyEntryCommand { get; }
+
+        private async void UpdateKeyEntry(KeyEntryDialog dialog)
+        {
+            try
+            {
+                object? ret = await DialogHost.Show(dialog, "KeyStoreDialog");
+                if (ret != null && dialog.DataContext is KeyEntryDialogViewModel model)
+                {
+                    if (model.KeyEntry != null)
+                    {
+                        KeyStore?.Update(model.KeyEntry);
+                    }
+                }
+            }
+            catch (KeyStoreException ex)
+            {
+                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
+                UpdateKeyEntry(dialog);
+            }
+            catch (Exception ex)
+            {
+                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
+                UpdateKeyEntry(dialog);
+            }
+        }
+
+        public KeyManagerAsyncCommand<string> DeleteKeyEntryCommand { get; }
+
+        private void DeleteKeyEntry(string identifier)
+        {
+            try
+            {
+                KeyStore?.Delete(identifier);
+                KeyEntryIdentifiers.Remove(identifier);
+            }
+            catch (KeyStoreException ex)
+            {
+                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
+            }
+            catch (Exception ex)
+            {
+                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
+            }
+        }
 
         public void RefreshKeyEntries()
         {

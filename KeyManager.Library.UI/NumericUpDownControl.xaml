@@ -7,16 +7,16 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="32" d:DesignWidth="150" Margin="0,0,0,10">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <TextBox Name="NUDTextBox" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" TextAlignment="Center"
+    <DockPanel LastChildFill="True">
+        <StackPanel DockPanel.Dock="Right">
+            <RepeatButton Name="NUDButtonUP" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="15" Height="15" Click="NUDButtonUP_Click">
+                <materialDesign:PackIcon Kind="ArrowUpBold" Height="13" Width="13"/>
+            </RepeatButton>
+            <RepeatButton Name="NUDButtonDown"  Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="15" Height="15" Click="NUDButtonDown_Click">
+                <materialDesign:PackIcon Kind="ArrowDownBold" Height="13" Width="13"/>
+            </RepeatButton>
+        </StackPanel>
+        <TextBox Name="NUDTextBox" TextAlignment="Center"
                  PreviewKeyDown="NUDTextBox_PreviewKeyDown"
                  PreviewKeyUp="NUDTextBox_PreviewKeyUp"
                  TextChanged="NUDTextBox_TextChanged"
@@ -24,11 +24,5 @@
                  materialDesign:HintAssist.Hint="{Binding Hint, ElementName=userControl}"
                  Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                  Text="{Binding Path=CurrentValue, Mode=OneWay, ElementName=userControl}"/>
-        <RepeatButton Name="NUDButtonUP" Grid.Column="1" Grid.Row="0" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="15" Height="15" Click="NUDButtonUP_Click">
-            <materialDesign:PackIcon Kind="ArrowUpBold" Height="13" Width="13"/>
-        </RepeatButton>
-        <RepeatButton Name="NUDButtonDown" Grid.Column="1" Grid.Row="1"  Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="15" Height="15" Click="NUDButtonDown_Click">
-            <materialDesign:PackIcon Kind="ArrowDownBold" Height="13" Width="13"/>
-        </RepeatButton>
-    </Grid>
+    </DockPanel>
 </UserControl>

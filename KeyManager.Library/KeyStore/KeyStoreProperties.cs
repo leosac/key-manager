@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         private Key? _wrappingKey;
 
+        [JsonIgnore]
         public Key? WrappingKey
         {
             get => _wrappingKey;

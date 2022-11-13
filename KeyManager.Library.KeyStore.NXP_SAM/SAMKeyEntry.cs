@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             Properties = new SAMKeyEntryProperties();
         }
 
+        [JsonIgnore]
         public SAMKeyEntryProperties? SAMProperties
         {
             get { return Properties as SAMKeyEntryProperties; }

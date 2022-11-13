@@ -23,7 +23,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
         }   
 
         private KeyStoreItem? _selectedFactoryItem;
-        private int _selectedFactoryIndex;
         private string? _message;
 
         public ObservableCollection<KeyStoreItem> KeyStoreFactories { get; }
@@ -32,12 +31,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             get => _selectedFactoryItem;
             set => SetProperty(ref _selectedFactoryItem, value);
-        }
-
-        public int SelectedFactoryIndex
-        {
-            get => _selectedFactoryIndex;
-            set => SetProperty(ref _selectedFactoryIndex, value);
         }
 
         public string? Message

@@ -19,6 +19,11 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
             return new SAMKeyStore();
         }
 
+        public override Type GetKeyStorePropertiesType()
+        {
+            return typeof(SAMKeyStoreProperties);
+        }
+
         public override KeyStoreProperties CreateKeyStoreProperties()
         {
             return new SAMKeyStoreProperties();

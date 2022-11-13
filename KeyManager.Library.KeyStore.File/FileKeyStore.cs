@@ -18,8 +18,10 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             Properties = new FileKeyStoreProperties();
             _jsonSettings = new JsonSerializerSettings
             {
-                TypeNameHandling = TypeNameHandling.All,
-                ObjectCreationHandling = ObjectCreationHandling.Replace
+                TypeNameHandling = TypeNameHandling.Auto,
+                NullValueHandling = NullValueHandling.Ignore,
+                ObjectCreationHandling = ObjectCreationHandling.Replace,
+                Formatting = Formatting.Indented
             };
         }
 
@@ -78,7 +80,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
                 throw new KeyStoreException("A key entry with the same identifier already exists.");
             }
 
-            string serialized = JsonConvert.SerializeObject(keyEntry, _jsonSettings);
+            string serialized = JsonConvert.SerializeObject(keyEntry, typeof(KeyEntry), _jsonSettings);
             System.IO.File.WriteAllText(GetKeyEntryFile(keyEntry.Identifier), serialized);
             log.Info(String.Format("Kkey entry `{0}` created.", keyEntry.Identifier));
         }

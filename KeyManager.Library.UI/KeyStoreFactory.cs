@@ -14,6 +14,8 @@ namespace Leosac.KeyManager.Library.UI
 
         public abstract KeyStore.KeyStore CreateKeyStore();
 
+        public abstract Type GetKeyStorePropertiesType();
+
         public abstract KeyStore.KeyStoreProperties CreateKeyStoreProperties();
 
         public abstract UserControl CreateKeyStorePropertiesControl();
@@ -30,6 +32,25 @@ namespace Leosac.KeyManager.Library.UI
                     RegisteredFactories.Add(factory);
                 }
             }
+        }
+
+        public static KeyStoreFactory? GetFactoryFromPropertyType(Type? type)
+        {
+            if (type == null)
+                return null;
+
+            lock (RegisteredFactories)
+            {
+                foreach (var factory in RegisteredFactories)
+                {
+                    if (factory.GetKeyStorePropertiesType() == type)
+                    {
+                        return factory;
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

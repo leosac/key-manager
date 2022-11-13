@@ -67,9 +67,18 @@ namespace Leosac.KeyManager.Library.UI
             Clipboard.SetText(Key?.Value);
         }
 
-        private void btnKeyStoreLink_Click(object sender, RoutedEventArgs e)
+        private async void btnKeyStoreLink_Click(object sender, RoutedEventArgs e)
         {
-            
+            var model = new KeyLinkDialogViewModel()
+            {
+                KeyLink = Key?.Link
+            };
+            var dialog = new KeyLinkDialog()
+            {
+                DataContext = model
+            };
+
+            await DialogHost.Show(dialog, "KeyEntryDialog");
         }
 
         private void btnImport_Click(object sender, RoutedEventArgs e)

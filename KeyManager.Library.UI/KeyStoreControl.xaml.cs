@@ -1,5 +1,6 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.UI.Domain;
+using log4net;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
@@ -31,21 +32,6 @@ namespace Leosac.KeyManager.Library.UI
 
         public KeyStoreControlViewModel? KeyStoreDataContext => DataContext as KeyStoreControlViewModel;
 
-        private async void btnCreateKeyEntry_Click(object sender, RoutedEventArgs e)
-        {
-            var model = new KeyEntryDialogViewModel();
-            var dialog = new KeyEntryDialog()
-            {
-                DataContext = model
-            };
-            object? ret = await DialogHost.Show(dialog, "RootDialog");
-            if (ret != null && model.KeyEntry != null)
-            {
-                KeyStoreDataContext?.KeyStore?.Create(model.KeyEntry);
-                KeyStoreDataContext?.KeyEntryIdentifiers.Add(model.KeyEntry.Identifier);
-            }
-        }
-
         private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             KeyStoreDataContext?.RefreshKeyEntries();
@@ -63,8 +49,7 @@ namespace Leosac.KeyManager.Library.UI
         {
             if (e.Parameter is string identifier)
             {
-                KeyStoreDataContext?.KeyStore?.Delete(identifier);
-                KeyStoreDataContext?.KeyEntryIdentifiers.Remove(identifier);
+                KeyStoreDataContext?.DeleteKeyEntryCommand?.ExecuteAsync(identifier);
             }
         }
 
