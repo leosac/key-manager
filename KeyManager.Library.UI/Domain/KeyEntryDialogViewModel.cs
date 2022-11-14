@@ -21,6 +21,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         }
 
         private bool _canChangeFactory = true;
+        private bool _autoCreate = true;
         private KeyEntry? _keyEntry;
         private KeyEntryItem? _selectedFactoryItem;
 
@@ -47,7 +48,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set
             {
                 SetProperty(ref _selectedFactoryItem, value);
-                if (value != null && value?.GetType() != KeyEntry?.GetType())
+                if (value != null && value?.GetType() != KeyEntry?.GetType() && AutoCreate)
                 {
                     KeyEntry = _selectedFactoryItem?.Factory.CreateKeyEntry();
                 }
@@ -58,6 +59,25 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             get => _canChangeFactory;
             set => SetProperty(ref _canChangeFactory, value);
+        }
+
+        public bool AutoCreate
+        {
+            get => _autoCreate;
+            set => SetProperty(ref _autoCreate, value);
+        }
+
+        public void RefreshVariants()
+        {
+            if (KeyEntry != null)
+            {
+                Variants.Clear();
+                var variants = KeyEntry.GetAllVariants();
+                foreach (var variant in variants)
+                {
+                    Variants.Add(variant);
+                }
+            }
         }
     }
 }

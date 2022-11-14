@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
+using static Net.Codecrete.QrCodeGenerator.QrSegment;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
@@ -39,6 +40,25 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     KeyEntry = KeyStore?.Get(keyEntryIdentifier),
                     CanChangeFactory = false
                 };
+                var factory = KeyEntryFactory.GetFactoryFromPropertyType(model.KeyEntry!.Properties?.GetType());
+                if (factory != null)
+                {
+                    model.AutoCreate = false;
+                    model.SelectedFactoryItem = model.KeyEntryFactories.Where(item => item.Factory == factory).FirstOrDefault();
+                    model.SelectedFactoryItem!.DataContext!.Properties = model.KeyEntry.Properties;
+                    var variant = model.KeyEntry.Variant;
+                    if (variant != null)
+                    {
+                        model.RefreshVariants();
+                        var emptyv = model.Variants.Where(v => v.Name == variant.Name).FirstOrDefault();
+                        if (emptyv != null)
+                        {
+                            model.Variants.Remove(emptyv);
+                        }
+                        model.Variants.Add(variant);
+                        model.KeyEntry.Variant = variant;
+                    }
+                }
                 var dialog = new KeyEntryDialog()
                 {
                     DataContext = model
@@ -57,7 +77,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             _keyEntryIdentifiersView.Filter = KeyEntryIdentifiersFilter;
         }
 
-        private ISnackbarMessageQueue _snackbarMessageQueue;
+        protected ISnackbarMessageQueue _snackbarMessageQueue;
         private KeyStore.KeyStore? _keyStore;
         private readonly ICollectionView _keyEntryIdentifiersView;
         private string? _selectedKeyEntryIdentifier;

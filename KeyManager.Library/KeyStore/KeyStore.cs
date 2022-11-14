@@ -47,5 +47,15 @@ namespace Leosac.KeyManager.Library.KeyStore
         }
 
         public abstract void Store(IList<KeyEntry> keyEntries);
+
+        protected void OnKeyEntryUpdated(KeyEntry keyEntry)
+        {
+            if (KeyEntryUpdated != null)
+            {
+                KeyEntryUpdated(this, keyEntry);
+            }
+        }
+
+        public event EventHandler<KeyEntry>? KeyEntryUpdated;
     }
 }

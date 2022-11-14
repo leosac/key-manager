@@ -1,5 +1,6 @@
 ﻿using Leosac.KeyManager.Domain;
 using Leosac.KeyManager.Library;
+using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using MaterialDesignThemes.Wpf;
@@ -32,19 +33,9 @@ namespace Leosac.KeyManager
 
         private void btnCloseKeyStore_Click(object sender, RoutedEventArgs e)
         {
-            CloseKeyStore();
-        }
-
-        private void CloseKeyStore()
-        {
             if (DataContext is EditKeyStoreControlViewModel model)
             {
-                model.KeyStore?.Close();
-                model.KeyStore = null;
-                model.KeyEntryIdentifiers.Clear();
-                model.Favorite = null;
-
-                model.HomeCommand?.Execute(null);
+                model.CloseKeyStore();
             }
         }
 
@@ -77,39 +68,19 @@ namespace Leosac.KeyManager
             }
         }
 
-        private async void btnEdit_Click(object sender, RoutedEventArgs e)
+        private void btnEdit_Click(object sender, RoutedEventArgs e)
         {
-            if (DataContext is EditKeyStoreControlViewModel cmodel && cmodel.Favorite != null)
+            if (DataContext is EditKeyStoreControlViewModel model)
             {
-                var factory = KeyStoreFactory.GetFactoryFromPropertyType(cmodel.Favorite.Properties?.GetType());
-                if (factory != null)
-                {
-                    var favorites = Favorites.GetSingletonInstance();
-                    if (favorites != null)
-                    {
-                        int favindex = favorites.KeyStores.IndexOf(cmodel.Favorite);
-                        var model = new KeyStoreSelectorDialogViewModel()
-                        {
-                            Message = "Edit the Key Store Favorite"
-                        };
-                        model.SelectedFactoryItem = model.KeyStoreFactories.Where(item => item.Factory == factory).FirstOrDefault();
-                        model.SelectedFactoryItem!.DataContext!.Properties = cmodel.Favorite.Properties;
-                        var dialog = new KeyStoreSelectorDialog
-                        {
-                            DataContext = model
-                        };
-                        object? ret = await DialogHost.Show(dialog, "RootDialog");
-                        if (ret != null)
-                        {
-                            if (favindex > -1)
-                            {
-                                favorites.KeyStores.RemoveAt(favindex);
-                            }
-                            favorites.KeyStores.Add(cmodel.Favorite);
-                            favorites.SaveToFile();
-                        }
-                    }
-                }
+                model.EditFavorite();
+            }
+        }
+
+        private void btnPublish_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is EditKeyStoreControlViewModel model)
+            {
+                model.Publish();
             }
         }
     }

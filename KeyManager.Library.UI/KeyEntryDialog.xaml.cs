@@ -31,14 +31,9 @@ namespace Leosac.KeyManager.Library.UI
 
         private void KeyEntryType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DataContext is KeyEntryDialogViewModel model && model.KeyEntry != null)
+            if (DataContext is KeyEntryDialogViewModel model && model.AutoCreate)
             {
-                model.Variants.Clear();
-                var variants = model.KeyEntry.GetAllVariants();
-                foreach(var variant in variants)
-                {
-                    model.Variants.Add(variant);
-                }
+                model.RefreshVariants();
             }
         }
     }

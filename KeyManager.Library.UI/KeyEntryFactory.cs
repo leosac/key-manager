@@ -15,6 +15,8 @@ namespace Leosac.KeyManager.Library.UI
 
         public abstract KeyEntry CreateKeyEntry();
 
+        public abstract Type GetKeyEntryPropertiesType();
+
         public abstract KeyEntryProperties CreateKeyEntryProperties();
 
         public abstract UserControl CreateKeyEntryPropertiesControl();
@@ -31,6 +33,25 @@ namespace Leosac.KeyManager.Library.UI
                     RegisteredFactories.Add(factory);
                 }
             }
+        }
+
+        public static KeyEntryFactory? GetFactoryFromPropertyType(Type? type)
+        {
+            if (type == null)
+                return null;
+
+            lock (RegisteredFactories)
+            {
+                foreach (var factory in RegisteredFactories)
+                {
+                    if (factory.GetKeyEntryPropertiesType() == type)
+                    {
+                        return factory;
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

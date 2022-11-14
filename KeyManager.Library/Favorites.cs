@@ -44,7 +44,7 @@ namespace Leosac.KeyManager.Library
         public Favorite CreateFromKeyStore(KeyStore.KeyStore store, bool save = true)
         {
             var favorite = new Favorite();
-            favorite.Name = String.Format("{0} Key Store - ({1})", store.Name, Guid.NewGuid());
+            favorite.Name = String.Format("{0} Key Store - ({1})", store.Name, DateTimeOffset.Now.ToUnixTimeSeconds());
             favorite.Properties = store.Properties;
             KeyStores.Add(favorite);
             if (save)

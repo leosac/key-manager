@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LibLogicalAccess.Card;
+using System.Text.RegularExpressions;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 {
@@ -23,6 +24,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         private LibLogicalAccess.ReaderProvider? _readerProvider;
         private LibLogicalAccess.ReaderUnit? _readerUnit;
         private LibLogicalAccess.Chip? _chip;
+        private bool _unlocked = false;
 
         public SAMKeyStoreProperties GetSAMProperties()
         {
@@ -137,6 +139,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 _readerProvider.Dispose();
                 _readerProvider = null;
             }
+
+            _unlocked = false;
         }
 
         public override bool CheckKeyEntryExists(string identifier)
@@ -186,7 +190,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             {
                 var av2entry = av2cmd.getKeyEntry(entry);
                 var set = av2entry.getSETStruct();
-                keyEntry = CreateKeyEntryFromKeyType(set.keytype);
+                keyEntry = CreateKeyEntryFromKeyType(av2entry.getKeyType());
                 
                 var infoav2 = av2entry.getKeyEntryInformation();
                 if (keyEntry.SAMProperties != null)
@@ -251,18 +255,12 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             return keyEntry;
         }
 
-        private SAMSymmetricKeyEntry CreateKeyEntryFromKeyType(byte[] keyType)
+        private SAMSymmetricKeyEntry CreateKeyEntryFromKeyType(SAMKeyType keyType)
         {
-            if (keyType.Length != 3)
-            {
-                log.Error("Expected KeyType vector length to be 3 byte.");
-                throw new KeyStoreException("Expected KeyType vector length to be 3 byte.");
-            }
-
             var keyEntry = new SAMSymmetricKeyEntry();
-            if (keyType[2] == 0 && keyType[1] == 0 && keyType[0] == 0)
+            if (keyType == SAMKeyType.SAM_KEY_DES)
                 keyEntry.SetVariant("DES");
-            else if (keyType[2] == 1 && keyType[1] == 0 && keyType[0] == 0)
+            else if (keyType == SAMKeyType.SAM_KEY_AES)
                 keyEntry.SetVariant("AES128");
             else
                 keyEntry.SetVariant("TK3DES");
@@ -283,6 +281,29 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         public override void Store(IList<KeyEntry> keyEntries)
         {
             log.Info(String.Format("Storing `{0}` key entries...", keyEntries.Count));
+
+            var cmd = _chip.getCommands();
+            if (cmd is SAMAV1ISO7816Commands av1cmd)
+            {
+                if (GetSAMProperties().AutoSwitchToAV2)
+                {
+                    SwitchSAMToAV2(av1cmd, GetSAMProperties().AuthenticateKey);
+                    Close();
+                    Open();
+                    cmd = _chip.getCommands();
+                    if (cmd is SAMAV1ISO7816Commands)
+                    {
+                        log.Error("The SAM didn't switched properly to AV2 mode.");
+                        throw new KeyStoreException("The SAM didn't switched properly to AV2 mode.");
+                    }
+                }
+                else
+                {
+                    log.Error("Inserted SAM is AV1 mode and Auto Switch to AV2 wasn't enabled.");
+                    throw new KeyStoreException("Inserted SAM is AV1 mode and Auto Switch to AV2 wasn't enabled.");
+                }
+            }
+
             foreach (var keyEntry in keyEntries)
             {
                 Update(keyEntry);
@@ -293,9 +314,175 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         {
             log.Info(String.Format("Updating key entry `{0}`...", keyEntry.Identifier));
 
+            if (GetSAMProperties().AuthenticateKey == null)
+            {
+                log.Error("To be updated, a SAM AV2 key store requires at least the Authenticate Key.");
+                throw new KeyStoreException("To be updated, a SAM AV2 key store requires at least the Authenticate Key.");
+            }
 
+            if (keyEntry is SAMSymmetricKeyEntry samkey)
+            {
+                var cmd = _chip.getCommands();
+                if (cmd is SAMAV2ISO7816Commands av2cmd)
+                {
+                    if (GetSAMProperties().UnlockKey != null && !string.IsNullOrEmpty(GetSAMProperties().UnlockKey.Key.Value) && !_unlocked)
+                    {
+                        UnlockSAM(av2cmd, GetSAMProperties().UnlockKeyEntryIdentifier, GetSAMProperties().UnlockKey);
+                        _unlocked = true;
+                    }
 
+                    var key = new DESFireKey();
+                    key.setKeyType(DESFireKeyType.DF_KEY_AES);
+                    key.setKeyVersion(GetSAMProperties().AuthenticateKey.Version);
+                    key.fromString(Regex.Replace(GetSAMProperties().AuthenticateKey.Key.Value, ".{2}", "$0 "));
+
+                    var natkey = new AV2SAMKeyEntry();
+
+                    var infoav2 = new KeyEntryAV2Information();
+                    if (samkey.SAMProperties != null)
+                    {
+                        var set = new SETAV2();
+                        infoav2.ExtSET |= (byte)samkey.SAMProperties.SAMKeyEntryType;
+
+                        Array.Copy(samkey.SAMProperties.DESFireAID, infoav2.desfireAid, 3);
+                        infoav2.desfirekeyno = samkey.SAMProperties.DESFireKeyNum;
+
+                        infoav2.kuc = samkey.SAMProperties.KeyUsageCounter ?? 0xff;
+
+                        infoav2.cekno = samkey.SAMProperties.ChangeKeyRefId;
+                        infoav2.cekv = samkey.SAMProperties.ChangeKeyRefVersion;
+
+                        set.dumpsessionkey = Convert.ToByte(samkey.SAMProperties.EnableDumpSessionKey);
+                        set.allowcrypto = Convert.ToByte(samkey.SAMProperties.CryptoBasedOnSecretKey);
+                        set.disabledecryption = Convert.ToByte(samkey.SAMProperties.DisableDecryptData);
+                        set.disableencryption = Convert.ToByte(samkey.SAMProperties.DisableEncryptData);
+                        set.disablegeneratemac = Convert.ToByte(samkey.SAMProperties.DisableGenerateMACFromPICC);
+                        set.disablekeyentry = Convert.ToByte(samkey.SAMProperties.DisableKeyEntry);
+                        set.disableverifymac = Convert.ToByte(samkey.SAMProperties.DisableVerifyMACFromPICC);
+                        set.disablewritekeytopicc = Convert.ToByte(samkey.SAMProperties.DisableChangeKeyPICC);
+                        set.lockkey = Convert.ToByte(samkey.SAMProperties.LockUnlock);
+                        set.keepIV = Convert.ToByte(samkey.SAMProperties.KeepIV);
+                        set.authkey = Convert.ToByte(samkey.SAMProperties.AuthenticateHost);
+                        infoav2.ExtSET |= (byte)(Convert.ToByte(samkey.SAMProperties.AllowDumpSecretKey) << 3);
+                        infoav2.ExtSET |= (byte)(Convert.ToByte(samkey.SAMProperties.AllowDumpSecretKeyWithDiv) << 4);
+
+                        natkey.setSET(set);
+                    }
+
+                    if (samkey.Variant != null)
+                    {
+                        var keys = new UCharCollectionCollection(samkey.Variant.KeyVersions.Count);
+                        foreach (var keyversion in samkey.Variant.KeyVersions)
+                        {
+                            if (string.IsNullOrEmpty(keyversion.Key.Value))
+                                keys.Add(new ByteVector(new byte[keyversion.Key.KeySize]));
+                            else
+                                keys.Add(new ByteVector(Convert.FromHexString(keyversion.Key.Value)));
+                        }
+
+                        infoav2.vera = samkey.Variant.KeyVersions[0].Version;
+                        if (samkey.Variant.KeyVersions.Count >= 2)
+                            infoav2.verb = samkey.Variant.KeyVersions[1].Version;
+                        if (samkey.Variant.KeyVersions.Count >= 3)
+                            infoav2.verc = samkey.Variant.KeyVersions[2].Version;
+
+                        if ((samkey.Variant.KeyVersions[0].Key.Tags & KeyTag.AES) == KeyTag.AES)
+                        {
+                            natkey.setKeysData(keys, SAMKeyType.SAM_KEY_AES);
+                        }
+                        else
+                        {
+                            if (samkey.Variant.KeyVersions[0].Key.KeySize == 16)
+                            {
+                                natkey.setKeysData(keys, SAMKeyType.SAM_KEY_DES);
+                            }
+                            else
+                            {
+                                natkey.setKeysData(keys, SAMKeyType.SAM_KEY_3K3DES);
+                            }
+                        }
+                    }
+
+                    natkey.setKeyEntryInformation(infoav2);
+                    natkey.setSETKeyTypeFromKeyType();
+
+                    av2cmd.authenticateHost(key, GetSAMProperties().AuthenticateKeyEntryIdentifier);
+                    natkey.setUpdateMask(0xFF);
+                    av2cmd.changeKeyEntry((byte)Convert.ToDecimal(samkey.Identifier), natkey, key);
+                }
+                else
+                {
+                    log.Error("Inserted SAM is not in AV2 mode, AV1 support has been deprecated, please check to option to auto switch to AV2 or manually perform a Switch.");
+                    throw new KeyStoreException("Inserted SAM is not in AV2 mode, AV1 support has been deprecated, please check to option to auto switch to AV2 or manually perform a Switch.");
+                }
+            }
+            else
+            {
+                log.Error("Unsupported Key Entry type for this Key Store.");
+                throw new KeyStoreException("Unsupported Key Entry type for this Key Store.");
+            }
+
+            OnKeyEntryUpdated(keyEntry);
             log.Info(String.Format("Key entry `{0}` updated.", keyEntry.Identifier));
+        }
+
+        public static void SwitchSAMToAV2(SAMAV1ISO7816Commands av1cmds, KeyVersion keyVersion)
+        {
+            log.Info("Switching the SAM to AV2 mode...");
+            var key = new DESFireKey();
+            if ((keyVersion.Key.Tags & KeyTag.AES) == KeyTag.AES)
+            {
+                key.setKeyType(DESFireKeyType.DF_KEY_AES);
+                key.setKeyVersion(keyVersion.Version);
+                key.fromString(Regex.Replace(keyVersion.Key.Value, ".{2}", "$0 "));
+            }
+            else
+            {
+                var keyav1entry = av1cmds.getKeyEntry(0);
+                var keys = new UCharCollectionCollection(3)
+                {
+                    new ByteVector(new byte[16]),
+                    new ByteVector(new byte[16]),
+                    new ByteVector(new byte[16])
+                };
+
+                keyav1entry.setKeysData(keys, SAMKeyType.SAM_KEY_AES);
+                var keyInfo = keyav1entry.getKeyEntryInformation();
+                keyInfo.vera = 0;
+                keyInfo.verb = 0;
+                keyInfo.verc = 0;
+                keyInfo.cekno = 0;
+                keyInfo.cekv = 0;
+                keyav1entry.setKeyEntryInformation(keyInfo);
+                keyav1entry.setUpdateMask(0xff);
+
+                if (keyVersion.Key.KeySize == 16)
+                    key.setKeyType(DESFireKeyType.DF_KEY_DES);
+                else
+                    key.setKeyType(DESFireKeyType.DF_KEY_3K3DES);
+
+                av1cmds.authenticateHost(key, 0);
+                av1cmds.changeKeyEntry(0, keyav1entry, key);
+
+                key.fromString("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+                key.setKeyVersion(0);
+            }
+
+            key.setKeyType(DESFireKeyType.DF_KEY_AES);
+            av1cmds.authenticateHost(key, 0);
+            av1cmds.lockUnlock(key, SAMLockUnlock.SwitchAV2Mode, 0, 0, 0);
+            log.Info("SAM switched to AV2 mode.");
+        }
+
+        public static void UnlockSAM(SAMAV2ISO7816Commands av2cmds, byte keyEntry, KeyVersion keyVersion)
+        {
+            log.Info("Unlocking SAM...");
+            var key = new DESFireKey();
+            key.setKeyType(DESFireKeyType.DF_KEY_AES);
+            key.setKeyVersion(keyVersion.Version);
+            key.fromString(Regex.Replace(keyVersion.Key.Value, ".{2}", "$0 "));
+            av2cmds.lockUnlock(key, SAMLockUnlock.Unlock, keyEntry, 0x00, 0x00);
+            log.Info("SAM unlocked.");
         }
     }
 }

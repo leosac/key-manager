@@ -14,6 +14,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             _readerProvider = "PCSC";
             _readerUnit = String.Empty;
             _autoSwitchToAV2 = true;
+            _authenticateKeyEntryIdentifier = 0;
+            _authenticateKey = new KeyVersion("Authenticate Key", 0, new Key(KeyTag.AES, 16, "00000000000000000000000000000000"));
+            _unlockKeyEntryIdentifier = 0;
+            _unlockKey = new KeyVersion("Unlock Key", 0, new Key(KeyTag.AES, 16));
         }
 
         private string _readerProvider;
@@ -40,6 +44,38 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             set => SetProperty(ref _autoSwitchToAV2, value);
         }
 
+        private byte _authenticateKeyEntryIdentifier;
+
+        public byte AuthenticateKeyEntryIdentifier
+        {
+            get => _authenticateKeyEntryIdentifier;
+            set => SetProperty(ref _authenticateKeyEntryIdentifier, value);
+        }
+
+        private KeyVersion _authenticateKey;
+
+        public KeyVersion AuthenticateKey
+        {
+            get => _authenticateKey;
+            set => SetProperty(ref _authenticateKey, value);
+        }
+
+        private byte _unlockKeyEntryIdentifier;
+
+        public byte UnlockKeyEntryIdentifier
+        {
+            get => _unlockKeyEntryIdentifier;
+            set => SetProperty(ref _unlockKeyEntryIdentifier, value);
+        }
+
+        private KeyVersion _unlockKey;
+
+        public KeyVersion UnlockKey
+        {
+            get => _unlockKey;
+            set => SetProperty(ref _unlockKey, value);
+        }
+
         public override bool Equals(object? obj)
         {
             return this.Equals(obj as SAMKeyStoreProperties);
@@ -56,10 +92,12 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             if (this.GetType() != p.GetType())
                 return false;
 
-            return (ReaderProvider == p.ReaderProvider) && (ReaderUnit == p.ReaderUnit) && (AutoSwitchToAV2 == p.AutoSwitchToAV2);
+            return (ReaderProvider == p.ReaderProvider) && (ReaderUnit == p.ReaderUnit) && (AutoSwitchToAV2 == p.AutoSwitchToAV2) &&
+                (AuthenticateKeyEntryIdentifier == p.AuthenticateKeyEntryIdentifier) && (AuthenticateKey == p.AuthenticateKey) &&
+                (UnlockKeyEntryIdentifier == p.UnlockKeyEntryIdentifier) && (UnlockKey == p.UnlockKey);
         }
 
-        public override int GetHashCode() => (ReaderProvider, ReaderUnit, AutoSwitchToAV2).GetHashCode();
+        public override int GetHashCode() => (ReaderProvider, ReaderUnit, AutoSwitchToAV2, AuthenticateKeyEntryIdentifier, AuthenticateKey, UnlockKeyEntryIdentifier, UnlockKey).GetHashCode();
 
         public static bool operator ==(SAMKeyStoreProperties lhs, SAMKeyStoreProperties rhs)
         {

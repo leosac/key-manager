@@ -19,6 +19,11 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory.UI
             return new MemorySymmetricKeyEntry();
         }
 
+        public override Type GetKeyEntryPropertiesType()
+        {
+            return typeof(MemoryKeyEntryProperties);
+        }
+
         public override KeyEntryProperties CreateKeyEntryProperties()
         {
             return new MemoryKeyEntryProperties();

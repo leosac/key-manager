@@ -142,6 +142,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             log.Info(String.Format("Updating key entry `{0}`...", keyEntry.Identifier));
             Delete(keyEntry.Identifier, ignoreIfMissing);
             Create(keyEntry);
+            OnKeyEntryUpdated(keyEntry);
             log.Info(String.Format("Key entry `{0}` updated.", keyEntry.Identifier));
         }
     }

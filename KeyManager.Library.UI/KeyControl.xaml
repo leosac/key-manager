@@ -33,13 +33,13 @@
                     materialDesign:HintAssist.Hint="Key Value"
                     materialDesign:TextFieldAssist.HasClearButton="True"
                     materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
-                    MaxLength="{Binding Path=Key.KeySize, Converter={StaticResource ByteLengthToCharLengthConverter}}"
+                    MaxLength="{Binding Path=Key.KeySize, Converter={StaticResource ByteLengthToCharLengthConverter}, ElementName=userControl}"
                     Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
-                    materialDesign:PasswordBoxAssist.Password="{Binding Path=Key.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+                    materialDesign:PasswordBoxAssist.Password="{Binding Path=Key.Value, Mode=TwoWay, ElementName=userControl, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="8">
             <materialDesign:DialogHost Identifier="KeyGenerationDialog" DialogTheme="Inherit">
                 <materialDesign:DialogHost.DialogContent>
-                    <local:KeyGenerationDialog KeySize="{Binding Path=Key.KeySize}" KeyValue="{Binding Path=Key.Value, Mode=TwoWay}" />
+                    <local:KeyGenerationDialog KeySize="{Binding Path=Key.KeySize, ElementName=userControl}" KeyValue="{Binding Path=Key.Value, Mode=TwoWay, ElementName=userControl}" />
                 </materialDesign:DialogHost.DialogContent>
                 <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" Width="24" Height="24" Margin="3">
                     <Button.ToolTip>

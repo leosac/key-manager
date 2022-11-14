@@ -53,7 +53,7 @@
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                 <ComboBox Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="6"
                       ItemsSource="{Binding Variants}"
-                      SelectedItem="{Binding KeyEntry.Variant, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}"
+                      SelectedItem="{Binding KeyEntry.Variant, UpdateSourceTrigger=PropertyChanged}"
                       materialDesign:HintAssist.HelperText="The key entry variant"
                       materialDesign:HintAssist.Hint="Variant">
                     <ComboBox.ItemTemplate>

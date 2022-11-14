@@ -19,6 +19,11 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
             return new SAMSymmetricKeyEntry();
         }
 
+        public override Type GetKeyEntryPropertiesType()
+        {
+            return typeof(SAMSymmetricKeyEntryProperties);
+        }
+
         public override KeyEntryProperties CreateKeyEntryProperties()
         {
             return new SAMSymmetricKeyEntryProperties();

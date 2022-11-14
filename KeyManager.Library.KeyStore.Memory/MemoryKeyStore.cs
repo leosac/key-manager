@@ -95,6 +95,7 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
             {
                 Delete(keyEntry.Identifier, ignoreIfMissing);
                 Create(keyEntry);
+                OnKeyEntryUpdated(keyEntry);
             }
         }
     }

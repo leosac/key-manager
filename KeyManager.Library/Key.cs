@@ -14,11 +14,11 @@ namespace Leosac.KeyManager.Library
             _link = new KeyLink();
         }
 
-        public Key(KeyTag tags, uint keySize)
+        public Key(KeyTag tags, uint keySize, string value = "")
         {
             _tags = tags;
             _keySize = keySize;
-            _value = String.Empty;
+            _value = value;
             Policies = new ObservableCollection<IKeyPolicy>
             {
                 new KeyLengthPolicy(keySize)
