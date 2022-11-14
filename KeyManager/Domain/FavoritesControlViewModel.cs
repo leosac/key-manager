@@ -14,7 +14,7 @@ namespace Leosac.KeyManager.Domain
     {
         public FavoritesControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
-            _favorites = Favorites.LoadFromFile();
+            _favorites = Favorites.GetSingletonInstance();
         }
 
         private Favorites? _favorites;

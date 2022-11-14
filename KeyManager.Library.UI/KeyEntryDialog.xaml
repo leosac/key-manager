@@ -10,7 +10,7 @@
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              d:DataContext="{d:DesignInstance domain:KeyEntryDialogViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="500"
+             d:DesignHeight="430" d:DesignWidth="500"
              MinWidth="500">
     <UserControl.Resources>
         <s:Boolean x:Key="True">True</s:Boolean>
@@ -30,15 +30,17 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <ComboBox Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="6"
+                <ComboBox x:Name="KeyEntryType" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="6"
                       ItemsSource="{Binding KeyEntryFactories}"
                       SelectedItem="{Binding SelectedFactoryItem, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}"
                       materialDesign:HintAssist.HelperText="The key entry type"
-                      materialDesign:HintAssist.Hint="Type">
+                      materialDesign:HintAssist.Hint="Type"
+                      SelectionChanged="KeyEntryType_SelectionChanged">
                     <ComboBox.ItemTemplate>
                         <DataTemplate DataType="domain:KeyEntryFactory">
                             <TextBlock Margin="24,4,0,4" Text="{Binding Name}" />
@@ -49,13 +51,24 @@
                      materialDesign:HintAssist.HelperText="Unique identifier for the key entry"
                      materialDesign:HintAssist.Hint="Key Entry Identifier"
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                <TextBox Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding KeyEntry.Label}" Margin="6"
+                <ComboBox Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="6"
+                      ItemsSource="{Binding Variants}"
+                      SelectedItem="{Binding KeyEntry.Variant, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}"
+                      materialDesign:HintAssist.HelperText="The key entry variant"
+                      materialDesign:HintAssist.Hint="Variant">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="kslib:KeyEntryVariant">
+                            <TextBlock Margin="24,4,0,4" Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBox Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding KeyEntry.Label}" Margin="6"
                      materialDesign:HintAssist.HelperText="Label/note about the key entry"
                      materialDesign:HintAssist.Hint="Label"
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                <TabControl Grid.Row="3" MinHeight="100">
+                <TabControl Grid.Row="4" MinHeight="100">
                     <TabItem Header="Key Version">
-                        <ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding KeyEntry.KeyVersions}" Padding="5">
+                        <ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding KeyEntry.Variant.KeyVersions}" Padding="5">
                             <ListBox.ItemTemplate>
                                 <DataTemplate DataType="kslib:KeyVersion">
                                     <materialDesign:Card Grid.Row="3" Grid.ColumnSpan="2">

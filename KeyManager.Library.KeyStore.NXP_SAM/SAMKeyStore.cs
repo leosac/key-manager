@@ -181,7 +181,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 throw new KeyStoreException("No Command associated with the SAM chip.");
             }
 
-            SAMKeyEntry keyEntry;
+            SAMSymmetricKeyEntry keyEntry;
             if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
             {
                 var av2entry = av2cmd.getKeyEntry(entry);
@@ -216,22 +216,25 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     keyEntry.SAMProperties.AllowDumpSecretKeyWithDiv = Convert.ToBoolean(infoav2.ExtSET & 0x10);
                 }
 
-                var keysdata = av2entry.getKeysData();
-                if (keysdata.Count < 2 || keysdata.Count != keyEntry.KeyVersions.Count)
+                if (keyEntry.Variant != null)
                 {
-                    log.Error(String.Format("Unexpected number of keys ({0}) on the SAM Key Entry.", keysdata.Count));
-                    throw new KeyStoreException("Unexpected number of keys on the SAM Key Entry.");
-                }
+                    var keysdata = av2entry.getKeysData();
+                    if (keysdata.Count < 2 || keysdata.Count != keyEntry.Variant.KeyVersions.Count)
+                    {
+                        log.Error(String.Format("Unexpected number of keys ({0}) on the SAM Key Entry.", keysdata.Count));
+                        throw new KeyStoreException("Unexpected number of keys on the SAM Key Entry.");
+                    }
 
-                keyEntry.KeyVersions[0].Key.Value = Convert.ToHexString(keysdata[0].ToArray());
-                keyEntry.KeyVersions[0].Version = infoav2.vera;
-                keyEntry.KeyVersions[1].Key.Value = Convert.ToHexString(keysdata[1].ToArray());
-                keyEntry.KeyVersions[1].Version = infoav2.verb;
+                    keyEntry.Variant.KeyVersions[0].Key.Value = Convert.ToHexString(keysdata[0].ToArray());
+                    keyEntry.Variant.KeyVersions[0].Version = infoav2.vera;
+                    keyEntry.Variant.KeyVersions[1].Key.Value = Convert.ToHexString(keysdata[1].ToArray());
+                    keyEntry.Variant.KeyVersions[1].Version = infoav2.verb;
 
-                if (keyEntry.KeyVersions.Count >= 3)
-                {
-                    keyEntry.KeyVersions[2].Key.Value = Convert.ToHexString(keysdata[2].ToArray());
-                    keyEntry.KeyVersions[2].Version = infoav2.verc;
+                    if (keyEntry.Variant.KeyVersions.Count >= 3)
+                    {
+                        keyEntry.Variant.KeyVersions[2].Key.Value = Convert.ToHexString(keysdata[2].ToArray());
+                        keyEntry.Variant.KeyVersions[2].Version = infoav2.verc;
+                    }
                 }
             }
             else if (cmd is LibLogicalAccess.Reader.SAMAV1ISO7816Commands)
@@ -248,7 +251,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             return keyEntry;
         }
 
-        private SAMKeyEntry CreateKeyEntryFromKeyType(byte[] keyType)
+        private SAMSymmetricKeyEntry CreateKeyEntryFromKeyType(byte[] keyType)
         {
             if (keyType.Length != 3)
             {
@@ -256,12 +259,14 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 throw new KeyStoreException("Expected KeyType vector length to be 3 byte.");
             }
 
+            var keyEntry = new SAMSymmetricKeyEntry();
             if (keyType[2] == 0 && keyType[1] == 0 && keyType[0] == 0)
-                return new DESSAMKeyEntry();
+                keyEntry.SetVariant("DES");
             else if (keyType[2] == 1 && keyType[1] == 0 && keyType[0] == 0)
-                return new AES128SAMKeyEntry();
+                keyEntry.SetVariant("AES128");
             else
-                return new T3KDESSAMKeyEntry();
+                keyEntry.SetVariant("TK3DES");
+            return keyEntry;
         }
 
         public override IList<string> GetAll()

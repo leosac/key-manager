@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
 {
     /// <summary>
-    /// Interaction logic for SAMKeyEntryPropertiesControl.xaml
+    /// Interaction logic for SAMSymmetricKeyEntryPropertiesControl.xaml
     /// </summary>
-    public partial class SAMKeyEntryPropertiesControl : UserControl
+    public partial class SAMSymmetricKeyEntryPropertiesControl : UserControl
     {
-        public SAMKeyEntryPropertiesControl()
+        public SAMSymmetricKeyEntryPropertiesControl()
         {
             InitializeComponent();
         }

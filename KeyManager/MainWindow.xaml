@@ -97,9 +97,9 @@
                                          Text="Dark" />
                                 </Grid>
 
-                                <Separator />
+                                <!--<Separator />
 
-                                <Button Content="Settings" />
+                                <Button Content="Settings" />-->
                             </StackPanel>
                         </materialDesign:PopupBox>
 

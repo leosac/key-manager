@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
 {
-    public class SAMKeyEntryPropertiesControlViewModel : KeyEntryPropertiesControlViewModel
+    public class SAMSymmetricKeyEntryPropertiesControlViewModel : KeyEntryPropertiesControlViewModel
     {
-        public SAMKeyEntryPropertiesControlViewModel()
+        public SAMSymmetricKeyEntryPropertiesControlViewModel()
         {
-            _properties = new SAMKeyEntryProperties();
+            _properties = new SAMSymmetricKeyEntryProperties();
             SAMKeyEntryTypes = new ObservableCollection<SAMKeyEntryType>(Enum.GetValues<SAMKeyEntryType>());
         }
 
         public ObservableCollection<SAMKeyEntryType> SAMKeyEntryTypes { get; set; }
 
-        public SAMKeyEntryProperties? SAMProperties
+        public SAMSymmetricKeyEntryProperties? SAMProperties
         {
-            get { return Properties as SAMKeyEntryProperties; }
+            get { return Properties as SAMSymmetricKeyEntryProperties; }
         }
     }
 }

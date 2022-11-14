@@ -12,7 +12,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
     {
         public KeyStoreFavoriteConverter()
         {
-            _favorites = Favorites.LoadFromFile();
+            _favorites = Favorites.GetSingletonInstance();
         }
 
         private Favorites _favorites;

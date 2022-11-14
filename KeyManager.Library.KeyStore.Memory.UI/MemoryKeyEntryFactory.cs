@@ -1,4 +1,4 @@
-﻿using Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain;
+﻿using Leosac.KeyManager.Library.KeyStore.Memory.UI.Domain;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using System;
@@ -8,23 +8,30 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
+namespace Leosac.KeyManager.Library.KeyStore.Memory.UI
 {
-    public abstract class SAMKeyEntryFactory : KeyEntryFactory
+    public class MemoryKeyEntryFactory : KeyEntryFactory
     {
+        public override string Name => "Memory Key Entry";
+
+        public override KeyEntry CreateKeyEntry()
+        {
+            return new MemorySymmetricKeyEntry();
+        }
+
         public override KeyEntryProperties CreateKeyEntryProperties()
         {
-            return new SAMKeyEntryProperties();
+            return new MemoryKeyEntryProperties();
         }
 
         public override UserControl CreateKeyEntryPropertiesControl()
         {
-            return new SAMKeyEntryPropertiesControl();
+            return new MemoryKeyEntryPropertiesControl();
         }
 
         public override KeyEntryPropertiesControlViewModel CreateKeyEntryPropertiesControlViewModel()
         {
-            return new SAMKeyEntryPropertiesControlViewModel();
+            return new MemoryKeyEntryPropertiesControlViewModel();
         }
     }
 }

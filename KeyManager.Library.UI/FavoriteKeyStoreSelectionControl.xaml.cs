@@ -31,7 +31,7 @@ namespace Leosac.KeyManager.Library.UI
             if (DesignerProperties.GetIsInDesignMode(this))
                 Favorites = new Favorites(); 
             else
-                Favorites = Favorites.LoadFromFile();
+                Favorites = Favorites.GetSingletonInstance();
 
         }
 

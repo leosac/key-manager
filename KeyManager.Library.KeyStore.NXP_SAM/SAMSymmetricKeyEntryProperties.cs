@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 {
-    public class SAMKeyEntryProperties : KeyEntryProperties
+    public class SAMSymmetricKeyEntryProperties : KeyEntryProperties
     {
         public SAMKeyEntryType SAMKeyEntryType { get; set; } = SAMKeyEntryType.Host;
 

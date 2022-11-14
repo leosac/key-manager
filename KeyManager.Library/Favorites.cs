@@ -11,6 +11,22 @@ namespace Leosac.KeyManager.Library
 {
     public class Favorites : KMPermanentConfig<Favorites>
     {
+        private static object _objlock = new object();
+        private static Favorites? _singleton;
+
+        public static Favorites GetSingletonInstance(bool forceRecreate = false)
+        {
+            lock (_objlock)
+            {
+                if (_singleton == null || forceRecreate)
+                {
+                    _singleton = Favorites.LoadFromFile();
+                }
+
+                return _singleton!;
+            }
+        }
+
         public ObservableCollection<Favorite> KeyStores { get; set; } = new ObservableCollection<Favorite>();
 
         public static string DefaultFileName { get => "Favorites.json"; }

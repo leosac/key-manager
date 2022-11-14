@@ -1,6 +1,8 @@
-﻿using Leosac.KeyManager.Library.UI.Domain;
+﻿using Leosac.KeyManager.Library.KeyStore;
+using Leosac.KeyManager.Library.UI.Domain;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -25,6 +27,19 @@ namespace Leosac.KeyManager.Library.UI
         public KeyEntryDialog()
         {
             InitializeComponent();
+        }
+
+        private void KeyEntryType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DataContext is KeyEntryDialogViewModel model && model.KeyEntry != null)
+            {
+                model.Variants.Clear();
+                var variants = model.KeyEntry.GetAllVariants();
+                foreach(var variant in variants)
+                {
+                    model.Variants.Add(variant);
+                }
+            }
         }
     }
 }

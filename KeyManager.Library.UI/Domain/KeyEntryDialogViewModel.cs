@@ -17,6 +17,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 KeyEntryFactories.Add(new KeyEntryItem(factory));
             }
+            Variants = new ObservableCollection<KeyEntryVariant>();
         }
 
         private bool _canChangeFactory = true;
@@ -24,6 +25,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
         private KeyEntryItem? _selectedFactoryItem;
 
         public ObservableCollection<KeyEntryItem> KeyEntryFactories { get; }
+
+        public ObservableCollection<KeyEntryVariant> Variants { get; set; }
 
         public KeyEntry? KeyEntry
         {

@@ -56,7 +56,7 @@ namespace Leosac.KeyManager
         {
             if (DataContext is FavoritesControlViewModel cmodel)
             {
-                cmodel.Favorites = Favorites.LoadFromFile();
+                cmodel.Favorites = Favorites.GetSingletonInstance(true);
             }
         }
 

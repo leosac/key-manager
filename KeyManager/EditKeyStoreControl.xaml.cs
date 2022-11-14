@@ -54,7 +54,7 @@ namespace Leosac.KeyManager
             {
                 if (model.Favorite == null)
                 {
-                    var favorites = Favorites.LoadFromFile();
+                    var favorites = Favorites.GetSingletonInstance();
                     model.Favorite = favorites?.CreateFromKeyStore(model.KeyStore!);
                 }
             }
@@ -66,7 +66,7 @@ namespace Leosac.KeyManager
             {
                 if (model.Favorite != null)
                 {
-                    var favorites = Favorites.LoadFromFile();
+                    var favorites = Favorites.GetSingletonInstance();
                     if (favorites!.KeyStores.Contains(model.Favorite))
                     {
                         favorites.KeyStores.Remove(model.Favorite);
@@ -84,7 +84,7 @@ namespace Leosac.KeyManager
                 var factory = KeyStoreFactory.GetFactoryFromPropertyType(cmodel.Favorite.Properties?.GetType());
                 if (factory != null)
                 {
-                    var favorites = Favorites.LoadFromFile();
+                    var favorites = Favorites.GetSingletonInstance();
                     if (favorites != null)
                     {
                         int favindex = favorites.KeyStores.IndexOf(cmodel.Favorite);

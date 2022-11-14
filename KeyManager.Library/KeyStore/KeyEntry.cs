@@ -13,14 +13,12 @@ namespace Leosac.KeyManager.Library.KeyStore
         public KeyEntry()
         {
             _identifier = Guid.NewGuid().ToString();
-            KeyVersions = new ObservableCollection<KeyVersion>();
         }
 
         private string _identifier;
         private string? _label;
         private KeyEntryProperties? _properties;
-
-        public ObservableCollection<KeyVersion> KeyVersions { get; set; }
+        private KeyEntryVariant? _variant;
 
         public string Identifier
         {
@@ -38,6 +36,20 @@ namespace Leosac.KeyManager.Library.KeyStore
         {
             get => _properties;
             set => SetProperty(ref _properties, value);
+        }
+
+        public KeyEntryVariant? Variant
+        {
+            get => _variant;
+            set => SetProperty(ref _variant, value);
+        }
+
+        public abstract IList<KeyEntryVariant> GetAllVariants();
+
+        public void SetVariant(string name)
+        {
+            var variants = GetAllVariants();
+            Variant = variants.Where(v => v.Name.ToLower() == name.ToLower()).FirstOrDefault();
         }
     }
 }
