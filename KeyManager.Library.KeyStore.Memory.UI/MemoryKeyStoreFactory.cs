@@ -38,5 +38,10 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory.UI
         {
             return new MemoryKeyStorePropertiesControlViewModel();
         }
+
+        public override IDictionary<string, UserControl> CreateKeyStoreAdditionalControls()
+        {
+            return new Dictionary<string, UserControl>();
+        }
     }
 }

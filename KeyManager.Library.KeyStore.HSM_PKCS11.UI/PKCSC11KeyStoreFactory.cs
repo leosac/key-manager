@@ -37,5 +37,10 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI
         {
             return null;
         }
+
+        public override IDictionary<string, UserControl> CreateKeyStoreAdditionalControls()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

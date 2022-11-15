@@ -15,6 +15,9 @@
         </Grid.RowDefinitions>
         <local:NumericUpDownControl Hint="Version" HelperText="Key version" Grid.Row="0" HorizontalAlignment="Left" Width="250" MaxValue="255" CurrentValue="{Binding KeyVersion.Version, Mode=TwoWay, ElementName=keyVersionControl}" VerticalAlignment="Center"/>
 
-        <local:KeyControl Grid.Row="1"  HorizontalAlignment="Left" VerticalAlignment="Center" Key="{Binding KeyVersion.Key, ElementName=keyVersionControl, Mode=TwoWay}" />
+        <local:KeyControl Grid.Row="1"  HorizontalAlignment="Left" VerticalAlignment="Center"
+                          Key="{Binding KeyVersion.Key, ElementName=keyVersionControl, Mode=TwoWay}"
+                          ShowKCV="{Binding ShowKCV, ElementName=keyVersionControl, Mode=TwoWay}"
+                          ShowKeyLink="{Binding ShowKeyLink, ElementName=keyVersionControl, Mode=TwoWay}"/>
     </Grid>
 </UserControl>

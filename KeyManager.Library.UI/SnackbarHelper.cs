@@ -24,8 +24,12 @@ namespace Leosac.KeyManager.Library.UI
 
             if (string.IsNullOrEmpty(message)) message = "An error occured.";
 
+            EnqueueMessage(queue, message);
+        }
+
+        public static void EnqueueMessage(ISnackbarMessageQueue queue, string message)
+        {
             queue?.Enqueue(message, new PackIcon { Kind = PackIconKind.CloseBold }, (object? p) => { }, null, false, true, TimeSpan.FromSeconds(5));
         }
-        
     }
 }

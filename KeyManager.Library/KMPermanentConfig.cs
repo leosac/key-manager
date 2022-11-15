@@ -12,6 +12,7 @@ namespace Leosac.KeyManager.Library
 {
     public abstract class KMPermanentConfig<T> where T : KMPermanentConfig<T>, new()
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
         static JsonSerializerSettings _jsonSettings;
 
         static KMPermanentConfig()
@@ -34,19 +35,25 @@ namespace Leosac.KeyManager.Library
 
         public void SaveToFile(string filePath)
         {
+            log.Info("Saving configuration to file...");
             var serialized = JsonConvert.SerializeObject(this, _jsonSettings);
             System.IO.File.WriteAllText(filePath, serialized, Encoding.UTF8);
+            log.Info("Configuration saved.");
         }
 
         public static T? LoadFromFile(string filePath)
         {
+            log.Info("Loading configuration from file...");
             if (System.IO.File.Exists(filePath))
             {
                 var serialized = System.IO.File.ReadAllText(filePath, Encoding.UTF8);
-                return JsonConvert.DeserializeObject<T>(serialized, _jsonSettings);
+                var config = JsonConvert.DeserializeObject<T>(serialized, _jsonSettings);
+                log.Info("Configuration loaded from file.");
+                return config;
             }
             else
             {
+                log.Info("No file found, falling back to default instance.");
                 return new T();
             }
         }

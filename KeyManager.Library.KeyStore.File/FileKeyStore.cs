@@ -54,11 +54,13 @@ namespace Leosac.KeyManager.Library.KeyStore.File
                     throw new KeyStoreException("Cannot open the key sore.");
                 }
             }
+            log.Info("Key store opened.");
         }
 
         public override void Close()
         {
             log.Info(String.Format("Closing the key store `{0}`...", GetFileProperties().Fullpath));
+            log.Info("Key Store closed.");
         }
 
         protected string GetKeyEntryFile(string identifier)
@@ -112,7 +114,9 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             }
 
             string serialized = System.IO.File.ReadAllText(GetKeyEntryFile(identifier));
-            return JsonConvert.DeserializeObject<KeyEntry>(serialized, _jsonSettings);
+            var keyEntry = JsonConvert.DeserializeObject<KeyEntry>(serialized, _jsonSettings);
+            log.Info(String.Format("Key entry `{0}` retrieved.", identifier));
+            return keyEntry;
         }
 
         public override IList<string> GetAll()
@@ -125,6 +129,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
                 string identifier = System.IO.Path.GetFileNameWithoutExtension(file);
                 keyEntries.Add(identifier);
             }
+            log.Info(String.Format("{0} key entries returned.", keyEntries.Count));
             return keyEntries;
         }
 
@@ -135,6 +140,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             {
                 Update(keyEntry, true);
             }
+            log.Info("Key Entries storing completed.");
         }
 
         public override void Update(KeyEntry keyEntry, bool ignoreIfMissing = false)

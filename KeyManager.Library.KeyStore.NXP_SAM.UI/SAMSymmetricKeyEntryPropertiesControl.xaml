@@ -136,25 +136,6 @@
                 </Expander>
             </StackPanel>
         </materialDesign:Card>
-        <materialDesign:Card>
-            <StackPanel>
-                <Expander HorizontalAlignment="Stretch" Header="Change Key Reference">
-                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <libui:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding Properties.ChangeKeyRefId, Mode=TwoWay}" Grid.Row="0"
-                                                        HelperText="The Key Entry Identifier"
-                                                        Hint="Key Entry"/>
-                            <libui:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding Properties.ChangeKeyRefVersion, Mode=TwoWay}" Grid.Row="1"
-                                                        HelperText="The Key Version"
-                                                        Hint="Key Version"/>
-                        </Grid>
-                    </StackPanel>
-                </Expander>
-            </StackPanel>
-        </materialDesign:Card>
+        <local:ChangeKeyReferenceControl ChangeKeyRefId="{Binding Properties.ChangeKeyRefId, Mode=TwoWay}" ChangeKeyRefVersion="{Binding Properties.ChangeKeyRefVersion, Mode=TwoWay}"/>
     </StackPanel>
 </UserControl>

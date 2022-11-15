@@ -38,5 +38,13 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
         {
             return new SAMKeyStorePropertiesControlViewModel();
         }
+
+        public override IDictionary<string, UserControl> CreateKeyStoreAdditionalControls()
+        {
+            var controls = new Dictionary<string, UserControl>();
+            controls.Add("Key Usage Counters", new SAMKeyStoreKeyCounterControl());
+            controls.Add("Tools", new SAMKeyStoreToolsControl());
+            return controls;
+        }
     }
 }

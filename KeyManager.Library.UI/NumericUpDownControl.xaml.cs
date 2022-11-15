@@ -42,27 +42,27 @@ namespace Leosac.KeyManager.Library.UI
 
         public static readonly DependencyProperty HelperTextProperty = DependencyProperty.Register(nameof(HelperText), typeof(string), typeof(NumericUpDownControl));
 
-        public int MinValue
+        public uint MinValue
         {
-            get { return (int)GetValue(MinValueProperty); }
+            get { return (uint)GetValue(MinValueProperty); }
             set { SetValue(MinValueProperty, value); }
         }
 
-        public static readonly DependencyProperty MinValueProperty = DependencyProperty.Register(nameof(MinValue), typeof(int), typeof(NumericUpDownControl),
-            new FrameworkPropertyMetadata(0));
+        public static readonly DependencyProperty MinValueProperty = DependencyProperty.Register(nameof(MinValue), typeof(uint), typeof(NumericUpDownControl),
+            new FrameworkPropertyMetadata((uint)0));
 
-        public int MaxValue
+        public uint MaxValue
         {
-            get { return (int)GetValue(MaxValueProperty); }
+            get { return (uint)GetValue(MaxValueProperty); }
             set { SetValue(MaxValueProperty, value); }
         }
 
-        public static readonly DependencyProperty MaxValueProperty = DependencyProperty.Register(nameof(MaxValue), typeof(int), typeof(NumericUpDownControl),
-            new FrameworkPropertyMetadata(100));
+        public static readonly DependencyProperty MaxValueProperty = DependencyProperty.Register(nameof(MaxValue), typeof(uint), typeof(NumericUpDownControl),
+            new FrameworkPropertyMetadata((uint)100));
 
-        public int CurrentValue
+        public uint CurrentValue
         {
-            get { return (int)GetValue(CurrentValueProperty); }
+            get { return (uint)GetValue(CurrentValueProperty); }
             set
             {
                 SetValue(CurrentValueProperty, value);
@@ -70,13 +70,13 @@ namespace Leosac.KeyManager.Library.UI
             }
         }
 
-        public static readonly DependencyProperty CurrentValueProperty = DependencyProperty.Register(nameof(CurrentValue), typeof(int), typeof(NumericUpDownControl),
-            new FrameworkPropertyMetadata(0));
+        public static readonly DependencyProperty CurrentValueProperty = DependencyProperty.Register(nameof(CurrentValue), typeof(uint), typeof(NumericUpDownControl),
+            new FrameworkPropertyMetadata((uint)0));
 
         private void NUDButtonUP_Click(object sender, RoutedEventArgs e)
         {
-            int number;
-            if (NUDTextBox.Text != "") number = Convert.ToInt32(NUDTextBox.Text);
+            uint number;
+            if (NUDTextBox.Text != "") number = Convert.ToUInt32(NUDTextBox.Text);
             else number = 0;
             if (number < MaxValue)
                 CurrentValue = number + 1;
@@ -84,8 +84,8 @@ namespace Leosac.KeyManager.Library.UI
 
         private void NUDButtonDown_Click(object sender, RoutedEventArgs e)
         {
-            int number;
-            if (NUDTextBox.Text != "") number = Convert.ToInt32(NUDTextBox.Text);
+            uint number;
+            if (NUDTextBox.Text != "") number = Convert.ToUInt32(NUDTextBox.Text);
             else number = 0;
             if (number > MinValue)
                 CurrentValue = number - 1;
@@ -119,16 +119,16 @@ namespace Leosac.KeyManager.Library.UI
 
         private void NUDTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            int number = 0;
+            uint number = 0;
             if (!string.IsNullOrEmpty(NUDTextBox.Text))
-                if (!int.TryParse(NUDTextBox.Text, out number)) NUDTextBox.Text = MinValue.ToString();
+                if (!uint.TryParse(NUDTextBox.Text, out number)) NUDTextBox.Text = MinValue.ToString();
             if (number > MaxValue) NUDTextBox.Text = MaxValue.ToString();
             if (number < MinValue) NUDTextBox.Text = MinValue.ToString();
             NUDTextBox.SelectionStart = NUDTextBox.Text.Length;
 
             if (NUDTextBox.Text != Convert.ToString(CurrentValue))
             {
-                CurrentValue = int.Parse(NUDTextBox.Text);
+                CurrentValue = uint.Parse(NUDTextBox.Text);
             }
         }
     }

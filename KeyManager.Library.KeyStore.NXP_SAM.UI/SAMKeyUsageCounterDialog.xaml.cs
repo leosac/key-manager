@@ -1,8 +1,4 @@
-﻿using Leosac.KeyManager.Domain;
-using Leosac.KeyManager.Library.UI.Domain;
-using Leosac.KeyManager.Library.UI;
-using MaterialDesignThemes.Wpf;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,16 +12,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Leosac.KeyManager.Library;
 
-namespace Leosac.KeyManager
+namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
 {
     /// <summary>
-    /// Interaction logic for FavoritesControl.xaml
+    /// Interaction logic for SAMKeyUsageCounterDialog.xaml
     /// </summary>
-    public partial class FavoritesControl : UserControl
+    public partial class SAMKeyUsageCounterDialog : UserControl
     {
-        public FavoritesControl()
+        public SAMKeyUsageCounterDialog()
         {
             InitializeComponent();
         }

@@ -33,5 +33,23 @@ namespace Leosac.KeyManager.Library.UI
 
         public static readonly DependencyProperty KeyVersionProperty = DependencyProperty.Register(nameof(KeyVersion), typeof(KeyManager.Library.KeyStore.KeyVersion), typeof(KeyVersionControl),
             new FrameworkPropertyMetadata(new KeyManager.Library.KeyStore.KeyVersion()));
+
+        public bool ShowKCV
+        {
+            get { return (bool)GetValue(ShowKCVProperty); }
+            set { SetValue(ShowKCVProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowKCVProperty = DependencyProperty.Register(nameof(ShowKCV), typeof(bool), typeof(KeyVersionControl),
+            new FrameworkPropertyMetadata(true));
+
+        public bool ShowKeyLink
+        {
+            get { return (bool)GetValue(ShowKeyLinkProperty); }
+            set { SetValue(ShowKeyLinkProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowKeyLinkProperty = DependencyProperty.Register(nameof(ShowKeyLink), typeof(bool), typeof(KeyVersionControl),
+            new FrameworkPropertyMetadata(true));
     }
 }

@@ -13,6 +13,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
     public class SAMKeyStore : KeyStore
     {
         public const uint SAM_AV2_MAX_SYMMETRIC_ENTRIES = 128;
+        public const byte SAM_AV2_MAX_USAGE_COUNTERS = 16;
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
@@ -21,10 +22,11 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             
         }
 
-        private LibLogicalAccess.ReaderProvider? _readerProvider;
-        private LibLogicalAccess.ReaderUnit? _readerUnit;
-        private LibLogicalAccess.Chip? _chip;
         private bool _unlocked = false;
+
+        public LibLogicalAccess.ReaderProvider? ReaderProvider { get; private set; }
+        public LibLogicalAccess.ReaderUnit? ReaderUnit { get; private set; }
+        public LibLogicalAccess.Chip? Chip { get; private set; }
 
         public SAMKeyStoreProperties GetSAMProperties()
         {
@@ -49,8 +51,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             {
                 providerName = "PCSC";
             }
-            _readerProvider = lla.getReaderProvider(providerName);
-            if (_readerProvider == null)
+            ReaderProvider = lla.getReaderProvider(providerName);
+            if (ReaderProvider == null)
             {
                 log.Error(String.Format("Cannot initialize the Reader Provider `{0}`.", providerName));
                 throw new KeyStoreException("Cannot initialize the Reader Provider.");
@@ -59,41 +61,41 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             var ruName = GetSAMProperties().ReaderUnit;
             if (string.IsNullOrEmpty(ruName))
             {
-                _readerUnit = _readerProvider.createReaderUnit();
+                ReaderUnit = ReaderProvider.createReaderUnit();
             }
             else
             {
-                var readers = _readerProvider.getReaderList();
+                var readers = ReaderProvider.getReaderList();
                 foreach (var reader in readers)
                 {
                     if (reader.getName() == ruName)
                     {
-                        _readerUnit = reader;
+                        ReaderUnit = reader;
                         break;
                     }
                 }
             }
-            if (_readerUnit == null)
+            if (ReaderUnit == null)
             {
                 log.Error("Cannot initialize the Reader Unit.");
                 throw new KeyStoreException("Cannot initialize the Reader Unit."); 
             }
 
-            if (!_readerUnit.connectToReader())
+            if (!ReaderUnit.connectToReader())
             {
                 log.Error("Cannot connect to the Reader Unit.");
                 throw new KeyStoreException("Cannot connect to the Reader Unit.");
             }
 
-            if (_readerUnit.waitInsertion(1000))
+            if (ReaderUnit.waitInsertion(1000))
             {
-                if (_readerUnit.connect())
+                if (ReaderUnit.connect())
                 {
-                    var chip = _readerUnit.getSingleChip();
+                    var chip = ReaderUnit.getSingleChip();
                     var genericType = chip.getGenericCardType();
                     if (String.Compare(genericType, "SAM") >= 0)
                     {
-                        _chip = chip;
+                        Chip = chip;
                     }
                     else
                     {
@@ -115,32 +117,34 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 log.Error("No SAM has been detected on the reader.");
                 throw new KeyStoreException("No SAM has been detected on the reader.");
             }
+            log.Info("Key Store opened.");
         }
 
         public override void Close()
         {
             log.Info("Closing the key store...");
-            if (_readerUnit != null)
+            if (ReaderUnit != null)
             {
-                if (_chip != null)
+                if (Chip != null)
                 {
-                    _readerUnit.disconnect();
-                    _readerUnit.waitRemoval(1);
-                    _chip = null;
+                    ReaderUnit.disconnect();
+                    ReaderUnit.waitRemoval(1);
+                    Chip = null;
                 }
-                _readerUnit.disconnectFromReader();
-                _readerUnit.Dispose();
-                _readerUnit = null;
+                ReaderUnit.disconnectFromReader();
+                ReaderUnit.Dispose();
+                ReaderUnit = null;
             }
 
-            if (_readerProvider != null)
+            if (ReaderProvider != null)
             {
-                _readerProvider.release();
-                _readerProvider.Dispose();
-                _readerProvider = null;
+                ReaderProvider.release();
+                ReaderProvider.Dispose();
+                ReaderProvider = null;
             }
 
             _unlocked = false;
+            log.Info("Key Store closed.");
         }
 
         public override bool CheckKeyEntryExists(string identifier)
@@ -152,6 +156,11 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             }
 
             return false;
+        }
+
+        public bool CheckKeyUsageCounterExists(byte identifier)
+        {
+            return (identifier < SAM_AV2_MAX_USAGE_COUNTERS);
         }
 
         public override void Create(KeyEntry keyEntry)
@@ -178,7 +187,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             }
 
             byte entry = byte.Parse(identifier);
-            var cmd = _chip?.getCommands();
+            var cmd = Chip?.getCommands();
             if (cmd == null)
             {
                 log.Error("No Command associated with the SAM chip.");
@@ -191,7 +200,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 var av2entry = av2cmd.getKeyEntry(entry);
                 var set = av2entry.getSETStruct();
                 keyEntry = CreateKeyEntryFromKeyType(av2entry.getKeyType());
-                
+                keyEntry.Identifier = identifier;
                 var infoav2 = av2entry.getKeyEntryInformation();
                 if (keyEntry.SAMProperties != null)
                 {
@@ -252,6 +261,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 throw new KeyStoreException("Unexpected Command associated with the SAM chip.");
             }
 
+            log.Info(String.Format("Key entry `{0}` retrieved.", identifier));
             return keyEntry;
         }
 
@@ -275,6 +285,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             {
                 entries.Add(i.ToString());
             }
+            log.Info(String.Format("{0} key entries returned.", entries.Count));
             return entries;
         }
 
@@ -282,7 +293,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         {
             log.Info(String.Format("Storing `{0}` key entries...", keyEntries.Count));
 
-            var cmd = _chip.getCommands();
+            var cmd = Chip.getCommands();
             if (cmd is SAMAV1ISO7816Commands av1cmd)
             {
                 if (GetSAMProperties().AutoSwitchToAV2)
@@ -290,7 +301,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     SwitchSAMToAV2(av1cmd, GetSAMProperties().AuthenticateKey);
                     Close();
                     Open();
-                    cmd = _chip.getCommands();
+                    cmd = Chip.getCommands();
                     if (cmd is SAMAV1ISO7816Commands)
                     {
                         log.Error("The SAM didn't switched properly to AV2 mode.");
@@ -308,6 +319,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             {
                 Update(keyEntry);
             }
+
+            log.Info("Key Entries storing completed.");
         }
 
         public override void Update(KeyEntry keyEntry, bool ignoreIfMissing = false)
@@ -322,7 +335,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
             if (keyEntry is SAMSymmetricKeyEntry samkey)
             {
-                var cmd = _chip.getCommands();
+                var cmd = Chip?.getCommands();
                 if (cmd is SAMAV2ISO7816Commands av2cmd)
                 {
                     if (GetSAMProperties().UnlockKey != null && !string.IsNullOrEmpty(GetSAMProperties().UnlockKey.Key.Value) && !_unlocked)
@@ -483,6 +496,93 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             key.fromString(Regex.Replace(keyVersion.Key.Value, ".{2}", "$0 "));
             av2cmds.lockUnlock(key, SAMLockUnlock.Unlock, keyEntry, 0x00, 0x00);
             log.Info("SAM unlocked.");
+        }
+
+        public SAMKeyUsageCounter GetCounter(byte identifier)
+        {
+            log.Info(String.Format("Getting key usage counter `{0}`...", identifier));
+            if (!CheckKeyUsageCounterExists(identifier))
+            {
+                log.Error(String.Format("The key usage counter `{0}` do not exists.", identifier));
+                throw new KeyStoreException("The key usage counter do not exists.");
+            }
+
+            var cmd = Chip?.getCommands();
+            if (cmd == null)
+            {
+                log.Error("No Command associated with the SAM chip.");
+                throw new KeyStoreException("No Command associated with the SAM chip.");
+            }
+
+            var counter = new SAMKeyUsageCounter();
+            counter.Identifier = identifier;
+            if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
+            {
+                var kucEntry = av2cmd.getKUCEntry(identifier);
+                var entry = kucEntry.getKucEntryStruct();
+                counter.ChangeKeyRefId = entry.keynockuc;
+                counter.ChangeKeyRefVersion = entry.keyvckuc;
+                counter.Limit = BitConverter.ToUInt32(entry.limit, 0);
+                counter.Value = BitConverter.ToUInt32(entry.curval, 0);
+            }
+            else if (cmd is LibLogicalAccess.Reader.SAMAV1ISO7816Commands)
+            {
+                log.Error("SAM is AV1. Please switch the SAM chip to AV2 mode first.");
+                throw new KeyStoreException("SAM is AV1. Please switch the SAM chip to AV2 mode first.");
+            }
+            else
+            {
+                log.Error("Unexpected Command associated with the SAM chip.");
+                throw new KeyStoreException("Unexpected Command associated with the SAM chip.");
+            }
+
+            log.Info(String.Format("Key usage counter `{0}` retrieved.", identifier));
+            return counter;
+        }
+        public void UpdateCounter(SAMKeyUsageCounter counter)
+        {
+            log.Info(String.Format("Updating key usage counter `{0}`...", counter.Identifier));
+
+            if (GetSAMProperties().AuthenticateKey == null)
+            {
+                log.Error("To be updated, a SAM AV2 key store requires at least the Authenticate Key.");
+                throw new KeyStoreException("To be updated, a SAM AV2 key store requires at least the Authenticate Key.");
+            }
+
+            var cmd = Chip?.getCommands();
+            if (cmd is SAMAV2ISO7816Commands av2cmd)
+            {
+                if (GetSAMProperties().UnlockKey != null && !string.IsNullOrEmpty(GetSAMProperties().UnlockKey.Key.Value) && !_unlocked)
+                {
+                    UnlockSAM(av2cmd, GetSAMProperties().UnlockKeyEntryIdentifier, GetSAMProperties().UnlockKey);
+                    _unlocked = true;
+                }
+
+                var key = new DESFireKey();
+                key.setKeyType(DESFireKeyType.DF_KEY_AES);
+                key.setKeyVersion(GetSAMProperties().AuthenticateKey.Version);
+                key.fromString(Regex.Replace(GetSAMProperties().AuthenticateKey.Key.Value, ".{2}", "$0 "));
+
+                var kucEntry = new SAMKucEntry();
+                var entry = kucEntry.getKucEntryStruct();
+
+                entry.keynockuc = counter.ChangeKeyRefId;
+                entry.keyvckuc = counter.ChangeKeyRefVersion;
+                entry.limit = BitConverter.GetBytes(counter.Limit);
+                entry.curval = BitConverter.GetBytes(counter.Value);
+                kucEntry.setKucEntryStruct(entry);
+
+                av2cmd.authenticateHost(key, GetSAMProperties().AuthenticateKeyEntryIdentifier);
+                kucEntry.setUpdateMask(0xE0);
+                av2cmd.changeKUCEntry(counter.Identifier, kucEntry, key);
+            }
+            else
+            {
+                log.Error("Inserted SAM is not in AV2 mode, AV1 support has been deprecated, please check to option to auto switch to AV2 or manually perform a Switch.");
+                throw new KeyStoreException("Inserted SAM is not in AV2 mode, AV1 support has been deprecated, please check to option to auto switch to AV2 or manually perform a Switch.");
+            }
+
+            log.Info(String.Format("Key usage counter `{0}` updated.", counter.Identifier));
         }
     }
 }

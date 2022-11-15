@@ -11,6 +11,7 @@ namespace Leosac.KeyManager.Library
 {
     public class Favorites : KMPermanentConfig<Favorites>
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
         private static object _objlock = new object();
         private static Favorites? _singleton;
 
@@ -51,6 +52,7 @@ namespace Leosac.KeyManager.Library
             {
                 SaveToFile();
             }
+            log.Info(String.Format("New Favorite `{0}` saved.", favorite.Name));
             return favorite;
         }
     }

@@ -16,6 +16,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 {
     public class KeyStoreControlViewModel : ViewModelBase
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
         public KeyStoreControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
             _snackbarMessageQueue = snackbarMessageQueue;
@@ -130,6 +131,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     }
                     catch (Exception ex)
                     {
+                        log.Error("Creating the Key Entry failed unexpected.", ex);
                         SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
                         CreateKeyEntry(dialog);
                     }
@@ -159,6 +161,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
             catch (Exception ex)
             {
+                log.Error("Updating the Key Entry failed unexpected.", ex);
                 SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
                 UpdateKeyEntry(dialog);
             }
@@ -179,6 +182,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
             catch (Exception ex)
             {
+                log.Error("Deleting the Key Entry failed unexpected.", ex);
                 SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
             }
         }

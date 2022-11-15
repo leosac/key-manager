@@ -108,6 +108,10 @@ namespace Leosac.KeyManager
             {
                 NotificationLines.Add(writer.ToString());
                 var count = NotificationLines.Count - MaxLines;
+                if (loggingEvent.ExceptionObject != null)
+                {
+                    NotificationLines.Add(loggingEvent.ExceptionObject.ToString());
+                }
                 if (count > 0)
                 {
                     for (int i = 0; i < count; ++i)

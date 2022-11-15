@@ -31,7 +31,7 @@
             <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,5,5,5">
                 <Button Width="100" IsDefault="True" Content="Close" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
             </WrapPanel>
-            <TabControl TabStripPlacement="Left">
+            <TabControl TabStripPlacement="Left" Margin="5,15,5,5">
                 <TabItem Header="Random">
                     <Grid>
                         <Button x:Name="btnRandom" Content="Generate Random Key" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnRandom_Click"/>

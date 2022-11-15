@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.SAMKeyUsageCounterDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:domain="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain"
+             xmlns:libui="clr-namespace:Leosac.KeyManager.Library.UI;assembly=KeyManager.Library.UI"
+             xmlns:local="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance domain:SAMKeyUsageCounterDialogViewModel}"
+             d:DesignHeight="370" d:DesignWidth="500">
+    <DockPanel LastChildFill="True">
+        <TextBlock DockPanel.Dock="Top" Text="Key Entry" FontSize="18" Margin="5" />
+        <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,25,5,5">
+            <Button Width="100" IsDefault="True" Content="OK" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding Counter}"/>
+            <Button Width="100" IsCancel="True" Content="Cancel" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
+        </WrapPanel>
+        <StackPanel>
+            <TextBox Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Counter.Identifier}" IsEnabled="False" Margin="5,5,5,5"
+                     materialDesign:HintAssist.HelperText="Unique identifier for the key usage counter"
+                     materialDesign:HintAssist.Hint="Key Usage Counter Identifier"
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+            <materialDesign:Card Margin="5,15,5,5">
+                <StackPanel>
+                    <Expander HorizontalAlignment="Stretch" Header="Counter" IsExpanded="True">
+                        <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <libui:NumericUpDownControl MinValue="0" MaxValue="4294967295" CurrentValue="{Binding Counter.Value, Mode=TwoWay}" Grid.Row="0"
+                                                        HelperText="The Counter Current Value"
+                                                        Hint="Value"/>
+                                <libui:NumericUpDownControl MinValue="0" MaxValue="4294967295" CurrentValue="{Binding Counter.Limit, Mode=TwoWay}" Grid.Row="1"
+                                                        HelperText="The Counter Limit"
+                                                        Hint="Limit"/>
+                            </Grid>
+                        </StackPanel>
+                    </Expander>
+                </StackPanel>
+            </materialDesign:Card>
+            <local:ChangeKeyReferenceControl ChangeKeyRefId="{Binding Counter.ChangeKeyRefId, Mode=TwoWay}" ChangeKeyRefVersion="{Binding Counter.ChangeKeyRefVersion, Mode=TwoWay}" Margin="5"/>
+        </StackPanel>
+    </DockPanel>
+</UserControl>

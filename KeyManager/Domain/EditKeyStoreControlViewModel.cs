@@ -2,22 +2,30 @@
 using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
+using log4net;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using static Net.Codecrete.QrCodeGenerator.QrSegment;
 
 namespace Leosac.KeyManager.Domain
 {
     public class EditKeyStoreControlViewModel : KeyStoreControlViewModel
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
         public EditKeyStoreControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
             : base(snackbarMessageQueue)
         {
             _showProgress = false;
+            Tabs = new ObservableCollection<TabItem>(new[]
+            {
+                new TabItem() { Header = "Key Entries", Content = new KeyStoreControl() { DataContext = this } }
+            });
         }
 
         private Favorite? _favorite;
@@ -49,16 +57,19 @@ namespace Leosac.KeyManager.Domain
             set => SetProperty(ref _progressMaximum, value);
         }
 
+        public ObservableCollection<TabItem> Tabs { get; set; }
+
         public KeyManagerCommand? HomeCommand { get; set; }
 
-        public void CloseKeyStore()
+        public void CloseKeyStore(bool navigate = true)
         {
             KeyStore?.Close();
             KeyStore = null;
             KeyEntryIdentifiers.Clear();
             Favorite = null;
 
-            HomeCommand?.Execute(null);
+            if (navigate)
+                HomeCommand?.Execute(null);
         }
 
         public async void EditFavorite()
@@ -146,6 +157,7 @@ namespace Leosac.KeyManager.Domain
                             }
                             catch (Exception ex)
                             {
+                                log.Error("Publishing the Key Entries failed unexpected.", ex);
                                 SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
                             }
                             finally

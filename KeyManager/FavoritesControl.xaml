@@ -6,6 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:domain="clr-namespace:Leosac.KeyManager.Domain"
              xmlns:lib="clr-namespace:Leosac.KeyManager.Library;assembly=KeyManager.Library"
+             xmlns:libuidomain="clr-namespace:Leosac.KeyManager.Library.UI.Domain;assembly=KeyManager.Library.UI"
              xmlns:local="clr-namespace:Leosac.KeyManager"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
@@ -14,13 +15,13 @@
     <DockPanel LastChildFill="True">
         <DockPanel DockPanel.Dock="Top" Margin="15,5,15,5">
             <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                <Button x:Name="btnRefresh"  Style="{StaticResource MaterialDesignFloatingActionButton}" Click="btnRefresh_Click"  Margin="5">
+                <Button Style="{StaticResource MaterialDesignFloatingActionButton}" Command="{Binding RefreshFavoritesCommand}"  Margin="5">
                     <Button.ToolTip>
                         <TextBlock>Refresh Favorites</TextBlock>
                     </Button.ToolTip>
                     <materialDesign:PackIcon Kind="Reload" Height="24" Width="24" Cursor="Hand" />
                 </Button>
-                <Button x:Name="btnNewFavorite"  Style="{StaticResource MaterialDesignFloatingActionButton}" Click="btnNewFavorite_Click" Margin="5">
+                <Button Style="{StaticResource MaterialDesignFloatingActionButton}" Command="{Binding CreateFavoriteCommand}"  Margin="5">
                     <Button.ToolTip>
                         <TextBlock>New Key Store Favorite</TextBlock>
                     </Button.ToolTip>
@@ -36,20 +37,26 @@
                 <DataTemplate DataType="lib:Favorite">
                     <DockPanel LastChildFill="True">
                         <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                            <Button x:Name="btnOpenFavorite" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnOpenFavorite_Click" CommandParameter="{Binding}"  Margin="3">
+                            <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.KeyStoreCommand, ElementName=userControl}"  CommandParameter="{Binding}"  Margin="3">
                                 <materialDesign:PackIcon Kind="FolderOpen" Height="24" Width="24" Cursor="Hand">
                                     <materialDesign:PackIcon.ToolTip>
                                         <TextBlock>Open the favorite key store</TextBlock>
                                     </materialDesign:PackIcon.ToolTip>
                                 </materialDesign:PackIcon>
                             </Button>
-                            <materialDesign:DialogHost DialogClosed="FavoriteDeletion_OnDialogClosed" DialogTheme="Inherit">
+                            <materialDesign:DialogHost DialogTheme="Inherit">
                                 <materialDesign:DialogHost.DialogContent>
                                     <StackPanel Margin="16">
                                         <TextBlock Text="Do you confirm the favorite deletion?" />
 
                                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                                            <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding}" Content="Confirm" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}">
+                                            <Button Margin="0,8,8,0" CommandParameter="{Binding}" Content="Confirm" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}">
+                                                <Button.Command>
+                                                    <libuidomain:CommandGroup>
+                                                        <libuidomain:CommandReference Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
+                                                        <libuidomain:CommandReference Command="{Binding DataContext.RemoveFavoriteCommand, ElementName=userControl}"/>
+                                                    </libuidomain:CommandGroup>
+                                                </Button.Command>
                                             </Button>
 
                                             <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="Cancel" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />
@@ -57,7 +64,7 @@
                                     </StackPanel>
                                 </materialDesign:DialogHost.DialogContent>
 
-                                <Button x:Name="btnDeleteFavorite" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" Margin="3">
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" Margin="3">
                                     <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" Cursor="Hand">
                                         <materialDesign:PackIcon.ToolTip>
                                             <TextBlock>Delete the favorite key store</TextBlock>

@@ -45,14 +45,19 @@ namespace Leosac.KeyManager.Domain
                     {
                         KeyStore? ks = null;
                         Favorite? fav = null;
+                        KeyStoreFactory? factory = null;
                         if (parameter is KeyStore)
                         {
                             ks = parameter as KeyStore;
+                            if (ks != null)
+                            {
+                                factory = KeyStoreFactory.GetFactoryFromPropertyType(ks.Properties!.GetType());
+                            }
                         }
-                        else if(parameter is Favorite)
+                        else if (parameter is Favorite)
                         {
                             fav = parameter as Favorite;
-                            var factory = KeyStoreFactory.GetFactoryFromPropertyType(fav!.Properties!.GetType());
+                            factory = KeyStoreFactory.GetFactoryFromPropertyType(fav!.Properties!.GetType());
                             if (factory != null)
                             {
                                 ks = factory.CreateKeyStore();
@@ -60,16 +65,33 @@ namespace Leosac.KeyManager.Domain
                             }
                         }
 
-                        if (ks != null)
+                        if (ks != null && factory != null)
                         {
                             try
                             {
-                                ks?.Open();
-
                                 SelectedIndex = 2;
                                 var editModel = _selectedItem?.DataContext as EditKeyStoreControlViewModel;
                                 if (editModel != null)
                                 {
+                                    // Ensure everything is back to original state
+                                    editModel.CloseKeyStore(false);
+
+                                    while (editModel.Tabs.Count > 1)
+                                    {
+                                        editModel.Tabs.RemoveAt(1);
+                                    }
+                                    var additionalControls = factory.CreateKeyStoreAdditionalControls();
+                                    foreach (var addition in additionalControls)
+                                    {
+                                        if (addition.Value.DataContext is KeyStoreAdditionalControlViewModel additionalModel)
+                                        {
+                                            additionalModel.KeyStore = ks;
+                                            additionalModel.SnackbarMessageQueue = snackbarMessageQueue;
+                                        }
+                                        editModel.Tabs.Add(new TabItem() { Header = addition.Key, Content = addition.Value });
+                                    }
+
+                                    ks?.Open();
                                     editModel.KeyStore = ks;
                                     editModel.Favorite = fav;
                                     editModel.RefreshKeyEntries();
@@ -81,6 +103,7 @@ namespace Leosac.KeyManager.Domain
                             }
                             catch (Exception ex)
                             {
+                                log.Error("Opening Key Store failed unexpected.", ex);
                                 SnackbarHelper.EnqueueError(snackbarMessageQueue, ex);
                             }
                         }

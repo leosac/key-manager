@@ -60,6 +60,24 @@ namespace Leosac.KeyManager.Library.UI
         public static readonly DependencyProperty KeyChecksumIVProperty = DependencyProperty.Register(nameof(KeyChecksumIV), typeof(string), typeof(KeyControl),
             new FrameworkPropertyMetadata(""));
 
+        public bool ShowKCV
+        {
+            get { return (bool)GetValue(ShowKCVProperty); }
+            set { SetValue(ShowKCVProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowKCVProperty = DependencyProperty.Register(nameof(ShowKCV), typeof(bool), typeof(KeyControl),
+            new FrameworkPropertyMetadata(true));
+
+        public bool ShowKeyLink
+        {
+            get { return (bool)GetValue(ShowKeyLinkProperty); }
+            set { SetValue(ShowKeyLinkProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowKeyLinkProperty = DependencyProperty.Register(nameof(ShowKeyLink), typeof(bool), typeof(KeyControl),
+            new FrameworkPropertyMetadata(true));
+
         public ObservableCollection<KeyManager.Library.KeyChecksum> KeyChecksumAlgorithms { get; set; } = new ObservableCollection<KeyChecksum>();
 
         private void btnCopy_Click(object sender, RoutedEventArgs e)

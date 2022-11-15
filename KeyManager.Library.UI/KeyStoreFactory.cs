@@ -22,6 +22,8 @@ namespace Leosac.KeyManager.Library.UI
 
         public abstract KeyStorePropertiesControlViewModel CreateKeyStorePropertiesControlViewModel();
 
+        public abstract IDictionary<string, UserControl> CreateKeyStoreAdditionalControls();
+
         public static IList<KeyStoreFactory> RegisteredFactories { get; } = new List<KeyStoreFactory>();
         public static void Register(KeyStoreFactory factory)
         {
