@@ -97,9 +97,10 @@
                                          Text="Dark" />
                                 </Grid>
 
-                                <!--<Separator />
+                                <Separator />
 
-                                <Button Content="Settings" />-->
+                                <Button Content="Log Console" Command="{Binding Path=LogConsoleCommand}" />
+                                <!--<Button Content="Settings" />-->
                             </StackPanel>
                         </materialDesign:PopupBox>
 

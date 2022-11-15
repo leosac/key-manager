@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public class KeyManagerCommand
+    public class KeyManagerCommand : ICommand
     {
         private readonly Action<object?> _execute;
         private readonly Func<object?, bool> _canExecute;

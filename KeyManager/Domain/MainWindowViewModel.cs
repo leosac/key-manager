@@ -22,8 +22,12 @@ namespace Leosac.KeyManager.Domain
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
+
         public MainWindowViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
+            log.Debug("Initializing KeyManager MainWindow view model...");
+
             HomeCommand = new KeyManagerCommand(
                 _ =>
                 {
@@ -82,6 +86,12 @@ namespace Leosac.KeyManager.Domain
                         }
                     }
 
+                });
+            LogConsoleCommand = new KeyManagerCommand(
+                parameter =>
+                {
+                    var consoleWindow = new LogConsoleWindow();
+                    consoleWindow.Show();
                 });
 
             MenuItems = new ObservableCollection<NavItem>(new[]
@@ -142,5 +152,6 @@ namespace Leosac.KeyManager.Domain
         public KeyManagerCommand HomeCommand { get; }
         public KeyManagerCommand FavoritesCommand { get; }
         public KeyManagerCommand KeyStoreCommand { get; }
+        public KeyManagerCommand LogConsoleCommand { get; }
     }
 }
