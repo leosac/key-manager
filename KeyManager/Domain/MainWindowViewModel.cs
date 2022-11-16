@@ -49,62 +49,57 @@ namespace Leosac.KeyManager.Domain
                         if (parameter is KeyStore)
                         {
                             ks = parameter as KeyStore;
-                            if (ks != null)
-                            {
-                                factory = KeyStoreFactory.GetFactoryFromPropertyType(ks.Properties!.GetType());
-                            }
                         }
                         else if (parameter is Favorite)
                         {
                             fav = parameter as Favorite;
-                            factory = KeyStoreFactory.GetFactoryFromPropertyType(fav!.Properties!.GetType());
-                            if (factory != null)
-                            {
-                                ks = factory.CreateKeyStore();
-                                ks.Properties = fav.Properties;
-                            }
+                            ks = fav?.CreateKeyStore();
                         }
 
-                        if (ks != null && factory != null)
+                        if (ks != null)
                         {
-                            try
+                            factory = KeyStoreFactory.GetFactoryFromPropertyType(ks.Properties!.GetType());
+                            if (factory != null)
                             {
-                                SelectedIndex = 2;
-                                var editModel = _selectedItem?.DataContext as EditKeyStoreControlViewModel;
-                                if (editModel != null)
+                                try
                                 {
-                                    // Ensure everything is back to original state
-                                    editModel.CloseKeyStore(false);
+                                    SelectedIndex = 2;
+                                    var editModel = _selectedItem?.DataContext as EditKeyStoreControlViewModel;
+                                    if (editModel != null)
+                                    {
+                                        // Ensure everything is back to original state
+                                        editModel.CloseKeyStore(false);
 
-                                    while (editModel.Tabs.Count > 1)
-                                    {
-                                        editModel.Tabs.RemoveAt(1);
-                                    }
-                                    var additionalControls = factory.CreateKeyStoreAdditionalControls();
-                                    foreach (var addition in additionalControls)
-                                    {
-                                        if (addition.Value.DataContext is KeyStoreAdditionalControlViewModel additionalModel)
+                                        while (editModel.Tabs.Count > 1)
                                         {
-                                            additionalModel.KeyStore = ks;
-                                            additionalModel.SnackbarMessageQueue = snackbarMessageQueue;
+                                            editModel.Tabs.RemoveAt(1);
                                         }
-                                        editModel.Tabs.Add(new TabItem() { Header = addition.Key, Content = addition.Value });
-                                    }
+                                        var additionalControls = factory.CreateKeyStoreAdditionalControls();
+                                        foreach (var addition in additionalControls)
+                                        {
+                                            if (addition.Value.DataContext is KeyStoreAdditionalControlViewModel additionalModel)
+                                            {
+                                                additionalModel.KeyStore = ks;
+                                                additionalModel.SnackbarMessageQueue = snackbarMessageQueue;
+                                            }
+                                            editModel.Tabs.Add(new TabItem() { Header = addition.Key, Content = addition.Value });
+                                        }
 
-                                    ks?.Open();
-                                    editModel.KeyStore = ks;
-                                    editModel.Favorite = fav;
-                                    editModel.RefreshKeyEntries();
+                                        ks?.Open();
+                                        editModel.KeyStore = ks;
+                                        editModel.Favorite = fav;
+                                        editModel.RefreshKeyEntries();
+                                    }
                                 }
-                            }
-                            catch (KeyStoreException ex)
-                            {
-                                SnackbarHelper.EnqueueError(snackbarMessageQueue, ex, "Key Store Error");
-                            }
-                            catch (Exception ex)
-                            {
-                                log.Error("Opening Key Store failed unexpected.", ex);
-                                SnackbarHelper.EnqueueError(snackbarMessageQueue, ex);
+                                catch (KeyStoreException ex)
+                                {
+                                    SnackbarHelper.EnqueueError(snackbarMessageQueue, ex, "Key Store Error");
+                                }
+                                catch (Exception ex)
+                                {
+                                    log.Error("Opening Key Store failed unexpected.", ex);
+                                    SnackbarHelper.EnqueueError(snackbarMessageQueue, ex);
+                                }
                             }
                         }
                     }

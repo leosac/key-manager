@@ -1,4 +1,5 @@
 ﻿using Leosac.KeyManager.Library.DivInput;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,13 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Leosac.KeyManager.Library.KeyStore
+namespace Leosac.KeyManager.Library
 {
-    public class KeyLink : KMObject
+    public class Link : KMObject
     {
-        public KeyLink()
+        public Link()
         {
-            _keyVersion = 0;
             DivInput = new ObservableCollection<DivInputFragment>();
         }
 
@@ -30,14 +30,6 @@ namespace Leosac.KeyManager.Library.KeyStore
         {
             get => _keyIdentifier;
             set => SetProperty(ref _keyIdentifier, value);
-        }
-
-        private int _keyVersion;
-
-        public int KeyVersion
-        {
-            get => _keyVersion;
-            set => SetProperty(ref _keyVersion, value);
         }
 
         public ObservableCollection<DivInputFragment> DivInput { get; set; }

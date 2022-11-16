@@ -7,20 +7,24 @@ using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public class KeyLinkDialogViewModel : ViewModelBase
+    public class KeyLinkDialogViewModel : LinkDialogViewModel
     {
-        public KeyLinkDialogViewModel()
+        public KeyLinkDialogViewModel() : base()
         {
 
         }
 
-        private KeyLink? _keyLink;
-
         public KeyLink? KeyLink
-
         {
-            get => _keyLink;
-            set => SetProperty(ref _keyLink, value);
+            get => Link as KeyLink;
+        }
+
+        public override void RunLinkImpl(KeyStore.KeyStore ks)
+        {
+            if (KeyLink != null)
+            {
+                LinkResult = ks.ResolveKeyLink(KeyLink.KeyIdentifier, KeyLink.KeyVersion, GetDivInput());
+            }
         }
     }
 }

@@ -43,14 +43,19 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
             return (keyEntry != null);
         }
 
-        public override void Create(KeyEntry keyEntry)
+        public override void Create(IChangeKeyEntry change)
         {
             lock (_keyEntries)
             {
-                if (CheckKeyEntryExists(keyEntry))
-                    throw new KeyStoreException("A key entry with the same identifier already exists.");
+                if (change is KeyEntry keyEntry)
+                {
+                    if (CheckKeyEntryExists(keyEntry))
+                        throw new KeyStoreException("A key entry with the same identifier already exists.");
 
-                _keyEntries.Add(keyEntry);
+                    _keyEntries.Add(keyEntry);
+                }
+                else
+                    throw new KeyStoreException("Unsupported `change` parameter.");
             }
         }
 
@@ -81,22 +86,35 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
             return _keyEntries.Select(k => k.Identifier).ToList();
         }
 
-        public override void Store(IList<KeyEntry> keyEntries)
+        public override void Store(IList<IChangeKeyEntry> changes)
         {
             lock (_keyEntries)
             {
-                _keyEntries.UnionBy(keyEntries, k => k.Identifier);
+                foreach (var change in changes)
+                {
+                    Update(change, true);
+                }
             }
         }
 
-        public override void Update(KeyEntry keyEntry, bool ignoreIfMissing = false)
+        public override void Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
         {
             lock (_keyEntries)
             {
-                Delete(keyEntry.Identifier, ignoreIfMissing);
-                Create(keyEntry);
-                OnKeyEntryUpdated(keyEntry);
+                Delete(change.Identifier, ignoreIfMissing);
+                Create(change);
+                OnKeyEntryUpdated(change);
             }
+        }
+
+        public override string? ResolveKeyLink(string keyIdentifier, byte keyVersion, string? divInput = null)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override string? ResolveKeyEntryLink(string keyIdentifier, string? divInput = null, string? wrappingKeyId = null, byte wrappingKeyVersion = 0)
+        {
+            throw new NotSupportedException();
         }
     }
 }

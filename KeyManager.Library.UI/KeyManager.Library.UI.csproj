@@ -27,5 +27,11 @@
   <ItemGroup>
     <Resource Include="images\confidential.png" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="KeyEntryLinkDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
 
 </Project>

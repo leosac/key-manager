@@ -89,7 +89,7 @@ namespace Leosac.KeyManager.Library.UI
         {
             var model = new KeyLinkDialogViewModel()
             {
-                KeyLink = Key?.Link
+                Link = Key?.Link
             };
             var dialog = new KeyLinkDialog()
             {

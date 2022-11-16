@@ -11,9 +11,14 @@ namespace Leosac.KeyManager.Library
 {
     public class Favorite : KMObject, IEquatable<Favorite>
     {
-        private string? _name;
+        public Favorite()
+        {
+            _name = string.Empty;
+        }
 
-        public string? Name
+        private string _name;
+
+        public string Name
         {
             get => _name;
             set => SetProperty(ref _name, value);

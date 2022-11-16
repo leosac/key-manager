@@ -73,18 +73,25 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             return System.IO.File.Exists(GetKeyEntryFile(identifier));
         }
 
-        public override void Create(KeyEntry keyEntry)
+        public override void Create(IChangeKeyEntry change)
         {
-            log.Info(String.Format("Creating key entry `{0}`...", keyEntry.Identifier));
-            if (CheckKeyEntryExists(keyEntry.Identifier))
+            log.Info(String.Format("Creating key entry `{0}`...", change.Identifier));
+            if (CheckKeyEntryExists(change.Identifier))
             {
-                log.Error(String.Format("A key entry with the same identifier `{0}` already exists.", keyEntry.Identifier));
+                log.Error(String.Format("A key entry with the same identifier `{0}` already exists.", change.Identifier));
                 throw new KeyStoreException("A key entry with the same identifier already exists.");
             }
 
-            string serialized = JsonConvert.SerializeObject(keyEntry, typeof(KeyEntry), _jsonSettings);
-            System.IO.File.WriteAllText(GetKeyEntryFile(keyEntry.Identifier), serialized);
-            log.Info(String.Format("Kkey entry `{0}` created.", keyEntry.Identifier));
+            string serialized;
+            if (change is KeyEntry)
+                serialized = JsonConvert.SerializeObject(change, typeof(KeyEntry), _jsonSettings);
+            else if (change is KeyEntryCryptogram cryptogram)
+                serialized = cryptogram.Value;
+            else
+                throw new KeyStoreException("Unsupported `change` parameter.");
+
+            System.IO.File.WriteAllText(GetKeyEntryFile(change.Identifier), serialized);
+            log.Info(String.Format("Key entry `{0}` created.", change.Identifier));
         }
 
         public override void Delete(string identifier, bool ignoreIfMissing = false)
@@ -93,8 +100,8 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             var exists = CheckKeyEntryExists(identifier);
             if (!exists && !ignoreIfMissing)
             {
-                log.Error(String.Format("The key entry `{0}` do not exists.", identifier));
-                throw new KeyStoreException("The key entry do not exists.");
+                log.Error(String.Format("The key entry `{0}` doesn't exist.", identifier));
+                throw new KeyStoreException("The key entry doesn't exist.");
             }
 
             if (exists)
@@ -109,8 +116,8 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             log.Info(String.Format("Getting key entry `{0}`...", identifier));
             if (!CheckKeyEntryExists(identifier))
             {
-                log.Error(String.Format("The key entry `{0}` do not exists.", identifier));
-                throw new KeyStoreException("The key entry do not exists.");
+                log.Error(String.Format("The key entry `{0}` doesn't exist.", identifier));
+                throw new KeyStoreException("The key entry doesn't exist.");
             }
 
             string serialized = System.IO.File.ReadAllText(GetKeyEntryFile(identifier));
@@ -133,23 +140,86 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             return keyEntries;
         }
 
-        public override void Store(IList<KeyEntry> keyEntries)
+        public override void Store(IList<IChangeKeyEntry> changes)
         {
-            log.Info(String.Format("Storing `{0}` key entries...", keyEntries.Count));
-            foreach (var keyEntry in keyEntries)
+            log.Info(String.Format("Storing `{0}` key entries...", changes.Count));
+            foreach (var change in changes)
             {
-                Update(keyEntry, true);
+                Update(change, true);
             }
             log.Info("Key Entries storing completed.");
         }
 
-        public override void Update(KeyEntry keyEntry, bool ignoreIfMissing = false)
+        public override void Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
         {
-            log.Info(String.Format("Updating key entry `{0}`...", keyEntry.Identifier));
-            Delete(keyEntry.Identifier, ignoreIfMissing);
-            Create(keyEntry);
-            OnKeyEntryUpdated(keyEntry);
-            log.Info(String.Format("Key entry `{0}` updated.", keyEntry.Identifier));
+            log.Info(String.Format("Updating key entry `{0}`...", change.Identifier));
+            Delete(change.Identifier, ignoreIfMissing);
+            Create(change);
+            OnKeyEntryUpdated(change);
+            log.Info(String.Format("Key entry `{0}` updated.", change.Identifier));
+        }
+
+        public override string? ResolveKeyEntryLink(string keyIdentifier, string? divInput = null, string? wrappingKeyId = null, byte wrappingKeyVersion = 0)
+        {
+            string? result = null;
+            log.Info(String.Format("Resolving key entry link with Key Entry Identifier `{0}`, Div Input `{1}`...", keyIdentifier, divInput));
+
+            var keyEntry = Get(keyIdentifier);
+            if (keyEntry != null)
+            {
+                log.Info("Key entry link resolved.");
+                if (!string.IsNullOrEmpty(wrappingKeyId))
+                {
+                    var wrappingKey = GetKey(wrappingKeyId, wrappingKeyVersion);
+                    if (wrappingKey != null)
+                    {
+                        // TODO: do something here to encipher the key value?
+                        // The wrapping algorithm may be too close to the targeted Key Store
+                        throw new NotSupportedException();
+                    }
+                    else
+                    {
+                        log.Error("Cannot resolve the wrapping key.");
+                    }
+                }
+                else
+                {
+                    result = JsonConvert.SerializeObject(keyEntry, typeof(KeyEntry), _jsonSettings);
+                }
+            }
+            else
+            {
+                log.Error("Cannot resolve the key entry link.");
+            }
+
+            log.Info("Key entry link completed.");
+            return result;
+        }
+
+        public override string? ResolveKeyLink(string keyIdentifier, byte keyVersion, string? divInput = null)
+        {
+            string? result = null;
+            log.Info(String.Format("Resolving key link with Key Entry Identifier `{0}`, Key Version `{1}`, Div Input `{2}`...", keyIdentifier, keyVersion, divInput));
+
+            if (!CheckKeyEntryExists(keyIdentifier))
+            {
+                log.Error(String.Format("The key entry `{0}` do not exists.", keyIdentifier));
+                throw new KeyStoreException("The key entry do not exists.");
+            }
+
+            var key = GetKey(keyIdentifier, keyVersion);
+            if (key != null)
+            {
+                log.Info("Key link resolved.");
+                result = key.Value;
+            }
+            else
+            {
+                log.Error("Cannot resolve the key link.");
+            }
+
+            log.Info("Key link completed.");
+            return result;
         }
     }
 }

@@ -128,28 +128,36 @@ namespace Leosac.KeyManager.Domain
                         {
                             try
                             {
+                                ProgressValue = 0;
+                                ShowProgress = true;
+
                                 var deststore = factory.CreateKeyStore();
                                 deststore.Properties = prop;
-
-                                var keyentries = new List<KeyEntry>();
-                                var ids = KeyStore.GetAll();
-                                ProgressValue = 0;
-                                ProgressMaximum = ids.Count * 2;
-                                ShowProgress = true;
-                                foreach (var id in ids)
-                                {
-                                    var entry = KeyStore.Get(id);
-                                    if (entry != null)
+                                deststore.KeyEntryRetrieved += (sender, e) => { ProgressValue++; };
+                                deststore.KeyEntryUpdated += (sender, e) => { ProgressValue++; };
+                                KeyStore.Publish(deststore,
+                                    (favoriteName) =>
                                     {
-                                        keyentries.Add(entry);
-                                    }
-                                    ProgressValue++;
-                                }
-
-                                deststore.Open();
-                                deststore.KeyEntryUpdated += Store_KeyEntryUpdated;
-                                deststore.Store(keyentries);
-                                deststore.Close();
+                                        if (!string.IsNullOrEmpty(favoriteName))
+                                        {
+                                            var favorites = Favorites.GetSingletonInstance();
+                                            var fav = favorites.KeyStores.Where(ks => ks.Name.ToLower() == favoriteName.ToLower()).SingleOrDefault();
+                                            if (fav != null)
+                                            {
+                                                return fav.CreateKeyStore();
+                                            }
+                                            else
+                                            {
+                                                log.Error(String.Format("Cannot found the favorite Key Store `{0}`.", favoriteName));
+                                                throw new KeyStoreException("Cannot found the favorite Key Store.");
+                                            }
+                                        }
+                                        return null;
+                                    },
+                                    (store, nbentries) =>
+                                    {
+                                        ProgressMaximum = nbentries * 2;
+                                    });
                             }
                             catch (KeyStoreException ex)
                             {
@@ -168,11 +176,6 @@ namespace Leosac.KeyManager.Domain
                     }
                 }
             }
-        }
-
-        private void Store_KeyEntryUpdated(object? sender, KeyEntry e)
-        {
-            ProgressValue++;
         }
     }
 }

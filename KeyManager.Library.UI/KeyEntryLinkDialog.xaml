@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Leosac.KeyManager.Library.UI.KeyLinkDialog"
+﻿<UserControl x:Class="Leosac.KeyManager.Library.UI.KeyEntryLinkDialog"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:s="clr-namespace:System;assembly=mscorlib"
-             d:DataContext="{d:DesignInstance domain:KeyLinkDialogViewModel}"
+             d:DataContext="{d:DesignInstance domain:KeyEntryLinkDialogViewModel}"
              mc:Ignorable="d"
              MinWidth="300"
              d:DesignHeight="350" d:DesignWidth="500">
@@ -24,6 +24,13 @@
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="The link failed with following error:" />
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding LinkError}" />
                 </WrapPanel>
+                <materialDesign:Card Grid.Row="4" Margin="5,20,5,5">
+                    <StackPanel>
+                        <Expander HorizontalAlignment="Stretch" Header="Wrapping Key Value" IsExpanded="True">
+                            <local:KeyControl Margin="5" ShowKeyLink="False" ShowKCV="False" />
+                        </Expander>
+                    </StackPanel>
+                </materialDesign:Card>
                 <StackPanel Margin="15" HorizontalAlignment="Center" Orientation="Horizontal">
                     <Button  Margin="5" VerticalAlignment="Center" Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}" CommandParameter="{x:Static Dock.Bottom}" Content="IMPORT NOW" Style="{StaticResource MaterialDesignFlatLightButton}" />
                     <Button  Margin="5" VerticalAlignment="Center" Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}" CommandParameter="{x:Static Dock.Bottom}" Content="CLOSE" Style="{StaticResource MaterialDesignFlatButton}" />
@@ -55,7 +62,20 @@
                          materialDesign:HintAssist.HelperText="The key entry identifier on the key store"
                          materialDesign:HintAssist.Hint="Identifier"
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                <local:NumericUpDownControl Grid.Row="2" Hint="Version" HelperText="Key version" MaxValue="255" CurrentValue="{Binding KeyLink.KeyVersion, Mode=TwoWay}" VerticalAlignment="Center" Margin="5"/>
+                <materialDesign:Card Grid.Row="3" Margin="5,20,5,5">
+                    <StackPanel>
+                        <Expander HorizontalAlignment="Stretch" Header="Wrapping Key">
+                            <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                                <TextBox Text="{Binding KeyEntryLink.WrappingKeyId, Mode=TwoWay}" Margin="5"
+                                         materialDesign:HintAssist.HelperText="The Wrapping Key Entry Identifier"
+                                         materialDesign:HintAssist.Hint="Identifier"/>
+                                <local:NumericUpDownControl MinValue="0" MaxValue="4294967295" CurrentValue="{Binding KeyEntryLink.WrappingKeyVersion, Mode=TwoWay}" Margin="5"
+                                                            HelperText="The Wrapping Key Version"
+                                                            Hint="Version"/>
+                            </StackPanel>
+                        </Expander>
+                    </StackPanel>
+                </materialDesign:Card>
             </Grid>
         </DockPanel>
     </materialDesign:DrawerHost>

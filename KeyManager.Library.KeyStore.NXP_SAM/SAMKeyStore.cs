@@ -163,9 +163,9 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             return (identifier < SAM_AV2_MAX_USAGE_COUNTERS);
         }
 
-        public override void Create(KeyEntry keyEntry)
+        public override void Create(IChangeKeyEntry change)
         {
-            log.Info(String.Format("Creating key entry `{0}`...", keyEntry.Identifier));
+            log.Info(String.Format("Creating key entry `{0}`...", change.Identifier));
             log.Error("A SAM key entry cannot be created, only updated.");
             throw new KeyStoreException("A SAM key entry cannot be created, only updated.");
         }
@@ -289,9 +289,9 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             return entries;
         }
 
-        public override void Store(IList<KeyEntry> keyEntries)
+        public override void Store(IList<IChangeKeyEntry> changes)
         {
-            log.Info(String.Format("Storing `{0}` key entries...", keyEntries.Count));
+            log.Info(String.Format("Storing `{0}` key entries...", changes.Count));
 
             var cmd = Chip.getCommands();
             if (cmd is SAMAV1ISO7816Commands av1cmd)
@@ -315,17 +315,17 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 }
             }
 
-            foreach (var keyEntry in keyEntries)
+            foreach (var change in changes)
             {
-                Update(keyEntry);
+                Update(change);
             }
 
             log.Info("Key Entries storing completed.");
         }
 
-        public override void Update(KeyEntry keyEntry, bool ignoreIfMissing = false)
+        public override void Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
         {
-            log.Info(String.Format("Updating key entry `{0}`...", keyEntry.Identifier));
+            log.Info(String.Format("Updating key entry `{0}`...", change.Identifier));
 
             if (GetSAMProperties().AuthenticateKey == null)
             {
@@ -333,7 +333,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 throw new KeyStoreException("To be updated, a SAM AV2 key store requires at least the Authenticate Key.");
             }
 
-            if (keyEntry is SAMSymmetricKeyEntry samkey)
+            if (change is SAMSymmetricKeyEntry samkey)
             {
                 var cmd = Chip?.getCommands();
                 if (cmd is SAMAV2ISO7816Commands av2cmd)
@@ -435,8 +435,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 throw new KeyStoreException("Unsupported Key Entry type for this Key Store.");
             }
 
-            OnKeyEntryUpdated(keyEntry);
-            log.Info(String.Format("Key entry `{0}` updated.", keyEntry.Identifier));
+            OnKeyEntryUpdated(change);
+            log.Info(String.Format("Key entry `{0}` updated.", change.Identifier));
         }
 
         public static void SwitchSAMToAV2(SAMAV1ISO7816Commands av1cmds, KeyVersion keyVersion)
@@ -583,6 +583,42 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             }
 
             log.Info(String.Format("Key usage counter `{0}` updated.", counter.Identifier));
+        }
+
+        public override string? ResolveKeyEntryLink(string keyIdentifier, string? divInput = null, string? wrappingKeyId = null, byte wrappingKeyVersion = 0)
+        {
+            // Will be supported with SAM AV3
+            throw new NotSupportedException();
+        }
+
+        public override string? ResolveKeyLink(string keyIdentifier, byte keyVersion, string? divInput = null)
+        {
+            byte[] div;
+            log.Info(String.Format("Resolving key link with Key Entry Identifier `{0}`, Key Version `{1}`, Div Input `{2}`...", keyIdentifier, keyVersion, divInput));
+            if (!string.IsNullOrEmpty(divInput))
+                div = Convert.FromHexString(divInput);
+            else
+                div = new byte[0];
+
+            if (!CheckKeyEntryExists(keyIdentifier))
+            {
+                log.Error(String.Format("The key entry `{0}` doesn't exist.", keyIdentifier));
+                throw new KeyStoreException("The key entry doesn't exist.");
+            }
+            byte entry = byte.Parse(keyIdentifier);
+
+            var cmd = Chip?.getCommands();
+            if (cmd is SAMAV2ISO7816Commands av2cmd)
+            {
+                var keyVector = av2cmd.dumpSecretKey(entry, keyVersion, new ByteVector(div));
+                log.Info("Key link completed.");
+                return Convert.ToHexString(keyVector.ToArray());
+            }
+            else
+            {
+                log.Error("Inserted SAM is not in AV2 mode.");
+                throw new KeyStoreException("Inserted SAM is not in AV2 mode.");
+            }
         }
     }
 }
