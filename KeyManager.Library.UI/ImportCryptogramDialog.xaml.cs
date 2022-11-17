@@ -1,11 +1,6 @@
-﻿using Leosac.KeyManager.Library.KeyStore;
-using Leosac.KeyManager.Library.UI.Domain;
-using MaterialDesignThemes.Wpf;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,11 +16,11 @@ using System.Windows.Shapes;
 namespace Leosac.KeyManager.Library.UI
 {
     /// <summary>
-    /// Interaction logic for KeyEntryControl.xaml
+    /// Interaction logic for ImportCryptogramDialog.xaml
     /// </summary>
-    public partial class KeyEntryDialog : UserControl
+    public partial class ImportCryptogramDialog : UserControl
     {
-        public KeyEntryDialog()
+        public ImportCryptogramDialog()
         {
             InitializeComponent();
         }

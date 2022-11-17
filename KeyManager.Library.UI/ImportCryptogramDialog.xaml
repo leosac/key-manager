@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="Leosac.KeyManager.Library.UI.ImportCryptogramDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
+             xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance domain:ImportCryptogramDialogViewModel}"
+             d:DesignHeight="250" d:DesignWidth="400"
+             MinWidth="400">
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Top" Text="Import Key Entry Cryptogram" FontSize="18" Margin="5" />
+        <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,25,5,5">
+            <Button Width="100" IsDefault="True" Content="OK" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding Cryptogram}"/>
+            <Button Width="100" IsCancel="True" Content="Cancel" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
+        </WrapPanel>
+        <StackPanel Orientation="Vertical">
+            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Cryptogram.Identifier}" Margin="5"
+                     IsEnabled="{Binding CanChangeIdentifier}"
+                     materialDesign:HintAssist.HelperText="Unique identifier for the key entry"
+                     materialDesign:HintAssist.Hint="Key Entry Identifier"
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+            <TextBox Text="{Binding Cryptogram.Value}" TextWrapping="Wrap" Height="60" Margin="5"
+                     materialDesign:HintAssist.HelperText="The cryptogram containing the key entry details"
+                     materialDesign:HintAssist.Hint="Cryptogram"
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+        </StackPanel>
+    </DockPanel>
+</UserControl>

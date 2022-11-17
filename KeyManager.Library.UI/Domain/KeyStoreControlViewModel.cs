@@ -23,7 +23,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             KeyEntryIdentifiers = new ObservableCollection<string>();
 
             CreateKeyEntryCommand = new KeyManagerAsyncCommand<string>(async
-                keyEntryIdentifier =>
+                parameter =>
             {
                 var model = new KeyEntryDialogViewModel();
                 var dialog = new KeyEntryDialog()
@@ -72,6 +72,21 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 keyEntryIdentifier =>
             {
                 DeleteKeyEntry(keyEntryIdentifier);
+            });
+
+            ImportCryptogramCommand = new KeyManagerAsyncCommand<string>(async
+                parameter =>
+            {
+                var model = new ImportCryptogramDialogViewModel()
+                {
+                    CanChangeIdentifier = string.IsNullOrEmpty(parameter)
+                };
+                model.Cryptogram.Identifier = parameter;
+                var dialog = new ImportCryptogramDialog()
+                {
+                    DataContext = model,
+                };
+                ImportCryptogram(dialog);
             });
 
             _keyEntryIdentifiersView = CollectionViewSource.GetDefaultView(KeyEntryIdentifiers);
@@ -184,6 +199,34 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 log.Error("Deleting the Key Entry failed unexpected.", ex);
                 SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
+            }
+        }
+
+        public KeyManagerAsyncCommand<string> ImportCryptogramCommand { get; }
+
+        private async void ImportCryptogram(ImportCryptogramDialog dialog)
+        {
+            try
+            {
+                object? ret = await DialogHost.Show(dialog, "KeyStoreDialog");
+                if (ret != null && dialog.DataContext is ImportCryptogramDialogViewModel model)
+                {
+                    if (!string.IsNullOrEmpty(model.Cryptogram.Value))
+                    {
+                        KeyStore?.Update(model.Cryptogram);
+                    }
+                }
+            }
+            catch (KeyStoreException ex)
+            {
+                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
+                ImportCryptogram(dialog);
+            }
+            catch (Exception ex)
+            {
+                log.Error("Importing the Key Entry Cryptogram failed unexpected.", ex);
+                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
+                ImportCryptogram(dialog);
             }
         }
 

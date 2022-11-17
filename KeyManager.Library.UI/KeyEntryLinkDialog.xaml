@@ -20,25 +20,19 @@
         <materialDesign:DrawerHost.BottomDrawerContent>
             <StackPanel Orientation="Vertical">
                 <TextBox Margin="15" IsReadOnly="True" Text="{Binding LinkResult}" />
-                <WrapPanel>
+                <WrapPanel Visibility="{Binding LinkError, Converter={StaticResource NullableToVisibilityConverter}}">
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="The link failed with following error:" />
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding LinkError}" />
                 </WrapPanel>
-                <materialDesign:Card Grid.Row="4" Margin="5,20,5,5">
-                    <StackPanel>
-                        <Expander HorizontalAlignment="Stretch" Header="Wrapping Key Value" IsExpanded="True">
-                            <local:KeyControl Margin="5" ShowKeyLink="False" ShowKCV="False" />
-                        </Expander>
-                    </StackPanel>
-                </materialDesign:Card>
+                <local:DivInputTestControl DivInput="{Binding Link.DivInput}" DivInputResult="{Binding DivInputResult}" />
                 <StackPanel Margin="15" HorizontalAlignment="Center" Orientation="Horizontal">
-                    <Button  Margin="5" VerticalAlignment="Center" Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}" CommandParameter="{x:Static Dock.Bottom}" Content="IMPORT NOW" Style="{StaticResource MaterialDesignFlatLightButton}" />
                     <Button  Margin="5" VerticalAlignment="Center" Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}" CommandParameter="{x:Static Dock.Bottom}" Content="CLOSE" Style="{StaticResource MaterialDesignFlatButton}" />
                 </StackPanel>
             </StackPanel>
         </materialDesign:DrawerHost.BottomDrawerContent>
         <DockPanel LastChildFill="True">
-            <TextBlock DockPanel.Dock="Top" Text="Key Link" FontSize="18" Margin="5" />
+            <TextBlock DockPanel.Dock="Top" Text="Key Entry Link" FontSize="18" Margin="5" />
+            <TextBlock DockPanel.Dock="Top" Text="Compute the Cryptogram to change the Key Entry, from another Key Store." Margin="5" />
             <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,20,5,5">
                 <Button Width="100" Content="Test" Style="{StaticResource MaterialDesignRaisedLightButton}" CommandParameter="{x:Static Dock.Bottom}" Margin="5">
                     <Button.Command>
@@ -62,6 +56,7 @@
                          materialDesign:HintAssist.HelperText="The key entry identifier on the key store"
                          materialDesign:HintAssist.Hint="Identifier"
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                <local:DivInputControl Grid.Row="2" DivInput="{Binding Link.DivInput}" />
                 <materialDesign:Card Grid.Row="3" Margin="5,20,5,5">
                     <StackPanel>
                         <Expander HorizontalAlignment="Stretch" Header="Wrapping Key">

@@ -45,12 +45,21 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _linkError, value);
         }
 
+        private string? _divInputResult;
+
+        public string? DivInputResult
+        {
+            get => _divInputResult;
+            set => SetProperty(ref _divInputResult, value);
+        }
+
         public KeyManagerCommand RunLinkCommand { get; }
 
         public abstract void RunLinkImpl(KeyStore.KeyStore ks);
 
         public void RunLink()
         {
+            log.Info(String.Format("Running the link manually..."));
             LinkError = null;
             if (Link != null && !string.IsNullOrEmpty(Link.KeyStoreFavorite) && !string.IsNullOrEmpty(Link.KeyIdentifier))
             {
@@ -65,6 +74,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
                             ks.Open();
                             RunLinkImpl(ks);
                             ks.Close();
+
+                            log.Info(String.Format("Link execution completed."));
                         }
                         catch (KeyStoreException ex)
                         {
@@ -78,23 +89,21 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     }
                     else
                     {
-                        LinkError = "Cannot found the linked key store.";
+                        log.Error(String.Format("Cannot create the key store from Favorite `{0}`.", Link.KeyStoreFavorite));
+                        LinkError = "Cannot create the key store from Favorite.";
                     }
                 }
                 else
                 {
+                    log.Error(String.Format("Cannot found the linked key store `{0}`.", Link.KeyStoreFavorite));
                     LinkError = "Cannot found the linked key store.";
                 }
             }
             else
             {
+                log.Error("The Link is not correctly setup.");
                 LinkError = "The Link is not correctly setup.";
             }
-        }
-
-        protected string? GetDivInput()
-        {
-            throw new NotImplementedException();
         }
     }
 }

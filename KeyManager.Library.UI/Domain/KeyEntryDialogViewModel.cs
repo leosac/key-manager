@@ -1,4 +1,5 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
+using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,6 +19,21 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 KeyEntryFactories.Add(new KeyEntryItem(factory));
             }
             Variants = new ObservableCollection<KeyEntryVariant>();
+
+            OpenLinkCommand = new KeyManagerAsyncCommand<object>(async
+                parameter =>
+                {
+                    var model = new KeyEntryLinkDialogViewModel()
+                    {
+                        Link = KeyEntry?.Link
+                    };
+                    var dialog = new KeyEntryLinkDialog()
+                    {
+                        DataContext = model
+                    };
+
+                    await DialogHost.Show(dialog, "KeyEntryDialog");
+                });
         }
 
         private bool _canChangeFactory = true;
@@ -51,6 +67,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 if (value != null && value?.GetType() != KeyEntry?.GetType() && AutoCreate)
                 {
                     KeyEntry = _selectedFactoryItem?.Factory.CreateKeyEntry();
+                    RefreshVariants();
                 }
             }
         }
@@ -79,5 +96,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             }
         }
+
+        public KeyManagerAsyncCommand<object> OpenLinkCommand { get; }
     }
 }

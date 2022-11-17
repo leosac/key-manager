@@ -20,6 +20,22 @@
                              Identifier="KeyEntryDialog">
         <DockPanel LastChildFill="True">
             <TextBlock DockPanel.Dock="Top" Text="Key Entry" FontSize="18" Margin="5" />
+            <Grid DockPanel.Dock="Top" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="400" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Confidential information about the Key Entry. Defines its properties and key values." TextWrapping="Wrap" HorizontalAlignment="Left" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Command="{Binding OpenLinkCommand}" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="24" Height="24" Margin="3"
+                            Visibility="{Binding ShowKeyLink, ElementName=keyControl, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Button.ToolTip>
+                            <TextBlock Text="Link to another Key Store" />
+                        </Button.ToolTip>
+                        <materialDesign:PackIcon Kind="KeyLink" Height="16" Width="16"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
             <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,5">
                 <Button Width="100" IsDefault="True" Content="OK" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding KeyEntry}"/>
                 <Button Width="100" IsCancel="True" Content="Cancel" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
@@ -39,8 +55,7 @@
                       ItemsSource="{Binding KeyEntryFactories}"
                       SelectedItem="{Binding SelectedFactoryItem, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}"
                       materialDesign:HintAssist.HelperText="The key entry type"
-                      materialDesign:HintAssist.Hint="Type"
-                      SelectionChanged="KeyEntryType_SelectionChanged">
+                      materialDesign:HintAssist.Hint="Type">
                     <ComboBox.ItemTemplate>
                         <DataTemplate DataType="domain:KeyEntryFactory">
                             <TextBlock Margin="24,4,0,4" Text="{Binding Name}" />
@@ -63,7 +78,7 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
                 <TextBox Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding KeyEntry.Label}" Margin="6"
-                     materialDesign:HintAssist.HelperText="Label/note about the key entry"
+                     materialDesign:HintAssist.HelperText="Label/note about the key entry. It may not be saved permanently."
                      materialDesign:HintAssist.Hint="Label"
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                 <TabControl Grid.Row="4" MinHeight="100">

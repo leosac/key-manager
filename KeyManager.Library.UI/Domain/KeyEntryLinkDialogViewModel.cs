@@ -11,15 +11,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
     {
         public KeyEntryLinkDialogViewModel() : base()
         {
-            _wrappingKey = new Key();
-        }
-
-        private Key _wrappingKey;
-
-        public Key WrappingKey
-        {
-            get => _wrappingKey;
-            set => SetProperty(ref _wrappingKey, value);
+            
         }
 
         public KeyEntryLink? KeyEntryLink
@@ -31,7 +23,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             if (KeyEntryLink != null)
             {
-                LinkResult = ks.ResolveKeyEntryLink(KeyEntryLink.KeyIdentifier, GetDivInput(), KeyEntryLink.WrappingKeyId, KeyEntryLink.WrappingKeyVersion);
+                LinkResult = ks.ResolveKeyEntryLink(KeyEntryLink.KeyIdentifier, DivInputResult, KeyEntryLink.WrappingKeyId, KeyEntryLink.WrappingKeyVersion);
             }
         }
     }
