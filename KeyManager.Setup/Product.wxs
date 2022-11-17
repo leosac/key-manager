@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?include config.wxi ?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="$(var.ProductName)" Language="1033" Version="1.0.0.0" Manufacturer="$(var.Manufacturer)" UpgradeCode="fd14ef4f-fe2a-44ce-a744-9d0103039487">
+		<Package InstallerVersion="200" Compressed="yes" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+		<Feature Id="ProductFeature" Title="Leosac Key Manager" Level="1">
+			<ComponentGroupRef Id="KeyManagerComponents" />
+      <ComponentGroupRef Id="DependenciesComponents" />
+		</Feature>
+    <Feature Id="StartMenuShortcut" Title="Start Menu Shortcut" Level="1">
+      <ComponentRef Id="ProgramMenuDir" />
+    </Feature>
+    <Feature Id="DesktopShortcut" Title="Desktop Shortcut" Level="1">
+      <ComponentRef Id="ApplicationShortcutDesktop" />
+    </Feature>
+    <!--<Feature Id="LibLogicalAccessFeature" Title="LibLogicalAccess" Level="1">
+      <ComponentGroupRef Id="LibLogicalAccessComponents" />
+    </Feature>-->
+
+    <UIRef Id="WixUI_Advanced" />
+
+    <Property Id="ApplicationFolderName" Value="$(var.Manufacturer)\$(var.ProductName)" />
+    <Property Id="WixAppFolder" Value="WixPerUserFolder" />
+
+    <WixVariable Id="WixUILicenseRtf" Value="EULA.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="banner.bmp" />
+    <!--<WixVariable Id="WixUIDialogBmp" Value="dialog.bmp" />-->
+    <WixVariable Id="WixUIInfoIco" Value="leosac.ico" />
+
+  </Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+        <Directory Id="COMPANYFOLDER" Name="$(var.Manufacturer)">
+				  <Directory Id="APPLICATIONFOLDER" Name="$(var.ProductName)" />
+        </Directory>
+			</Directory>
+
+      <Directory Id="ProgramMenuFolder" Name="Programs">
+        <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)">
+          <Component Id="ProgramMenuDir" Guid="*">
+            <Shortcut Id="ProgramMenuDirShortcut" Name="$(var.ProductName)" Description="$(var.ProductName)"
+                    Target="[APPLICATIONFOLDER]KeyManager.exe" WorkingDirectory="APPLICATIONFOLDER"/>
+            <RemoveFolder Id="ProgramMenuDir" On="uninstall"/>
+            <RegistryValue Root="HKCU" Key="Software\$(var.Manufacturer)\$(var.ProductName)"
+                           Type="integer" Value="1" Name="startmenu_installed" KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+
+      <Directory Id="DesktopFolder" Name="Desktop">
+        <Component Id="ApplicationShortcutDesktop" Guid="*">
+          <Shortcut Id="ApplicationDesktopShortcut" Name="$(var.ProductName)" Description="$(var.ProductName)"
+                    Target="[APPLICATIONFOLDER]KeyManager.exe" WorkingDirectory="APPLICATIONFOLDER"/>
+          <RemoveFolder Id="DesktopFolder" On="uninstall"/>
+          <RegistryValue Root="HKCU" Key="Software\$(var.Manufacturer)\$(var.ProductName)"
+                         Name="dekstop_installed" Type="integer" Value="1" KeyPath="yes"/>
+        </Component>
+      </Directory>
+		</Directory>
+	</Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="KeyManagerComponents" Directory="APPLICATIONFOLDER">
+      <Component Id="KeyManagerComponent">
+        <File Id="___var.KeyManager.TargetPath_" Source="$(var.KeyManager.TargetPath)" />
+      </Component>
+      <Component Id="KeyManagerExeComponent">
+        <File Id="___var.KeyManagerExe.TargetPath_" Source="$(var.KeyManager.TargetDir)\\KeyManager.exe" />
+      </Component>
+      <Component Id="KeyManagerRuntimeconfigComponent">
+        <File Id="___var.KeyManager.runtimeconfig.TargetPath_" Source="$(var.KeyManager.TargetDir)\\KeyManager.runtimeconfig.json" />
+      </Component>
+      <Component Id="KeyManagerLibraryComponent">
+        <File Id="___var.KeyManager.Library.TargetPath_" Source="$(var.KeyManager.Library.TargetPath)" />
+      </Component>
+      <Component Id="KeyManagerLibraryUIComponent">
+        <File Id="___var.KeyManager.Library.UI.TargetPath_" Source="$(var.KeyManager.Library.UI.TargetPath)" />
+      </Component>
+      <Component Id="KeyManagerLibraryKeyStoreFileComponent">
+        <File Id="___var.KeyManager.Library.KeyStore.File.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.File.TargetPath)" />
+      </Component>
+      <Component Id="KeyManagerLibraryKeyStoreFileUIComponent">
+        <File Id="___var.KeyManager.Library.KeyStore.File.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.File.UI.TargetPath)" />
+      </Component>
+      <Component Id="KeyManagerLibraryHSM_PKCS11Component">
+        <File Id="___var.KeyManager.Library.KeyStore.HSM_PKCS11.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.TargetPath)" />
+      </Component>
+      <Component Id="KeyManagerLibraryHSM_PKCS11UIComponent">
+        <File Id="___var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.TargetPath)" />
+      </Component>
+      <Component Id="KeyManagerLibraryMemoryComponent">
+        <File Id="___var.KeyManager.Library.KeyStore.Memory.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.Memory.TargetPath)" />
+      </Component>
+      <Component Id="KeyManagerLibraryMemoryUIComponent">
+        <File Id="___var.KeyManager.Library.KeyStore.Memory.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.Memory.UI.TargetPath)" />
+      </Component>
+      <Component Id="KeyManagerLibraryNXP_SAMComponent">
+        <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.TargetPath)" />
+      </Component>
+      <Component Id="KeyManagerLibraryNXP_SAMUIComponent">
+        <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetPath)" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="DependenciesComponents" Directory="APPLICATIONFOLDER">
+      <Component Id="LibLogicalAccessNetCEComponent">
+        <File Id="___var.LibLogicalAccessNetCE.dll_" Source="$(var.KeyManager.TargetDir)\\LibLogicalAccessNetCE.dll" />
+      </Component>
+      <Component Id="log4netComponent">
+        <File Id="___var.log4net.dll_" Source="$(var.KeyManager.TargetDir)\\log4net.dll" />
+      </Component>
+      <Component Id="log4netconfigComponent">
+        <File Id="___var.log4net.config_" Source="$(var.KeyManager.TargetDir)\\log4net.config" />
+      </Component>
+      <Component Id="MaterialDesignColorsComponent">
+        <File Id="___var.MaterialDesignColors.dll_" Source="$(var.KeyManager.TargetDir)\\MaterialDesignColors.dll" />
+      </Component>
+      <Component Id="MaterialDesignThemesWpfComponent">
+        <File Id="___var.MaterialDesignThemes.Wpf.dll_" Source="$(var.KeyManager.TargetDir)\\MaterialDesignThemes.Wpf.dll" />
+      </Component>
+      <Component Id="NewtonsoftJsonComponent">
+        <File Id="___var.Newtonsoft.Json.dll_" Source="$(var.KeyManager.TargetDir)\\Newtonsoft.Json.dll" />
+      </Component>
+      <Component Id="Pkcs11InteropComponent">
+        <File Id="___var.Pkcs11Interop.dll_" Source="$(var.KeyManager.TargetDir)\\Pkcs11Interop.dll" />
+      </Component>
+      <Component Id="QrCodeGeneratorComponent">
+        <File Id="___var.QrCodeGenerator.dll_" Source="$(var.KeyManager.TargetDir)\\QrCodeGenerator.dll" />
+      </Component>
+      <Component Id="SecretSharingDotNetComponent">
+        <File Id="___var.SecretSharingDotNet.dll_" Source="$(var.KeyManager.TargetDir)\\SecretSharingDotNet.dll" />
+      </Component>
+      <Component Id="SkiaSharpComponent">
+        <File Id="___var.SkiaSharp.dll_" Source="$(var.KeyManager.TargetDir)\\SkiaSharp.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
