@@ -111,6 +111,12 @@ namespace Leosac.KeyManager.Domain
                     var consoleWindow = new LogConsoleWindow();
                     consoleWindow.Show();
                 });
+            OpenAboutCommand = new KeyManagerCommand(
+                parameter =>
+                {
+                    var aboutWindow = new AboutWindow();
+                    aboutWindow.ShowDialog();
+                });
 
             MenuItems = new ObservableCollection<NavItem>(new[]
             {
@@ -147,11 +153,13 @@ namespace Leosac.KeyManager.Domain
             SelectedIndex = 0;
 
             _navItemsView = CollectionViewSource.GetDefaultView(MenuItems);
+            _showPlanFooter = !MaintenancePlan.HasActivePlan();
         }
 
         private readonly ICollectionView _navItemsView;
         private NavItem? _selectedItem;
         private int _selectedIndex;
+        private bool _showPlanFooter;
 
         public ObservableCollection<NavItem> MenuItems { get; }
 
@@ -167,9 +175,16 @@ namespace Leosac.KeyManager.Domain
             set => SetProperty(ref _selectedIndex, value);
         }
 
+        public bool ShowPlanFooter
+        {
+            get => _showPlanFooter;
+            set => SetProperty(ref _showPlanFooter, value);
+        }
+
         public KeyManagerCommand HomeCommand { get; }
         public KeyManagerCommand FavoritesCommand { get; }
         public KeyManagerCommand KeyStoreCommand { get; }
         public KeyManagerCommand LogConsoleCommand { get; }
+        public KeyManagerCommand OpenAboutCommand { get; }
     }
 }

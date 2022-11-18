@@ -2,4 +2,26 @@
   <Include>
     <?define Manufacturer = "Leosac" ?>
     <?define ProductName = "Leosac Key Manager" ?>
+    <?define AboutURL = "https://www.leosac.com" ?>
+    <?define SupportURL = "https://www.leosac.com" ?>
+    <?define UpdatesURL = "https://www.leosac.com" ?>
+
+    <?define LLASourceDirX64 = "packages\liblogicalaccess-swig\x86_64\Release" ?>
+    <?define LLASourceDirX86 = "packages\liblogicalaccess-swig\x86\Release" ?>
+
+    <?if $(var.Platform) = "x64" ?>
+      <?define Win64 = "yes" ?>
+      <?define PlatformString = "64-bit"?>
+      <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+      <?define LLASourceDir = "$(var.LLASourceDirX64)" ?>
+    <?else ?>
+      <?define Win64 = "no" ?>
+      <?define PlatformString = "32-bit"?>
+      <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+      <?define LLASourceDir = "$(var.LLASourceDirX86)" ?>
+    <?endif ?>
+    
+    <?define BaseGuid = "4a0e1d81-8dab-4a42-a5af-671b018926" ?>
+    <?define CompInstallRegDir = "$(var.BaseGuid)10" ?>
+
   </Include>

@@ -129,8 +129,10 @@
   <ItemGroup>
     <Content Include="banner.bmp" />
     <Content Include="config.wxi" />
+    <Content Include="dialog.bmp" />
     <Content Include="EULA.rtf" />
     <Content Include="leosac.ico" />
+    <Content Include="leosac_key.ico" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />

@@ -6,36 +6,63 @@
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
     <MediaTemplate EmbedCab="yes" />
+    <Icon Id="leosac_key.ico" SourceFile="leosac_key.ico" />
 
-		<Feature Id="ProductFeature" Title="Leosac Key Manager" Level="1">
+		<Feature Id="ProductFeature" Title="$(var.ProductName)" Description="The $(var.ProductName) application" Absent="disallow" Level="1">
 			<ComponentGroupRef Id="KeyManagerComponents" />
       <ComponentGroupRef Id="DependenciesComponents" />
 		</Feature>
+    <Feature Id="LibLogicalAccessFeature" Title="LibLogicalAccess" Description="The RFID/SmartCard middleware" Absent="disallow" Level="1">
+      <ComponentGroupRef Id="LibLogicalAccessComponents" />
+    </Feature>
     <Feature Id="StartMenuShortcut" Title="Start Menu Shortcut" Level="1">
       <ComponentRef Id="ProgramMenuDir" />
     </Feature>
     <Feature Id="DesktopShortcut" Title="Desktop Shortcut" Level="1">
       <ComponentRef Id="ApplicationShortcutDesktop" />
     </Feature>
-    <!--<Feature Id="LibLogicalAccessFeature" Title="LibLogicalAccess" Level="1">
-      <ComponentGroupRef Id="LibLogicalAccessComponents" />
-    </Feature>-->
 
     <UIRef Id="WixUI_Advanced" />
 
+    <!-- The about link that appears in Add & Remove Programs. -->
+    <Property Id="ARPURLINFOABOUT" Value="$(var.AboutURL)" />
+    <!-- The help link that appears in Add & Remove Programs. -->
+    <Property Id="ARPHELPLINK" Value="$(var.SupportURL)" />
+    <!-- The update link that appears in Add & Remove Programs. -->
+    <Property Id="ARPURLUPDATEINFO" Value="$(var.UpdatesURL)" />
+    <!-- The icon that appears in Add & Remove Programs. -->
+    <Property Id="ARPPRODUCTICON" Value="leosac_key.ico" />
+    
     <Property Id="ApplicationFolderName" Value="$(var.Manufacturer)\$(var.ProductName)" />
+    <Property Id="Platform" Value="$(var.Platform)" />
     <Property Id="WixAppFolder" Value="WixPerUserFolder" />
+    <Property Id="APPLICATIONFOLDER">
+      <RegistrySearch Id="FindInstallRegDir" Type="raw" Root="HKLM" Win64="$(var.Win64)" Key="Software\$(var.Manufacturer)\$(var.ProductName)" Name="InstallDir" />
+    </Property>
+
 
     <WixVariable Id="WixUILicenseRtf" Value="EULA.rtf" />
     <WixVariable Id="WixUIBannerBmp" Value="banner.bmp" />
-    <!--<WixVariable Id="WixUIDialogBmp" Value="dialog.bmp" />-->
+    <WixVariable Id="WixUIDialogBmp" Value="dialog.bmp" />
     <WixVariable Id="WixUIInfoIco" Value="leosac.ico" />
+
+    <!-- Launch the application after setup exits -->
+    <CustomAction Id = "StartAppOnExit" FileKey = "___var.KeyManagerExe.TargetPath_" ExeCommand = "" Execute = "immediate" Impersonate = "yes" Return = "asyncNoWait" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Leosac Key Manager when setup exits." />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+
+    <UI>
+      <Publish Dialog = "ExitDialog" Control = "Finish" Order = "1" Event = "DoAction" Value = "StartAppOnExit">
+        WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed
+      </Publish>
+    </UI>
+
 
   </Product>
 
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder">
+			<Directory Id="$(var.PlatformProgramFilesFolder)" Name="PFiles">
         <Directory Id="COMPANYFOLDER" Name="$(var.Manufacturer)">
 				  <Directory Id="APPLICATIONFOLDER" Name="$(var.ProductName)" />
         </Directory>
@@ -43,7 +70,7 @@
 
       <Directory Id="ProgramMenuFolder" Name="Programs">
         <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)">
-          <Component Id="ProgramMenuDir" Guid="*">
+          <Component Id="ProgramMenuDir" Guid="*" Win64="$(var.Win64)">
             <Shortcut Id="ProgramMenuDirShortcut" Name="$(var.ProductName)" Description="$(var.ProductName)"
                     Target="[APPLICATIONFOLDER]KeyManager.exe" WorkingDirectory="APPLICATIONFOLDER"/>
             <RemoveFolder Id="ProgramMenuDir" On="uninstall"/>
@@ -54,7 +81,7 @@
       </Directory>
 
       <Directory Id="DesktopFolder" Name="Desktop">
-        <Component Id="ApplicationShortcutDesktop" Guid="*">
+        <Component Id="ApplicationShortcutDesktop" Guid="*" Win64="$(var.Win64)">
           <Shortcut Id="ApplicationDesktopShortcut" Name="$(var.ProductName)" Description="$(var.ProductName)"
                     Target="[APPLICATIONFOLDER]KeyManager.exe" WorkingDirectory="APPLICATIONFOLDER"/>
           <RemoveFolder Id="DesktopFolder" On="uninstall"/>
@@ -67,76 +94,258 @@
 
   <Fragment>
     <ComponentGroup Id="KeyManagerComponents" Directory="APPLICATIONFOLDER">
-      <Component Id="KeyManagerComponent">
+      <Component Id="InstallRegDir" Guid="$(var.CompInstallRegDir)" DiskId="1" Win64="$(var.Win64)">
+        <RegistryKey Id="RegInstallDir" Root="HKLM" Key="Software\$(var.Manufacturer)\$(var.ProductName)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" >
+          <RegistryValue Name="InstallDir" Type="string" Value="[APPLICATIONFOLDER]" />
+        </RegistryKey>
+      </Component>
+      <Component Id="KeyManagerComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.TargetPath_" Source="$(var.KeyManager.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerExeComponent">
-        <File Id="___var.KeyManagerExe.TargetPath_" Source="$(var.KeyManager.TargetDir)\\KeyManager.exe" />
+      <Component Id="KeyManagerExeComponent" Win64="$(var.Win64)">
+        <File Id="___var.KeyManagerExe.TargetPath_" Source="$(var.KeyManager.TargetDir)\KeyManager.exe" />
       </Component>
-      <Component Id="KeyManagerRuntimeconfigComponent">
-        <File Id="___var.KeyManager.runtimeconfig.TargetPath_" Source="$(var.KeyManager.TargetDir)\\KeyManager.runtimeconfig.json" />
+      <Component Id="KeyManagerRuntimeconfigComponent" Win64="$(var.Win64)">
+        <File Id="___var.KeyManager.runtimeconfig.TargetPath_" Source="$(var.KeyManager.TargetDir)\KeyManager.runtimeconfig.json" />
       </Component>
-      <Component Id="KeyManagerLibraryComponent">
+      <Component Id="KeyManagerLibraryComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.TargetPath_" Source="$(var.KeyManager.Library.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerLibraryUIComponent">
+      <Component Id="KeyManagerLibraryUIComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.UI.TargetPath_" Source="$(var.KeyManager.Library.UI.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerLibraryKeyStoreFileComponent">
+      <Component Id="KeyManagerLibraryKeyStoreFileComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.File.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.File.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerLibraryKeyStoreFileUIComponent">
+      <Component Id="KeyManagerLibraryKeyStoreFileUIComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.File.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.File.UI.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerLibraryHSM_PKCS11Component">
+      <Component Id="KeyManagerLibraryHSM_PKCS11Component" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.HSM_PKCS11.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerLibraryHSM_PKCS11UIComponent">
+      <Component Id="KeyManagerLibraryHSM_PKCS11UIComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerLibraryMemoryComponent">
+      <Component Id="KeyManagerLibraryMemoryComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.Memory.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.Memory.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerLibraryMemoryUIComponent">
+      <Component Id="KeyManagerLibraryMemoryUIComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.Memory.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.Memory.UI.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerLibraryNXP_SAMComponent">
+      <Component Id="KeyManagerLibraryNXP_SAMComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerLibraryNXP_SAMUIComponent">
+      <Component Id="KeyManagerLibraryNXP_SAMUIComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetPath)" />
       </Component>
     </ComponentGroup>
+    
     <ComponentGroup Id="DependenciesComponents" Directory="APPLICATIONFOLDER">
-      <Component Id="LibLogicalAccessNetCEComponent">
-        <File Id="___var.LibLogicalAccessNetCE.dll_" Source="$(var.KeyManager.TargetDir)\\LibLogicalAccessNetCE.dll" />
+      <Component Id="LibLogicalAccessNetCEComponent" Win64="$(var.Win64)">
+        <File Id="___var.LibLogicalAccessNetCE.dll_" Source="$(var.KeyManager.TargetDir)\LibLogicalAccessNetCE.dll" />
       </Component>
-      <Component Id="log4netComponent">
-        <File Id="___var.log4net.dll_" Source="$(var.KeyManager.TargetDir)\\log4net.dll" />
+      <Component Id="log4netComponent" Win64="$(var.Win64)">
+        <File Id="___var.log4net.dll_" Source="$(var.KeyManager.TargetDir)\log4net.dll" />
       </Component>
-      <Component Id="log4netconfigComponent">
-        <File Id="___var.log4net.config_" Source="$(var.KeyManager.TargetDir)\\log4net.config" />
+      <Component Id="log4netconfigComponent" Win64="$(var.Win64)">
+        <File Id="___var.log4net.config_" Source="$(var.KeyManager.TargetDir)\log4net.config" />
       </Component>
-      <Component Id="MaterialDesignColorsComponent">
-        <File Id="___var.MaterialDesignColors.dll_" Source="$(var.KeyManager.TargetDir)\\MaterialDesignColors.dll" />
+      <Component Id="MaterialDesignColorsComponent" Win64="$(var.Win64)">
+        <File Id="___var.MaterialDesignColors.dll_" Source="$(var.KeyManager.TargetDir)\MaterialDesignColors.dll" />
       </Component>
-      <Component Id="MaterialDesignThemesWpfComponent">
-        <File Id="___var.MaterialDesignThemes.Wpf.dll_" Source="$(var.KeyManager.TargetDir)\\MaterialDesignThemes.Wpf.dll" />
+      <Component Id="MaterialDesignThemesWpfComponent" Win64="$(var.Win64)">
+        <File Id="___var.MaterialDesignThemes.Wpf.dll_" Source="$(var.KeyManager.TargetDir)\MaterialDesignThemes.Wpf.dll" />
       </Component>
-      <Component Id="NewtonsoftJsonComponent">
-        <File Id="___var.Newtonsoft.Json.dll_" Source="$(var.KeyManager.TargetDir)\\Newtonsoft.Json.dll" />
+      <Component Id="NewtonsoftJsonComponent" Win64="$(var.Win64)">
+        <File Id="___var.Newtonsoft.Json.dll_" Source="$(var.KeyManager.TargetDir)\Newtonsoft.Json.dll" />
       </Component>
-      <Component Id="Pkcs11InteropComponent">
-        <File Id="___var.Pkcs11Interop.dll_" Source="$(var.KeyManager.TargetDir)\\Pkcs11Interop.dll" />
+      <Component Id="Pkcs11InteropComponent" Win64="$(var.Win64)">
+        <File Id="___var.Pkcs11Interop.dll_" Source="$(var.KeyManager.TargetDir)\Pkcs11Interop.dll" />
       </Component>
-      <Component Id="QrCodeGeneratorComponent">
-        <File Id="___var.QrCodeGenerator.dll_" Source="$(var.KeyManager.TargetDir)\\QrCodeGenerator.dll" />
+      <Component Id="QrCodeGeneratorComponent" Win64="$(var.Win64)">
+        <File Id="___var.QrCodeGenerator.dll_" Source="$(var.KeyManager.TargetDir)\QrCodeGenerator.dll" />
       </Component>
-      <Component Id="SecretSharingDotNetComponent">
-        <File Id="___var.SecretSharingDotNet.dll_" Source="$(var.KeyManager.TargetDir)\\SecretSharingDotNet.dll" />
+      <Component Id="SecretSharingDotNetComponent" Win64="$(var.Win64)">
+        <File Id="___var.SecretSharingDotNet.dll_" Source="$(var.KeyManager.TargetDir)\SecretSharingDotNet.dll" />
       </Component>
-      <Component Id="SkiaSharpComponent">
-        <File Id="___var.SkiaSharp.dll_" Source="$(var.KeyManager.TargetDir)\\SkiaSharp.dll" />
+      <Component Id="SkiaSharpComponent" Win64="$(var.Win64)">
+        <File Id="___var.SkiaSharp.dll_" Source="$(var.KeyManager.TargetDir)\SkiaSharp.dll" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="LibLogicalAccessComponents" Directory="APPLICATIONFOLDER">
+      <Component Id="cppkcs11Component" Win64="$(var.Win64)">
+        <File Id="___var.cppkcs11.dll.TargetPath_" Source="$(var.LLASourceDir)\cppkcs11.dll" />
+      </Component>
+      <Component Id="cps3cardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.cps3cards.dll.TargetPath_" Source="$(var.LLASourceDir)\cps3cards.dll" />
+      </Component>
+      <Component Id="deisterreadersComponent" Win64="$(var.Win64)">
+        <File Id="___var.deisterreaders.dll.TargetPath_" Source="$(var.LLASourceDir)\deisterreaders.dll" />
+      </Component>
+      <Component Id="desfirecardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.desfirecards.dll.TargetPath_" Source="$(var.LLASourceDir)\desfirecards.dll" />
+      </Component>
+      <Component Id="elatecreadersComponent" Win64="$(var.Win64)">
+        <File Id="___var.elatecreaders.dll.TargetPath_" Source="$(var.LLASourceDir)\elatecreaders.dll" />
+      </Component>
+      <Component Id="em4102cardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.em4102cards.dll.TargetPath_" Source="$(var.LLASourceDir)\em4102cards.dll" />
+      </Component>
+      <Component Id="em4135cardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.em4135cards.dll.TargetPath_" Source="$(var.LLASourceDir)\em4135cards.dll" />
+      </Component>
+      <Component Id="epasscardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.epasscards.dll.TargetPath_" Source="$(var.LLASourceDir)\epasscards.dll" />
+      </Component>
+      <Component Id="felicacardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.felicacards.dll.TargetPath_" Source="$(var.LLASourceDir)\felicacards.dll" />
+      </Component>
+      <Component Id="generictagcardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.generictagcards.dll.TargetPath_" Source="$(var.LLASourceDir)\generictagcards.dll" />
+      </Component>
+      <Component Id="gunneboreadersComponent" Win64="$(var.Win64)">
+        <File Id="___var.gunneboreaders.dll.TargetPath_" Source="$(var.LLASourceDir)\gunneboreaders.dll" />
+      </Component>
+      <Component Id="icode1cardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.icode1cards.dll.TargetPath_" Source="$(var.LLASourceDir)\icode1cards.dll" />
+      </Component>
+      <Component Id="icode2cardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.icode2cards.dll.TargetPath_" Source="$(var.LLASourceDir)\icode2cards.dll" />
+      </Component>
+      <Component Id="indalacardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.indalacards.dll.TargetPath_" Source="$(var.LLASourceDir)\indalacards.dll" />
+      </Component>
+      <Component Id="infineonmydcardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.infineonmydcards.dll.TargetPath_" Source="$(var.LLASourceDir)\infineonmydcards.dll" />
+      </Component>
+      <Component Id="islogkbdhook64ExeComponent" Win64="$(var.Win64)">
+        <Condition><![CDATA[PLATFORM=x64]]></Condition>
+        <File Id="___var.islogkbdhook64.exe.TargetPath_" Source="$(var.LLASourceDirX64)\islogkbdhook64.exe" />
+      </Component>
+      <Component Id="islogkbdhook32ExeComponent" Win64="$(var.Win64)">
+        <Condition><![CDATA[PLATFORM=x86]]></Condition>
+        <File Id="___var.islogkbdhook32.exe.TargetPath_" Source="$(var.LLASourceDirX86)\islogkbdhook32.exe" />
+      </Component>
+      <Component Id="islogkbdhooklib64Component" Win64="$(var.Win64)">
+        <Condition><![CDATA[PLATFORM=x64]]></Condition>
+        <File Id="___var.islogkbdhooklib64.dll.TargetPath_" Source="$(var.LLASourceDirX64)\islogkbdhooklib64.dll" />
+      </Component>
+      <Component Id="islogkbdhooklib32Component" Win64="$(var.Win64)">
+        <Condition><![CDATA[PLATFORM=x86]]></Condition>
+        <File Id="___var.islogkbdhooklib32.dll.TargetPath_" Source="$(var.LLASourceDirX86)\islogkbdhooklib32.dll" />
+      </Component>
+      <Component Id="iso7816cardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.iso7816cards.dll.TargetPath_" Source="$(var.LLASourceDir)\iso7816cards.dll" />
+      </Component>
+      <Component Id="iso7816readersComponent" Win64="$(var.Win64)">
+        <File Id="___var.iso7816readers.dll.TargetPath_" Source="$(var.LLASourceDir)\iso7816readers.dll" />
+      </Component>
+      <Component Id="iso15693cardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.iso15693cards.dll.TargetPath_" Source="$(var.LLASourceDir)\iso15693cards.dll" />
+      </Component>
+      <Component Id="keyboardreadersComponent" Win64="$(var.Win64)">
+        <File Id="___var.keyboardreaders.dll.TargetPath_" Source="$(var.LLASourceDir)\keyboardreaders.dll" />
+      </Component>
+      <Component Id="legicprimecardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.legicprimecards.dll.TargetPath_" Source="$(var.LLASourceDir)\legicprimecards.dll" />
+      </Component>
+      <Component Id="libcryptox64Component" Win64="$(var.Win64)">
+        <Condition><![CDATA[PLATFORM=x64]]></Condition>
+        <File Id="___var.libcryptox64.dll.TargetPath_" Source="$(var.LLASourceDirX64)\libcrypto-1_1-x64.dll" />
+      </Component>
+      <Component Id="libcryptoComponent" Win64="$(var.Win64)">
+        <Condition><![CDATA[PLATFORM=x86]]></Condition>
+        <File Id="___var.libcrypto.dll.TargetPath_" Source="$(var.LLASourceDirX86)\libcrypto-1_1.dll" />
+      </Component>
+      <Component Id="LibLogicalAccessNetwin32Component" Win64="$(var.Win64)">
+        <File Id="___var.LibLogicalAccessNet.win32.dll.TargetPath_" Source="$(var.LLASourceDir)\LibLogicalAccessNet.win32.dll" />
+      </Component>
+      <Component Id="libnfcComponent" Win64="$(var.Win64)">
+        <File Id="___var.libnfc.dll.TargetPath_" Source="$(var.LLASourceDir)\libnfc.dll" />
+      </Component>
+      <Component Id="libnfcnfcreadersComponent" Win64="$(var.Win64)">
+        <File Id="___var.libnfcnfcreaders.dll.TargetPath_" Source="$(var.LLASourceDir)\libnfc-nfcreaders.dll" />
+      </Component>
+      <Component Id="libsslx64Component" Win64="$(var.Win64)">
+        <Condition><![CDATA[PLATFORM=x64]]></Condition>
+        <File Id="___var.libsslx64.dll.TargetPath_" Source="$(var.LLASourceDirX64)\libssl-1_1-x64.dll" />
+      </Component>
+      <Component Id="libsslComponent" Win64="$(var.Win64)">
+        <Condition><![CDATA[PLATFORM=x86]]></Condition>
+        <File Id="___var.libssl.dll.TargetPath_" Source="$(var.LLASourceDirX86)\libssl-1_1.dll" />
+      </Component>
+      <Component Id="libusb0Component" Win64="$(var.Win64)">
+        <File Id="___var.libusb0.dll.TargetPath_" Source="$(var.LLASourceDir)\libusb0.dll" />
+      </Component>
+      <Component Id="llacommonComponent" Win64="$(var.Win64)">
+        <File Id="___var.llacommon.dll.TargetPath_" Source="$(var.LLASourceDir)\llacommon.dll" />
+      </Component>
+      <Component Id="logicalaccessComponent" Win64="$(var.Win64)">
+        <File Id="___var.logicalaccess.dll.TargetPath_" Source="$(var.LLASourceDir)\logicalaccess.dll" />
+      </Component>
+      <Component Id="logicalaccessCryptolibComponent" Win64="$(var.Win64)">
+        <File Id="___var.logicalaccesscryptolib.dll.TargetPath_" Source="$(var.LLASourceDir)\logicalaccess-cryptolib.dll" />
+      </Component>
+      <Component Id="mifarecardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.mifarecards.dll.TargetPath_" Source="$(var.LLASourceDir)\mifarecards.dll" />
+      </Component>
+      <Component Id="mifarepluscardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.mifarepluscards.dll.TargetPath_" Source="$(var.LLASourceDir)\mifarepluscards.dll" />
+      </Component>
+      <Component Id="mifareultralightcardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.mifareultralightcards.dll.TargetPath_" Source="$(var.LLASourceDir)\mifareultralightcards.dll" />
+      </Component>
+      <Component Id="ok5553readersComponent" Win64="$(var.Win64)">
+        <File Id="___var.ok5553readers.dll.TargetPath_" Source="$(var.LLASourceDir)\ok5553readers.dll" />
+      </Component>
+      <Component Id="osdpreadersComponent" Win64="$(var.Win64)">
+        <File Id="___var.osdpreaders.dll.TargetPath_" Source="$(var.LLASourceDir)\osdpreaders.dll" />
+      </Component>
+      <Component Id="pcProxAPIComponent" Win64="$(var.Win64)">
+        <File Id="___var.pcProxAPI.dll.TargetPath_" Source="$(var.LLASourceDir)\pcProxAPI.dll" />
+      </Component>
+      <Component Id="pcscreadersComponent" Win64="$(var.Win64)">
+        <File Id="___var.pcscreaders.dll.TargetPath_" Source="$(var.LLASourceDir)\pcscreaders.dll" />
+      </Component>
+      <Component Id="pkcscryptounifiedComponent" Win64="$(var.Win64)">
+        <File Id="___var.pkcscryptounified.dll.TargetPath_" Source="$(var.LLASourceDir)\pkcscryptounified.dll" />
+      </Component>
+      <Component Id="proxcardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.proxcards.dll.TargetPath_" Source="$(var.LLASourceDir)\proxcards.dll" />
+      </Component>
+      <Component Id="proxlitecardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.proxlitecards.dll.TargetPath_" Source="$(var.LLASourceDir)\proxlitecards.dll" />
+      </Component>
+      <Component Id="rfideasreadersComponent" Win64="$(var.Win64)">
+        <File Id="___var.rfideasreaders.dll.TargetPath_" Source="$(var.LLASourceDir)\rfideasreaders.dll" />
+      </Component>
+      <Component Id="samav2cardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.samav2cards.dll.TargetPath_" Source="$(var.LLASourceDir)\samav2cards.dll" />
+      </Component>
+      <Component Id="seoscardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.seoscards.dll.TargetPath_" Source="$(var.LLASourceDir)\seoscards.dll" />
+      </Component>
+      <Component Id="smartframecardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.smartframecards.dll.TargetPath_" Source="$(var.LLASourceDir)\smartframecards.dll" />
+      </Component>
+      <Component Id="stidstrreadersComponent" Win64="$(var.Win64)">
+        <File Id="___var.stidstrreaders.dll.TargetPath_" Source="$(var.LLASourceDir)\stidstrreaders.dll" />
+      </Component>
+      <Component Id="stmlri512cardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.stmlri512cards.dll.TargetPath_" Source="$(var.LLASourceDir)\stmlri512cards.dll" />
+      </Component>
+      <Component Id="tagitcardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.tagitcards.dll.TargetPath_" Source="$(var.LLASourceDir)\tagitcards.dll" />
+      </Component>
+      <Component Id="topazcardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.topazcards.dll.TargetPath_" Source="$(var.LLASourceDir)\topazcards.dll" />
+      </Component>
+      <Component Id="twiccardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.twiccards.dll.TargetPath_" Source="$(var.LLASourceDir)\twiccards.dll" />
+      </Component>
+      <Component Id="yubikeycardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.yubikeycards.dll.TargetPath_" Source="$(var.LLASourceDir)\yubikeycards.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

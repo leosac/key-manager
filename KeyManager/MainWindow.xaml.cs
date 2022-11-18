@@ -2,6 +2,7 @@
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -57,6 +58,16 @@ namespace Leosac.KeyManager
 
             theme.SetBaseTheme(isDarkTheme ? Theme.Dark : Theme.Light);
             paletteHelper.SetTheme(theme);
+        }
+
+        private void btnSubscribe_Click(object sender, RoutedEventArgs e)
+        {
+            MaintenancePlan.OpenSubscription();
+        }
+
+        private void linkRegister_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            MaintenancePlan.OpenRegistration();
         }
     }
 }

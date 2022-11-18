@@ -12,11 +12,17 @@
 	<AssemblyTitle>Leosac Key Manager</AssemblyTitle>
 	<Copyright>Copyright © Leosac 2022</Copyright>
 	<RootNamespace>Leosac.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+	<ApplicationIcon>leosac_key.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="images\leosac_banner.png" />
     <None Remove="images\leosac_key.png" />
     <None Remove="leosac.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="leosac_key.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,6 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="images\leosac_banner.png" />
     <Resource Include="images\leosac_key.png" />
   </ItemGroup>
 
