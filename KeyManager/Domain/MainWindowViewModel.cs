@@ -152,10 +152,13 @@ namespace Leosac.KeyManager.Domain
             SelectedItem = MenuItems[0];
             SelectedIndex = 0;
 
+            _snackbarMessageQueue = snackbarMessageQueue;
             _navItemsView = CollectionViewSource.GetDefaultView(MenuItems);
-            _showPlanFooter = !MaintenancePlan.HasActivePlan();
+            var plan = MaintenancePlan.getSingleton();
+            _showPlanFooter = !plan.HasActivePlan();
         }
 
+        private ISnackbarMessageQueue _snackbarMessageQueue;
         private readonly ICollectionView _navItemsView;
         private NavItem? _selectedItem;
         private int _selectedIndex;
@@ -186,5 +189,55 @@ namespace Leosac.KeyManager.Domain
         public KeyManagerCommand KeyStoreCommand { get; }
         public KeyManagerCommand LogConsoleCommand { get; }
         public KeyManagerCommand OpenAboutCommand { get; }
+
+        private static void ModifyTheme(bool isDarkTheme)
+        {
+            var paletteHelper = new PaletteHelper();
+            var theme = paletteHelper.GetTheme();
+
+            theme.SetBaseTheme(isDarkTheme ? Theme.Dark : Theme.Light);
+            paletteHelper.SetTheme(theme);
+        }
+
+        public void ModifyAndSaveTheme(bool isDarkTheme)
+        {
+            ModifyTheme(isDarkTheme);
+
+            var settings = KMSettings.GetSingletonInstance();
+            settings.UseDarkTheme = isDarkTheme;
+            settings.SaveToFile();
+        }
+
+        public void InitFromSettings()
+        {
+            var settings = KMSettings.GetSingletonInstance();
+            if (settings.UseDarkTheme)
+            {
+                ModifyTheme(settings.UseDarkTheme);
+            }
+            if (settings.IsAutoUpdateEnabled)
+            {
+                var update = new AutoUpdate();
+                if (update.CheckUpdate())
+                {
+                    var wrapControl = new WrapPanel();
+                    wrapControl.Orientation = Orientation.Horizontal;
+                    wrapControl.Margin = new Thickness(5);
+                    wrapControl.HorizontalAlignment = HorizontalAlignment.Center;
+                    wrapControl.VerticalAlignment = VerticalAlignment.Center;
+                    var textControl = new TextBlock();
+                    textControl.Text = "New software update available!";
+                    wrapControl.Children.Add(textControl);
+                    var buttonControl = new Button();
+                    buttonControl.Content = "Download now";
+                    buttonControl.Click += (sender, e) => { update.DownloadUpdate(); };
+                    buttonControl.Style = Application.Current.FindResource("MaterialDesignFlatButton") as Style;
+                    buttonControl.Margin = new Thickness(20, 0, 0, 0);
+                    wrapControl.Children.Add(buttonControl);
+
+                    _snackbarMessageQueue.Enqueue(wrapControl, null, null, null, false, true, TimeSpan.FromSeconds(5));
+                }
+            }
+        }
     }
 }

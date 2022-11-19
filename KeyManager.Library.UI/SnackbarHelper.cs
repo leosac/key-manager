@@ -27,7 +27,7 @@ namespace Leosac.KeyManager.Library.UI
             EnqueueMessage(queue, message);
         }
 
-        public static void EnqueueMessage(ISnackbarMessageQueue queue, string message)
+        public static void EnqueueMessage(ISnackbarMessageQueue queue, object message)
         {
             queue?.Enqueue(message, new PackIcon { Kind = PackIconKind.CloseBold }, (object? p) => { }, null, false, true, TimeSpan.FromSeconds(5));
         }

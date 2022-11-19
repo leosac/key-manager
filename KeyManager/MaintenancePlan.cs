@@ -9,7 +9,17 @@ namespace Leosac.KeyManager
 {
     public class MaintenancePlan
     {
-        public static bool HasActivePlan()
+        private MaintenancePlan()
+        {
+
+        }
+
+        public static MaintenancePlan getSingleton()
+        {
+            return new MaintenancePlan();
+        }
+
+        public bool HasActivePlan()
         {
             return false;
         }

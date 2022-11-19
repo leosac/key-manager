@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,6 +37,9 @@ namespace Leosac.KeyManager.Domain
         {
             GetInfoFromAssembly();
 
+            _settings = KMSettings.GetSingletonInstance();
+            _autoUpdate = new AutoUpdate();
+
             Libraries = new ObservableCollection<Library>(new[]
             {
                 new Library("Microsoft.NETCore.App", "MIT", ".NET Core SDK", "https://github.com/dotnet/runtime"),
@@ -57,6 +61,8 @@ namespace Leosac.KeyManager.Domain
 
         private string? _softwareName;
         private string? _softwareVersion;
+        private KMSettings _settings;
+        private AutoUpdate _autoUpdate;
 
         public string? SoftwareName
         {
@@ -70,17 +76,25 @@ namespace Leosac.KeyManager.Domain
             set => SetProperty(ref _softwareVersion, value);
         }
 
+        public KMSettings Settings
+        {
+            get => _settings;
+            set => SetProperty(ref _settings, value);
+        }
+
+        public AutoUpdate AutoUpdate
+        {
+            get => _autoUpdate;
+            set => SetProperty(ref _autoUpdate, value);
+        }
+
         public ObservableCollection<Library> Libraries { get; }
 
         private void GetInfoFromAssembly()
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            if (assembly != null)
-            {
-                var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-                _softwareName = fvi.ProductName;
-                _softwareVersion = fvi.ProductVersion;
-            }
+            var fvi = KMSettings.GetFileVersionInfo();
+            _softwareName = fvi?.ProductName;
+            _softwareVersion = fvi?.ProductVersion;
         }
     }
 }

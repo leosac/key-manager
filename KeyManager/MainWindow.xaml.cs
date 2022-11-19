@@ -2,6 +2,7 @@
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -32,7 +33,12 @@ namespace Leosac.KeyManager
         }
 
         private void MenuDarkModeButton_Click(object sender, RoutedEventArgs e)
-            => ModifyTheme(DarkModeToggleButton.IsChecked == true);
+        {
+            if (DataContext is MainWindowViewModel model)
+            {
+                model.ModifyAndSaveTheme(DarkModeToggleButton.IsChecked == true);
+            }
+        }
 
         private void OnSelectedMenuItemChanged(object sender, DependencyPropertyChangedEventArgs e)
             => MainScrollViewer.ScrollToHome();
@@ -51,15 +57,6 @@ namespace Leosac.KeyManager
             MenuToggleButton.IsChecked = false;
         }
 
-        private static void ModifyTheme(bool isDarkTheme)
-        {
-            var paletteHelper = new PaletteHelper();
-            var theme = paletteHelper.GetTheme();
-
-            theme.SetBaseTheme(isDarkTheme ? Theme.Dark : Theme.Light);
-            paletteHelper.SetTheme(theme);
-        }
-
         private void btnSubscribe_Click(object sender, RoutedEventArgs e)
         {
             MaintenancePlan.OpenSubscription();
@@ -68,6 +65,14 @@ namespace Leosac.KeyManager
         private void linkRegister_MouseDown(object sender, MouseButtonEventArgs e)
         {
             MaintenancePlan.OpenRegistration();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!DesignerProperties.GetIsInDesignMode(this) && DataContext is MainWindowViewModel model)
+            {
+                model.InitFromSettings();
+            }
         }
     }
 }

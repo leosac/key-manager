@@ -15,7 +15,7 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="About" Height="510" Width="600">
+        Title="About" Height="510" Width="600" Loaded="Window_Loaded">
     <DockPanel LastChildFill="True">
         <materialDesign:ColorZone DockPanel.Dock="Top" Padding="15" Height="110" materialDesign:ElevationAssist.Elevation="Dp4" ClipToBounds="False" Mode="PrimaryMid">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -83,6 +83,35 @@
                         <TextBlock Grid.Row="3" Grid.Column="1" Text="support@leosac.com" VerticalAlignment="Center" Margin="5,0,5,0" />
                         <TextBlock Grid.Row="4" Grid.Column="0" Text="Website" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
                         <TextBlock x:Name="linkWebsite" Grid.Row="4" Grid.Column="1" Text="https://www.leosac.com" ToolTip="Open Website" VerticalAlignment="Center" Margin="5,0,5,0" Cursor="Hand" MouseDown="linkWebsite_MouseDown" />
+                    </Grid>
+                </materialDesign:Card>
+                <materialDesign:Card Height="180" Width="250" Margin="10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Margin="15,15,15,5" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Automatic Updates" />
+                        <WrapPanel Grid.Row="1" VerticalAlignment="Center" Margin="5">
+                            <ToggleButton x:Name="AutoUpdateToggleButton" Click="AutoUpdateToggleButton_Click" />
+                            <TextBlock Margin="10,0,0,0" Text="Automatic updates" />
+                        </WrapPanel>
+                        <TextBlock Grid.Row="2" Margin="5" Text="You already have the latest version." VerticalAlignment="Center" Visibility="{Binding AutoUpdate.HasUpdate, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                        <TextBlock Grid.Row="2" Margin="5" Text="New update available!" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Visibility="{Binding AutoUpdate.HasUpdate, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <Button x:Name="btnCheckUpdate" Grid.Row="3" Width="210" Margin="5" Click="btnCheckUpdate_Click" Visibility="{Binding AutoUpdate.HasUpdate, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                            <WrapPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Update" Margin="0,0,10,0" />
+                                <TextBlock Text="Check for update now" />
+                            </WrapPanel>
+                        </Button>
+                        <Button x:Name="btnDownloadUpdate" Grid.Row="3" Width="210" Margin="5" Click="btnDownloadUpdate_Click" Visibility="{Binding AutoUpdate.HasUpdate, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <WrapPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Download" Margin="0,0,10,0" />
+                                <TextBlock Text="Download the new version" />
+                            </WrapPanel>
+                        </Button>
                     </Grid>
                 </materialDesign:Card>
                 <materialDesign:Card Height="180" Width="330" Margin="10">

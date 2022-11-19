@@ -1,6 +1,7 @@
 ﻿using Leosac.KeyManager.Domain;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -25,7 +26,10 @@ namespace Leosac.KeyManager
         {
             InitializeComponent();
 
-            DataContext = new AboutWindowViewModel();
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                DataContext = new AboutWindowViewModel();
+            }
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
@@ -51,6 +55,52 @@ namespace Leosac.KeyManager
         private void btnSubscribe_Click(object sender, RoutedEventArgs e)
         {
             MaintenancePlan.OpenSubscription();
+        }
+
+        private void btnDownloadUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AboutWindowViewModel model)
+            {
+                model.AutoUpdate.DownloadUpdate();
+            }
+        }
+
+        private void btnCheckUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AboutWindowViewModel model)
+            {
+                model.AutoUpdate.CheckUpdate();
+            }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            AutoUpdateToggleButton.IsChecked = true;
+            if (KMSettings.GetSingletonInstance().IsAutoUpdateEnabled)
+            {
+                CheckUpdate();
+            }
+        }
+
+        private void AutoUpdateToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            var settings = KMSettings.GetSingletonInstance();
+            settings.IsAutoUpdateEnabled = AutoUpdateToggleButton.IsChecked.GetValueOrDefault(false);
+            if (settings.IsAutoUpdateEnabled)
+            {
+                CheckUpdate();
+            }
+            settings.SaveToFile();
+        }
+
+        private void CheckUpdate()
+        {
+            if (DataContext is AboutWindowViewModel model)
+            {
+                btnCheckUpdate.IsEnabled = false;
+                model.AutoUpdate.CheckUpdate();
+                btnCheckUpdate.IsEnabled = true;
+            }
         }
     }
 }

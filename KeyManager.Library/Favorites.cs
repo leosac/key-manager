@@ -21,7 +21,7 @@ namespace Leosac.KeyManager.Library
             {
                 if (_singleton == null || forceRecreate)
                 {
-                    _singleton = Favorites.LoadFromFile();
+                    _singleton = LoadFromFile();
                 }
 
                 return _singleton!;
