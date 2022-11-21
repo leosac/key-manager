@@ -122,7 +122,7 @@
                         </StackPanel>
                         <WrapPanel Orientation="Vertical" Margin="20,5,20,5">
                             <Button x:Name="btnSubscribe" Content="Subscribe" Click="btnSubscribe_Click" Margin="2"/>
-                            <TextBlock x:Name="linkRegister" FontSize="9" Text="Register an existing plan" Cursor="Hand" TextDecorations="Underline" HorizontalAlignment="Center" MouseDown="linkRegister_MouseDown" />
+                            <TextBlock x:Name="linkRegister" FontSize="9" Text="Register an existing plan" Margin="2" Cursor="Hand" TextDecorations="Underline" HorizontalAlignment="Center" MouseDown="linkRegister_MouseDown" />
                         </WrapPanel>
                     </StackPanel>
                 </materialDesign:ColorZone>

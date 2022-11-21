@@ -15,8 +15,94 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="Maintenance Plan Registration" Height="250" Width="400">
-    <Grid>
-        
-    </Grid>
+        Title="Plan Registration" Height="550" Width="550">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Flipper.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <DockPanel LastChildFill="True">
+        <TextBlock DockPanel.Dock="Top" Text="Register a new plan and benefit from it without waiting." Margin="5" />
+        <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5">
+            <Button x:Name="btnClose" IsDefault="True" Width="100" IsCancel="True" Content="Close" Margin="10" Click="btnClose_Click"/>
+        </WrapPanel>
+        <TextBox DockPanel.Dock="Top" Text="{Binding Key}" Margin="10"
+                                        materialDesign:HintAssist.HelperText="The plan/license key"
+                                        materialDesign:HintAssist.Hint="Key" IsReadOnly="True" />
+        <TabControl>
+            <TabItem Header="Online">
+                <StackPanel>
+                    <TextBlock Text="An internet connection is required, that's all!" Margin="10" />
+                    <Button x:Name="btnRegisterOnline" Grid.Row="3" Width="150" Margin="10" Click="btnRegisterOnline_Click">
+                        <WrapPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="RegistrationMark" Margin="0,0,10,0" />
+                            <TextBlock Text="Register" />
+                        </WrapPanel>
+                    </Button>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Offline">
+                <StackPanel>
+                    <TextBox Text="{Binding UUID, Mode=OneWay}"
+                                        materialDesign:HintAssist.HelperText="Unique Installation Identifier"
+                                        materialDesign:HintAssist.Hint="UUID" Margin="10" IsReadOnly="True" />
+                    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                        <materialDesign:Flipper Style="{StaticResource MaterialDesignCardFlipper}" Margin="3" Height="180">
+                            <materialDesign:Flipper.FrontContent>
+                                <Button Width="200" MinHeight="100" Margin="8" Command="{x:Static materialDesign:Flipper.FlipCommand}" Style="{StaticResource MaterialDesignFlatButton}">
+                                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                                        <materialDesign:PackIcon Kind="OpenInBrowser" Width="64" Height="64" HorizontalAlignment="Center" />
+                                        <TextBlock Text="Web Browser" HorizontalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                            </materialDesign:Flipper.FrontContent>
+                            <materialDesign:Flipper.BackContent>
+                                <DockPanel LastChildFill="True" Width="200" MinHeight="100" Margin="8">
+                                    <Button DockPanel.Dock="Bottom" Width="184" Margin="5" Command="{x:Static materialDesign:Flipper.FlipCommand}" Content="Back" Style="{StaticResource MaterialDesignFlatButton}" />
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock Text="Visit" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Margin="3" HorizontalAlignment="Center" />
+                                        <TextBlock Text="{Binding OfflineRegistrationUrl, Mode=OneWay}" Cursor="Hand" MouseDown="OfflineRegistrationUrl_MouseDown" TextWrapping="Wrap" Margin="3" />
+                                        <WrapPanel HorizontalAlignment="Center">
+                                            <Button Content="{materialDesign:PackIcon Kind=OpenInBrowser}" ToolBar.OverflowMode="AsNeeded" ToolTip="Open" Click="OpenUrl_Click" Margin="3" />
+                                            <Button Content="{materialDesign:PackIcon Kind=ContentCopy}" ToolBar.OverflowMode="AsNeeded" ToolTip="Copy" Click="CopyUrl_Click" Margin="3" />
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </DockPanel>
+                            </materialDesign:Flipper.BackContent>
+                        </materialDesign:Flipper>
+                        <materialDesign:Flipper Style="{StaticResource MaterialDesignCardFlipper}" Margin="3">
+                            <materialDesign:Flipper.FrontContent>
+                                <Button Width="200" MinHeight="100" Margin="8" Command="{x:Static materialDesign:Flipper.FlipCommand}" Style="{StaticResource MaterialDesignFlatButton}">
+                                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                                        <materialDesign:PackIcon Kind="Phone" Width="64" Height="64" HorizontalAlignment="Center" />
+                                        <TextBlock Text="Phone" HorizontalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                            </materialDesign:Flipper.FrontContent>
+                            <materialDesign:Flipper.BackContent>
+                                <DockPanel LastChildFill="True" Width="200" MinHeight="100" Margin="8">
+                                    <Button DockPanel.Dock="Bottom" Width="184" Margin="5" Command="{x:Static materialDesign:Flipper.FlipCommand}" Content="Back" Style="{StaticResource MaterialDesignFlatButton}" />
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock Text="Call" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Margin="3" HorizontalAlignment="Center" />
+                                        <TextBlock Text="+33 3 67 37 02 45" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Margin="3" HorizontalAlignment="Center" Foreground="{StaticResource SecondaryHueMidBrush}" />
+                                    </StackPanel>
+                                </DockPanel>
+                            </materialDesign:Flipper.BackContent>
+                        </materialDesign:Flipper>
+                    </WrapPanel>
+                    <TextBox Text="{Binding Code, Mode=TwoWay}"
+                                        materialDesign:HintAssist.HelperText="Generated Verification Code"
+                                        materialDesign:HintAssist.Hint="Verification Code" Margin="10"/>
+                    <Button x:Name="btnRegisterOffline" Width="150" Margin="15" Click="btnRegisterOffline_Click">
+                        <WrapPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="OfflineBolt" Margin="0,0,10,0" />
+                            <TextBlock Text="Register" />
+                        </WrapPanel>
+                    </Button>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
 </Window>

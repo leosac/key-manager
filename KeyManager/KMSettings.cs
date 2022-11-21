@@ -36,6 +36,7 @@ namespace Leosac.KeyManager
 
         public KMSettings()
         {
+            InstallationId = Guid.NewGuid().ToString("D");
             UseDarkTheme = false;
             IsAutoUpdateEnabled = true;
         }
@@ -44,6 +45,8 @@ namespace Leosac.KeyManager
         {
             return DefaultFileName;
         }
+
+        public string InstallationId { get; set; }
 
         public bool UseDarkTheme { get; set; }
 

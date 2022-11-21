@@ -154,8 +154,8 @@ namespace Leosac.KeyManager.Domain
 
             _snackbarMessageQueue = snackbarMessageQueue;
             _navItemsView = CollectionViewSource.GetDefaultView(MenuItems);
-            var plan = MaintenancePlan.getSingleton();
-            _showPlanFooter = !plan.HasActivePlan();
+            var plan = MaintenancePlan.GetSingletonInstance();
+            _showPlanFooter = !plan.IsActivePlan();
         }
 
         private ISnackbarMessageQueue _snackbarMessageQueue;
