@@ -57,12 +57,18 @@ namespace Leosac.KeyManager.Domain
                 new Library("boost", "Boost Software", "cross-platform C++ library", "https://www.boost.org/"),
                 new Library("nlohmann/json", "MIT", "JSON library", "https://github.com/nlohmann/json")
             });
+
+            var plan = MaintenancePlan.GetSingletonInstance();
+            _isActivePlan = plan.IsActivePlan();
+            _expirationDate = plan.ExpirationDate;
         }
 
         private string? _softwareName;
         private string? _softwareVersion;
         private KMSettings _settings;
         private AutoUpdate _autoUpdate;
+        private bool _isActivePlan;
+        private DateTime? _expirationDate;
 
         public string? SoftwareName
         {
@@ -86,6 +92,18 @@ namespace Leosac.KeyManager.Domain
         {
             get => _autoUpdate;
             set => SetProperty(ref _autoUpdate, value);
+        }
+
+        public bool IsActivePlan
+        {
+            get => _isActivePlan;
+            set => SetProperty(ref _isActivePlan, value);
+        }
+
+        public DateTime? ExpirationDate
+        {
+            get => _expirationDate;
+            set => SetProperty(ref _expirationDate, value);
         }
 
         public ObservableCollection<Library> Libraries { get; }

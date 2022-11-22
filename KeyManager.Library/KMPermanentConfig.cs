@@ -28,7 +28,7 @@ namespace Leosac.KeyManager.Library
 
         public abstract string GetDefaultFileName();
 
-        public void SaveToFile()
+        public virtual void SaveToFile()
         {
             SaveToFile(GetConfigFilePath(true));
         }

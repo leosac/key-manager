@@ -156,6 +156,7 @@ namespace Leosac.KeyManager.Domain
             _navItemsView = CollectionViewSource.GetDefaultView(MenuItems);
             var plan = MaintenancePlan.GetSingletonInstance();
             _showPlanFooter = !plan.IsActivePlan();
+            plan.PlanUpdated += (sender, e) => { ShowPlanFooter = !plan.IsActivePlan(); };
         }
 
         private ISnackbarMessageQueue _snackbarMessageQueue;
@@ -163,6 +164,7 @@ namespace Leosac.KeyManager.Domain
         private NavItem? _selectedItem;
         private int _selectedIndex;
         private bool _showPlanFooter;
+        private bool _isDarkMode;
 
         public ObservableCollection<NavItem> MenuItems { get; }
 
@@ -182,6 +184,16 @@ namespace Leosac.KeyManager.Domain
         {
             get => _showPlanFooter;
             set => SetProperty(ref _showPlanFooter, value);
+        }
+
+        public bool IsDarkMode
+        {
+            get => _isDarkMode;
+            set
+            {
+                SetProperty(ref _isDarkMode, value);
+                ModifyAndSaveTheme(value);
+            }
         }
 
         public KeyManagerCommand HomeCommand { get; }
@@ -213,7 +225,7 @@ namespace Leosac.KeyManager.Domain
             var settings = KMSettings.GetSingletonInstance();
             if (settings.UseDarkTheme)
             {
-                ModifyTheme(settings.UseDarkTheme);
+                IsDarkMode = settings.UseDarkTheme;
             }
             if (settings.IsAutoUpdateEnabled)
             {

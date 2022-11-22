@@ -15,14 +15,13 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="About" Height="510" Width="600" Loaded="Window_Loaded">
+        Title="About" Height="500" Width="580" Loaded="Window_Loaded">
     <DockPanel LastChildFill="True">
         <materialDesign:ColorZone DockPanel.Dock="Top" Padding="15" Height="110" materialDesign:ElevationAssist.Elevation="Dp4" ClipToBounds="False" Mode="PrimaryMid">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Image Margin="16,0,0,0" Source="/images/leosac_banner.png" Height="80" />
             </StackPanel>
         </materialDesign:ColorZone>
-        <TextBlock DockPanel.Dock="Top" Margin="15" Style="{StaticResource MaterialDesignHeadline4TextBlock}" Text="{Binding SoftwareName}" />
         <Grid DockPanel.Dock="Bottom">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -38,30 +37,40 @@
         </Grid>
         <ScrollViewer HorizontalScrollBarVisibility="Auto">
             <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
-                <materialDesign:Card Height="180" Width="250" Margin="10">
+                <materialDesign:Card Height="240" Width="250" Margin="10">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
-                            <RowDefinition />
+                            <RowDefinition Height="100" />
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Margin="15,15,15,5" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Maintenance Plan" />
-                        <TextBlock Grid.Row="1" Margin="5" Text="No maintenance plan has been registered." VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource SecondaryHueMidBrush}" FontWeight="Bold" />
-                        <Button x:Name="btnSubscribe" Grid.Row="2" Width="150" Margin="5" Click="btnSubscribe_Click">
-                            <WrapPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="ShoppingCartOutline" Margin="0,0,10,0" />
-                                <TextBlock Text="Subscribe" />
+                        <WrapPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding IsActivePlan,Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                            <materialDesign:PackIcon Kind="SecurityOff" Margin="2" Foreground="{StaticResource SecondaryHueMidBrush}" />
+                            <TextBlock Text="No active maintenance plan." Margin="2" Foreground="{StaticResource SecondaryHueMidBrush}" FontWeight="Bold" />
+                        </WrapPanel>
+                        <WrapPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding IsActivePlan,Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <materialDesign:PackIcon Kind="Security" Margin="2" />
+                            <TextBlock Text="You have a valid maintenance plan." FontWeight="Bold" Margin="2" />
+                        </WrapPanel>
+                        <WrapPanel Grid.Row="2" HorizontalAlignment="Center" Visibility="{Binding ExpirationDate, Converter={StaticResource NullableToVisibilityConverter}}">
+                            <TextBlock Text="The plan expires at" Margin="2" />
+                            <TextBlock Text="{Binding ExpirationDate}" Margin="2" Foreground="{StaticResource SecondaryHueMidBrush}" FontWeight="Bold" />
+                        </WrapPanel>
+                        <Expander HorizontalAlignment="Stretch" Header="Actions" Grid.Row="3" IsExpanded="{Binding IsActivePlan, Mode=OneTime, Converter={StaticResource InvertBooleanConverter}}">
+                            <WrapPanel Orientation="Vertical" HorizontalAlignment="Center">
+                                <Button x:Name="btnSubscribe" Margin="5" Click="btnSubscribe_Click">
+                                    <materialDesign:PackIcon Kind="ShoppingCartOutline" Margin="5" ToolTip="Subscribe" />
+                                </Button>
+                                <Button x:Name="btnRegister" Margin="5" Style="{StaticResource MaterialDesignRaisedLightButton}" Click="btnRegister_Click">
+                                    <materialDesign:PackIcon Kind="RegistrationMark" Margin="5" ToolTip="Register" />
+                                </Button>
                             </WrapPanel>
-                        </Button>
-                        <Button x:Name="btnRegister" Grid.Row="3" Width="150" Margin="5" Style="{StaticResource MaterialDesignRaisedLightButton}" Click="btnRegister_Click">
-                            <WrapPanel Orientation="Horizontal">
-                                <TextBlock Text="Register" />
-                            </WrapPanel>
-                        </Button>
+                        </Expander>
                     </Grid>
                 </materialDesign:Card>
-                <materialDesign:Card Height="180" Width="250" Margin="10">
+                <materialDesign:Card Height="240" Width="250" Margin="10">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100" />
@@ -73,19 +82,22 @@
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="15,15,15,5" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Information" />
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Developed by" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="Leosac SAS" VerticalAlignment="Center" Margin="5,0,5,0" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Product" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SoftwareName}" VerticalAlignment="Center" Margin="5,0,5,0" />
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Software Version" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
                         <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SoftwareVersion}" VerticalAlignment="Center" Margin="5,0,5,0" />
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Email Support" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
-                        <TextBlock Grid.Row="3" Grid.Column="1" Text="support@leosac.com" VerticalAlignment="Center" Margin="5,0,5,0" />
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Website" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
-                        <TextBlock x:Name="linkWebsite" Grid.Row="4" Grid.Column="1" Text="https://www.leosac.com" ToolTip="Open Website" VerticalAlignment="Center" Margin="5,0,5,0" Cursor="Hand" MouseDown="linkWebsite_MouseDown" />
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Developed by" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="Leosac SAS" VerticalAlignment="Center" Margin="5,0,5,0" />
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Email Support" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
+                        <TextBlock Grid.Row="4" Grid.Column="1" Text="support@leosac.com" VerticalAlignment="Center" Margin="5,0,5,0" />
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Website" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
+                        <TextBlock x:Name="linkWebsite" Grid.Row="5" Grid.Column="1" Text="https://www.leosac.com" ToolTip="Open Website" VerticalAlignment="Center" Margin="5,0,5,0" Cursor="Hand" MouseDown="linkWebsite_MouseDown" />
                     </Grid>
                 </materialDesign:Card>
-                <materialDesign:Card Height="180" Width="250" Margin="10">
+                <materialDesign:Card Height="240" Width="250" Margin="10">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -114,7 +126,7 @@
                         </Button>
                     </Grid>
                 </materialDesign:Card>
-                <materialDesign:Card Height="180" Width="330" Margin="10">
+                <materialDesign:Card Height="240" Width="330" Margin="10">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="50" />

@@ -32,14 +32,6 @@ namespace Leosac.KeyManager
             DataContext = new MainWindowViewModel(MainSnackbar.MessageQueue!);
         }
 
-        private void MenuDarkModeButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is MainWindowViewModel model)
-            {
-                model.ModifyAndSaveTheme(DarkModeToggleButton.IsChecked == true);
-            }
-        }
-
         private void OnSelectedMenuItemChanged(object sender, DependencyPropertyChangedEventArgs e)
             => MainScrollViewer.ScrollToHome();
 

@@ -1,9 +1,12 @@
 ﻿using Leosac.KeyManager.Library;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Text;
@@ -23,6 +26,7 @@ namespace Leosac.KeyManager
     {
         const string BASE_URL = "https://leosac.com/";
 
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
         public static string DefaultFileName { get => "MaintenancePlan.json"; }
 
         private static object _objlock = new object();
@@ -35,7 +39,7 @@ namespace Leosac.KeyManager
                 if (_singleton == null || forceRecreate)
                 {
                     _singleton = LoadFromFile();
-                    _singleton?.ParseCode();
+                    _singleton?.ParseCode(_singleton.Code);
                 }
 
                 return _singleton!;
@@ -57,13 +61,29 @@ namespace Leosac.KeyManager
             return DefaultFileName;
         }
 
-        [JsonIgnore]
         public string? LicenseKey { get; set; }
 
         [JsonIgnore]
         public DateTime? ExpirationDate { get; set; }
 
         public string? Code { get; set; }
+
+        [JsonIgnore]
+        public EventHandler? PlanUpdated;
+
+        public void OnPlanUpdated()
+        {
+            if (PlanUpdated != null)
+            {
+                PlanUpdated(this, new EventArgs());
+            }
+        }
+
+        public override void SaveToFile()
+        {
+            base.SaveToFile();
+            OnPlanUpdated();
+        }
 
         public bool IsActivePlan()
         {
@@ -74,9 +94,69 @@ namespace Leosac.KeyManager
             return false;
         }
 
-        public void RegisterPlan(string licenseKey, string? code = null)
+        private JToken? QueryData(string url)
         {
+            var client = new HttpClient();
+            var req = client.GetStringAsync(url);
+            var result = req.Result;
+            if (string.IsNullOrEmpty(result))
+            {
+                var error = "The request failed without details.";
+                log.Error(error);
+                throw new Exception(error);
+            }
 
+            var jobj = JObject.Parse(result);
+            var success = (bool?)jobj["success"];
+            if (!success.GetValueOrDefault(false))
+            {
+                var error = String.Format("The request failed with error: {0}.", (string?)jobj["data"]?["error"]);
+                log.Error(error);
+                throw new Exception(error);
+            }
+
+            return jobj["data"];
+        }
+
+        public void RegisterPlan(string licenseKey, string? email = null, string? code = null)
+        {
+            if (string.IsNullOrEmpty(licenseKey))
+                throw new Exception("License/Plan key is required.");
+
+            var oldKey = LicenseKey;
+            if (string.IsNullOrEmpty(code))
+            {
+                var fragments = licenseKey.Split('-');
+                var data = QueryData(String.Format("{0}?wc-api=serial-numbers-api&request=check&product_id={1}&serial_key={2}", BASE_URL, fragments[0], licenseKey));
+                DateTime? expire = null;
+                if (data?["expire_date"] != null)
+                    expire = DateTime.Parse((string)data["expire_date"]!);
+                data = QueryData(String.Format("{0}?wc-api=serial-numbers-api&request=activate&product_id={1}&serial_key={2}&instance={3}&email={4}&platform={5}", BASE_URL, fragments[0], licenseKey, GetUUID(), email, Environment.OSVersion));
+
+                var msg = (string?)(data?["message"]);
+                log.Info(String.Format("Registration succeeded with message: {0}.", msg));
+
+                LicenseKey = licenseKey;
+                ExpirationDate = expire;
+                Code = ComputeCode();
+
+                SaveToFile();
+            }
+            else
+            {
+                LicenseKey = licenseKey;
+                if (ParseCode(code))
+                {
+                    SaveToFile();
+                }
+                else
+                {
+                    LicenseKey = oldKey;
+                    var error = "Invalid verification code.";
+                    log.Error(error);
+                    throw new Exception(error);
+                }
+            }
         }
 
         public string? ComputeCode()
@@ -101,11 +181,8 @@ namespace Leosac.KeyManager
             return null;
         }
 
-        public void ParseCode(string? code = null)
+        public bool ParseCode(string? code)
         {
-            if (string.IsNullOrEmpty(code))
-                code = Code;
-
             if (!string.IsNullOrEmpty(code))
             {
                 var key = GetUUIDKey();
@@ -121,6 +198,8 @@ namespace Leosac.KeyManager
                         if (LicenseKey == fragments[1])
                         {
                             ExpirationDate = DateTime.ParseExact(fragments[2], "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                            Code = code;
+                            return true;
                         }
                         else
                         {
@@ -129,6 +208,8 @@ namespace Leosac.KeyManager
                     }
                 }
             }
+
+            return false;
         }
 
         private byte[]? GetUUIDKey()
@@ -158,15 +239,12 @@ namespace Leosac.KeyManager
         public static void OpenSubscription()
         {
             var settings = KMSettings.GetSingletonInstance();
-            var ps = new ProcessStartInfo(String.Format("https://leosac.com/key-manager/?installationId={0}", settings.InstallationId))
+            var ps = new ProcessStartInfo(String.Format("https://leosac.com/key-manager/"))
             {
                 UseShellExecute = true,
                 Verb = "open"
             };
             Process.Start(ps);
-
-            // Ensure we save the InstallationId being used if generated for the first time
-            settings.SaveToFile();
         }
 
         public static void OpenRegistration()
@@ -177,16 +255,16 @@ namespace Leosac.KeyManager
 
         public static string GetPlanUrl(string key)
         {
-            return String.Format("{0}/show-plan?key={1}", BASE_URL, key);
+            return String.Format("{0}/show-plan?serial_key={1}", BASE_URL, key);
         }
 
         public static string GetOfflineRegistrationUrl(string? key, string? uuid)
         {
             var url = String.Format("{0}register-plan?", BASE_URL);
             if (!string.IsNullOrEmpty(key))
-                url += String.Format("key={0}&", key);
+                url += String.Format("serial_key={0}&", key);
             if (!string.IsNullOrEmpty(uuid))
-                url += String.Format("uuid={0}", uuid);
+                url += String.Format("instance={0}", uuid);
             return url;
         }
     }

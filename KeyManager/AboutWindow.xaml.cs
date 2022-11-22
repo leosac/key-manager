@@ -49,7 +49,14 @@ namespace Leosac.KeyManager
 
         private void btnRegister_Click(object sender, RoutedEventArgs e)
         {
-            MaintenancePlan.OpenRegistration();
+            if (DataContext is AboutWindowViewModel model)
+            {
+                MaintenancePlan.OpenRegistration();
+
+                var plan = MaintenancePlan.GetSingletonInstance();
+                model.IsActivePlan = plan.IsActivePlan();
+                model.ExpirationDate = plan.ExpirationDate;
+            }
         }
 
         private void btnSubscribe_Click(object sender, RoutedEventArgs e)

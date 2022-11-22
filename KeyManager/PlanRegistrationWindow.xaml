@@ -15,7 +15,7 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="Plan Registration" Height="550" Width="550">
+        Title="Plan Registration" Height="600" Width="600">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -24,17 +24,21 @@
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True">
-        <TextBlock DockPanel.Dock="Top" Text="Register a new plan and benefit from it without waiting." Margin="5" />
+        <TextBlock DockPanel.Dock="Top" Text="Register a new plan and benefit from it" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Margin="10" />
+        <TextBox DockPanel.Dock="Top" Text="{Binding Key}" Margin="10"
+                                        materialDesign:HintAssist.HelperText="The plan/license key"
+                                        materialDesign:HintAssist.Hint="Key" />
         <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5">
             <Button x:Name="btnClose" IsDefault="True" Width="100" IsCancel="True" Content="Close" Margin="10" Click="btnClose_Click"/>
         </WrapPanel>
-        <TextBox DockPanel.Dock="Top" Text="{Binding Key}" Margin="10"
-                                        materialDesign:HintAssist.HelperText="The plan/license key"
-                                        materialDesign:HintAssist.Hint="Key" IsReadOnly="True" />
-        <TabControl>
+        <TextBlock DockPanel.Dock="Bottom" Text="{Binding LastError}" Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Foreground="{StaticResource SecondaryHueMidBrush}" HorizontalAlignment="Center" Margin="5" />
+        <TabControl TabStripPlacement="Left" Margin="5,20,5,5">
             <TabItem Header="Online">
                 <StackPanel>
                     <TextBlock Text="An internet connection is required, that's all!" Margin="10" />
+                    <TextBox DockPanel.Dock="Top" Text="{Binding Email}" Margin="10"
+                                        materialDesign:HintAssist.HelperText="The registered email address (optional)"
+                                        materialDesign:HintAssist.Hint="Email" />
                     <Button x:Name="btnRegisterOnline" Grid.Row="3" Width="150" Margin="10" Click="btnRegisterOnline_Click">
                         <WrapPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="RegistrationMark" Margin="0,0,10,0" />
@@ -63,7 +67,7 @@
                                     <Button DockPanel.Dock="Bottom" Width="184" Margin="5" Command="{x:Static materialDesign:Flipper.FlipCommand}" Content="Back" Style="{StaticResource MaterialDesignFlatButton}" />
                                     <StackPanel Orientation="Vertical">
                                         <TextBlock Text="Visit" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Margin="3" HorizontalAlignment="Center" />
-                                        <TextBlock Text="{Binding OfflineRegistrationUrl, Mode=OneWay}" Cursor="Hand" MouseDown="OfflineRegistrationUrl_MouseDown" TextWrapping="Wrap" Margin="3" />
+                                        <TextBox Text="{Binding OfflineRegistrationUrl, Mode=OneWay}" Margin="3" IsReadOnly="True" />
                                         <WrapPanel HorizontalAlignment="Center">
                                             <Button Content="{materialDesign:PackIcon Kind=OpenInBrowser}" ToolBar.OverflowMode="AsNeeded" ToolTip="Open" Click="OpenUrl_Click" Margin="3" />
                                             <Button Content="{materialDesign:PackIcon Kind=ContentCopy}" ToolBar.OverflowMode="AsNeeded" ToolTip="Copy" Click="CopyUrl_Click" Margin="3" />

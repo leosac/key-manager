@@ -43,10 +43,12 @@ namespace Leosac.KeyManager
                 {
                     var plan = MaintenancePlan.GetSingletonInstance();
                     plan.RegisterPlan(model.Key, model.Code);
+
+                    this.DialogResult = true;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    log.Error("Plan registration failed.", ex);
+                    model.LastError = "The offline registration failed.";
                 }
             }
         }
@@ -58,18 +60,15 @@ namespace Leosac.KeyManager
                 try
                 {
                     var plan = MaintenancePlan.GetSingletonInstance();
-                    plan.RegisterPlan(model.Key);
+                    plan.RegisterPlan(model.Key, model.Email);
+
+                    this.DialogResult = true;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    log.Error("Plan registration failed.", ex);
+                    model.LastError = "The online registration failed.";
                 }
             }
-        }
-
-        private void OfflineRegistrationUrl_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            OpenRegistrationUrl();
         }
 
         private void OpenUrl_Click(object sender, RoutedEventArgs e)
