@@ -4,12 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:domain="clr-namespace:Leosac.KeyManager.Domain"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:KeyManager"
+        xmlns:local="clr-namespace:Leosac.KeyManager"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:properties="clr-namespace:Leosac.KeyManager.Properties"
         mc:Ignorable="d"
         Title="Leosac Key Manager"
         Height="600" Width="800" MinHeight="400" MinWidth="600"
         Icon="/images/leosac_key.png"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         d:DataContext="{d:DesignInstance domain:MainWindowViewModel}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -90,14 +91,14 @@
                                     </Grid.RowDefinitions>
                                     <TextBlock Margin="0,0,10,0" Text="Light" />
                                     <ToggleButton Grid.Column="1" IsChecked="{Binding IsDarkMode}" />
-                                    <TextBlock Grid.Column="2" Margin="10,0,0,0" Text="Dark" />
+                                    <TextBlock Grid.Column="2" Margin="10,0,0,0" Text="{x:Static properties:Resources.DarkMode}" />
                                 </Grid>
 
                                 <Separator />
 
-                                <Button Content="Log Console" Command="{Binding Path=LogConsoleCommand}" />
+                                <Button Content="{x:Static properties:Resources.LogConsole}" Command="{Binding Path=LogConsoleCommand}" />
                                 <!--<Button Content="Settings" />-->
-                                <Button Content="About" Command="{Binding Path=OpenAboutCommand}" />
+                                <Button Content="{x:Static properties:Resources.About}" Command="{Binding Path=OpenAboutCommand}" />
                             </StackPanel>
                         </materialDesign:PopupBox>
 
@@ -117,12 +118,12 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <materialDesign:PackIcon Width="48" Height="48" Kind="SecurityOff" Margin="20,5,20,5" Foreground="{StaticResource SecondaryHueMidBrush}" />
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20,5,20,5">
-                            <TextBlock Text="No active maintenance plan has been registered with this installation." FontWeight="ExtraBold" HorizontalAlignment="Center" Margin="2" />
-                            <TextBlock Text="Register now to benefit from all the plan related services and to secure your business." HorizontalAlignment="Center" Margin="2" />
+                            <TextBlock Text="{x:Static properties:Resources.MaintenancePlanAdvert1}" FontWeight="ExtraBold" HorizontalAlignment="Center" Margin="2" />
+                            <TextBlock Text="{x:Static properties:Resources.MaintenancePlanAdvert2}" HorizontalAlignment="Center" Margin="2" />
                         </StackPanel>
                         <WrapPanel Orientation="Vertical" Margin="20,5,20,5">
-                            <Button x:Name="btnSubscribe" Content="Subscribe" Click="btnSubscribe_Click" Margin="2"/>
-                            <TextBlock x:Name="linkRegister" FontSize="9" Text="Register an existing plan" Margin="2" Cursor="Hand" TextDecorations="Underline" HorizontalAlignment="Center" MouseDown="linkRegister_MouseDown" />
+                            <Button x:Name="btnSubscribe" Content="{x:Static properties:Resources.Subscribe}" Click="btnSubscribe_Click" Margin="2"/>
+                            <TextBlock x:Name="linkRegister" FontSize="9" Text="{x:Static properties:Resources.RegisterLink}" Margin="2" Cursor="Hand" TextDecorations="Underline" HorizontalAlignment="Center" MouseDown="linkRegister_MouseDown" />
                         </WrapPanel>
                     </StackPanel>
                 </materialDesign:ColorZone>

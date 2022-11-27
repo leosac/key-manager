@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="150" d:DesignWidth="500"
              x:Name="keyVersionControl">
@@ -13,7 +14,7 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <local:NumericUpDownControl Hint="Version" HelperText="Key version" Grid.Row="0" HorizontalAlignment="Left" Width="250" MaxValue="255" CurrentValue="{Binding KeyVersion.Version, Mode=TwoWay, ElementName=keyVersionControl}" VerticalAlignment="Center"/>
+        <local:NumericUpDownControl Hint="{x:Static properties:Resources.KeyVersion}" HelperText="{x:Static properties:Resources.KeyVersionHelper}" Grid.Row="0" HorizontalAlignment="Left" Width="250" MaxValue="255" CurrentValue="{Binding KeyVersion.Version, Mode=TwoWay, ElementName=keyVersionControl}" VerticalAlignment="Center"/>
 
         <local:KeyControl Grid.Row="1"  HorizontalAlignment="Left" VerticalAlignment="Center"
                           Key="{Binding KeyVersion.Key, ElementName=keyVersionControl, Mode=TwoWay}"

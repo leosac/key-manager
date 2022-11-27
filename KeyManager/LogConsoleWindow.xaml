@@ -6,6 +6,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Leosac.KeyManager"
+        xmlns:properties="clr-namespace:Leosac.KeyManager.Properties"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance domain:LogConsoleWindowViewModel}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -15,23 +16,23 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="Log Console" Height="350" Width="800"
+        Title="{x:Static properties:Resources.LogConsole}" Height="350" Width="800"
         Topmost="True">
     <DockPanel LastChildFill="True">
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar
     ClipToBounds="False"
     Style="{StaticResource MaterialDesignToolBar}">
-                <Button Content="{materialDesign:PackIcon Kind=Trash}" ToolTip="Clear" Command="{Binding ClearCommand}" />
-                <Button Content="{materialDesign:PackIcon Kind=ContentSave}" ToolTip="Save" Command="{Binding SaveCommand}" />
+                <Button Content="{materialDesign:PackIcon Kind=Trash}" ToolTip="{x:Static properties:Resources.Clear}" Command="{Binding ClearCommand}" />
+                <Button Content="{materialDesign:PackIcon Kind=ContentSave}" ToolTip="{x:Static properties:Resources.Save}" Command="{Binding SaveCommand}" />
                 <Separator />
-                <Button Content="{materialDesign:PackIcon Kind=ContentCut}" Command="{Binding CutCommand}" ToolBar.OverflowMode="AsNeeded" ToolTip="Cut" />
-                <Button Content="{materialDesign:PackIcon Kind=ContentCopy}" Command="{Binding CopyCommand}" ToolBar.OverflowMode="AsNeeded" ToolTip="Copy" />
+                <Button Content="{materialDesign:PackIcon Kind=ContentCut}" Command="{Binding CutCommand}" ToolBar.OverflowMode="AsNeeded" ToolTip="{x:Static properties:Resources.Cut}" />
+                <Button Content="{materialDesign:PackIcon Kind=ContentCopy}" Command="{Binding CopyCommand}" ToolBar.OverflowMode="AsNeeded" ToolTip="{x:Static properties:Resources.Copy}" />
                 <Separator />
-                <Label VerticalAlignment="Center" Content="Font size:" />
+                <Label VerticalAlignment="Center" Content="{x:Static properties:Resources.FontSize}" />
                 <ComboBox x:Name="cbFontSize" ItemsSource="{Binding FontSizes}" SelectedItem="{Binding SelectedFontSize, Mode=TwoWay}" />
                 <Separator />
-                <Label VerticalAlignment="Center" Content="Max lines:" />
+                <Label VerticalAlignment="Center" Content="{x:Static properties:Resources.MaxLines}" />
                 <ComboBox ItemsSource="{Binding MaxLines}" SelectedItem="{Binding Log.MaxLines, Mode=TwoWay}" />
             </ToolBar>
         </ToolBarTray>

@@ -6,9 +6,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
         d:DataContext="{d:DesignInstance domain:FolderBrowserDialogViewModel}"
         mc:Ignorable="d"
-        Title="Select Target Folder" Height="450" Width="800" Loaded="Window_Loaded"
+        Title="{x:Static properties:Resources.SelectTargetFolder}" Height="450" Width="800" Loaded="Window_Loaded"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}">
@@ -18,10 +19,10 @@
     <Grid>
         <DockPanel LastChildFill="True">
             <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,5">
-                <Button x:Name="btnOk" Width="100" IsDefault="True" Content="OK" Click="btnOk_Click"/>
-                <Button x:Name="btnCancel" Width="100" IsCancel="True" Content="Cancel" Margin="15,0,0,0" Click="btnCancel_Click"/>
+                <Button x:Name="btnOk" Width="100" IsDefault="True" Content="{x:Static properties:Resources.OK}" Click="btnOk_Click"/>
+                <Button x:Name="btnCancel" Width="100" IsCancel="True" Content="{x:Static properties:Resources.Cancel}" Margin="15,0,0,0" Click="btnCancel_Click"/>
             </WrapPanel>
-            <GroupBox Header="Drives" Width="200">
+            <GroupBox Header="{x:Static properties:Resources.Drives}" Width="200">
                 <ListBox x:Name="lbDrives" ItemsSource="{Binding Drives, Mode=OneWay}" SelectedItem="{Binding SelectedDrive}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
@@ -36,7 +37,7 @@
                 </ListBox>
             </GroupBox>
             <WrapPanel DockPanel.Dock="Bottom" Margin="10,10,10,10">
-                <Label Content="Selected Folder:" />
+                <Label Content="{x:Static properties:Resources.SelectedFolder}" />
                 <TextBox Width="400" IsReadOnly="True" Text="{Binding SelectedDirectory.FullName, Mode=OneWay}" />
             </WrapPanel>
             <Grid DockPanel.Dock="Bottom">
@@ -44,10 +45,10 @@
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" TextDecorations="Underline" Cursor="Hand" MouseUp="TextBlock_MouseUp" Padding="5,5,5,5">Go to parent</TextBlock>
+                <TextBlock Grid.Column="0" TextDecorations="Underline" Cursor="Hand" MouseUp="TextBlock_MouseUp" Padding="5,5,5,5" Text="{x:Static properties:Resources.GoToParent}" />
                 <TextBlock Grid.Column="1" TextWrapping="Wrap" Foreground="{DynamicResource MaterialDesignValidationErrorBrush}" Visibility="{Binding HasError, Converter={StaticResource BoolToVisibleConverter}}" Text="{Binding IOError}" Padding="5,5,5,5" />
             </Grid>
-            <GroupBox Header="Directories">
+            <GroupBox Header="{x:Static properties:Resources.Directories}">
                 <ListBox x:Name="lbDirectories" ItemsSource="{Binding Directories, Mode=OneWay}" SelectedItem="{Binding SelectedDirectory}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>

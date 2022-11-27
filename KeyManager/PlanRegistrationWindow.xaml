@@ -6,6 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Leosac.KeyManager"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:properties="clr-namespace:Leosac.KeyManager.Properties"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance domain:PlanRegistrationWindowViewModel}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -24,41 +25,41 @@
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True">
-        <TextBlock DockPanel.Dock="Top" Text="Register a new plan and benefit from it" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Margin="10" />
+        <TextBlock DockPanel.Dock="Top" Text="{x:Static properties:Resources.RegisterPlan}" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Margin="10" />
         <TextBox DockPanel.Dock="Top" Text="{Binding Key}" Margin="10"
-                                        materialDesign:HintAssist.HelperText="The plan/license key"
-                                        materialDesign:HintAssist.Hint="Key" />
+                                        materialDesign:HintAssist.HelperText="{x:Static properties:Resources.LicenseKeyHelper}"
+                                        materialDesign:HintAssist.Hint="{x:Static properties:Resources.LicenseKey}" />
         <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5">
-            <Button x:Name="btnClose" IsDefault="True" Width="100" IsCancel="True" Content="Close" Margin="10" Click="btnClose_Click"/>
+            <Button x:Name="btnClose" IsDefault="True" Width="100" IsCancel="True" Content="{x:Static properties:Resources.Close}" Margin="10" Click="btnClose_Click"/>
         </WrapPanel>
         <TextBlock DockPanel.Dock="Bottom" Text="{Binding LastError}" Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Foreground="{StaticResource SecondaryHueMidBrush}" HorizontalAlignment="Center" Margin="5" />
         <TabControl TabStripPlacement="Left" Margin="5,20,5,5">
-            <TabItem Header="Online">
+            <TabItem Header="{x:Static properties:Resources.Online}">
                 <StackPanel>
-                    <TextBlock Text="An internet connection is required, that's all!" Margin="10" />
+                    <TextBlock Text="{x:Static properties:Resources.InternetRequired}" Margin="10" />
                     <TextBox DockPanel.Dock="Top" Text="{Binding Email}" Margin="10"
-                                        materialDesign:HintAssist.HelperText="The registered email address (optional)"
-                                        materialDesign:HintAssist.Hint="Email" />
+                                        materialDesign:HintAssist.HelperText="{x:Static properties:Resources.RegisterEmailHelper}"
+                                        materialDesign:HintAssist.Hint="{x:Static properties:Resources.RegisterEmail}" />
                     <Button x:Name="btnRegisterOnline" Grid.Row="3" Width="150" Margin="10" Click="btnRegisterOnline_Click">
                         <WrapPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="RegistrationMark" Margin="0,0,10,0" />
-                            <TextBlock Text="Register" />
+                            <TextBlock Text="{x:Static properties:Resources.Register}" />
                         </WrapPanel>
                     </Button>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Offline">
+            <TabItem Header="{x:Static properties:Resources.Offline}">
                 <StackPanel>
                     <TextBox Text="{Binding UUID, Mode=OneWay}"
-                                        materialDesign:HintAssist.HelperText="Unique Installation Identifier"
-                                        materialDesign:HintAssist.Hint="UUID" Margin="10" IsReadOnly="True" />
+                                        materialDesign:HintAssist.HelperText="{x:Static properties:Resources.UUIDHelper}"
+                                        materialDesign:HintAssist.Hint="{x:Static properties:Resources.UUID}" Margin="10" IsReadOnly="True" />
                     <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
                         <materialDesign:Flipper Style="{StaticResource MaterialDesignCardFlipper}" Margin="3" Height="180">
                             <materialDesign:Flipper.FrontContent>
                                 <Button Width="200" MinHeight="100" Margin="8" Command="{x:Static materialDesign:Flipper.FlipCommand}" Style="{StaticResource MaterialDesignFlatButton}">
                                     <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                                         <materialDesign:PackIcon Kind="OpenInBrowser" Width="64" Height="64" HorizontalAlignment="Center" />
-                                        <TextBlock Text="Web Browser" HorizontalAlignment="Center" />
+                                        <TextBlock Text="{x:Static properties:Resources.WebBrowser}" HorizontalAlignment="Center" />
                                     </StackPanel>
                                 </Button>
                             </materialDesign:Flipper.FrontContent>
@@ -69,8 +70,8 @@
                                         <TextBlock Text="Visit" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Margin="3" HorizontalAlignment="Center" />
                                         <TextBox Text="{Binding OfflineRegistrationUrl, Mode=OneWay}" Margin="3" IsReadOnly="True" />
                                         <WrapPanel HorizontalAlignment="Center">
-                                            <Button Content="{materialDesign:PackIcon Kind=OpenInBrowser}" ToolBar.OverflowMode="AsNeeded" ToolTip="Open" Click="OpenUrl_Click" Margin="3" />
-                                            <Button Content="{materialDesign:PackIcon Kind=ContentCopy}" ToolBar.OverflowMode="AsNeeded" ToolTip="Copy" Click="CopyUrl_Click" Margin="3" />
+                                            <Button Content="{materialDesign:PackIcon Kind=OpenInBrowser}" ToolBar.OverflowMode="AsNeeded" ToolTip="{x:Static properties:Resources.Open}" Click="OpenUrl_Click" Margin="3" />
+                                            <Button Content="{materialDesign:PackIcon Kind=ContentCopy}" ToolBar.OverflowMode="AsNeeded" ToolTip="{x:Static properties:Resources.Copy}" Click="CopyUrl_Click" Margin="3" />
                                         </WrapPanel>
                                     </StackPanel>
                                 </DockPanel>
@@ -81,7 +82,7 @@
                                 <Button Width="200" MinHeight="100" Margin="8" Command="{x:Static materialDesign:Flipper.FlipCommand}" Style="{StaticResource MaterialDesignFlatButton}">
                                     <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                                         <materialDesign:PackIcon Kind="Phone" Width="64" Height="64" HorizontalAlignment="Center" />
-                                        <TextBlock Text="Phone" HorizontalAlignment="Center" />
+                                        <TextBlock Text="{x:Static properties:Resources.Phone}" HorizontalAlignment="Center" />
                                     </StackPanel>
                                 </Button>
                             </materialDesign:Flipper.FrontContent>
@@ -89,7 +90,7 @@
                                 <DockPanel LastChildFill="True" Width="200" MinHeight="100" Margin="8">
                                     <Button DockPanel.Dock="Bottom" Width="184" Margin="5" Command="{x:Static materialDesign:Flipper.FlipCommand}" Content="Back" Style="{StaticResource MaterialDesignFlatButton}" />
                                     <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="Call" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Margin="3" HorizontalAlignment="Center" />
+                                        <TextBlock Text="{x:Static properties:Resources.Call}" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Margin="3" HorizontalAlignment="Center" />
                                         <TextBlock Text="+33 3 67 37 02 45" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Margin="3" HorizontalAlignment="Center" Foreground="{StaticResource SecondaryHueMidBrush}" />
                                     </StackPanel>
                                 </DockPanel>
@@ -102,7 +103,7 @@
                     <Button x:Name="btnRegisterOffline" Width="150" Margin="15" Click="btnRegisterOffline_Click">
                         <WrapPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="OfflineBolt" Margin="0,0,10,0" />
-                            <TextBlock Text="Register" />
+                            <TextBlock Text="{x:Static properties:Resources.Register}" />
                         </WrapPanel>
                     </Button>
                 </StackPanel>

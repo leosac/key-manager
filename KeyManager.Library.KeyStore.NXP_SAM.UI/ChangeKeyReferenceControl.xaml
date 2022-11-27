@@ -7,11 +7,12 @@
              xmlns:libui="clr-namespace:Leosac.KeyManager.Library.UI;assembly=KeyManager.Library.UI"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="400">
     <materialDesign:Card>
         <StackPanel>
-            <Expander HorizontalAlignment="Stretch" Header="Change Key Reference">
+            <Expander HorizontalAlignment="Stretch" Header="{x:Static properties:Resources.ChangeKeyReference}">
                 <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -19,11 +20,11 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         <libui:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding ChangeKeyRefId, Mode=TwoWay, ElementName=userControl}" Grid.Row="0"
-                                                        HelperText="The Key Entry Identifier"
-                                                        Hint="Key Entry"/>
+                                                        HelperText="{x:Static properties:Resources.KeyEntryIdentifierHelper}"
+                                                        Hint="{x:Static properties:Resources.KeyEntryIdentifier}"/>
                         <libui:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding ChangeKeyRefVersion, Mode=TwoWay, ElementName=userControl}" Grid.Row="1"
-                                                        HelperText="The Key Version"
-                                                        Hint="Key Version"/>
+                                                        HelperText="{x:Static properties:Resources.KeyVersionHelper}"
+                                                        Hint="{x:Static properties:Resources.KeyVersion}"/>
                     </Grid>
                 </StackPanel>
             </Expander>

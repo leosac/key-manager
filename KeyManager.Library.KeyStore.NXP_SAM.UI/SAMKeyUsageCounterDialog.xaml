@@ -7,19 +7,20 @@
              xmlns:libui="clr-namespace:Leosac.KeyManager.Library.UI;assembly=KeyManager.Library.UI"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance domain:SAMKeyUsageCounterDialogViewModel}"
              d:DesignHeight="370" d:DesignWidth="500">
     <DockPanel LastChildFill="True">
-        <TextBlock DockPanel.Dock="Top" Text="Key Entry" FontSize="18" Margin="5" />
+        <TextBlock DockPanel.Dock="Top" Text="{x:Static properties:Resources.KeyEntry}" FontSize="18" Margin="5" />
         <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,25,5,5">
-            <Button Width="100" IsDefault="True" Content="OK" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding Counter}"/>
-            <Button Width="100" IsCancel="True" Content="Cancel" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
+            <Button Width="100" IsDefault="True" Content="{x:Static properties:Resources.OK}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding Counter}"/>
+            <Button Width="100" IsCancel="True" Content="{x:Static properties:Resources.Cancel}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
         </WrapPanel>
         <StackPanel>
             <TextBox Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Counter.Identifier}" IsEnabled="False" Margin="5,5,5,5"
-                     materialDesign:HintAssist.HelperText="Unique identifier for the key usage counter"
-                     materialDesign:HintAssist.Hint="Key Usage Counter Identifier"
+                     materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KUCIdentifierHelper}"
+                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.KUCIdentifier}"
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
             <materialDesign:Card Margin="5,15,5,5">
                 <StackPanel>
@@ -31,11 +32,11 @@
                                     <RowDefinition />
                                 </Grid.RowDefinitions>
                                 <libui:NumericUpDownControl MinValue="0" MaxValue="4294967295" CurrentValue="{Binding Counter.Value, Mode=TwoWay}" Grid.Row="0"
-                                                        HelperText="The Counter Current Value"
-                                                        Hint="Value"/>
+                                                        HelperText="{x:Static properties:Resources.KUCValueHelper}"
+                                                        Hint="{x:Static properties:Resources.KUCValue}"/>
                                 <libui:NumericUpDownControl MinValue="0" MaxValue="4294967295" CurrentValue="{Binding Counter.Limit, Mode=TwoWay}" Grid.Row="1"
-                                                        HelperText="The Counter Limit"
-                                                        Hint="Limit"/>
+                                                        HelperText="{x:Static properties:Resources.KUCLimitHelper}"
+                                                        Hint="{x:Static properties:Resources.KUCLimit}"/>
                             </Grid>
                         </StackPanel>
                     </Expander>

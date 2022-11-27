@@ -5,10 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="500">
     <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-        <TextBlock Text="The Key Ceremony is now ready to be completed." FontSize="18" HorizontalAlignment="Center" />
-        <TextBlock Text="Press the &quot;Finish&quot; button to perform the final computation." FontSize="18" HorizontalAlignment="Center" />
+        <TextBlock Text="{x:Static properties:Resources.KeyCeremonyWizardEnd1}" FontSize="18" HorizontalAlignment="Center" />
+        <TextBlock Text="{x:Static properties:Resources.KeyCeremonyWizardEnd2}" FontSize="18" HorizontalAlignment="Center" />
     </StackPanel>
 </UserControl>

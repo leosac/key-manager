@@ -6,6 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Leosac.KeyManager"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:properties="clr-namespace:Leosac.KeyManager.Properties"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance domain:AboutWindowViewModel}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -15,7 +16,7 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="About" Height="500" Width="580" Loaded="Window_Loaded">
+        Title="{x:Static properties:Resources.About}" Height="500" Width="580" Loaded="Window_Loaded">
     <DockPanel LastChildFill="True">
         <materialDesign:ColorZone DockPanel.Dock="Top" Padding="15" Height="110" materialDesign:ElevationAssist.Elevation="Dp4" ClipToBounds="False" Mode="PrimaryMid">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -29,10 +30,10 @@
             </Grid.ColumnDefinitions>
             <WrapPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Bottom" Margin="5">
                 <TextBlock Text="LEOSAC, Security Freedom" Margin="0,0,0,3" />
-                <TextBlock Text="The source code of this software is released under the GNU GPL v3 license." />
+                <TextBlock Text="{x:Static properties:Resources.CodeLicense}" />
             </WrapPanel>
             <WrapPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5">
-                <Button x:Name="btnClose" IsDefault="True" Width="100" IsCancel="True" Content="Close" Margin="10" Click="btnClose_Click"/>
+                <Button x:Name="btnClose" IsDefault="True" Width="100" IsCancel="True" Content="{x:Static properties:Resources.Close}" Margin="10" Click="btnClose_Click"/>
             </WrapPanel>
         </Grid>
         <ScrollViewer HorizontalScrollBarVisibility="Auto">
@@ -45,26 +46,26 @@
                             <RowDefinition />
                             <RowDefinition Height="100" />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Margin="15,15,15,5" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Maintenance Plan" />
+                        <TextBlock Grid.Row="0" Margin="15,15,15,5" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="{x:Static properties:Resources.MaintenancePlan}" />
                         <WrapPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding IsActivePlan,Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                             <materialDesign:PackIcon Kind="SecurityOff" Margin="2" Foreground="{StaticResource SecondaryHueMidBrush}" />
-                            <TextBlock Text="No active maintenance plan." Margin="2" Foreground="{StaticResource SecondaryHueMidBrush}" FontWeight="Bold" />
+                            <TextBlock Text="{x:Static properties:Resources.InvalidPlan}" Margin="2" Foreground="{StaticResource SecondaryHueMidBrush}" FontWeight="Bold" />
                         </WrapPanel>
                         <WrapPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding IsActivePlan,Converter={StaticResource BooleanToVisibilityConverter}}">
                             <materialDesign:PackIcon Kind="Security" Margin="2" />
-                            <TextBlock Text="You have a valid maintenance plan." FontWeight="Bold" Margin="2" />
+                            <TextBlock Text="{x:Static properties:Resources.ValidPlan}" FontWeight="Bold" Margin="2" />
                         </WrapPanel>
                         <WrapPanel Grid.Row="2" HorizontalAlignment="Center" Visibility="{Binding ExpirationDate, Converter={StaticResource NullableToVisibilityConverter}}">
-                            <TextBlock Text="The plan expires at" Margin="2" />
+                            <TextBlock Text="{x:Static properties:Resources.PlanExpiration}" Margin="2" />
                             <TextBlock Text="{Binding ExpirationDate}" Margin="2" Foreground="{StaticResource SecondaryHueMidBrush}" FontWeight="Bold" />
                         </WrapPanel>
-                        <Expander HorizontalAlignment="Stretch" Header="Actions" Grid.Row="3" IsExpanded="{Binding IsActivePlan, Mode=OneTime, Converter={StaticResource InvertBooleanConverter}}">
+                        <Expander HorizontalAlignment="Stretch" Header="{x:Static properties:Resources.Actions}" Grid.Row="3" IsExpanded="{Binding IsActivePlan, Mode=OneTime, Converter={StaticResource InvertBooleanConverter}}">
                             <WrapPanel Orientation="Vertical" HorizontalAlignment="Center">
                                 <Button x:Name="btnSubscribe" Margin="5" Click="btnSubscribe_Click">
-                                    <materialDesign:PackIcon Kind="ShoppingCartOutline" Margin="5" ToolTip="Subscribe" />
+                                    <materialDesign:PackIcon Kind="ShoppingCartOutline" Margin="5" ToolTip="{x:Static properties:Resources.Subscribe}" />
                                 </Button>
                                 <Button x:Name="btnRegister" Margin="5" Style="{StaticResource MaterialDesignRaisedLightButton}" Click="btnRegister_Click">
-                                    <materialDesign:PackIcon Kind="RegistrationMark" Margin="5" ToolTip="Register" />
+                                    <materialDesign:PackIcon Kind="RegistrationMark" Margin="5" ToolTip="{x:Static properties:Resources.Register}" />
                                 </Button>
                             </WrapPanel>
                         </Expander>
@@ -84,17 +85,17 @@
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="15,15,15,5" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Information" />
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Product" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
+                        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="15,15,15,5" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="{x:Static properties:Resources.Information}" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static properties:Resources.Product}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
                         <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SoftwareName}" VerticalAlignment="Center" Margin="5,0,5,0" />
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Software Version" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static properties:Resources.SoftwareVersion}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
                         <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SoftwareVersion}" VerticalAlignment="Center" Margin="5,0,5,0" />
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Developed by" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static properties:Resources.DevelopedBy}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
                         <TextBlock Grid.Row="3" Grid.Column="1" Text="Leosac SAS" VerticalAlignment="Center" Margin="5,0,5,0" />
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Email Support" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static properties:Resources.EmailSupport}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
                         <TextBlock Grid.Row="4" Grid.Column="1" Text="support@leosac.com" VerticalAlignment="Center" Margin="5,0,5,0" />
-                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Website" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
-                        <TextBlock x:Name="linkWebsite" Grid.Row="5" Grid.Column="1" Text="https://www.leosac.com" ToolTip="Open Website" VerticalAlignment="Center" Margin="5,0,5,0" Cursor="Hand" MouseDown="linkWebsite_MouseDown" />
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="{x:Static properties:Resources.Website}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0" />
+                        <TextBlock x:Name="linkWebsite" Grid.Row="5" Grid.Column="1" Text="https://www.leosac.com" ToolTip="{x:Static properties:Resources.OpenWebsite}" VerticalAlignment="Center" Margin="5,0,5,0" Cursor="Hand" MouseDown="linkWebsite_MouseDown" />
                     </Grid>
                 </materialDesign:Card>
                 <materialDesign:Card Height="240" Width="250" Margin="10">
@@ -108,20 +109,20 @@
                         <TextBlock Grid.Row="0" Margin="15,15,15,5" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Automatic Updates" />
                         <WrapPanel Grid.Row="1" VerticalAlignment="Center" Margin="5">
                             <ToggleButton x:Name="AutoUpdateToggleButton" Click="AutoUpdateToggleButton_Click" />
-                            <TextBlock Margin="10,0,0,0" Text="Automatic updates" />
+                            <TextBlock Margin="10,0,0,0" Text="{x:Static properties:Resources.AutomaticUpdates}" />
                         </WrapPanel>
-                        <TextBlock Grid.Row="2" Margin="5" Text="You already have the latest version." VerticalAlignment="Center" Visibility="{Binding AutoUpdate.HasUpdate, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
-                        <TextBlock Grid.Row="2" Margin="5" Text="New update available!" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Visibility="{Binding AutoUpdate.HasUpdate, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <TextBlock Grid.Row="2" Margin="5" Text="{x:Static properties:Resources.AlreadyLastUpdate}" VerticalAlignment="Center" Visibility="{Binding AutoUpdate.HasUpdate, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                        <TextBlock Grid.Row="2" Margin="5" Text="{x:Static properties:Resources.NewUpdateAvailable}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Visibility="{Binding AutoUpdate.HasUpdate, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         <Button x:Name="btnCheckUpdate" Grid.Row="3" Width="210" Margin="5" Click="btnCheckUpdate_Click" Visibility="{Binding AutoUpdate.HasUpdate, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                             <WrapPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Update" Margin="0,0,10,0" />
-                                <TextBlock Text="Check for update now" />
+                                <TextBlock Text="{x:Static properties:Resources.CheckUpdate}" />
                             </WrapPanel>
                         </Button>
                         <Button x:Name="btnDownloadUpdate" Grid.Row="3" Width="210" Margin="5" Click="btnDownloadUpdate_Click" Visibility="{Binding AutoUpdate.HasUpdate, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <WrapPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Download" Margin="0,0,10,0" />
-                                <TextBlock Text="Download the new version" />
+                                <TextBlock Text="{x:Static properties:Resources.DownloadNow}" />
                             </WrapPanel>
                         </Button>
                     </Grid>
@@ -132,7 +133,7 @@
                             <RowDefinition Height="50" />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Margin="15,15,15,5" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Libraries / Credits" />
+                        <TextBlock Grid.Row="0" Margin="15,15,15,5" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="{x:Static properties:Resources.LibrariesCredits}" />
                         <ListBox Grid.Row="1" ItemsSource="{Binding Libraries}" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>

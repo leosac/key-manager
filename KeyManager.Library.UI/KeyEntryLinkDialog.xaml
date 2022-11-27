@@ -6,6 +6,7 @@
              xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              d:DataContext="{d:DesignInstance domain:KeyEntryLinkDialogViewModel}"
              mc:Ignorable="d"
@@ -21,20 +22,20 @@
             <StackPanel Orientation="Vertical">
                 <TextBox Margin="15" IsReadOnly="True" Text="{Binding LinkResult}" />
                 <WrapPanel Visibility="{Binding LinkError, Converter={StaticResource NullableToVisibilityConverter}}">
-                    <TextBlock Margin="5" VerticalAlignment="Center" Text="The link failed with following error:" />
+                    <TextBlock Margin="5" VerticalAlignment="Center" Text="{x:Static properties:Resources.LinkError}" />
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding LinkError}" />
                 </WrapPanel>
                 <local:DivInputTestControl DivInput="{Binding Link.DivInput}" DivInputResult="{Binding DivInputResult}" />
                 <StackPanel Margin="15" HorizontalAlignment="Center" Orientation="Horizontal">
-                    <Button  Margin="5" VerticalAlignment="Center" Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}" CommandParameter="{x:Static Dock.Bottom}" Content="CLOSE" Style="{StaticResource MaterialDesignFlatButton}" />
+                    <Button  Margin="5" VerticalAlignment="Center" Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}" CommandParameter="{x:Static Dock.Bottom}" Content="{x:Static properties:Resources.CloseCaps}" Style="{StaticResource MaterialDesignFlatButton}" />
                 </StackPanel>
             </StackPanel>
         </materialDesign:DrawerHost.BottomDrawerContent>
         <DockPanel LastChildFill="True">
-            <TextBlock DockPanel.Dock="Top" Text="Key Entry Link" FontSize="18" Margin="5" />
-            <TextBlock DockPanel.Dock="Top" Text="Compute the Cryptogram to change the Key Entry, from another Key Store." Margin="5" />
+            <TextBlock DockPanel.Dock="Top" Text="{x:Static properties:Resources.KeyEntryLink}" FontSize="18" Margin="5" />
+            <TextBlock DockPanel.Dock="Top" Text="{x:Static properties:Resources.KeyEntryLinkHelper}" Margin="5" />
             <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,20,5,5">
-                <Button Width="100" Content="Test" Style="{StaticResource MaterialDesignRaisedLightButton}" CommandParameter="{x:Static Dock.Bottom}" Margin="5">
+                <Button Width="100" Content="{x:Static properties:Resources.Test}" Style="{StaticResource MaterialDesignRaisedLightButton}" CommandParameter="{x:Static Dock.Bottom}" Margin="5">
                     <Button.Command>
                         <domain:CommandGroup>
                             <domain:CommandReference Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}" />
@@ -42,7 +43,7 @@
                         </domain:CommandGroup>
                     </Button.Command>
                 </Button>
-                <Button Width="100" IsDefault="True" Content="Close" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding Link}" Margin="5" />
+                <Button Width="100" IsDefault="True" Content="{x:Static properties:Resources.Close}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding Link}" Margin="5" />
             </WrapPanel>
             <Grid>
                 <Grid.RowDefinitions>
@@ -53,20 +54,20 @@
                 </Grid.RowDefinitions>
                 <local:FavoriteKeyStoreSelectionControl Grid.Row="0" SelectedKeyStoreFavorite="{Binding Link.KeyStoreFavorite, Mode=TwoWay, Converter={StaticResource KeyStoreFavoriteConverter}}" />
                 <TextBox Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Link.KeyIdentifier, Mode=TwoWay}" Margin="5"
-                         materialDesign:HintAssist.HelperText="The key entry identifier on the key store"
-                         materialDesign:HintAssist.Hint="Identifier"
+                         materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifierHelper}"
+                         materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                 <local:DivInputControl Grid.Row="2" DivInput="{Binding Link.DivInput}" />
                 <materialDesign:Card Grid.Row="3" Margin="5,20,5,5">
                     <StackPanel>
-                        <Expander HorizontalAlignment="Stretch" Header="Wrapping Key">
+                        <Expander HorizontalAlignment="Stretch" Header="{x:Static properties:Resources.WrappingKey}">
                             <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
                                 <TextBox Text="{Binding KeyEntryLink.WrappingKeyId, Mode=TwoWay}" Margin="5"
-                                         materialDesign:HintAssist.HelperText="The Wrapping Key Entry Identifier"
-                                         materialDesign:HintAssist.Hint="Identifier"/>
+                                         materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifierHelper}"
+                                         materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"/>
                                 <local:NumericUpDownControl MinValue="0" MaxValue="4294967295" CurrentValue="{Binding KeyEntryLink.WrappingKeyVersion, Mode=TwoWay}" Margin="5"
-                                                            HelperText="The Wrapping Key Version"
-                                                            Hint="Version"/>
+                                                            HelperText="{x:Static properties:Resources.KeyVersionHelper}"
+                                                            Hint="{x:Static properties:Resources.KeyVersion}"/>
                             </StackPanel>
                         </Expander>
                     </StackPanel>

@@ -7,6 +7,7 @@
              xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <UserControl.Resources>
@@ -25,7 +26,7 @@
                            VerticalAlignment="Center"
                            FontSize="28"
                            FontWeight="Bold"
-                           Text="Key Export / Print" />
+                           Text="{x:Static properties:Resources.KeyExportPrint}" />
                 </DockPanel>
             </materialDesign:ColorZone>
 
@@ -37,16 +38,16 @@
                     <DockPanel DockPanel.Dock="Bottom" Margin="0,15,0,0">
                         <TextBlock Text="www.leosac.com" DockPanel.Dock="Right" HorizontalAlignment="Right" />
                         <WrapPanel>
-                            <TextBlock Text="Document generated with" />
+                            <TextBlock Text="{x:Static properties:Resources.DocumentGenerated}" />
                             <TextBlock Text="Leosac Key Manager" FontWeight="Bold" Margin="3,0,0,0" />
                         </WrapPanel>
                     </DockPanel>
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-                        <TextBlock Text="This document is proprietary, sensitive and confidential. It should not be used, published or redistributed without the owner agreement." TextWrapping="Wrap" HorizontalAlignment="Center" />
-                        <TextBlock Text="If you received this document by mistake, please destroy it without further notice and directly report this action to a security officer." TextWrapping="Wrap" HorizontalAlignment="Center" />
+                        <TextBlock Text="{x:Static properties:Resources.KeyExportDisclaimer1}" TextWrapping="Wrap" HorizontalAlignment="Center" />
+                        <TextBlock Text="{x:Static properties:Resources.KeyExportDisclaimer2}" TextWrapping="Wrap" HorizontalAlignment="Center" />
                         <Image Source="{Binding Key, ElementName=userControl, Converter={StaticResource KeyLeakUriConverter}}" Width="128" Height="128" Margin="8" />
                         <WrapPanel HorizontalAlignment="Center" Margin="8">
-                            <TextBlock Text="Please visit" TextWrapping="Wrap" />
+                            <TextBlock Text="{x:Static properties:Resources.PleaseVisit}" TextWrapping="Wrap" />
                             <TextBlock x:Name="linkLeak" Text="{Binding Key, ElementName=userControl, Converter={StaticResource KeyLeakUriConverter}}" Foreground="Blue" TextWrapping="Wrap" Margin="5,0,0,0" />
                         </WrapPanel>
                     </StackPanel>
@@ -69,23 +70,23 @@
                     <ImageBrush ImageSource="pack://application:,,,/KeyManager.Library.UI;component/images/confidential.png" Stretch="UniformToFill" Opacity="0.2" />
                 </Grid.Background>
                 <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="1" />
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Key Value" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static properties:Resources.KeyValue}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
                 <Border Grid.Row="0" Grid.Column="1" BorderBrush="Black" BorderThickness="1" />
                 <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Key.Value, ElementName=userControl}" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 <Border Grid.Row="1" Grid.Column="0" BorderBrush="Black" BorderThickness="1" />
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Key Size" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static properties:Resources.KeySizeHelper}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
                 <Border Grid.Row="1" Grid.Column="1" BorderBrush="Black" BorderThickness="1" />
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Key.KeySize, ElementName=userControl}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 <Border Grid.Row="2" Grid.Column="0" BorderBrush="Black" BorderThickness="1" />
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Key Checksum" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static properties:Resources.KeyChecksumHelper}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
                 <Border Grid.Row="2" Grid.Column="1" BorderBrush="Black" BorderThickness="1" />
                 <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding KeyChecksum, ElementName=userControl}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 <Border Grid.Row="3" Grid.Column="0" BorderBrush="Black" BorderThickness="1" />
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Key Tags" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static properties:Resources.KeyTagsHelper}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
                 <Border Grid.Row="3" Grid.Column="1" BorderBrush="Black" BorderThickness="1" />
                 <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Key.Tags, ElementName=userControl}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 <Border Grid.Row="4" Grid.Column="0" BorderBrush="Black" BorderThickness="1" />
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="Note" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static properties:Resources.Note}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
                 <Border Grid.Row="4" Grid.Column="1" BorderBrush="Black" BorderThickness="1" />
                 <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Note, ElementName=userControl}" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" />
             </Grid>

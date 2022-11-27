@@ -6,6 +6,7 @@
              xmlns:domain="clr-namespace:Leosac.KeyManager.Domain"
              xmlns:local="clr-namespace:Leosac.KeyManager"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Properties"
              x:Class="Leosac.KeyManager.HomeControl"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance domain:HomeControlViewModel}"
@@ -19,19 +20,19 @@
         </WrapPanel.Resources>
         <materialDesign:Card x:Name="createKeyStore" HorizontalAlignment="Left" VerticalAlignment="Center" Height="175" Width="175" Cursor="Hand" MouseDown="createKeyStore_MouseDown">
             <StackPanel HorizontalAlignment="Center">
-                <Label Content="Create a new Key Store" HorizontalAlignment="Center" Margin="0,24,0,0" VerticalAlignment="Top"/>
+                <Label Content="{x:Static properties:Resources.CreateKeyStore}" HorizontalAlignment="Center" Margin="0,24,0,0" VerticalAlignment="Top"/>
                 <materialDesign:PackIcon  Kind="CreateNewFolder" Height="87" Width="132"/>
             </StackPanel>
         </materialDesign:Card>
         <materialDesign:Card x:Name="openKeyStore" HorizontalAlignment="Center" VerticalAlignment="Center" Height="175" Width="175" Cursor="Hand" MouseDown="openKeyStore_MouseDown">
             <StackPanel HorizontalAlignment="Center">
-                <Label Content="Open a Key Store" HorizontalAlignment="Center" Margin="0,24,0,0" VerticalAlignment="Top"/>
+                <Label Content="{x:Static properties:Resources.OpenKeyStore}" HorizontalAlignment="Center" Margin="0,24,0,0" VerticalAlignment="Top"/>
                 <materialDesign:PackIcon  Kind="FolderOpen" Height="87" Width="132"/>
             </StackPanel>
         </materialDesign:Card>
         <materialDesign:Card x:Name="favoritesKeyStore" HorizontalAlignment="Left" VerticalAlignment="Center" Height="175" Width="175" Cursor="Hand" MouseDown="favoritesKeyStore_MouseDown">
             <StackPanel HorizontalAlignment="Center">
-                <Label Content="Favorites Key Store" HorizontalAlignment="Center" Margin="0,24,0,0" VerticalAlignment="Top"/>
+                <Label Content="{x:Static properties:Resources.Favorites}" HorizontalAlignment="Center" Margin="0,24,0,0" VerticalAlignment="Top"/>
                 <materialDesign:PackIcon  Kind="Star" Height="87" Width="132"/>
             </StackPanel>
         </materialDesign:Card>

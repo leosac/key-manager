@@ -7,6 +7,7 @@
              xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="500">
     <UserControl.Resources>
@@ -29,8 +30,8 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <PasswordBox x:Name="tbxKeyValue" Grid.Row="0" Grid.Column="0" Margin="8,8,8,20"
-                    materialDesign:HintAssist.HelperText="The secret value for the key"
-                    materialDesign:HintAssist.Hint="Key Value"
+                    materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyValueHelper}"
+                    materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyValue}"
                     materialDesign:TextFieldAssist.HasClearButton="True"
                     materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
                     MaxLength="{Binding Path=Key.KeySize, Converter={StaticResource ByteLengthToCharLengthConverter}, ElementName=keyControl}"
@@ -41,52 +42,34 @@
                 <materialDesign:DialogHost.DialogContent>
                     <local:KeyGenerationDialog KeySize="{Binding KeySize, Mode=TwoWay}" KeyValue="{Binding Value, Mode=TwoWay}" />
                 </materialDesign:DialogHost.DialogContent>
-                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" Width="24" Height="24" Margin="3">
-                    <Button.ToolTip>
-                        <TextBlock Text="Generate new key" />
-                    </Button.ToolTip>
+                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" Width="24" Height="24" ToolTip="{x:Static properties:Resources.KeyGeneration}" Margin="3">
                     <materialDesign:PackIcon Kind="ShuffleVariant" Height="16" Width="16"/>
                 </Button>
             </materialDesign:DialogHost>
-            <Button x:Name="btnKeyStoreLink" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnKeyStoreLink_Click" Width="24" Height="24" Margin="3"
+            <Button x:Name="btnKeyStoreLink" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnKeyStoreLink_Click" Width="24" Height="24" ToolTip="{x:Static properties:Resources.LinkHelper}" Margin="3"
                     Visibility="{Binding ShowKeyLink, ElementName=keyControl, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Button.ToolTip>
-                    <TextBlock Text="Link to another Key Store" />
-                </Button.ToolTip>
                 <materialDesign:PackIcon Kind="KeyLink" Height="16" Width="16"/>
             </Button>
             <materialDesign:PopupBox PlacementMode="BottomAndAlignCentres" ToolTip="Export the key value" ToolTipService.Placement="Right">
                 <StackPanel>
-                    <Button x:Name="btnCopy" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnCopy_Click" Width="24" Height="24" Margin="3">
-                        <Button.ToolTip>
-                            <TextBlock Text="Copy to clipboard" />
-                        </Button.ToolTip>
+                    <Button x:Name="btnCopy" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnCopy_Click" Width="24" Height="24" ToolTip="{x:Static properties:Resources.CopyClipboard}" Margin="3">
                         <materialDesign:PackIcon Kind="ContentCopy" Height="16" Width="16"/>
                     </Button>
-                    <Button x:Name="btnImport" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnImport_Click" Width="24" Height="24" Margin="3">
-                        <Button.ToolTip>
-                            <TextBlock Text="Import from file" />
-                        </Button.ToolTip>
+                    <Button x:Name="btnImport" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnImport_Click" Width="24" Height="24" ToolTip="{x:Static properties:Resources.ImportFromFile}" Margin="3">
                         <materialDesign:PackIcon Kind="Import" Height="16" Width="16"/>
                     </Button>
-                    <Button x:Name="btnExport" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnExport_Click" Width="24" Height="24" Margin="3">
-                        <Button.ToolTip>
-                            <TextBlock Text="Export to file" />
-                        </Button.ToolTip>
+                    <Button x:Name="btnExport" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnExport_Click" Width="24" Height="24" ToolTip="{x:Static properties:Resources.ExportToFile}" Margin="3">
                         <materialDesign:PackIcon Kind="Export" Height="16" Width="16"/>
                     </Button>
-                    <Button x:Name="btnPrint" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnPrint_Click" Width="24" Height="24" Margin="3">
-                        <Button.ToolTip>
-                            <TextBlock Text="Print" />
-                        </Button.ToolTip>
+                    <Button x:Name="btnPrint" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnPrint_Click" Width="24" Height="24" ToolTip="{x:Static properties:Resources.KeyExportPrint}" Margin="3">
                         <materialDesign:PackIcon Kind="Printer" Height="16" Width="16"/>
                     </Button>
                 </StackPanel>
             </materialDesign:PopupBox>
         </StackPanel>
         <TextBox x:Name="tbxKCV" Grid.Column="0" Grid.Row="1" Margin="8"
-                 materialDesign:HintAssist.HelperText="The Key Checksum Value"
-                 materialDesign:HintAssist.Hint="KCV"
+                 materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KCVHelper}"
+                 materialDesign:HintAssist.Hint="{x:Static properties:Resources.KCV}"
                  Visibility="{Binding ShowKCV, ElementName=keyControl, Converter={StaticResource BooleanToVisibilityConverter}}"
                  IsReadOnly="True">
             <TextBox.Text>
@@ -103,8 +86,8 @@
                   ItemsSource="{Binding Path=KeyChecksumAlgorithms, Mode=OneWay, ElementName=keyControl}"
                   SelectedItem="{Binding Path=SelectedKeyChecksumAlgorithm, Mode=TwoWay, ElementName=keyControl}"
                   Visibility="{Binding ShowKCV, ElementName=keyControl, Converter={StaticResource BooleanToVisibilityConverter}}"
-                  materialDesign:HintAssist.HelperText="The Key Checksum algorithm to use"
-                  materialDesign:HintAssist.Hint="KCV Algorithm">
+                  materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KCVAlgorithmHelper}"
+                  materialDesign:HintAssist.Hint="{x:Static properties:Resources.KCVAlgorithm}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}" />

@@ -121,7 +121,7 @@ namespace Leosac.KeyManager.Domain
             MenuItems = new ObservableCollection<NavItem>(new[]
             {
                 new NavItem(
-                    "Home",
+                    Properties.Resources.MenuHome,
                     typeof(HomeControl),
                     "House",
                     new HomeControlViewModel(snackbarMessageQueue)
@@ -131,7 +131,7 @@ namespace Leosac.KeyManager.Domain
                     }
                 ),
                 new NavItem(
-                    "Favorites",
+                    Properties.Resources.MenuFavorites,
                     typeof(FavoritesControl),
                     "Star",
                     new FavoritesControlViewModel(snackbarMessageQueue)
@@ -140,7 +140,7 @@ namespace Leosac.KeyManager.Domain
                     }
                 ),
                 new NavItem(
-                    "Current Key Store",
+                    Properties.Resources.MenuKeyStore,
                     typeof(EditKeyStoreControl),
                     "ShieldKeyOutline",
                     new EditKeyStoreControlViewModel(snackbarMessageQueue)
@@ -238,10 +238,10 @@ namespace Leosac.KeyManager.Domain
                     wrapControl.HorizontalAlignment = HorizontalAlignment.Center;
                     wrapControl.VerticalAlignment = VerticalAlignment.Center;
                     var textControl = new TextBlock();
-                    textControl.Text = "New software update available!";
+                    textControl.Text = Properties.Resources.NewUpdateAvailable;
                     wrapControl.Children.Add(textControl);
                     var buttonControl = new Button();
-                    buttonControl.Content = "Download now";
+                    buttonControl.Content = Properties.Resources.DownloadNow;
                     buttonControl.Click += (sender, e) => { update.DownloadUpdate(); };
                     buttonControl.Style = Application.Current.FindResource("MaterialDesignFlatButton") as Style;
                     buttonControl.Margin = new Thickness(20, 0, 0, 0);
