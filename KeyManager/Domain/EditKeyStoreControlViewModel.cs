@@ -65,7 +65,7 @@ namespace Leosac.KeyManager.Domain
         {
             KeyStore?.Close();
             KeyStore = null;
-            KeyEntryIdentifiers.Clear();
+            SymmetricIdentifiers.Clear();
             Favorite = null;
 
             if (navigate)

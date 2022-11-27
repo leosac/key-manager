@@ -8,6 +8,6 @@ namespace Leosac.KeyManager.Library.KeyStore
 {
     public interface IChangeKeyEntry
     {
-        string Identifier { get; set; }
+        KeyEntryId Identifier { get; set; }
     }
 }

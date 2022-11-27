@@ -17,7 +17,7 @@
             <Button Width="100" IsCancel="True" Content="Cancel" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
         </WrapPanel>
         <StackPanel Orientation="Vertical">
-            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Cryptogram.Identifier}" Margin="5"
+            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Cryptogram.Identifier.Id}" Margin="5"
                      IsEnabled="{Binding CanChangeIdentifier}"
                      materialDesign:HintAssist.HelperText="Unique identifier for the key entry"
                      materialDesign:HintAssist.Hint="Key Entry Identifier"

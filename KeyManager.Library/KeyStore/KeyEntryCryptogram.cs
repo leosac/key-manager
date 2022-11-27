@@ -10,12 +10,12 @@ namespace Leosac.KeyManager.Library.KeyStore
     {
         public KeyEntryCryptogram()
         {
-            _identifier = string.Empty;
+            _identifier = new KeyEntryId();
         }
 
-        private string _identifier;
+        private KeyEntryId _identifier;
 
-        public string Identifier
+        public KeyEntryId Identifier
         {
             get => _identifier;
             set => SetProperty(ref _identifier, value);

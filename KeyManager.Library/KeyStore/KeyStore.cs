@@ -31,17 +31,17 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         public abstract void Close();
 
-        public abstract bool CheckKeyEntryExists(string identifier);
+        public abstract bool CheckKeyEntryExists(KeyEntryId identifier);
 
-        public abstract IList<string> GetAll();
+        public abstract IList<KeyEntryId> GetAllSymmetric();
 
         public abstract void Create(IChangeKeyEntry keyEntry);
 
-        public abstract KeyEntry? Get(string identifier);
+        public abstract KeyEntry? Get(KeyEntryId identifier);
 
         public abstract void Update(IChangeKeyEntry keyEntry, bool ignoreIfMissing = false);
 
-        public abstract void Delete(string identifier, bool ignoreIfMissing = false);
+        public abstract void Delete(KeyEntryId identifier, bool ignoreIfMissing = false);
 
         public virtual void Store(IChangeKeyEntry change)
         {
@@ -56,7 +56,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         public virtual void Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Action<KeyStore, int>? initCallback = null)
         {
             var changes = new List<IChangeKeyEntry>();
-            var ids = GetAll();
+            var ids = GetAllSymmetric();
             if (initCallback != null)
             {
                 initCallback(this, ids.Count);
@@ -66,7 +66,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                 var entry = Get(id);
                 if (entry != null)
                 {
-                    if (entry.Link != null && !string.IsNullOrEmpty(entry.Link.KeyIdentifier) && !string.IsNullOrEmpty(entry.Link.KeyStoreFavorite))
+                    if (entry.Link != null && entry.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(entry.Link.KeyStoreFavorite))
                     {
                         var cryptogram = new KeyEntryCryptogram();
                         cryptogram.Identifier = id;
@@ -90,7 +90,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                         {
                             foreach (var kv in entry.Variant.KeyVersions)
                             {
-                                if (kv.Key.Link != null && !string.IsNullOrEmpty(kv.Key.Link.KeyIdentifier) && !string.IsNullOrEmpty(kv.Key.Link.KeyStoreFavorite))
+                                if (kv.Key.Link != null && kv.Key.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(kv.Key.Link.KeyStoreFavorite))
                                 {
                                     var ks = getFavoriteKeyStore(kv.Key.Link.KeyStoreFavorite);
                                     if (ks != null)
@@ -139,7 +139,7 @@ namespace Leosac.KeyManager.Library.KeyStore
             }
         }
 
-        public Key? GetKey(string keyIdentifier, byte keyVersion)
+        public Key? GetKey(KeyEntryId keyIdentifier, byte keyVersion)
         {
             log.Info(String.Format("Getting key with Key Entry Identifier `{0}` and Key Version `{1}`...", keyIdentifier, keyVersion));
             var keyEntry = Get(keyIdentifier);
@@ -180,7 +180,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <returns></returns>
         /// <exception cref="KeyStoreException"></exception>
         /// <exception cref="NotSupportedException"></exception>
-        public abstract string? ResolveKeyEntryLink(string keyIdentifier, string? divInput = null, string? wrappingKeyId = null, byte wrappingKeyVersion = 0);
+        public abstract string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, string? divInput = null, KeyEntryId? wrappingKeyId = null, byte wrappingKeyVersion = 0);
 
         /// <summary>
         /// Return the key value.
@@ -191,7 +191,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <returns></returns>
         /// <exception cref="KeyStoreException"></exception>
         /// <exception cref="NotSupportedException"></exception>
-        public abstract string? ResolveKeyLink(string keyIdentifier, byte keyVersion, string? divInput = null);
+        public abstract string? ResolveKeyLink(KeyEntryId keyIdentifier, byte keyVersion, string? divInput = null);
 
         public event EventHandler<KeyEntry>? KeyEntryRetrieved;
 

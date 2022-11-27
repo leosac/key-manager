@@ -12,7 +12,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
     {
         public SAMSymmetricKeyEntry() : base()
         {
-            Identifier = "0";
+            Identifier.Id = "0";
             Properties = new SAMSymmetricKeyEntryProperties();
         }
 

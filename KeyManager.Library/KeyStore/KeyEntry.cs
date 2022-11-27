@@ -12,25 +12,18 @@ namespace Leosac.KeyManager.Library.KeyStore
     {
         public KeyEntry()
         {
-            _identifier = Guid.NewGuid().ToString();
+            _identifier = new KeyEntryId();
         }
 
-        private string _identifier;
-        private string? _label;
+        private KeyEntryId _identifier;
         private KeyEntryProperties? _properties;
         private KeyEntryVariant? _variant;
         private KeyEntryLink? _link;
 
-        public string Identifier
+        public KeyEntryId Identifier
         {
             get => _identifier;
             set => SetProperty(ref _identifier, value);
-        }
-
-        public string? Label
-        {
-            get => _label;
-            set => SetProperty(ref _label, value);
         }
 
         public KeyEntryProperties? Properties

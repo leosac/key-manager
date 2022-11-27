@@ -56,7 +56,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <local:FavoriteKeyStoreSelectionControl Grid.Row="0" SelectedKeyStoreFavorite="{Binding Link.KeyStoreFavorite, Mode=TwoWay, Converter={StaticResource KeyStoreFavoriteConverter}}" />
-                <TextBox Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Link.KeyIdentifier, Mode=TwoWay}" Margin="5"
+                <TextBox Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Link.KeyIdentifier.Id, Mode=TwoWay}" Margin="5"
                          materialDesign:HintAssist.HelperText="The key entry identifier on the key store"
                          materialDesign:HintAssist.Hint="Identifier"
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>

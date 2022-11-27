@@ -1,4 +1,5 @@
 ﻿using Leosac.KeyManager.Library.DivInput;
+using Leosac.KeyManager.Library.KeyStore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace Leosac.KeyManager.Library
         public Link()
         {
             DivInput = new ObservableCollection<DivInputFragment>();
+            _keyIdentifier = new KeyEntryId();
         }
 
         private string? _keyStoreFavorite;
@@ -24,9 +26,9 @@ namespace Leosac.KeyManager.Library
             set => SetProperty(ref _keyStoreFavorite, value);
         }
 
-        private string? _keyIdentifier;
+        private KeyEntryId _keyIdentifier;
 
-        public string? KeyIdentifier
+        public KeyEntryId KeyIdentifier
         {
             get => _keyIdentifier;
             set => SetProperty(ref _keyIdentifier, value);

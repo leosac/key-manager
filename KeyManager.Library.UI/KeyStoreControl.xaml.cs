@@ -47,7 +47,7 @@ namespace Leosac.KeyManager.Library.UI
 
         private void KeyEntryDeletion_OnDialogClosed(object sender, DialogClosedEventArgs e)
         {
-            if (e.Parameter is string identifier)
+            if (e.Parameter is KeyEntryId identifier)
             {
                 KeyStoreDataContext?.DeleteKeyEntryCommand?.ExecuteAsync(identifier);
             }

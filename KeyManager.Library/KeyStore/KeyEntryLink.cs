@@ -11,11 +11,12 @@ namespace Leosac.KeyManager.Library.KeyStore
         public KeyEntryLink() : base()
         {
             _wrappingKeyVersion = 0;
+            _wrappingKeyId = new KeyEntryId();
         }
 
-        private string? _wrappingKeyId;
+        private KeyEntryId _wrappingKeyId;
 
-        public string? WrappingKeyId
+        public KeyEntryId WrappingKeyId
         {
             get => _wrappingKeyId;
             set => SetProperty(ref _wrappingKeyId, value);

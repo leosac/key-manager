@@ -63,12 +63,12 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             log.Info("Key Store closed.");
         }
 
-        protected string GetKeyEntryFile(string identifier)
+        protected string GetKeyEntryFile(KeyEntryId identifier)
         {
-            return System.IO.Path.Combine(GetFileProperties().Fullpath, identifier + LeosacKeyFileExtension);
+            return System.IO.Path.Combine(GetFileProperties().Fullpath, identifier.Id + LeosacKeyFileExtension);
         }
 
-        public override bool CheckKeyEntryExists(string identifier)
+        public override bool CheckKeyEntryExists(KeyEntryId identifier)
         {
             return System.IO.File.Exists(GetKeyEntryFile(identifier));
         }
@@ -94,7 +94,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             log.Info(String.Format("Key entry `{0}` created.", change.Identifier));
         }
 
-        public override void Delete(string identifier, bool ignoreIfMissing = false)
+        public override void Delete(KeyEntryId identifier, bool ignoreIfMissing = false)
         {
             log.Info(String.Format("Deleting key entry `{0}`...", identifier));
             var exists = CheckKeyEntryExists(identifier);
@@ -111,7 +111,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             }
         }
 
-        public override KeyEntry? Get(string identifier)
+        public override KeyEntry? Get(KeyEntryId identifier)
         {
             log.Info(String.Format("Getting key entry `{0}`...", identifier));
             if (!CheckKeyEntryExists(identifier))
@@ -126,15 +126,15 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             return keyEntry;
         }
 
-        public override IList<string> GetAll()
+        public override IList<KeyEntryId> GetAllSymmetric()
         {
-            log.Info("Getting all key entries...");
-            var keyEntries = new List<string>();
+            log.Info("Getting all symmetric key entries...");
+            var keyEntries = new List<KeyEntryId>();
             var files = System.IO.Directory.GetFiles(GetFileProperties().Fullpath, "*" + LeosacKeyFileExtension);
             foreach (var file in files)
             {
                 string identifier = System.IO.Path.GetFileNameWithoutExtension(file);
-                keyEntries.Add(identifier);
+                keyEntries.Add(new KeyEntryId { Id = identifier });
             }
             log.Info(String.Format("{0} key entries returned.", keyEntries.Count));
             return keyEntries;
@@ -159,7 +159,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             log.Info(String.Format("Key entry `{0}` updated.", change.Identifier));
         }
 
-        public override string? ResolveKeyEntryLink(string keyIdentifier, string? divInput = null, string? wrappingKeyId = null, byte wrappingKeyVersion = 0)
+        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, string? divInput = null, KeyEntryId? wrappingKeyId = null, byte wrappingKeyVersion = 0)
         {
             string? result = null;
             log.Info(String.Format("Resolving key entry link with Key Entry Identifier `{0}`, Div Input `{1}`...", keyIdentifier, divInput));
@@ -168,7 +168,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             if (keyEntry != null)
             {
                 log.Info("Key entry link resolved.");
-                if (!string.IsNullOrEmpty(wrappingKeyId))
+                if (wrappingKeyId != null)
                 {
                     var wrappingKey = GetKey(wrappingKeyId, wrappingKeyVersion);
                     if (wrappingKey != null)
@@ -196,7 +196,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             return result;
         }
 
-        public override string? ResolveKeyLink(string keyIdentifier, byte keyVersion, string? divInput = null)
+        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, byte keyVersion, string? divInput = null)
         {
             string? result = null;
             log.Info(String.Format("Resolving key link with Key Entry Identifier `{0}`, Key Version `{1}`, Div Input `{2}`...", keyIdentifier, keyVersion, divInput));

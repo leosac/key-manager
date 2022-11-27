@@ -31,13 +31,13 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
 
         }
 
-        public override bool CheckKeyEntryExists(string identifier)
+        public override bool CheckKeyEntryExists(KeyEntryId identifier)
         {
             KeyEntry? keyEntry;
             return CheckKeyEntryExists(identifier, out keyEntry);
         }
 
-        protected bool CheckKeyEntryExists(string identifier, out KeyEntry? keyEntry)
+        protected bool CheckKeyEntryExists(KeyEntryId identifier, out KeyEntry? keyEntry)
         {
             keyEntry = _keyEntries.Where(k => k.Identifier == identifier).SingleOrDefault();
             return (keyEntry != null);
@@ -59,7 +59,7 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
             }
         }
 
-        public override void Delete(string identifier, bool ignoreIfMissing = false)
+        public override void Delete(KeyEntryId identifier, bool ignoreIfMissing = false)
         {
             KeyEntry? keyEntry;
             lock (_keyEntries)
@@ -73,7 +73,7 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
             }
         }
 
-        public override KeyEntry? Get(string identifier)
+        public override KeyEntry? Get(KeyEntryId identifier)
         {
             KeyEntry? keyEntry;
             if (!CheckKeyEntryExists(identifier, out keyEntry))
@@ -81,7 +81,7 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
             return keyEntry;
         }
 
-        public override IList<string> GetAll()
+        public override IList<KeyEntryId> GetAllSymmetric()
         {
             return _keyEntries.Select(k => k.Identifier).ToList();
         }
@@ -107,12 +107,12 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
             }
         }
 
-        public override string? ResolveKeyLink(string keyIdentifier, byte keyVersion, string? divInput = null)
+        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, byte keyVersion, string? divInput = null)
         {
             throw new NotSupportedException();
         }
 
-        public override string? ResolveKeyEntryLink(string keyIdentifier, string? divInput = null, string? wrappingKeyId = null, byte wrappingKeyVersion = 0)
+        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, string? divInput = null, KeyEntryId? wrappingKeyId = null, byte wrappingKeyVersion = 0)
         {
             throw new NotSupportedException();
         }

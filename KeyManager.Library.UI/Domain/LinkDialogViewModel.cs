@@ -61,7 +61,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             log.Info(String.Format("Running the link manually..."));
             LinkError = null;
-            if (Link != null && !string.IsNullOrEmpty(Link.KeyStoreFavorite) && !string.IsNullOrEmpty(Link.KeyIdentifier))
+            if (Link != null && !string.IsNullOrEmpty(Link.KeyStoreFavorite) && Link.KeyIdentifier.IsConfigured())
             {
                 var fav = Favorites.GetSingletonInstance().KeyStores.Where(f => f.Name.ToLower() == Link.KeyStoreFavorite.ToLower()).FirstOrDefault();
                 if (fav != null)

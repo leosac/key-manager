@@ -20,7 +20,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public KeyStoreControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
             _snackbarMessageQueue = snackbarMessageQueue;
-            KeyEntryIdentifiers = new ObservableCollection<string>();
+            SymmetricIdentifiers = new ObservableCollection<KeyEntryId>();
 
             CreateKeyEntryCommand = new KeyManagerAsyncCommand<string>(async
                 parameter =>
@@ -33,7 +33,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 CreateKeyEntry(dialog);
             });
 
-            EditKeyEntryCommand = new KeyManagerAsyncCommand<string>(async
+            EditKeyEntryCommand = new KeyManagerAsyncCommand<KeyEntryId>(async
                 keyEntryIdentifier =>
             {
                 var model = new KeyEntryDialogViewModel()
@@ -68,20 +68,23 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 UpdateKeyEntry(dialog);
             });
 
-            DeleteKeyEntryCommand = new KeyManagerAsyncCommand<string>(async
+            DeleteKeyEntryCommand = new KeyManagerAsyncCommand<KeyEntryId>(async
                 keyEntryIdentifier =>
             {
                 DeleteKeyEntry(keyEntryIdentifier);
             });
 
-            ImportCryptogramCommand = new KeyManagerAsyncCommand<string>(async
+            ImportCryptogramCommand = new KeyManagerAsyncCommand<KeyEntryId?>(async
                 parameter =>
             {
                 var model = new ImportCryptogramDialogViewModel()
                 {
-                    CanChangeIdentifier = string.IsNullOrEmpty(parameter)
+                    CanChangeIdentifier = parameter == null || !parameter.IsConfigured()
                 };
-                model.Cryptogram.Identifier = parameter;
+                if (parameter != null)
+                {
+                    model.Cryptogram.Identifier = parameter;
+                }
                 var dialog = new ImportCryptogramDialog()
                 {
                     DataContext = model,
@@ -89,17 +92,17 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 ImportCryptogram(dialog);
             });
 
-            _keyEntryIdentifiersView = CollectionViewSource.GetDefaultView(KeyEntryIdentifiers);
-            _keyEntryIdentifiersView.Filter = KeyEntryIdentifiersFilter;
+            _symmetricIdentifiersView = CollectionViewSource.GetDefaultView(SymmetricIdentifiers);
+            _symmetricIdentifiersView.Filter = KeyEntryIdentifiersFilter;
         }
 
         protected ISnackbarMessageQueue _snackbarMessageQueue;
         private KeyStore.KeyStore? _keyStore;
-        private readonly ICollectionView _keyEntryIdentifiersView;
-        private string? _selectedKeyEntryIdentifier;
+        private readonly ICollectionView _symmetricIdentifiersView;
+        private KeyEntryId? _selectedSymmetricIdentifier;
         private string? _searchTerms;
 
-        public ObservableCollection<string> KeyEntryIdentifiers { get; }
+        public ObservableCollection<KeyEntryId> SymmetricIdentifiers { get; }
 
         public KeyStore.KeyStore? KeyStore
         {
@@ -107,10 +110,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _keyStore, value);
         }
 
-        public string? SelectedKeyEntryIdentifier
+        public KeyEntryId? SelectedSymmetricIdentifier
         {
-            get => _selectedKeyEntryIdentifier;
-            set => SetProperty(ref _selectedKeyEntryIdentifier, value);
+            get => _selectedSymmetricIdentifier;
+            set => SetProperty(ref _selectedSymmetricIdentifier, value);
         }
 
         public string? SearchTerms
@@ -137,7 +140,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     try
                     {
                         KeyStore?.Create(model.KeyEntry);
-                        KeyEntryIdentifiers.Add(model.KeyEntry.Identifier);
+                        SymmetricIdentifiers.Add(model.KeyEntry.Identifier);
                     }
                     catch (KeyStoreException ex)
                     {
@@ -154,7 +157,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public KeyManagerAsyncCommand<string> EditKeyEntryCommand { get; }
+        public KeyManagerAsyncCommand<KeyEntryId> EditKeyEntryCommand { get; }
 
         private async void UpdateKeyEntry(KeyEntryDialog dialog)
         {
@@ -182,14 +185,14 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public KeyManagerAsyncCommand<string> DeleteKeyEntryCommand { get; }
+        public KeyManagerAsyncCommand<KeyEntryId> DeleteKeyEntryCommand { get; }
 
-        private void DeleteKeyEntry(string identifier)
+        private void DeleteKeyEntry(KeyEntryId identifier)
         {
             try
             {
                 KeyStore?.Delete(identifier);
-                KeyEntryIdentifiers.Remove(identifier);
+                SymmetricIdentifiers.Remove(identifier);
             }
             catch (KeyStoreException ex)
             {
@@ -202,7 +205,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public KeyManagerAsyncCommand<string> ImportCryptogramCommand { get; }
+        public KeyManagerAsyncCommand<KeyEntryId?> ImportCryptogramCommand { get; }
 
         private async void ImportCryptogram(ImportCryptogramDialog dialog)
         {
@@ -232,19 +235,19 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public void RefreshKeyEntries()
         {
-            KeyEntryIdentifiers.Clear();
+            SymmetricIdentifiers.Clear();
             if (KeyStore != null)
             {
-                foreach (var id in KeyStore.GetAll())
+                foreach (var id in KeyStore.GetAllSymmetric())
                 {
-                    KeyEntryIdentifiers.Add(id);
+                    SymmetricIdentifiers.Add(id);
                 }
             }
         }
 
         public void RefreshKeyEntriesView()
         {
-            _keyEntryIdentifiersView.Refresh();
+            _symmetricIdentifiersView.Refresh();
         }
 
         private bool KeyEntryIdentifiersFilter(object obj)

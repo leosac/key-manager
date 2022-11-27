@@ -62,7 +62,7 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <TextBox Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding KeyEntry.Identifier}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}" Margin="6"
+                <TextBox Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding KeyEntry.Identifier.Id}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}" Margin="6"
                      materialDesign:HintAssist.HelperText="Unique identifier for the key entry"
                      materialDesign:HintAssist.Hint="Key Entry Identifier"
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
@@ -77,7 +77,7 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <TextBox Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding KeyEntry.Label}" Margin="6"
+                <TextBox Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding KeyEntry.Identifier.Label}" Margin="6"
                      materialDesign:HintAssist.HelperText="Label/note about the key entry. It may not be saved permanently."
                      materialDesign:HintAssist.Hint="Label"
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>

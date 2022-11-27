@@ -147,10 +147,13 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             log.Info("Key Store closed.");
         }
 
-        public override bool CheckKeyEntryExists(string identifier)
+        public override bool CheckKeyEntryExists(KeyEntryId identifier)
         {
+            if (identifier.Id == null)
+                return false;
+
             uint entry;
-            if (uint.TryParse(identifier, out entry))
+            if (uint.TryParse(identifier.Id, out entry))
             {
                 return (entry < SAM_AV2_MAX_SYMMETRIC_ENTRIES);
             }
@@ -170,14 +173,14 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             throw new KeyStoreException("A SAM key entry cannot be created, only updated.");
         }
 
-        public override void Delete(string identifier, bool ignoreIfMissing = false)
+        public override void Delete(KeyEntryId identifier, bool ignoreIfMissing = false)
         {
             log.Info(String.Format("Deleting key entry `{0}`...", identifier));
             log.Error("A SAM key entry cannot be deleted, only updated.");
             throw new KeyStoreException("A SAM key entry cannot be deleted, only updated.");
         }
 
-        public override KeyEntry? Get(string identifier)
+        public override KeyEntry? Get(KeyEntryId identifier)
         {
             log.Info(String.Format("Getting key entry `{0}`...", identifier));
             if (!CheckKeyEntryExists(identifier))
@@ -186,7 +189,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 throw new KeyStoreException("The key entry do not exists.");
             }
 
-            byte entry = byte.Parse(identifier);
+            byte entry = byte.Parse(identifier.Id!);
             var cmd = Chip?.getCommands();
             if (cmd == null)
             {
@@ -277,13 +280,13 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             return keyEntry;
         }
 
-        public override IList<string> GetAll()
+        public override IList<KeyEntryId> GetAllSymmetric()
         {
-            log.Info("Getting all key entries...");
-            var entries = new List<string>();
+            log.Info("Getting all symmetric key entries...");
+            var entries = new List<KeyEntryId>();
             for (uint i = 0; i < SAM_AV2_MAX_SYMMETRIC_ENTRIES; ++i)
             {
-                entries.Add(i.ToString());
+                entries.Add(new KeyEntryId { Id = i.ToString() });
             }
             log.Info(String.Format("{0} key entries returned.", entries.Count));
             return entries;
@@ -585,13 +588,13 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             log.Info(String.Format("Key usage counter `{0}` updated.", counter.Identifier));
         }
 
-        public override string? ResolveKeyEntryLink(string keyIdentifier, string? divInput = null, string? wrappingKeyId = null, byte wrappingKeyVersion = 0)
+        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, string? divInput = null, KeyEntryId? wrappingKeyId = null, byte wrappingKeyVersion = 0)
         {
             // Will be supported with SAM AV3
             throw new NotSupportedException();
         }
 
-        public override string? ResolveKeyLink(string keyIdentifier, byte keyVersion, string? divInput = null)
+        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, byte keyVersion, string? divInput = null)
         {
             byte[] div;
             log.Info(String.Format("Resolving key link with Key Entry Identifier `{0}`, Key Version `{1}`, Div Input `{2}`...", keyIdentifier, keyVersion, divInput));
@@ -605,7 +608,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 log.Error(String.Format("The key entry `{0}` doesn't exist.", keyIdentifier));
                 throw new KeyStoreException("The key entry doesn't exist.");
             }
-            byte entry = byte.Parse(keyIdentifier);
+            byte entry = byte.Parse(keyIdentifier.Id!);
 
             var cmd = Chip?.getCommands();
             if (cmd is SAMAV2ISO7816Commands av2cmd)
