@@ -1,4 +1,5 @@
-﻿using Leosac.KeyManager.Library.UI;
+﻿using Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.Domain;
+using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using System;
 using System.Collections.Generic;
@@ -15,32 +16,32 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI
 
         public override KeyStore CreateKeyStore()
         {
-            return null;
+            return new PKCS11KeyStore();
         }
 
         public override Type GetKeyStorePropertiesType()
         {
-            return null;
+            return typeof(PKCS11KeyStoreProperties);
         }
 
         public override KeyStoreProperties CreateKeyStoreProperties()
         {
-            return null;
+            return new PKCS11KeyStoreProperties();
         }
 
         public override UserControl CreateKeyStorePropertiesControl()
         {
-            return null;
+            return new PKCS11KeyStorePropertiesControl();
         }
 
         public override KeyStorePropertiesControlViewModel CreateKeyStorePropertiesControlViewModel()
         {
-            return null;
+            return new PKCS11KeyStorePropertiesControlViewModel();
         }
 
         public override IDictionary<string, UserControl> CreateKeyStoreAdditionalControls()
         {
-            throw new NotImplementedException();
+            return new Dictionary<string, UserControl>();
         }
     }
 }

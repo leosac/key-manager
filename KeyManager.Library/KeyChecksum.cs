@@ -15,16 +15,26 @@ namespace Leosac.KeyManager.Library
             return ComputeKCV(key.Tags, key.Value, iv);
         }
 
-        public string ComputeKCV(KeyTag keytags, string key, string? iv = null)
+        public string ComputeKCV(string tag, string key, string? iv = null)
+        {
+            return ComputeKCV(new string[] { tag }, key, iv);
+        }
+
+        public string ComputeKCV(IEnumerable<string> tags, string key, string? iv = null)
         {
             byte[]? ivb = null;
             if (!string.IsNullOrEmpty(iv))
             {
                 ivb = Convert.FromHexString(iv);
             }
-            return Convert.ToHexString(ComputeKCV(keytags, Convert.FromHexString(key), ivb));
+            return Convert.ToHexString(ComputeKCV(tags, Convert.FromHexString(key), ivb));
         }
 
-        public abstract byte[] ComputeKCV(KeyTag keytags, byte[] key, byte[]? iv = null);
+        public byte[] ComputeKCV(string tag, byte[] key, byte[]? iv = null)
+        {
+            return ComputeKCV(new string[] { tag }, key, iv);
+        }
+
+        public abstract byte[] ComputeKCV(IEnumerable<string> tags, byte[] key, byte[]? iv = null);
     }
 }

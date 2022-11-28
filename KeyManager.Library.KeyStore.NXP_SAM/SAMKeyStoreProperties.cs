@@ -15,9 +15,9 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             _readerUnit = String.Empty;
             _autoSwitchToAV2 = true;
             _authenticateKeyEntryIdentifier = 0;
-            _authenticateKey = new KeyVersion("Authenticate Key", 0, new Key(KeyTag.AES, 16, "00000000000000000000000000000000"));
+            _authenticateKey = new KeyVersion("Authenticate Key", 0, new Key(new string[] { "AES" }, 16, "00000000000000000000000000000000"));
             _unlockKeyEntryIdentifier = 0;
-            _unlockKey = new KeyVersion("Unlock Key", 0, new Key(KeyTag.AES, 16));
+            _unlockKey = new KeyVersion("Unlock Key", 0, new Key(new string[] { "AES" }, 16));
         }
 
         private string _readerProvider;

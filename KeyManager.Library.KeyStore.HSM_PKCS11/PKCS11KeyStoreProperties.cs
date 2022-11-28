@@ -11,6 +11,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
         public PKCS11KeyStoreProperties()
         {
             _libraryPath = string.Empty;
+            _slotFilterType = SlotFilterType.SlotId;
             _user = Net.Pkcs11Interop.Common.CKU.CKU_SO;
         }
 
@@ -22,28 +23,20 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             set => SetProperty(ref _libraryPath, value);
         }
 
-        private ulong? _slotId;
+        private SlotFilterType _slotFilterType;
 
-        public ulong? SlotId
+        public SlotFilterType SlotFilterType
         {
-            get => _slotId;
-            set => SetProperty(ref _slotId, value);
+            get => _slotFilterType;
+            set => SetProperty(ref _slotFilterType, value);
         }
 
-        private string? _tokenSerial;
+        private string? _slotFilter;
 
-        public string? TokenSerial
+        public string? SlotFilter
         {
-            get => _tokenSerial;
-            set => SetProperty(ref _tokenSerial, value);
-        }
-
-        private string? _tokenLabel;
-
-        public string? TokenLabel
-        {
-            get => _tokenLabel;
-            set => SetProperty(ref _tokenLabel, value);
+            get => _slotFilter;
+            set => SetProperty(ref _slotFilter, value);
         }
 
         private Net.Pkcs11Interop.Common.CKU _user;
@@ -86,10 +79,10 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             if (this.GetType() != p.GetType())
                 return false;
 
-            return (LibraryPath == p.LibraryPath && SlotId == p.SlotId && TokenSerial == p.TokenSerial && TokenLabel == p.TokenLabel && User == p.User && UserPIN == p.UserPIN);
+            return (LibraryPath == p.LibraryPath && SlotFilterType == p.SlotFilterType && SlotFilter == p.SlotFilter && User == p.User && UserPIN == p.UserPIN);
         }
 
-        public override int GetHashCode() => (LibraryPath, SlotId, TokenSerial, TokenLabel, User, UserPIN).GetHashCode();
+        public override int GetHashCode() => (LibraryPath, SlotFilterType, SlotFilter, User, UserPIN).GetHashCode();
 
         public static bool operator ==(PKCS11KeyStoreProperties lhs, PKCS11KeyStoreProperties rhs)
         {

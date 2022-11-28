@@ -402,7 +402,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                         if (samkey.Variant.KeyVersions.Count >= 3)
                             infoav2.verc = samkey.Variant.KeyVersions[2].Version;
 
-                        if ((samkey.Variant.KeyVersions[0].Key.Tags & KeyTag.AES) == KeyTag.AES)
+                        if (samkey.Variant.KeyVersions[0].Key.Tags.Contains("AES"))
                         {
                             natkey.setKeysData(keys, SAMKeyType.SAM_KEY_AES);
                         }
@@ -446,7 +446,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         {
             log.Info("Switching the SAM to AV2 mode...");
             var key = new DESFireKey();
-            if ((keyVersion.Key.Tags & KeyTag.AES) == KeyTag.AES)
+            if (keyVersion.Key.Tags.Contains("AES"))
             {
                 key.setKeyType(DESFireKeyType.DF_KEY_AES);
                 key.setKeyVersion(keyVersion.Version);

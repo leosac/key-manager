@@ -9,13 +9,14 @@ namespace Leosac.KeyManager.Library
         public Key()
         {
             _value = String.Empty;
+            Tags = new ObservableCollection<string>();
             Policies = new ObservableCollection<IKeyPolicy>();
             _link = new KeyLink();
         }
 
-        public Key(KeyTag tags, uint keySize, string value = "")
+        public Key(string[] tags, uint keySize, string value = "")
         {
-            _tags = tags;
+            Tags = new ObservableCollection<string>(tags);
             _keySize = keySize;
             _value = value;
             Policies = new ObservableCollection<IKeyPolicy>
@@ -37,13 +38,7 @@ namespace Leosac.KeyManager.Library
             }
         }
 
-        private KeyTag _tags;
-
-        public KeyTag Tags
-        {
-            get => _tags;
-            set => SetProperty(ref _tags, value);
-        }
+        public ObservableCollection<string> Tags { get; private set; }
 
         private uint _keySize;
 

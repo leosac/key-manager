@@ -8,10 +8,10 @@ namespace Leosac.KeyManager.Library
 {
     public static class KeyHelper
     {
-        public static uint GetBlockSize(KeyTag tags)
+        public static uint GetBlockSize(IEnumerable<string> tags)
         {
             uint size = 8;
-            if ((tags & KeyTag.AES) == KeyTag.AES)
+            if (tags.Contains("AES"))
             {
                 size = 16;
             }

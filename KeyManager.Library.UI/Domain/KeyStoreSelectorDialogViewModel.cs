@@ -13,12 +13,21 @@ namespace Leosac.KeyManager.Library.UI.Domain
 {
     public class KeyStoreSelectorDialogViewModel : ViewModelBase
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
+
         public KeyStoreSelectorDialogViewModel()
         {
             KeyStoreFactories = new ObservableCollection<KeyStoreItem>();
             foreach (var factory in KeyStoreFactory.RegisteredFactories)
             {
-                KeyStoreFactories.Add(new KeyStoreItem(factory));
+                try
+                {
+                    KeyStoreFactories.Add(new KeyStoreItem(factory));
+                }
+                catch(Exception ex)
+                {
+                    log.Error("Key Store factory error.", ex);
+                }
             }
         }   
 
