@@ -117,160 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AllowDumpSecretKey" xml:space="preserve">
-    <value>Allow dump SecretKey</value>
+  <data name="Browse" xml:space="preserve">
+    <value>Parcourir</value>
   </data>
-  <data name="AllowDumpSecretKeyWithDiv" xml:space="preserve">
-    <value>Allow dump SecretKey with div</value>
+  <data name="Decrypt" xml:space="preserve">
+    <value>Déchiffrer</value>
   </data>
-  <data name="Authenticate" xml:space="preserve">
-    <value>Authenticate</value>
+  <data name="Derive" xml:space="preserve">
+    <value>Diversifier</value>
   </data>
-  <data name="AuthenticateHost" xml:space="preserve">
-    <value>Authenticate Host</value>
+  <data name="Encrypt" xml:space="preserve">
+    <value>Chiffrer</value>
   </data>
-  <data name="AuthenticateKey" xml:space="preserve">
-    <value>Authenticate Key</value>
+  <data name="Extractable" xml:space="preserve">
+    <value>Extractible</value>
   </data>
-  <data name="AutoSwitchToAV2" xml:space="preserve">
-    <value>Automatically switch the SAM to AV2 mode if required</value>
+  <data name="LibraryPath" xml:space="preserve">
+    <value>Bibliothèque PKCS#11</value>
   </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
+  <data name="LibraryPathHelper" xml:space="preserve">
+    <value>Chemin d'accès de la bibliothèque PKCS#11</value>
   </data>
-  <data name="ChangeKeyReference" xml:space="preserve">
-    <value>Change Key Reference</value>
+  <data name="SlotFilter" xml:space="preserve">
+    <value>Valeur de filtrage</value>
   </data>
-  <data name="CryptoBasedSecretKey" xml:space="preserve">
-    <value>Crypto based on SecretKey</value>
+  <data name="SlotFilterHelper" xml:space="preserve">
+    <value>Valeur de filtrage</value>
   </data>
-  <data name="DESFire" xml:space="preserve">
-    <value>DESFire</value>
+  <data name="SlotFilterType" xml:space="preserve">
+    <value>Filtre du slot</value>
   </data>
-  <data name="DESFireAID" xml:space="preserve">
-    <value>AID</value>
+  <data name="SlotFilterTypeHelper" xml:space="preserve">
+    <value>Filtre de sélection du slot</value>
   </data>
-  <data name="DESFireAIDHelper" xml:space="preserve">
-    <value>The DESFire Application Identifier</value>
+  <data name="User" xml:space="preserve">
+    <value>Utilisateur</value>
   </data>
-  <data name="DESFireKeyNumber" xml:space="preserve">
-    <value>Key Number</value>
+  <data name="UserHelper" xml:space="preserve">
+    <value>L'utilisateur avec lequel s'authentifier</value>
   </data>
-  <data name="DESFireKeyNumberHelper" xml:space="preserve">
-    <value>The DESFire Key Number</value>
+  <data name="UserPIN" xml:space="preserve">
+    <value>PIN</value>
   </data>
-  <data name="DisableChangeKeyPICC" xml:space="preserve">
-    <value>Disable Change Key PICC</value>
-  </data>
-  <data name="DisableDecryptData" xml:space="preserve">
-    <value>Disable Decrypt Data</value>
-  </data>
-  <data name="DisableEncryptData" xml:space="preserve">
-    <value>Disable Encrypt Data</value>
-  </data>
-  <data name="DisableGenerateMACFromPICC" xml:space="preserve">
-    <value>Disable Generate MAC From PICC</value>
-  </data>
-  <data name="DisableKeyEntry" xml:space="preserve">
-    <value>Disable Key Entry</value>
-  </data>
-  <data name="DisableVerifyMACFromPICC" xml:space="preserve">
-    <value>Disable Verify MAC From PICC</value>
-  </data>
-  <data name="EditKUC" xml:space="preserve">
-    <value>Edit the key usage counter</value>
-  </data>
-  <data name="Enabled" xml:space="preserve">
-    <value>Enabled</value>
-  </data>
-  <data name="EnableDumpSessionKey" xml:space="preserve">
-    <value>Enable Dump SessionKey</value>
-  </data>
-  <data name="KeepIV" xml:space="preserve">
-    <value>Keep IV</value>
-  </data>
-  <data name="KeyEntry" xml:space="preserve">
-    <value>Key Entry</value>
-  </data>
-  <data name="KeyEntryIdentifier" xml:space="preserve">
-    <value>Identifier</value>
-  </data>
-  <data name="KeyEntryIdentifierHelper" xml:space="preserve">
-    <value>The Key Entry Identifier</value>
-  </data>
-  <data name="KeyEntryType" xml:space="preserve">
-    <value>Type</value>
-  </data>
-  <data name="KeyEntryTypeHelper" xml:space="preserve">
-    <value>SAM Key Entry Type</value>
-  </data>
-  <data name="KeyType" xml:space="preserve">
-    <value>Key Type</value>
-  </data>
-  <data name="KeyTypeHelper" xml:space="preserve">
-    <value>The SAM Key Type</value>
-  </data>
-  <data name="KeyVersion" xml:space="preserve">
-    <value>Key Version</value>
-  </data>
-  <data name="KeyVersionHelper" xml:space="preserve">
-    <value>The Key Version</value>
-  </data>
-  <data name="KUC" xml:space="preserve">
-    <value>Key Usage Counter</value>
-  </data>
-  <data name="KUCIdentifier" xml:space="preserve">
-    <value>Identifier</value>
-  </data>
-  <data name="KUCIdentifierHelper" xml:space="preserve">
-    <value>Identifier</value>
-  </data>
-  <data name="KUCLimit" xml:space="preserve">
-    <value>Limit</value>
-  </data>
-  <data name="KUCLimitHelper" xml:space="preserve">
-    <value>The Counter Limit</value>
-  </data>
-  <data name="KUCReference" xml:space="preserve">
-    <value>Counter #</value>
-  </data>
-  <data name="KUCReferenceHelper" xml:space="preserve">
-    <value>The Key Usage Counter reference</value>
-  </data>
-  <data name="KUCValue" xml:space="preserve">
-    <value>Value</value>
-  </data>
-  <data name="KUCValueHelper" xml:space="preserve">
-    <value>The Counter Current Value</value>
-  </data>
-  <data name="LockUnlock" xml:space="preserve">
-    <value>Lock / Unlock</value>
-  </data>
-  <data name="OK" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="Options" xml:space="preserve">
-    <value>Options</value>
-  </data>
-  <data name="ReaderProvider" xml:space="preserve">
-    <value>Reader Provider</value>
-  </data>
-  <data name="ReaderProviderHelper" xml:space="preserve">
-    <value>Reader Provider</value>
-  </data>
-  <data name="ReaderUnit" xml:space="preserve">
-    <value>Reader Unit</value>
-  </data>
-  <data name="ReaderUnitHelper" xml:space="preserve">
-    <value>Reader Unit</value>
-  </data>
-  <data name="RefreshReaderUnits" xml:space="preserve">
-    <value>Refresh Reader Units</value>
-  </data>
-  <data name="SAMAuthentication" xml:space="preserve">
-    <value>SAM Authentication</value>
-  </data>
-  <data name="UnlockKey" xml:space="preserve">
-    <value>Unlock Key</value>
+  <data name="UserPINHelper" xml:space="preserve">
+    <value>Le code PIN de l'utilisateur</value>
   </data>
 </root>

@@ -286,7 +286,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Key Entry.
+        ///   Looks up a localized string similar to Identifier.
         /// </summary>
         public static string KeyEntryIdentifier {
             get {

@@ -1,0 +1,438 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Browse" xml:space="preserve">
+    <value>Parcourir</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="CloseCaps" xml:space="preserve">
+    <value>FERMER</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirmer</value>
+  </data>
+  <data name="CopyClipboard" xml:space="preserve">
+    <value>Copier vers le presse-papier</value>
+  </data>
+  <data name="CopyWords" xml:space="preserve">
+    <value>Copier les mots</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Créer</value>
+  </data>
+  <data name="CreateKeyEntry" xml:space="preserve">
+    <value>Créer un nouvel enregistrement de clés</value>
+  </data>
+  <data name="DeleteKeyEntry" xml:space="preserve">
+    <value>Supprimer l'enregistrement de clés</value>
+  </data>
+  <data name="DeleteKeyEntryConfirmation" xml:space="preserve">
+    <value>Confirmez-vous la suppression de l'enregistrement de clés ?</value>
+  </data>
+  <data name="DerivatePassword" xml:space="preserve">
+    <value>Dériver une clé à partir d'un mot de passe (en utilisant RFC 2898)</value>
+  </data>
+  <data name="Directories" xml:space="preserve">
+    <value>Répertoires</value>
+  </data>
+  <data name="DocumentGenerated" xml:space="preserve">
+    <value>Document généré avec</value>
+  </data>
+  <data name="Drives" xml:space="preserve">
+    <value>Disques</value>
+  </data>
+  <data name="EditKeyEntry" xml:space="preserve">
+    <value>Modifier l'enregistrement de clés</value>
+  </data>
+  <data name="ExportToFile" xml:space="preserve">
+    <value>Exporter vers un fichier</value>
+  </data>
+  <data name="Favorite" xml:space="preserve">
+    <value>Favori</value>
+  </data>
+  <data name="FavoriteHelper" xml:space="preserve">
+    <value>Magasin de clé favori</value>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>Terminer</value>
+  </data>
+  <data name="FragmentInputHelper" xml:space="preserve">
+    <value>Merci de renseigner le fragment de clé #</value>
+  </data>
+  <data name="FragmentManualInput" xml:space="preserve">
+    <value>Saisie manuelle</value>
+  </data>
+  <data name="FragmentValue" xml:space="preserve">
+    <value>Valeur du fragment</value>
+  </data>
+  <data name="FragmentValueHelper" xml:space="preserve">
+    <value>La valeur secrète du fragment de clé</value>
+  </data>
+  <data name="FromFile" xml:space="preserve">
+    <value>A partir d'un fichier</value>
+  </data>
+  <data name="GenerateRandom" xml:space="preserve">
+    <value>Générer une clé aléatoire</value>
+  </data>
+  <data name="GenerateWords" xml:space="preserve">
+    <value>Générer de nouveaux mots</value>
+  </data>
+  <data name="GoToParent" xml:space="preserve">
+    <value>Aller au parent</value>
+  </data>
+  <data name="ImportCryptogram" xml:space="preserve">
+    <value>Importer un cryptogramme</value>
+  </data>
+  <data name="ImportFromFile" xml:space="preserve">
+    <value>Importer à partir d'un fichier</value>
+  </data>
+  <data name="ImportKeyEntryCryptogram" xml:space="preserve">
+    <value>Importer le cryptogramme de l'enregistrement de clés</value>
+  </data>
+  <data name="KCV" xml:space="preserve">
+    <value>KCV</value>
+  </data>
+  <data name="KCVAlgorithm" xml:space="preserve">
+    <value>Algorithme KCV</value>
+  </data>
+  <data name="KCVAlgorithmHelper" xml:space="preserve">
+    <value>L'algorithme de somme de contrôle à utiliser</value>
+  </data>
+  <data name="KCVHelper" xml:space="preserve">
+    <value>La valeur de la somme de contrôle de la clé</value>
+  </data>
+  <data name="KeyCeremony" xml:space="preserve">
+    <value>Cérémonie de clés</value>
+  </data>
+  <data name="KeyCeremonyFragments" xml:space="preserve">
+    <value>Fragments</value>
+  </data>
+  <data name="KeyCeremonyFragmentsHelper" xml:space="preserve">
+    <value>Nombre de fragments de clé à utiliser durant la cérémonie</value>
+  </data>
+  <data name="KeyCeremonyHelper" xml:space="preserve">
+    <value>Exécutez une cérémonie de clé afin de réunifier la valeur d'une clé partagée entre plusieurs individus.</value>
+  </data>
+  <data name="KeyCeremonyType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="KeyCeremonyTypeHelper" xml:space="preserve">
+    <value>Type de cérémonie</value>
+  </data>
+  <data name="KeyCeremonyWizardEnd1" xml:space="preserve">
+    <value>La cérémonie de clé est à présent prête à être terminée.</value>
+  </data>
+  <data name="KeyCeremonyWizardEnd2" xml:space="preserve">
+    <value>Appuyez sur le bouton 'Terminer' afin de procéder au calcul final.</value>
+  </data>
+  <data name="KeyCeremonyWizardStart1" xml:space="preserve">
+    <value>Rassemblez tous les individus requis et préparez les fragments de clé.</value>
+  </data>
+  <data name="KeyCeremonyWizardStart2" xml:space="preserve">
+    <value>Lorsque vous êtes prêt, allez à l'étape suivante.</value>
+  </data>
+  <data name="KeyChecksum" xml:space="preserve">
+    <value>Somme de contrôle</value>
+  </data>
+  <data name="KeyChecksumHelper" xml:space="preserve">
+    <value>Somme de contrôle de la clé</value>
+  </data>
+  <data name="KeyEntry" xml:space="preserve">
+    <value>Enregistrement de clés</value>
+  </data>
+  <data name="KeyEntryCryptogram" xml:space="preserve">
+    <value>Cryptogramme</value>
+  </data>
+  <data name="KeyEntryCryptogramHelper" xml:space="preserve">
+    <value>Le cryptogramme contenant les détails de l'enregistrement de clés</value>
+  </data>
+  <data name="KeyEntryEditHelper" xml:space="preserve">
+    <value>Informations confidentielles à propos de l'enregistrement de clés. Définissez ses propriétés et ses valeurs.</value>
+  </data>
+  <data name="KeyEntryIdentifier" xml:space="preserve">
+    <value>Identifiant</value>
+  </data>
+  <data name="KeyEntryIdentifierHelper" xml:space="preserve">
+    <value>Identifiant de l'enregistrement de clés</value>
+  </data>
+  <data name="KeyEntryLabel" xml:space="preserve">
+    <value>Libellé</value>
+  </data>
+  <data name="KeyEntryLabelHelper" xml:space="preserve">
+    <value>Libellé / note à propos de l'enregistrement de clés.</value>
+  </data>
+  <data name="KeyEntryLink" xml:space="preserve">
+    <value>Liaison de l'enregistrement de clés</value>
+  </data>
+  <data name="KeyEntryLinkHelper" xml:space="preserve">
+    <value>Calculer le cryptogramme de changement de l'enregistrement de clés, à partir d'un autre magasin de clés.</value>
+  </data>
+  <data name="KeyEntryProperties" xml:space="preserve">
+    <value>Propriétés</value>
+  </data>
+  <data name="KeyEntryType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="KeyEntryTypeHelper" xml:space="preserve">
+    <value>Le type d'enregistrement de clés</value>
+  </data>
+  <data name="KeyEntryVariant" xml:space="preserve">
+    <value>Variant</value>
+  </data>
+  <data name="KeyEntryVariantHelper" xml:space="preserve">
+    <value>Le variant d'enregistrement de clés</value>
+  </data>
+  <data name="KeyExportDisclaimer1" xml:space="preserve">
+    <value>Ce document est propriétaire, sensible et confidentiel. Il ne peut pas être utilisé, publié ou redistribué sans l'accord de son propriétaire.</value>
+  </data>
+  <data name="KeyExportDisclaimer2" xml:space="preserve">
+    <value>Si vous avez reçu ce document par erreur, merci de le détruire immédiatement et de reporter cette action à un agent de sécurité.</value>
+  </data>
+  <data name="KeyExportPrint" xml:space="preserve">
+    <value>Export / Impression d'une clé</value>
+  </data>
+  <data name="KeyGeneration" xml:space="preserve">
+    <value>Génération locale d'une clé</value>
+  </data>
+  <data name="KeyLink" xml:space="preserve">
+    <value>Liaison de la clé</value>
+  </data>
+  <data name="KeyLinkHelper" xml:space="preserve">
+    <value>Copier la valeur de la clé à partir d'un autre magasin de clés.</value>
+  </data>
+  <data name="KeySize" xml:space="preserve">
+    <value>Taille</value>
+  </data>
+  <data name="KeySizeHelper" xml:space="preserve">
+    <value>Taille de la clé</value>
+  </data>
+  <data name="KeyStoreProperties" xml:space="preserve">
+    <value>Propriétés du magasin de clés</value>
+  </data>
+  <data name="KeyStoreType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="KeyStoreTypeHelper" xml:space="preserve">
+    <value>Type de magasin de clés</value>
+  </data>
+  <data name="KeyTags" xml:space="preserve">
+    <value>Etiquettes</value>
+  </data>
+  <data name="KeyTagsHelper" xml:space="preserve">
+    <value>Etiquettes de la clé</value>
+  </data>
+  <data name="KeyValue" xml:space="preserve">
+    <value>Valeur de la clé</value>
+  </data>
+  <data name="KeyValueHelper" xml:space="preserve">
+    <value>La valeur secrète de la clé</value>
+  </data>
+  <data name="KeyVersion" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="KeyVersionHelper" xml:space="preserve">
+    <value>Version de la clé</value>
+  </data>
+  <data name="LinkError" xml:space="preserve">
+    <value>La liaison a échoué avec l'erreur suivante :</value>
+  </data>
+  <data name="LinkHelper" xml:space="preserve">
+    <value>Lier vers un autre magasin de clés</value>
+  </data>
+  <data name="Mnemonic" xml:space="preserve">
+    <value>Mnemonic</value>
+  </data>
+  <data name="MnemonicHelper" xml:space="preserve">
+    <value>Créer une clé à partir de Mnemonic (BIP-39)</value>
+  </data>
+  <data name="NewFavorite" xml:space="preserve">
+    <value>Nouveau magasin de clés favori</value>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Passphrase" xml:space="preserve">
+    <value>Phrase secrète</value>
+  </data>
+  <data name="PassphraseHelper" xml:space="preserve">
+    <value>Phrase secrète</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Mot de passe</value>
+  </data>
+  <data name="PasswordDivHelper" xml:space="preserve">
+    <value>Le mot de passe à partir duquel dériver la clé</value>
+  </data>
+  <data name="PleaseVisit" xml:space="preserve">
+    <value>Merci de visiter</value>
+  </data>
+  <data name="PublishKeyStore" xml:space="preserve">
+    <value>Publier vers un autre magasin de clés</value>
+  </data>
+  <data name="Random" xml:space="preserve">
+    <value>Aléatoire</value>
+  </data>
+  <data name="Salt" xml:space="preserve">
+    <value>Sel</value>
+  </data>
+  <data name="SaltDivHelper" xml:space="preserve">
+    <value>Le sel à utiliser pour la diversification de clé</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Rechercher</value>
+  </data>
+  <data name="SearchTerms" xml:space="preserve">
+    <value>Termes de recherche</value>
+  </data>
+  <data name="SelectedFolder" xml:space="preserve">
+    <value>Dossier sélectionné :</value>
+  </data>
+  <data name="SelectTargetFolder" xml:space="preserve">
+    <value>Sélectionnez le dossier cible</value>
+  </data>
+  <data name="StartKeyCeremony" xml:space="preserve">
+    <value>Démarrer la cérémonie de clés</value>
+  </data>
+  <data name="Test" xml:space="preserve">
+    <value>Tester</value>
+  </data>
+  <data name="Words" xml:space="preserve">
+    <value>Mots</value>
+  </data>
+  <data name="WordsHelper" xml:space="preserve">
+    <value>Mots mnemonic</value>
+  </data>
+  <data name="WordsLanguage" xml:space="preserve">
+    <value>Langage</value>
+  </data>
+  <data name="WordsLanguageHelper" xml:space="preserve">
+    <value>Langage des mots</value>
+  </data>
+  <data name="WrappingKey" xml:space="preserve">
+    <value>Clé de Wrapping</value>
+  </data>
+</root>

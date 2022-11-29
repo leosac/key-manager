@@ -118,31 +118,31 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AllowDumpSecretKey" xml:space="preserve">
-    <value>Allow dump SecretKey</value>
+    <value>Autoriser le dump de la clé secrète</value>
   </data>
   <data name="AllowDumpSecretKeyWithDiv" xml:space="preserve">
-    <value>Allow dump SecretKey with div</value>
+    <value>Autoriser le dump de la clé secrète avec diversification</value>
   </data>
   <data name="Authenticate" xml:space="preserve">
-    <value>Authenticate</value>
+    <value>Authentification</value>
   </data>
   <data name="AuthenticateHost" xml:space="preserve">
-    <value>Authenticate Host</value>
+    <value>Authentification Hôte</value>
   </data>
   <data name="AuthenticateKey" xml:space="preserve">
-    <value>Authenticate Key</value>
+    <value>Clé d'authentification</value>
   </data>
   <data name="AutoSwitchToAV2" xml:space="preserve">
-    <value>Automatically switch the SAM to AV2 mode if required</value>
+    <value>Basculer automatiquement la SAM vers le mode AV2 si nécessaire</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Annuler</value>
   </data>
   <data name="ChangeKeyReference" xml:space="preserve">
-    <value>Change Key Reference</value>
+    <value>Référence de changement de clé</value>
   </data>
   <data name="CryptoBasedSecretKey" xml:space="preserve">
-    <value>Crypto based on SecretKey</value>
+    <value>Crypto basé sur la clé secrète</value>
   </data>
   <data name="DESFire" xml:space="preserve">
     <value>DESFire</value>
@@ -151,100 +151,100 @@
     <value>AID</value>
   </data>
   <data name="DESFireAIDHelper" xml:space="preserve">
-    <value>The DESFire Application Identifier</value>
+    <value>L'identifiant d'application DESFire</value>
   </data>
   <data name="DESFireKeyNumber" xml:space="preserve">
-    <value>Key Number</value>
+    <value>Numéro de clé</value>
   </data>
   <data name="DESFireKeyNumberHelper" xml:space="preserve">
-    <value>The DESFire Key Number</value>
+    <value>Le numéro de clé DESFire</value>
   </data>
   <data name="DisableChangeKeyPICC" xml:space="preserve">
-    <value>Disable Change Key PICC</value>
+    <value>Désactiver le changement de clé sur une carte</value>
   </data>
   <data name="DisableDecryptData" xml:space="preserve">
-    <value>Disable Decrypt Data</value>
+    <value>Désactiver le déchiffrement de données</value>
   </data>
   <data name="DisableEncryptData" xml:space="preserve">
-    <value>Disable Encrypt Data</value>
+    <value>Désactiver le chiffrement de données</value>
   </data>
   <data name="DisableGenerateMACFromPICC" xml:space="preserve">
-    <value>Disable Generate MAC From PICC</value>
+    <value>Désactiver la génération du MAC à partir d'une carte PICC</value>
   </data>
   <data name="DisableKeyEntry" xml:space="preserve">
-    <value>Disable Key Entry</value>
+    <value>Désactiver l'enregistrement de clés</value>
   </data>
   <data name="DisableVerifyMACFromPICC" xml:space="preserve">
-    <value>Disable Verify MAC From PICC</value>
+    <value>Désactiver la vérification du MAC à partir d'une carte PICC</value>
   </data>
   <data name="EditKUC" xml:space="preserve">
-    <value>Edit the key usage counter</value>
+    <value>Modifier le compteur d'usage de clé</value>
   </data>
   <data name="Enabled" xml:space="preserve">
-    <value>Enabled</value>
+    <value>Activé</value>
   </data>
   <data name="EnableDumpSessionKey" xml:space="preserve">
-    <value>Enable Dump SessionKey</value>
+    <value>Activer le dump de la clé de session</value>
   </data>
   <data name="KeepIV" xml:space="preserve">
-    <value>Keep IV</value>
+    <value>Conserver l'IV</value>
   </data>
   <data name="KeyEntry" xml:space="preserve">
-    <value>Key Entry</value>
+    <value>Enregistrement de clés</value>
   </data>
   <data name="KeyEntryIdentifier" xml:space="preserve">
-    <value>Identifier</value>
+    <value>Identifiant</value>
   </data>
   <data name="KeyEntryIdentifierHelper" xml:space="preserve">
-    <value>The Key Entry Identifier</value>
+    <value>Identifiant de l'enregistrement de clés</value>
   </data>
   <data name="KeyEntryType" xml:space="preserve">
     <value>Type</value>
   </data>
   <data name="KeyEntryTypeHelper" xml:space="preserve">
-    <value>SAM Key Entry Type</value>
+    <value>Type d'enregistrement de clés SAM</value>
   </data>
   <data name="KeyType" xml:space="preserve">
-    <value>Key Type</value>
+    <value>Type de clé</value>
   </data>
   <data name="KeyTypeHelper" xml:space="preserve">
-    <value>The SAM Key Type</value>
+    <value>Type de clé SAM</value>
   </data>
   <data name="KeyVersion" xml:space="preserve">
-    <value>Key Version</value>
+    <value>Version de clé</value>
   </data>
   <data name="KeyVersionHelper" xml:space="preserve">
-    <value>The Key Version</value>
+    <value>La version de la clé</value>
   </data>
   <data name="KUC" xml:space="preserve">
-    <value>Key Usage Counter</value>
+    <value>Le compteur d'usage</value>
   </data>
   <data name="KUCIdentifier" xml:space="preserve">
-    <value>Identifier</value>
+    <value>Identifiant</value>
   </data>
   <data name="KUCIdentifierHelper" xml:space="preserve">
-    <value>Identifier</value>
+    <value>Identifiant</value>
   </data>
   <data name="KUCLimit" xml:space="preserve">
-    <value>Limit</value>
+    <value>Limite</value>
   </data>
   <data name="KUCLimitHelper" xml:space="preserve">
-    <value>The Counter Limit</value>
+    <value>La limite du compteur</value>
   </data>
   <data name="KUCReference" xml:space="preserve">
-    <value>Counter #</value>
+    <value>Compteur #</value>
   </data>
   <data name="KUCReferenceHelper" xml:space="preserve">
-    <value>The Key Usage Counter reference</value>
+    <value>La référence du compteur d'usage de clé</value>
   </data>
   <data name="KUCValue" xml:space="preserve">
-    <value>Value</value>
+    <value>Valeur</value>
   </data>
   <data name="KUCValueHelper" xml:space="preserve">
-    <value>The Counter Current Value</value>
+    <value>La valeur actuelle du compteur</value>
   </data>
   <data name="LockUnlock" xml:space="preserve">
-    <value>Lock / Unlock</value>
+    <value>Verrouiller / Déverrouiller</value>
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
@@ -253,24 +253,24 @@
     <value>Options</value>
   </data>
   <data name="ReaderProvider" xml:space="preserve">
-    <value>Reader Provider</value>
+    <value>Technologie de lecteurs</value>
   </data>
   <data name="ReaderProviderHelper" xml:space="preserve">
-    <value>Reader Provider</value>
+    <value>Technologie de lecteurs</value>
   </data>
   <data name="ReaderUnit" xml:space="preserve">
-    <value>Reader Unit</value>
+    <value>Lecteur</value>
   </data>
   <data name="ReaderUnitHelper" xml:space="preserve">
-    <value>Reader Unit</value>
+    <value>Lecteur</value>
   </data>
   <data name="RefreshReaderUnits" xml:space="preserve">
-    <value>Refresh Reader Units</value>
+    <value>Actualiser la liste des lecteurs</value>
   </data>
   <data name="SAMAuthentication" xml:space="preserve">
-    <value>SAM Authentication</value>
+    <value>Authentification SAM</value>
   </data>
   <data name="UnlockKey" xml:space="preserve">
-    <value>Unlock Key</value>
+    <value>Clé de déverrouillage</value>
   </data>
 </root>
