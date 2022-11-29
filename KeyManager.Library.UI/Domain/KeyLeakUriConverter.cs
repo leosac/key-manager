@@ -20,7 +20,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 return Binding.DoNothing;
 
             var checksum = new Sha256Checksum();
-            string uri = String.Format("https://leak.leosac.com/key/{0}", checksum.ComputeKCV(key));
+            string uri = String.Format("https://leak.leosac.com/key/{0}", checksum.ComputeKCV(key, "53656375726974792046726565646f6d"));
             if (targetType == typeof(ImageSource))
             {
                 var qr = QrCode.EncodeText(uri, QrCode.Ecc.Medium);

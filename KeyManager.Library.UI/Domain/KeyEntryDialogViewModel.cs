@@ -23,16 +23,20 @@ namespace Leosac.KeyManager.Library.UI.Domain
             OpenLinkCommand = new KeyManagerAsyncCommand<object>(async
                 parameter =>
                 {
-                    var model = new KeyEntryLinkDialogViewModel()
+                    if (KeyEntry != null)
                     {
-                        Link = KeyEntry?.Link
-                    };
-                    var dialog = new KeyEntryLinkDialog()
-                    {
-                        DataContext = model
-                    };
+                        var model = new KeyEntryLinkDialogViewModel()
+                        {
+                            Link = KeyEntry.Link,
+                            Class = KeyEntry.KClass
+                        };
+                        var dialog = new KeyEntryLinkDialog()
+                        {
+                            DataContext = model
+                        };
 
-                    await DialogHost.Show(dialog, "KeyEntryDialog");
+                        await DialogHost.Show(dialog, "KeyEntryDialog");
+                    }
                 });
         }
 

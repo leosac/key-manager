@@ -32,7 +32,7 @@
                 <DataTemplate DataType="lib:Favorite">
                     <DockPanel LastChildFill="True">
                         <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                            <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.KeyStoreCommand, ElementName=userControl}"  CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.Favorites}" Margin="3">
+                            <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.KeyStoreCommand, ElementName=userControl}"  CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.OpenFavorite}" Margin="3">
                                 <materialDesign:PackIcon Kind="FolderOpen" Height="24" Width="24" Cursor="Hand" />
                             </Button>
                             <materialDesign:DialogHost DialogTheme="Inherit">

@@ -38,7 +38,7 @@ namespace Leosac.KeyManager.Library
             }
         }
 
-        public ObservableCollection<string> Tags { get; private set; }
+        public ObservableCollection<string> Tags { get; set; }
 
         private uint _keySize;
 

@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using Leosac.KeyManager.Library.KeyStore;
 
 namespace Leosac.KeyManager.Library.UI
 {
@@ -87,16 +88,20 @@ namespace Leosac.KeyManager.Library.UI
 
         private async void btnKeyStoreLink_Click(object sender, RoutedEventArgs e)
         {
-            var model = new KeyLinkDialogViewModel()
+            if (Key != null)
             {
-                Link = Key?.Link
-            };
-            var dialog = new KeyLinkDialog()
-            {
-                DataContext = model
-            };
+                var model = new KeyLinkDialogViewModel()
+                {
+                    Link = Key.Link,
+                    Class = Key.Tags.Contains(nameof(KeyEntryClass.Asymmetric)) ? KeyEntryClass.Asymmetric : KeyEntryClass.Symmetric
+                };
+                var dialog = new KeyLinkDialog()
+                {
+                    DataContext = model
+                };
 
-            await DialogHost.Show(dialog, "KeyEntryDialog");
+                await DialogHost.Show(dialog, "KeyEntryDialog");
+            }
         }
 
         private void btnImport_Click(object sender, RoutedEventArgs e)

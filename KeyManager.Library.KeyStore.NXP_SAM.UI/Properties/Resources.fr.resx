@@ -217,7 +217,7 @@
     <value>La version de la clé</value>
   </data>
   <data name="KUC" xml:space="preserve">
-    <value>Le compteur d'usage</value>
+    <value>Compteur d'usage</value>
   </data>
   <data name="KUCIdentifier" xml:space="preserve">
     <value>Identifiant</value>

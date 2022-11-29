@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Leosac.KeyManager;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -23,6 +24,15 @@ namespace KeyManager
             Leosac.KeyManager.Library.UI.KeyEntryFactory.Register(new Leosac.KeyManager.Library.KeyStore.Memory.UI.MemoryKeyEntryFactory());
             Leosac.KeyManager.Library.UI.KeyEntryFactory.Register(new Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.SAMSymmetricKeyEntryFactory());
             Leosac.KeyManager.Library.UI.KeyEntryFactory.Register(new Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.PKCS11KeyEntryFactory());
+        }
+
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            var settings = KMSettings.GetSingletonInstance();
+            if (!string.IsNullOrEmpty(settings.Language))
+            {
+                LangHelper.ChangeLanguage(settings.Language);
+            }
         }
     }
 }

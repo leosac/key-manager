@@ -16,6 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="images\flag_french.png" />
+    <None Remove="images\flag_usa.png" />
     <None Remove="images\leosac_banner.png" />
     <None Remove="images\leosac_key.png" />
     <None Remove="leosac.png" />
@@ -45,6 +47,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="images\flag_french.png" />
+    <Resource Include="images\flag_usa.png" />
     <Resource Include="images\leosac_banner.png" />
     <Resource Include="images\leosac_key.png" />
   </ItemGroup>

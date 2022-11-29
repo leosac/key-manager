@@ -65,9 +65,9 @@
                             </materialDesign:Flipper.FrontContent>
                             <materialDesign:Flipper.BackContent>
                                 <DockPanel LastChildFill="True" Width="200" MinHeight="100" Margin="8">
-                                    <Button DockPanel.Dock="Bottom" Width="184" Margin="5" Command="{x:Static materialDesign:Flipper.FlipCommand}" Content="Back" Style="{StaticResource MaterialDesignFlatButton}" />
+                                    <Button DockPanel.Dock="Bottom" Width="184" Margin="5" Command="{x:Static materialDesign:Flipper.FlipCommand}" Content="{x:Static properties:Resources.Back}" Style="{StaticResource MaterialDesignFlatButton}" />
                                     <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="Visit" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Margin="3" HorizontalAlignment="Center" />
+                                        <TextBlock Text="{x:Static properties:Resources.Visit}" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Margin="3" HorizontalAlignment="Center" />
                                         <TextBox Text="{Binding OfflineRegistrationUrl, Mode=OneWay}" Margin="3" IsReadOnly="True" />
                                         <WrapPanel HorizontalAlignment="Center">
                                             <Button Content="{materialDesign:PackIcon Kind=OpenInBrowser}" ToolBar.OverflowMode="AsNeeded" ToolTip="{x:Static properties:Resources.Open}" Click="OpenUrl_Click" Margin="3" />
@@ -88,7 +88,7 @@
                             </materialDesign:Flipper.FrontContent>
                             <materialDesign:Flipper.BackContent>
                                 <DockPanel LastChildFill="True" Width="200" MinHeight="100" Margin="8">
-                                    <Button DockPanel.Dock="Bottom" Width="184" Margin="5" Command="{x:Static materialDesign:Flipper.FlipCommand}" Content="Back" Style="{StaticResource MaterialDesignFlatButton}" />
+                                    <Button DockPanel.Dock="Bottom" Width="184" Margin="5" Command="{x:Static materialDesign:Flipper.FlipCommand}" Content="{x:Static properties:Resources.Back}" Style="{StaticResource MaterialDesignFlatButton}" />
                                     <StackPanel Orientation="Vertical">
                                         <TextBlock Text="{x:Static properties:Resources.Call}" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Margin="3" HorizontalAlignment="Center" />
                                         <TextBlock Text="+33 3 67 37 02 45" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Margin="3" HorizontalAlignment="Center" Foreground="{StaticResource SecondaryHueMidBrush}" />

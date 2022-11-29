@@ -106,6 +106,15 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Back.
+        /// </summary>
+        public static string Back {
+            get {
+                return ResourceManager.GetString("Back", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Call.
         /// </summary>
         public static string Call {
@@ -619,6 +628,15 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Updates.
+        /// </summary>
+        public static string Updates {
+            get {
+                return ResourceManager.GetString("Updates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to UUID.
         /// </summary>
         public static string UUID {
@@ -642,6 +660,15 @@ namespace Leosac.KeyManager.Properties {
         public static string ValidPlan {
             get {
                 return ResourceManager.GetString("ValidPlan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visit.
+        /// </summary>
+        public static string Visit {
+            get {
+                return ResourceManager.GetString("Visit", resourceCulture);
             }
         }
         

@@ -132,6 +132,9 @@
   <data name="AutomaticUpdates" xml:space="preserve">
     <value>Mises à jour automatiques</value>
   </data>
+  <data name="Back" xml:space="preserve">
+    <value>Retour</value>
+  </data>
   <data name="Call" xml:space="preserve">
     <value>Appeler</value>
   </data>
@@ -226,7 +229,7 @@
     <value>Aucun plan de maintenance actif n'est enregistré pour cette installation</value>
   </data>
   <data name="MaintenancePlanAdvert2" xml:space="preserve">
-    <value>Enregistrez-vous maintenant pour bénéficier de tous les services liés au plan et pour sécuriser votre activité.</value>
+    <value>Enregistrez-vous maintenant pour bénéficier des services et sécuriser votre activité.</value>
   </data>
   <data name="MaxLines" xml:space="preserve">
     <value>Lignes max :</value>
@@ -303,6 +306,9 @@
   <data name="Subscribe" xml:space="preserve">
     <value>Souscrire</value>
   </data>
+  <data name="Updates" xml:space="preserve">
+    <value>Mises à jour</value>
+  </data>
   <data name="UUID" xml:space="preserve">
     <value>UUID</value>
   </data>
@@ -311,6 +317,9 @@
   </data>
   <data name="ValidPlan" xml:space="preserve">
     <value>Vous avez un plan de maintenance valide.</value>
+  </data>
+  <data name="Visit" xml:space="preserve">
+    <value>Visiter</value>
   </data>
   <data name="WebBrowser" xml:space="preserve">
     <value>Navigateur web</value>

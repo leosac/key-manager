@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
-    public abstract class SymmetricKeyEntry : KeyEntry
+    public enum KeyEntryClass
     {
+        Symmetric,
+        Asymmetric
     }
 }

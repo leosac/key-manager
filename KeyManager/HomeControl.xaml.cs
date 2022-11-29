@@ -32,7 +32,7 @@ namespace Leosac.KeyManager
 
         private async void createKeyStore_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var model = new KeyStoreSelectorDialogViewModel() { Message = "Create a new Key Store" };
+            var model = new KeyStoreSelectorDialogViewModel() { Message = Properties.Resources.CreateKeyStore };
             var dialog = new KeyStoreSelectorDialog
             {
                 DataContext = model
@@ -56,7 +56,7 @@ namespace Leosac.KeyManager
 
         private async void openKeyStore_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var model = new KeyStoreSelectorDialogViewModel() { Message = "Open an existing Key Store" };
+            var model = new KeyStoreSelectorDialogViewModel() { Message = Properties.Resources.OpenKeyStore };
             var dialog = new KeyStoreSelectorDialog
             {
                 DataContext = model

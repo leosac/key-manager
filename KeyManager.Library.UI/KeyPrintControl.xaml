@@ -84,7 +84,13 @@
                 <Border Grid.Row="3" Grid.Column="0" BorderBrush="Black" BorderThickness="1" />
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static properties:Resources.KeyTagsHelper}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
                 <Border Grid.Row="3" Grid.Column="1" BorderBrush="Black" BorderThickness="1" />
-                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Key.Tags, ElementName=userControl}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <ListBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Key.Tags, ElementName=userControl}" VerticalAlignment="Center" HorizontalAlignment="Center" materialDesign:ListBoxItemAssist.ShowSelection="False">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Foreground="Black" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
                 <Border Grid.Row="4" Grid.Column="0" BorderBrush="Black" BorderThickness="1" />
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static properties:Resources.Note}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
                 <Border Grid.Row="4" Grid.Column="1" BorderBrush="Black" BorderThickness="1" />

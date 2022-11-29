@@ -12,7 +12,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
         {
             _libraryPath = string.Empty;
             _slotFilterType = SlotFilterType.SlotId;
-            _user = Net.Pkcs11Interop.Common.CKU.CKU_SO;
+            _user = Net.Pkcs11Interop.Common.CKU.CKU_USER;
         }
 
         private string _libraryPath;

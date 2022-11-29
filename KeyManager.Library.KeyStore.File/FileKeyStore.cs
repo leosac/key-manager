@@ -41,6 +41,11 @@ namespace Leosac.KeyManager.Library.KeyStore.File
 
         public override bool CanDeleteKeyEntries => true;
 
+        public override IEnumerable<KeyEntryClass> SupportedClasses
+        {
+            get => new KeyEntryClass[] { KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric };
+        }
+
         public override void Open()
         {
             log.Info(String.Format("Opening the key store `{0}`...", GetFileProperties().Fullpath));
@@ -63,20 +68,20 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             log.Info("Key Store closed.");
         }
 
-        protected string GetKeyEntryFile(KeyEntryId identifier)
+        protected string GetKeyEntryFile(KeyEntryId identifier, KeyEntryClass keClass)
         {
-            return System.IO.Path.Combine(GetFileProperties().Fullpath, identifier.Id + LeosacKeyFileExtension);
+            return System.IO.Path.Combine(GetFileProperties().Fullpath, identifier.Id + "." + keClass + LeosacKeyFileExtension);
         }
 
-        public override bool CheckKeyEntryExists(KeyEntryId identifier)
+        public override bool CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
         {
-            return System.IO.File.Exists(GetKeyEntryFile(identifier));
+            return System.IO.File.Exists(GetKeyEntryFile(identifier, keClass));
         }
 
         public override void Create(IChangeKeyEntry change)
         {
             log.Info(String.Format("Creating key entry `{0}`...", change.Identifier));
-            if (CheckKeyEntryExists(change.Identifier))
+            if (CheckKeyEntryExists(change.Identifier, change.KClass))
             {
                 log.Error(String.Format("A key entry with the same identifier `{0}` already exists.", change.Identifier));
                 throw new KeyStoreException("A key entry with the same identifier already exists.");
@@ -90,14 +95,14 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             else
                 throw new KeyStoreException("Unsupported `change` parameter.");
 
-            System.IO.File.WriteAllText(GetKeyEntryFile(change.Identifier), serialized);
+            System.IO.File.WriteAllText(GetKeyEntryFile(change.Identifier, change.KClass), serialized);
             log.Info(String.Format("Key entry `{0}` created.", change.Identifier));
         }
 
-        public override void Delete(KeyEntryId identifier, bool ignoreIfMissing = false)
+        public override void Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
         {
             log.Info(String.Format("Deleting key entry `{0}`...", identifier));
-            var exists = CheckKeyEntryExists(identifier);
+            var exists = CheckKeyEntryExists(identifier, keClass);
             if (!exists && !ignoreIfMissing)
             {
                 log.Error(String.Format("The key entry `{0}` doesn't exist.", identifier));
@@ -106,34 +111,40 @@ namespace Leosac.KeyManager.Library.KeyStore.File
 
             if (exists)
             {
-                System.IO.File.Delete(GetKeyEntryFile(identifier));
+                System.IO.File.Delete(GetKeyEntryFile(identifier, keClass));
                 log.Info(String.Format("Key entry `{0}` deleted.", identifier));
             }
         }
 
-        public override KeyEntry? Get(KeyEntryId identifier)
+        public override KeyEntry? Get(KeyEntryId identifier, KeyEntryClass keClass)
         {
             log.Info(String.Format("Getting key entry `{0}`...", identifier));
-            if (!CheckKeyEntryExists(identifier))
+            if (!CheckKeyEntryExists(identifier, keClass))
             {
                 log.Error(String.Format("The key entry `{0}` doesn't exist.", identifier));
                 throw new KeyStoreException("The key entry doesn't exist.");
             }
 
-            string serialized = System.IO.File.ReadAllText(GetKeyEntryFile(identifier));
+            string serialized = System.IO.File.ReadAllText(GetKeyEntryFile(identifier, keClass));
             var keyEntry = JsonConvert.DeserializeObject<KeyEntry>(serialized, _jsonSettings);
             log.Info(String.Format("Key entry `{0}` retrieved.", identifier));
             return keyEntry;
         }
 
-        public override IList<KeyEntryId> GetAllSymmetric()
+        public override IList<KeyEntryId> GetAll(KeyEntryClass? keClass = null)
         {
-            log.Info("Getting all symmetric key entries...");
+            log.Info(String.Format("Getting all key entries (class: `{0}`)...", keClass));
             var keyEntries = new List<KeyEntryId>();
-            var files = System.IO.Directory.GetFiles(GetFileProperties().Fullpath, "*" + LeosacKeyFileExtension);
+            var filter = "*";
+            if (keClass != null)
+            {
+                filter += "." + keClass.ToString()!.ToLower();
+            }
+            filter += LeosacKeyFileExtension;
+            var files = System.IO.Directory.GetFiles(GetFileProperties().Fullpath, filter);
             foreach (var file in files)
             {
-                string identifier = System.IO.Path.GetFileNameWithoutExtension(file);
+                string identifier = System.IO.Path.GetFileNameWithoutExtension(System.IO.Path.GetFileNameWithoutExtension(file));
                 keyEntries.Add(new KeyEntryId { Id = identifier });
             }
             log.Info(String.Format("{0} key entries returned.", keyEntries.Count));
@@ -153,24 +164,24 @@ namespace Leosac.KeyManager.Library.KeyStore.File
         public override void Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
         {
             log.Info(String.Format("Updating key entry `{0}`...", change.Identifier));
-            Delete(change.Identifier, ignoreIfMissing);
+            Delete(change.Identifier, change.KClass, ignoreIfMissing);
             Create(change);
             OnKeyEntryUpdated(change);
             log.Info(String.Format("Key entry `{0}` updated.", change.Identifier));
         }
 
-        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, string? divInput = null, KeyEntryId? wrappingKeyId = null, byte wrappingKeyVersion = 0)
+        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, byte wrappingKeyVersion = 0)
         {
             string? result = null;
             log.Info(String.Format("Resolving key entry link with Key Entry Identifier `{0}`, Div Input `{1}`...", keyIdentifier, divInput));
 
-            var keyEntry = Get(keyIdentifier);
+            var keyEntry = Get(keyIdentifier, keClass);
             if (keyEntry != null)
             {
                 log.Info("Key entry link resolved.");
                 if (wrappingKeyId != null)
                 {
-                    var wrappingKey = GetKey(wrappingKeyId, wrappingKeyVersion);
+                    var wrappingKey = GetKey(wrappingKeyId, KeyEntryClass.Symmetric, wrappingKeyVersion);
                     if (wrappingKey != null)
                     {
                         // TODO: do something here to encipher the key value?
@@ -196,18 +207,18 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             return result;
         }
 
-        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, byte keyVersion, string? divInput = null)
+        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, byte keyVersion, string? divInput = null)
         {
             string? result = null;
             log.Info(String.Format("Resolving key link with Key Entry Identifier `{0}`, Key Version `{1}`, Div Input `{2}`...", keyIdentifier, keyVersion, divInput));
 
-            if (!CheckKeyEntryExists(keyIdentifier))
+            if (!CheckKeyEntryExists(keyIdentifier, keClass))
             {
                 log.Error(String.Format("The key entry `{0}` do not exists.", keyIdentifier));
                 throw new KeyStoreException("The key entry do not exists.");
             }
 
-            var key = GetKey(keyIdentifier, keyVersion);
+            var key = GetKey(keyIdentifier, keClass, keyVersion);
             if (key != null)
             {
                 log.Info("Key link resolved.");

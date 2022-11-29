@@ -42,6 +42,11 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
         public override bool CanDeleteKeyEntries => false;
 
+        public override IEnumerable<KeyEntryClass> SupportedClasses
+        {
+            get => new KeyEntryClass[] { KeyEntryClass.Symmetric };
+        }
+
         public override void Open()
         {
             log.Info("Opening the key store...");
@@ -147,7 +152,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             log.Info("Key Store closed.");
         }
 
-        public override bool CheckKeyEntryExists(KeyEntryId identifier)
+        public override bool CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
         {
             if (identifier.Id == null)
                 return false;
@@ -155,7 +160,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             uint entry;
             if (uint.TryParse(identifier.Id, out entry))
             {
-                return (entry < SAM_AV2_MAX_SYMMETRIC_ENTRIES);
+                if (keClass == KeyEntryClass.Symmetric)
+                    return (entry < SAM_AV2_MAX_SYMMETRIC_ENTRIES);
             }
 
             return false;
@@ -173,17 +179,17 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             throw new KeyStoreException("A SAM key entry cannot be created, only updated.");
         }
 
-        public override void Delete(KeyEntryId identifier, bool ignoreIfMissing = false)
+        public override void Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
         {
             log.Info(String.Format("Deleting key entry `{0}`...", identifier));
             log.Error("A SAM key entry cannot be deleted, only updated.");
             throw new KeyStoreException("A SAM key entry cannot be deleted, only updated.");
         }
 
-        public override KeyEntry? Get(KeyEntryId identifier)
+        public override KeyEntry? Get(KeyEntryId identifier, KeyEntryClass keClass)
         {
             log.Info(String.Format("Getting key entry `{0}`...", identifier));
-            if (!CheckKeyEntryExists(identifier))
+            if (!CheckKeyEntryExists(identifier, keClass))
             {
                 log.Error(String.Format("The key entry `{0}` do not exists.", identifier));
                 throw new KeyStoreException("The key entry do not exists.");
@@ -200,58 +206,63 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             SAMSymmetricKeyEntry keyEntry;
             if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
             {
-                var av2entry = av2cmd.getKeyEntry(entry);
-                var set = av2entry.getSETStruct();
-                keyEntry = CreateKeyEntryFromKeyType(av2entry.getKeyType());
-                keyEntry.Identifier = identifier;
-                var infoav2 = av2entry.getKeyEntryInformation();
-                if (keyEntry.SAMProperties != null)
+                if (keClass == KeyEntryClass.Symmetric)
                 {
-                    keyEntry.SAMProperties.SAMKeyEntryType = (SAMKeyEntryType)(infoav2.ExtSET & 0x07);
-
-                    Array.Copy(infoav2.desfireAid, keyEntry.SAMProperties.DESFireAID, 3);
-                    keyEntry.SAMProperties.DESFireKeyNum = infoav2.desfirekeyno;
-
-                    keyEntry.SAMProperties.KeyUsageCounter = (infoav2.kuc != 0xff) ? infoav2.kuc : null;
-
-                    keyEntry.SAMProperties.ChangeKeyRefId = infoav2.cekno;
-                    keyEntry.SAMProperties.ChangeKeyRefVersion = infoav2.cekv;
-
-                    keyEntry.SAMProperties.EnableDumpSessionKey = Convert.ToBoolean(set.dumpsessionkey);
-                    keyEntry.SAMProperties.CryptoBasedOnSecretKey = Convert.ToBoolean(set.allowcrypto);
-                    keyEntry.SAMProperties.DisableDecryptData = Convert.ToBoolean(set.disabledecryption);
-                    keyEntry.SAMProperties.DisableEncryptData = Convert.ToBoolean(set.disableencryption);
-                    keyEntry.SAMProperties.DisableGenerateMACFromPICC = Convert.ToBoolean(set.disablegeneratemac);
-                    keyEntry.SAMProperties.DisableKeyEntry = Convert.ToBoolean(set.disablekeyentry);
-                    keyEntry.SAMProperties.DisableVerifyMACFromPICC = Convert.ToBoolean(set.disableverifymac);
-                    keyEntry.SAMProperties.DisableChangeKeyPICC = Convert.ToBoolean(set.disablewritekeytopicc);
-                    keyEntry.SAMProperties.LockUnlock = Convert.ToBoolean(set.lockkey);
-                    keyEntry.SAMProperties.KeepIV = Convert.ToBoolean(set.keepIV);
-                    keyEntry.SAMProperties.AuthenticateHost = Convert.ToBoolean(set.authkey);
-                    keyEntry.SAMProperties.AllowDumpSecretKey = Convert.ToBoolean(infoav2.ExtSET & 0x08);
-                    keyEntry.SAMProperties.AllowDumpSecretKeyWithDiv = Convert.ToBoolean(infoav2.ExtSET & 0x10);
-                }
-
-                if (keyEntry.Variant != null)
-                {
-                    var keysdata = av2entry.getKeysData();
-                    if (keysdata.Count < 2 || keysdata.Count != keyEntry.Variant.KeyVersions.Count)
+                    var av2entry = av2cmd.getKeyEntry(entry);
+                    var set = av2entry.getSETStruct();
+                    keyEntry = CreateKeyEntryFromKeyType(av2entry.getKeyType());
+                    keyEntry.Identifier = identifier;
+                    var infoav2 = av2entry.getKeyEntryInformation();
+                    if (keyEntry.SAMProperties != null)
                     {
-                        log.Error(String.Format("Unexpected number of keys ({0}) on the SAM Key Entry.", keysdata.Count));
-                        throw new KeyStoreException("Unexpected number of keys on the SAM Key Entry.");
+                        keyEntry.SAMProperties.SAMKeyEntryType = (SAMKeyEntryType)(infoav2.ExtSET & 0x07);
+
+                        Array.Copy(infoav2.desfireAid, keyEntry.SAMProperties.DESFireAID, 3);
+                        keyEntry.SAMProperties.DESFireKeyNum = infoav2.desfirekeyno;
+
+                        keyEntry.SAMProperties.KeyUsageCounter = (infoav2.kuc != 0xff) ? infoav2.kuc : null;
+
+                        keyEntry.SAMProperties.ChangeKeyRefId = infoav2.cekno;
+                        keyEntry.SAMProperties.ChangeKeyRefVersion = infoav2.cekv;
+
+                        keyEntry.SAMProperties.EnableDumpSessionKey = Convert.ToBoolean(set.dumpsessionkey);
+                        keyEntry.SAMProperties.CryptoBasedOnSecretKey = Convert.ToBoolean(set.allowcrypto);
+                        keyEntry.SAMProperties.DisableDecryptData = Convert.ToBoolean(set.disabledecryption);
+                        keyEntry.SAMProperties.DisableEncryptData = Convert.ToBoolean(set.disableencryption);
+                        keyEntry.SAMProperties.DisableGenerateMACFromPICC = Convert.ToBoolean(set.disablegeneratemac);
+                        keyEntry.SAMProperties.DisableKeyEntry = Convert.ToBoolean(set.disablekeyentry);
+                        keyEntry.SAMProperties.DisableVerifyMACFromPICC = Convert.ToBoolean(set.disableverifymac);
+                        keyEntry.SAMProperties.DisableChangeKeyPICC = Convert.ToBoolean(set.disablewritekeytopicc);
+                        keyEntry.SAMProperties.LockUnlock = Convert.ToBoolean(set.lockkey);
+                        keyEntry.SAMProperties.KeepIV = Convert.ToBoolean(set.keepIV);
+                        keyEntry.SAMProperties.AuthenticateHost = Convert.ToBoolean(set.authkey);
+                        keyEntry.SAMProperties.AllowDumpSecretKey = Convert.ToBoolean(infoav2.ExtSET & 0x08);
+                        keyEntry.SAMProperties.AllowDumpSecretKeyWithDiv = Convert.ToBoolean(infoav2.ExtSET & 0x10);
                     }
 
-                    keyEntry.Variant.KeyVersions[0].Key.Value = Convert.ToHexString(keysdata[0].ToArray());
-                    keyEntry.Variant.KeyVersions[0].Version = infoav2.vera;
-                    keyEntry.Variant.KeyVersions[1].Key.Value = Convert.ToHexString(keysdata[1].ToArray());
-                    keyEntry.Variant.KeyVersions[1].Version = infoav2.verb;
-
-                    if (keyEntry.Variant.KeyVersions.Count >= 3)
+                    if (keyEntry.Variant != null)
                     {
-                        keyEntry.Variant.KeyVersions[2].Key.Value = Convert.ToHexString(keysdata[2].ToArray());
-                        keyEntry.Variant.KeyVersions[2].Version = infoav2.verc;
+                        var keysdata = av2entry.getKeysData();
+                        if (keysdata.Count < 2 || keysdata.Count != keyEntry.Variant.KeyVersions.Count)
+                        {
+                            log.Error(String.Format("Unexpected number of keys ({0}) on the SAM Key Entry.", keysdata.Count));
+                            throw new KeyStoreException("Unexpected number of keys on the SAM Key Entry.");
+                        }
+
+                        keyEntry.Variant.KeyVersions[0].Key.Value = Convert.ToHexString(keysdata[0].ToArray());
+                        keyEntry.Variant.KeyVersions[0].Version = infoav2.vera;
+                        keyEntry.Variant.KeyVersions[1].Key.Value = Convert.ToHexString(keysdata[1].ToArray());
+                        keyEntry.Variant.KeyVersions[1].Version = infoav2.verb;
+
+                        if (keyEntry.Variant.KeyVersions.Count >= 3)
+                        {
+                            keyEntry.Variant.KeyVersions[2].Key.Value = Convert.ToHexString(keysdata[2].ToArray());
+                            keyEntry.Variant.KeyVersions[2].Version = infoav2.verc;
+                        }
                     }
                 }
+                else
+                    throw new NotImplementedException();
             }
             else if (cmd is LibLogicalAccess.Reader.SAMAV1ISO7816Commands)
             {
@@ -280,13 +291,16 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             return keyEntry;
         }
 
-        public override IList<KeyEntryId> GetAllSymmetric()
+        public override IList<KeyEntryId> GetAll(KeyEntryClass? keClass = null)
         {
-            log.Info("Getting all symmetric key entries...");
+            log.Info(String.Format("Getting all key entries (class: `{0}`)...", keClass));
             var entries = new List<KeyEntryId>();
-            for (uint i = 0; i < SAM_AV2_MAX_SYMMETRIC_ENTRIES; ++i)
+            if (keClass == null || keClass == KeyEntryClass.Symmetric)
             {
-                entries.Add(new KeyEntryId { Id = i.ToString() });
+                for (uint i = 0; i < SAM_AV2_MAX_SYMMETRIC_ENTRIES; ++i)
+                {
+                    entries.Add(new KeyEntryId { Id = i.ToString() });
+                }
             }
             log.Info(String.Format("{0} key entries returned.", entries.Count));
             return entries;
@@ -588,13 +602,13 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             log.Info(String.Format("Key usage counter `{0}` updated.", counter.Identifier));
         }
 
-        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, string? divInput = null, KeyEntryId? wrappingKeyId = null, byte wrappingKeyVersion = 0)
+        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, byte wrappingKeyVersion = 0)
         {
             // Will be supported with SAM AV3
             throw new NotSupportedException();
         }
 
-        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, byte keyVersion, string? divInput = null)
+        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, byte keyVersion, string? divInput = null)
         {
             byte[] div;
             log.Info(String.Format("Resolving key link with Key Entry Identifier `{0}`, Key Version `{1}`, Div Input `{2}`...", keyIdentifier, keyVersion, divInput));
@@ -603,7 +617,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             else
                 div = new byte[0];
 
-            if (!CheckKeyEntryExists(keyIdentifier))
+            if (!CheckKeyEntryExists(keyIdentifier, keClass))
             {
                 log.Error(String.Format("The key entry `{0}` doesn't exist.", keyIdentifier));
                 throw new KeyStoreException("The key entry doesn't exist.");

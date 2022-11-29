@@ -31,7 +31,21 @@
                             DockPanel.Dock="Top"
                             IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}"
                             Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
-
+                    <StackPanel DockPanel.Dock="Bottom" Margin="15">
+                        <Separator />
+                        <WrapPanel HorizontalAlignment="Center">
+                            <Image Margin="10" Source="/images/flag_usa.png" Height="16" Cursor="Hand">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" Command="{Binding ChangeLanguageCommand}" CommandParameter="en-US" />
+                                </Image.InputBindings>
+                            </Image>
+                            <Image Margin="10" Source="/images/flag_french.png" Height="16" Cursor="Hand">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" Command="{Binding ChangeLanguageCommand}" CommandParameter="fr" />
+                                </Image.InputBindings>
+                            </Image>
+                        </WrapPanel>
+                    </StackPanel>
                     <ListBox x:Name="MenuItemsListBox"
                        Margin="0,16,0,16"
                        AutomationProperties.Name="MenuPagesListBox"
@@ -115,17 +129,22 @@
 
                 <materialDesign:ColorZone DockPanel.Dock="Bottom" Padding="20" materialDesign:ElevationAssist.Elevation="Dp4" ClipToBounds="False" CornerRadius="15,15,0,0" Mode="PrimaryLight"
                                           Visibility="{Binding ShowPlanFooter, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <materialDesign:PackIcon Width="48" Height="48" Kind="SecurityOff" Margin="20,5,20,5" Foreground="{StaticResource SecondaryHueMidBrush}" />
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20,5,20,5">
-                            <TextBlock Text="{x:Static properties:Resources.MaintenancePlanAdvert1}" FontWeight="ExtraBold" HorizontalAlignment="Center" Margin="2" />
-                            <TextBlock Text="{x:Static properties:Resources.MaintenancePlanAdvert2}" HorizontalAlignment="Center" Margin="2" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="150" />
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:PackIcon Grid.Column="0" Width="48" Height="48" Kind="SecurityOff" Margin="15,5,15,5" Foreground="{StaticResource SecondaryHueMidBrush}" />
+                        <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="5">
+                            <TextBlock Text="{x:Static properties:Resources.MaintenancePlanAdvert1}" TextWrapping="Wrap" FontWeight="ExtraBold" HorizontalAlignment="Center" Margin="2" />
+                            <TextBlock Text="{x:Static properties:Resources.MaintenancePlanAdvert2}" TextWrapping="Wrap" HorizontalAlignment="Center" Margin="2" />
                         </StackPanel>
-                        <WrapPanel Orientation="Vertical" Margin="20,5,20,5">
+                        <WrapPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="15,5,15,5" MinWidth="100">
                             <Button x:Name="btnSubscribe" Content="{x:Static properties:Resources.Subscribe}" Click="btnSubscribe_Click" Margin="2"/>
                             <TextBlock x:Name="linkRegister" FontSize="9" Text="{x:Static properties:Resources.RegisterLink}" Margin="2" Cursor="Hand" TextDecorations="Underline" HorizontalAlignment="Center" MouseDown="linkRegister_MouseDown" />
                         </WrapPanel>
-                    </StackPanel>
+                    </Grid>
                 </materialDesign:ColorZone>
 
                 <Grid>

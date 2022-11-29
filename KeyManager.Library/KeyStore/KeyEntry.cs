@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
-    public abstract class KeyEntry : KMObject, IChangeKeyEntry
+    public abstract class KeyEntry : KMObject, IKeyEntry
     {
         public KeyEntry()
         {
@@ -43,6 +43,8 @@ namespace Leosac.KeyManager.Library.KeyStore
             get => _link;
             set => SetProperty(ref _link, value);
         }
+
+        public abstract KeyEntryClass KClass { get; }
 
         public abstract IList<KeyEntryVariant> GetAllVariants();
 

@@ -65,7 +65,7 @@ namespace Leosac.KeyManager.Domain
         {
             KeyStore?.Close();
             KeyStore = null;
-            SymmetricIdentifiers.Clear();
+            Identifiers.Clear();
             Favorite = null;
 
             if (navigate)
@@ -154,7 +154,7 @@ namespace Leosac.KeyManager.Domain
                                         }
                                         return null;
                                     },
-                                    (store, nbentries) =>
+                                    (store, keClass, nbentries) =>
                                     {
                                         ProgressMaximum = nbentries * 2;
                                     });

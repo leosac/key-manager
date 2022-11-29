@@ -52,6 +52,8 @@ namespace Leosac.KeyManager
 
         public bool IsAutoUpdateEnabled { get; set; }
 
+        public string? Language { get; set; }
+
         public static FileVersionInfo? GetFileVersionInfo()
         {
             var assembly = Assembly.GetExecutingAssembly();

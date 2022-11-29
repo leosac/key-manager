@@ -28,13 +28,18 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 
         public override bool CanDeleteKeyEntries => true;
 
-        public override bool CheckKeyEntryExists(KeyEntryId identifier)
+        public override IEnumerable<KeyEntryClass> SupportedClasses
         {
-            IObjectHandle? handle;
-            return CheckKeyEntryExists(identifier, out handle);
+            get => new KeyEntryClass[] { KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric };
         }
 
-        public bool CheckKeyEntryExists(KeyEntryId identifier, out IObjectHandle? handle)
+        public override bool CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
+        {
+            IObjectHandle? handle;
+            return CheckKeyEntryExists(identifier, keClass, out handle);
+        }
+
+        public bool CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass, out IObjectHandle? handle)
         {
             if (_session == null)
                 throw new KeyStoreException("No valid session.");
@@ -44,6 +49,9 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_ID, Convert.FromHexString(identifier.Id)));
             if (!string.IsNullOrEmpty(identifier.Label))
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_LABEL, UTF8Encoding.UTF8.GetBytes(identifier.Label)));
+
+            if (keClass == KeyEntryClass.Symmetric)
+                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_SECRET_KEY));
 
             if (attributes.Count == 0)
                 throw new KeyStoreException("No key identifier.");
@@ -82,7 +90,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
         public override void Create(IChangeKeyEntry change)
         {
             log.Info(String.Format("Creating key entry `{0}`...", change.Identifier));
-            if (CheckKeyEntryExists(change.Identifier))
+            if (CheckKeyEntryExists(change.Identifier, change.KClass))
             {
                 log.Error(String.Format("A key entry with the same identifier `{0}` already exists.", change.Identifier));
                 throw new KeyStoreException("A key entry with the same identifier already exists.");
@@ -90,7 +98,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 
             if (change is KeyEntry entry)
             {
-                var attributes = GetKeyEntryAttributes(entry);
+                var attributes = GetKeyEntryAttributes(entry, true);
                 _session!.CreateObject(attributes);
             }
             else
@@ -99,25 +107,30 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             log.Info(String.Format("Key entry `{0}` created.", change.Identifier));
         }
 
-        private List<IObjectAttribute> GetKeyEntryAttributes(KeyEntry entry)
+        private List<IObjectAttribute> GetKeyEntryAttributes(KeyEntry entry, bool create = false)
         {
             var attributes = new List<IObjectAttribute>();
-            if (entry.Identifier.Id != null)
+            if (entry.Identifier.Id != null && create)
                 attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_ID, Convert.FromHexString(entry.Identifier.Id)));
             if (entry.Identifier.Label != null)
                 attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_LABEL, UTF8Encoding.UTF8.GetBytes(entry.Identifier.Label)));
-            attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_SECRET_KEY));
             if (entry is PKCS11KeyEntry pkcsEntry)
             {
-                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_KEY_TYPE, pkcsEntry.GetCKK()));
+                if (create)
+                {
+                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_KEY_TYPE, pkcsEntry.GetCKK()));
+                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_EXTRACTABLE, pkcsEntry.PKCS11Properties.Extractable));
+                }
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_ENCRYPT, pkcsEntry.PKCS11Properties!.Encrypt));
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_DECRYPT, pkcsEntry.PKCS11Properties.Decrypt));
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_DERIVE, pkcsEntry.PKCS11Properties.Derive));
-                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_EXTRACTABLE, pkcsEntry.PKCS11Properties.Extractable));
             }
             else
             {
-                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_KEY_TYPE, CKK.CKK_GENERIC_SECRET));
+                if (create)
+                {
+                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_KEY_TYPE, CKK.CKK_GENERIC_SECRET));
+                }
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_ENCRYPT, true));
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_DECRYPT, true));
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_DERIVE, true));
@@ -126,17 +139,24 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             if (entry.Variant?.KeyVersions.Count > 0 && !string.IsNullOrEmpty(entry.Variant.KeyVersions[0].Key.Value))
             {
                 var key = Convert.FromHexString(entry.Variant.KeyVersions[0].Key.Value);
-                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE_LEN, (ulong)key.Length));
+                //attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE_LEN, (ulong)key.Length));
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE, key));
             }
+
+            if (create)
+            {
+                attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_SECRET_KEY));
+                attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_TOKEN, true));
+            }
+
             return attributes;
         }
 
-        public override void Delete(KeyEntryId identifier, bool ignoreIfMissing = false)
+        public override void Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
         {
             log.Info(String.Format("Deleting key entry `{0}`...", identifier));
             IObjectHandle? handle;
-            var exists = CheckKeyEntryExists(identifier, out handle);
+            var exists = CheckKeyEntryExists(identifier, keClass, out handle);
             if (!exists && !ignoreIfMissing)
             {
                 log.Error(String.Format("The key entry `{0}` doesn't exist.", identifier));
@@ -150,11 +170,11 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             }
         }
 
-        public override KeyEntry? Get(KeyEntryId identifier)
+        public override KeyEntry? Get(KeyEntryId identifier, KeyEntryClass keClass)
         {
             log.Info(String.Format("Getting key entry `{0}`...", identifier));
             IObjectHandle? handle;
-            if (!CheckKeyEntryExists(identifier, out handle))
+            if (!CheckKeyEntryExists(identifier, keClass, out handle))
             {
                 log.Error(String.Format("The key entry `{0}` doesn't exist.", identifier));
                 throw new KeyStoreException("The key entry doesn't exist.");
@@ -196,9 +216,9 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return keyEntry;
         }
 
-        public override IList<KeyEntryId> GetAllSymmetric()
+        public override IList<KeyEntryId> GetAll(KeyEntryClass? keClass = null)
         {
-            log.Info("Getting all symmetric key entries...");
+            log.Info(String.Format("Getting all key entries (class: `{0}`)...", keClass));
             var entries = new List<KeyEntryId>();
 
             if (_session == null)
@@ -206,9 +226,16 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 
             var attributes = new List<IObjectAttribute>
             {
-                _session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_SECRET_KEY),
                 _session.Factories.ObjectAttributeFactory.Create(CKA.CKA_TOKEN, true)
             };
+
+            if (keClass != null)
+            {
+                if (keClass == KeyEntryClass.Symmetric)
+                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_SECRET_KEY));
+                else if (keClass == KeyEntryClass.Asymmetric)
+                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PRIVATE_KEY));
+            }
 
             var objects = _session.FindAllObjects(attributes);
             foreach (var obj in objects)
@@ -226,6 +253,8 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                         entry.Id = Convert.ToHexString(objAttributes[0].GetValueAsByteArray());
                     if (!objAttributes[1].CannotBeRead)
                         entry.Label = objAttributes[1].GetValueAsString();
+
+                    entries.Add(entry);
                 }
                 else
                 {
@@ -304,12 +333,12 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             log.Info("Key Store opened.");
         }
 
-        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, string? divInput = null, KeyEntryId? wrappingKeyId = null, byte wrappingKeyVersion = 0)
+        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, byte wrappingKeyVersion = 0)
         {
             throw new NotImplementedException();
         }
 
-        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, byte keyVersion, string? divInput = null)
+        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, byte keyVersion, string? divInput = null)
         {
             throw new NotImplementedException();
         }
@@ -324,7 +353,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             log.Info(String.Format("Updating key entry `{0}`...", change.Identifier));
 
             IObjectHandle? handle;
-            if (!CheckKeyEntryExists(change.Identifier, out handle))
+            if (!CheckKeyEntryExists(change.Identifier, change.KClass, out handle))
             {
                 log.Error(String.Format("The key entry `{0}` doesn't exist.", change.Identifier));
                 throw new KeyStoreException("The key entry doesn't exist.");

@@ -23,7 +23,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             if (KeyLink != null)
             {
-                LinkResult = ks.ResolveKeyLink(KeyLink.KeyIdentifier, KeyLink.KeyVersion, DivInputResult);
+                LinkResult = ks.ResolveKeyLink(KeyLink.KeyIdentifier, Class, KeyLink.KeyVersion, DivInputResult);
             }
         }
     }

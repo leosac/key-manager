@@ -17,6 +17,8 @@ using Leosac.KeyManager.Library.KeyStore;
 using System.Windows;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library;
+using System.Globalization;
+using System.Threading;
 
 namespace Leosac.KeyManager.Domain
 {
@@ -117,6 +119,29 @@ namespace Leosac.KeyManager.Domain
                     var aboutWindow = new AboutWindow();
                     aboutWindow.ShowDialog();
                 });
+            ChangeLanguageCommand = new KeyManagerCommand(
+                parameter =>
+                {
+                    var lang = "en-US";
+                    if (parameter != null)
+                    {
+                        lang = parameter.ToString();
+                    }
+
+                    var settings = KMSettings.GetSingletonInstance();
+                    settings.Language = lang;
+                    settings.SaveToFile();
+
+                    LangHelper.ChangeLanguage(lang);
+
+                    // Restart the application to be sure already created Windows have expected language
+                    var module = Process.GetCurrentProcess().MainModule;
+                    if (module != null && !string.IsNullOrEmpty(module.FileName))
+                    {
+                        System.Diagnostics.Process.Start(module.FileName);
+                    }
+                    Application.Current.Shutdown();
+                });
 
             MenuItems = new ObservableCollection<NavItem>(new[]
             {
@@ -201,6 +226,7 @@ namespace Leosac.KeyManager.Domain
         public KeyManagerCommand KeyStoreCommand { get; }
         public KeyManagerCommand LogConsoleCommand { get; }
         public KeyManagerCommand OpenAboutCommand { get; }
+        public KeyManagerCommand ChangeLanguageCommand { get; }
 
         private static void ModifyTheme(bool isDarkTheme)
         {

@@ -21,6 +21,8 @@ namespace Leosac.KeyManager.Library.KeyStore
             set => SetProperty(ref _identifier, value);
         }
 
+        public KeyEntryClass KClass => KeyEntryClass.Symmetric;
+
         private string? _value;
 
         public string? Value

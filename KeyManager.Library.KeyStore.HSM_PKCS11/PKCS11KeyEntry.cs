@@ -8,17 +8,23 @@ using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 {
-    public class PKCS11KeyEntry : SymmetricKeyEntry
+    public class PKCS11KeyEntry : KeyEntry
     {
         public PKCS11KeyEntry()
         {
             Properties = new PKCS11KeyEntryProperties();
+            Identifier.Id = Guid.NewGuid().ToString("N");
         }
 
         [JsonIgnore]
         public PKCS11KeyEntryProperties? PKCS11Properties
         {
             get { return Properties as PKCS11KeyEntryProperties; }
+        }
+
+        public override KeyEntryClass KClass
+        {
+            get => GetKeyEntryClassFromCKK(GetCKK());
         }
 
         public override IList<KeyEntryVariant> GetAllVariants()
@@ -40,10 +46,19 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             var variant = new KeyEntryVariant() { Name = algo };
             var tags = new string[]
             {
-                    algo
+                    algo,
+                    GetKeyEntryClassFromCKK(ckk).ToString()
             };
             variant.KeyVersions.Add(new KeyVersion("Key", 0, new Key(tags, KeyHelper.GetBlockSize(tags))));
             return variant;
+        }
+
+        public static KeyEntryClass GetKeyEntryClassFromCKK(CKK ckk)
+        {
+            if (ckk == CKK.CKK_DSA || ckk == CKK.CKK_ECDSA || ckk == CKK.CKK_RSA)
+                return KeyEntryClass.Asymmetric;
+
+            return KeyEntryClass.Symmetric;
         }
 
         public CKK GetCKK()

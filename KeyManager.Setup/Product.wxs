@@ -10,10 +10,17 @@
 
 		<Feature Id="ProductFeature" Title="$(var.ProductName)" Description="The $(var.ProductName) application" Absent="disallow" Level="1">
 			<ComponentGroupRef Id="KeyManagerComponents" />
+      <ComponentGroupRef Id="NativeWinx64RuntimeComponents" />
+      <ComponentGroupRef Id="NativeWinx86RuntimeComponents" />
       <ComponentGroupRef Id="DependenciesComponents" />
 		</Feature>
     <Feature Id="LibLogicalAccessFeature" Title="LibLogicalAccess" Description="The RFID/SmartCard middleware" Absent="disallow" Level="1">
       <ComponentGroupRef Id="LibLogicalAccessComponents" />
+    </Feature>
+    <Feature Id="TranslationsFeature" Title="Translations" Description="Available application translations" Level="1">
+      <Feature Id="FrenchTranslation" Title="French Translation" Description="The application French translation" Level="1">
+        <ComponentGroupRef Id="KeyManagerResourcesFR" />
+      </Feature>
     </Feature>
     <Feature Id="StartMenuShortcut" Title="Start Menu Shortcut" Level="1">
       <ComponentRef Id="ProgramMenuDir" />
@@ -64,7 +71,17 @@
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			<Directory Id="$(var.PlatformProgramFilesFolder)" Name="PFiles">
         <Directory Id="COMPANYFOLDER" Name="$(var.Manufacturer)">
-				  <Directory Id="APPLICATIONFOLDER" Name="$(var.ProductName)" />
+          <Directory Id="APPLICATIONFOLDER" Name="$(var.ProductName)">
+            <Directory Id="RESOURCESFR" Name="fr" />
+            <Directory Id="APPRUNTIMES" Name="runtimes">
+              <Directory Id="RUNTIMEWINX64" Name="win-x64">
+                <Directory Id="RUNTIMEWINX64NATIVE" Name="native" />
+              </Directory>
+              <Directory Id="RUNTIMEWINX86" Name="win-x86">
+                <Directory Id="RUNTIMEWINX86NATIVE" Name="native" />
+              </Directory>
+            </Directory>
+          </Directory>
         </Directory>
 			</Directory>
 
@@ -139,6 +156,24 @@
         <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetPath)" />
       </Component>
     </ComponentGroup>
+
+    <ComponentGroup Id="KeyManagerResourcesFR" Directory="RESOURCESFR">
+      <Component Id="KeyManagerResourcesFRComponent" Win64="$(var.Win64)">
+        <File Id="___var.KeyManager.ResourcesFR_" Source="$(var.KeyManager.TargetDir)\fr\KeyManager.resources.dll" />
+      </Component>
+      <Component Id="KeyManagerLibraryUIResourcesFRComponent" Win64="$(var.Win64)">
+        <File Id="___var.KeyManager.Library.UI.ResourcesFR_" Source="$(var.KeyManager.Library.UI.TargetDir)\fr\KeyManager.Library.UI.resources.dll" />
+      </Component>
+      <Component Id="KeyManagerLibraryKeyStoreFileUIResourcesFRComponent" Win64="$(var.Win64)">
+        <File Id="___var.KeyManager.Library.KeyStore.File.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.File.UI.TargetDir)\fr\KeyManager.Library.KeyStore.File.UI.resources.dll" />
+      </Component>
+      <Component Id="KeyManagerLibraryKeyStoreHSM_PKCS11UIResourcesFRComponent" Win64="$(var.Win64)">
+        <File Id="___var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.TargetDir)\fr\KeyManager.Library.KeyStore.HSM_PKCS11.UI.resources.dll" />
+      </Component>
+      <Component Id="KeyManagerLibraryKeyStoreNXP_SAMUIResourcesFRComponent" Win64="$(var.Win64)">
+        <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetDir)\fr\KeyManager.Library.KeyStore.NXP_SAM.UI.resources.dll" />
+      </Component>
+    </ComponentGroup>
     
     <ComponentGroup Id="DependenciesComponents" Directory="APPLICATIONFOLDER">
       <Component Id="LibLogicalAccessNetCEComponent" Win64="$(var.Win64)">
@@ -170,6 +205,16 @@
       </Component>
       <Component Id="SkiaSharpComponent" Win64="$(var.Win64)">
         <File Id="___var.SkiaSharp.dll_" Source="$(var.KeyManager.TargetDir)\SkiaSharp.dll" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="NativeWinx64RuntimeComponents" Directory="RUNTIMEWINX64NATIVE">
+      <Component Id="libSkiaSharp_winx64Component" Win64="$(var.Win64)">
+        <File Id="___var.libSkiaSharp_winx64.dll_" Source="$(var.KeyManager.TargetDir)\runtimes\win-x64\native\libSkiaSharp.dll" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="NativeWinx86RuntimeComponents" Directory="RUNTIMEWINX86NATIVE">
+      <Component Id="libSkiaSharp_winx86Component" Win64="$(var.Win64)">
+        <File Id="___var.libSkiaSharp_winx86.dll_" Source="$(var.KeyManager.TargetDir)\runtimes\win-x86\native\libSkiaSharp.dll" />
       </Component>
     </ComponentGroup>
 

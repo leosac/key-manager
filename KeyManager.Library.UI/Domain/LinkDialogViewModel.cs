@@ -18,6 +18,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 {
                     RunLink();
                 });
+            _class = KeyEntryClass.Symmetric;
         }
 
         private Link? _link;
@@ -27,6 +28,15 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             get => _link;
             set => SetProperty(ref _link, value);
+        }
+
+        private KeyEntryClass _class;
+
+        public KeyEntryClass Class
+
+        {
+            get => _class;
+            set => SetProperty(ref _class, value);
         }
 
         private string? _linkResult;

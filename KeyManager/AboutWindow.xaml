@@ -106,7 +106,7 @@
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Margin="15,15,15,5" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="Automatic Updates" />
+                        <TextBlock Grid.Row="0" Margin="15,15,15,5" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Text="{x:Static properties:Resources.Updates}" />
                         <WrapPanel Grid.Row="1" VerticalAlignment="Center" Margin="5">
                             <ToggleButton x:Name="AutoUpdateToggleButton" Click="AutoUpdateToggleButton_Click" />
                             <TextBlock Margin="10,0,0,0" Text="{x:Static properties:Resources.AutomaticUpdates}" />
