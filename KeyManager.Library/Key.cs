@@ -6,39 +6,59 @@ namespace Leosac.KeyManager.Library
 {
     public class Key : KMObject
     {
-        public Key()
+        public Key() : this(null, 0, 1)
         {
-            _value = String.Empty;
-            Tags = new ObservableCollection<string>();
-            Policies = new ObservableCollection<IKeyPolicy>();
-            _link = new KeyLink();
+
         }
 
-        public Key(string[] tags, uint keySize, string value = "")
+        public Key(string[]? tags, uint keySize = 0, uint nbMaterials = 1)
         {
-            Tags = new ObservableCollection<string>(tags);
+            Materials = new ObservableCollection<KeyMaterial>();
+            Materials.CollectionChanged += Materials_CollectionChanged;
+            if (nbMaterials > 0)
+            {
+                for (uint i = 0; i< nbMaterials; ++i)
+                {
+                    Materials.Add(new KeyMaterial());
+                }
+            }
+            Tags = new ObservableCollection<string>(tags ?? new string[0]);
             _keySize = keySize;
-            _value = value;
-            Policies = new ObservableCollection<IKeyPolicy>
-            {
-                new KeyLengthPolicy(keySize)
-            };
+            Policies = new ObservableCollection<IKeyPolicy>();
+            if (keySize > 0)
+                Policies.Add(new KeyLengthPolicy(keySize));
             _link = new KeyLink();
         }
 
-        private string _value;
-
-        public string Value
+        public Key(string[]? tags, uint keySize, string value) : this(tags, keySize, 0)
         {
-            get => _value;
-            set
+            Materials.Add(new KeyMaterial(value));
+        }
+
+        public Key(string[]? tags, uint keySize, params KeyMaterial[] materials) : this(tags, keySize, 0)
+        {
+            foreach(var material in materials)
             {
-                ValidatePolicies(value);
-                SetProperty(ref _value, value);
+                Materials.Add(material);
             }
         }
 
-        public ObservableCollection<string> Tags { get; set; }
+        private void Materials_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add && e.NewItems != null)
+            {
+                foreach (var item in e.NewItems)
+                {
+                    if (item is KeyMaterial k)
+                    {
+                        k.BeforeValueChanged += (sender, e) =>
+                        {
+                            ValidatePolicies(e);
+                        };
+                    }
+                }
+            }
+        }
 
         private uint _keySize;
 
@@ -47,6 +67,10 @@ namespace Leosac.KeyManager.Library
             get => _keySize;
             set => SetProperty(ref _keySize, value);
         }
+
+        public ObservableCollection<KeyMaterial> Materials { get; set; }
+
+        public ObservableCollection<string> Tags { get; set; }
 
         public ObservableCollection<IKeyPolicy> Policies { get; set; }
 
@@ -60,15 +84,37 @@ namespace Leosac.KeyManager.Library
 
         public void ValidatePolicies()
         {
-            ValidatePolicies(this.Value);
+            foreach (var policy in Policies)
+            {
+                policy.Validate(this);
+            }
         }
 
-        public void ValidatePolicies(string key)
+        public void ValidatePolicies(string value)
         {
             foreach (var policy in Policies)
             {
-                policy.Validate(key);
+                policy.Validate(value);
             }
+        }
+
+        public string GetAggregatedValue()
+        {
+            string ret = string.Empty;
+
+            if (Materials.Count > 0)
+                ret = Materials[0].Value;
+
+            return ret;
+        }
+
+        public void SetAggregatedValue(string? value)
+        {
+            if (value == null)
+                value = string.Empty;
+
+            if (Materials.Count > 0)
+                Materials[0].Value = value;
         }
     }
 }

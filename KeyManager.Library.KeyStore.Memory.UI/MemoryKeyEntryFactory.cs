@@ -14,9 +14,11 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory.UI
     {
         public override string Name => "Memory Key Entry";
 
+        public override IEnumerable<KeyEntryClass> KClasses => new KeyEntryClass[] { KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric };
+
         public override KeyEntry CreateKeyEntry()
         {
-            return new MemorySymmetricKeyEntry();
+            return new MemoryKeyEntry();
         }
 
         public override Type GetKeyEntryPropertiesType()

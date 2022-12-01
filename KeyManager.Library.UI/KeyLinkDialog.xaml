@@ -61,7 +61,10 @@
                          materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifierHelper}"
                          materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                <local:NumericUpDownControl Grid.Row="2" Hint="{x:Static properties:Resources.KeyVersion}" HelperText="{x:Static properties:Resources.KeyVersionHelper}" MaxValue="255" CurrentValue="{Binding KeyLink.KeyVersion, Mode=TwoWay}" VerticalAlignment="Center" Margin="5"/>
+                <TextBox Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding KeyLink.ContainerSelector, Mode=TwoWay}" Margin="5"
+                         materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyVersionHelper}"
+                         materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyVersion}"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                 <local:DivInputControl Grid.Row="3" DivInput="{Binding Link.DivInput}" />
             </Grid>
         </DockPanel>

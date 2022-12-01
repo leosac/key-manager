@@ -14,10 +14,10 @@ using static Net.Codecrete.QrCodeGenerator.QrSegment;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public class KeyStoreControlViewModel : ViewModelBase
+    public class KeyEntriesControlViewModel : ViewModelBase
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
-        public KeyStoreControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
+        public KeyEntriesControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
             _snackbarMessageQueue = snackbarMessageQueue;
             Identifiers = new ObservableCollection<KeyEntryId>();
@@ -25,7 +25,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             CreateKeyEntryCommand = new KeyManagerAsyncCommand<string>(async
                 parameter =>
             {
-                var model = new KeyEntryDialogViewModel();
+                var model = new KeyEntryDialogViewModel() { KClass = _keClass };
                 var dialog = new KeyEntryDialog()
                 {
                     DataContext = model
@@ -36,36 +36,44 @@ namespace Leosac.KeyManager.Library.UI.Domain
             EditKeyEntryCommand = new KeyManagerAsyncCommand<KeyEntryId>(async
                 keyEntryIdentifier =>
             {
-                var model = new KeyEntryDialogViewModel()
+                try
                 {
-                    KeyEntry = KeyStore?.Get(keyEntryIdentifier, _keClass),
-                    CanChangeFactory = false
-                };
-                var factory = KeyEntryFactory.GetFactoryFromPropertyType(model.KeyEntry!.Properties?.GetType());
-                if (factory != null)
-                {
-                    model.AutoCreate = false;
-                    model.SelectedFactoryItem = model.KeyEntryFactories.Where(item => item.Factory == factory).FirstOrDefault();
-                    model.SelectedFactoryItem!.DataContext!.Properties = model.KeyEntry.Properties;
-                    var variant = model.KeyEntry.Variant;
-                    if (variant != null)
+                    var model = new KeyEntryDialogViewModel()
                     {
-                        model.RefreshVariants();
-                        var emptyv = model.Variants.Where(v => v.Name == variant.Name).FirstOrDefault();
-                        if (emptyv != null)
+                        KClass = _keClass,
+                        KeyEntry = KeyStore?.Get(keyEntryIdentifier, _keClass),
+                        CanChangeFactory = false
+                    };
+                    var factory = KeyEntryFactory.GetFactoryFromPropertyType(model.KeyEntry!.Properties?.GetType());
+                    if (factory != null)
+                    {
+                        model.AutoCreate = false;
+                        model.SelectedFactoryItem = model.KeyEntryFactories.Where(item => item.Factory == factory).FirstOrDefault();
+                        model.SelectedFactoryItem!.DataContext!.Properties = model.KeyEntry.Properties;
+                        var variant = model.KeyEntry.Variant;
+                        if (variant != null)
                         {
-                            model.Variants.Remove(emptyv);
+                            model.RefreshVariants();
+                            var emptyv = model.Variants.Where(v => v.Name == variant.Name).FirstOrDefault();
+                            if (emptyv != null)
+                            {
+                                model.Variants.Remove(emptyv);
+                            }
+                            model.Variants.Add(variant);
+                            model.KeyEntry.Variant = variant;
                         }
-                        model.Variants.Add(variant);
-                        model.KeyEntry.Variant = variant;
                     }
-                }
-                var dialog = new KeyEntryDialog()
-                {
-                    DataContext = model
-                };
+                    var dialog = new KeyEntryDialog()
+                    {
+                        DataContext = model
+                    };
 
-                UpdateKeyEntry(dialog);
+                    UpdateKeyEntry(dialog);
+                }
+                catch(Exception ex)
+                {
+                    log.Error("Unexpected error occured.", ex);
+                }
             });
 
             DeleteKeyEntryCommand = new KeyManagerAsyncCommand<KeyEntryId>(async
@@ -140,7 +148,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         private async void CreateKeyEntry(KeyEntryDialog dialog)
         {
-            object? ret = await DialogHost.Show(dialog, "KeyStoreDialog");
+            object? ret = await DialogHost.Show(dialog, "RootDialog");
             if (ret != null && dialog.DataContext is KeyEntryDialogViewModel model)
             {
                 if (model.KeyEntry != null)
@@ -171,7 +179,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             try
             {
-                object? ret = await DialogHost.Show(dialog, "KeyStoreDialog");
+                object? ret = await DialogHost.Show(dialog, "RootDialog");
                 if (ret != null && dialog.DataContext is KeyEntryDialogViewModel model)
                 {
                     if (model.KeyEntry != null)
@@ -219,7 +227,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             try
             {
-                object? ret = await DialogHost.Show(dialog, "KeyStoreDialog");
+                object? ret = await DialogHost.Show(dialog, "RootDialog");
                 if (ret != null && dialog.DataContext is ImportCryptogramDialogViewModel model)
                 {
                     if (!string.IsNullOrEmpty(model.Cryptogram.Value))
@@ -265,8 +273,17 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 return true;
             }
 
-            return obj is string item
-                   && item.ToLower().Contains(_searchTerms!.ToLower());
+            if (obj is KeyEntryId item)
+            {
+                var terms = _searchTerms.ToLower();
+                if (item.Id != null && item.Id.ToLower().Contains(terms))
+                    return true;
+
+                if (item.Label != null && item.Label.ToLower().Contains(terms))
+                    return true;
+            }
+
+            return false;
         }
     }
 }

@@ -13,6 +13,8 @@ namespace Leosac.KeyManager.Library.UI
     {
         public abstract string Name { get; }
 
+        public abstract IEnumerable<KeyEntryClass> KClasses { get; }
+
         public abstract KeyEntry CreateKeyEntry();
 
         public abstract Type GetKeyEntryPropertiesType();

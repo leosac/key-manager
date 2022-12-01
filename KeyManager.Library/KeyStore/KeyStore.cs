@@ -91,7 +91,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                                 KeyStore = ks,
                                 KeyEntry = entry
                             };
-                            cryptogram.Value = ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier, keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKeyId, entry.Link.WrappingKeyVersion);
+                            cryptogram.Value = ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier, keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKeyId, entry.Link.WrappingKeySelector);
                             ks.Close();
                         }
                     }
@@ -99,7 +99,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                     {
                         if (entry.Variant != null)
                         {
-                            foreach (var kv in entry.Variant.KeyVersions)
+                            foreach (var kv in entry.Variant.KeyContainers)
                             {
                                 if (kv.Key.Link != null && kv.Key.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(kv.Key.Link.KeyStoreFavorite))
                                 {
@@ -111,9 +111,9 @@ namespace Leosac.KeyManager.Library.KeyStore
                                         {
                                             KeyStore = ks,
                                             KeyEntry = entry,
-                                            KeyVersion = kv
+                                            KeyContainer = kv
                                         };
-                                        kv.Key.Value = ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier, keClass, kv.Key.Link.KeyVersion, ComputeDivInput(divContext, kv.Key.Link.DivInput));
+                                        kv.Key.SetAggregatedValue(ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier, keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
                                         ks.Close();
                                     }
                                 }
@@ -150,22 +150,27 @@ namespace Leosac.KeyManager.Library.KeyStore
             }
         }
 
-        public Key? GetKey(KeyEntryId keyIdentifier, KeyEntryClass keClass, byte keyVersion)
+        public Key? GetKey(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? keyContainerSelector = null)
         {
-            log.Info(String.Format("Getting key with Key Entry Identifier `{0}` and Key Version `{1}`...", keyIdentifier, keyVersion));
+            log.Info(String.Format("Getting key with Key Entry Identifier `{0}` and Container Selector `{1}`...", keyIdentifier, keyContainerSelector));
             var keyEntry = Get(keyIdentifier, keClass);
             if (keyEntry != null)
             {
                 if (keyEntry.Variant != null)
                 {
-                    var kv = keyEntry.Variant.KeyVersions.Where(kv => kv.Version == keyVersion).FirstOrDefault();
+                    KeyContainer? kv;
+                    if (!string.IsNullOrEmpty(keyContainerSelector))
+                        kv = keyEntry.Variant.KeyContainers.OfType<KeyVersion>().Where(kv => kv.Version.ToString() == keyContainerSelector).FirstOrDefault();
+                    else
+                        kv = keyEntry.Variant.KeyContainers[0];
+
                     if (kv != null)
                     {
                         return kv.Key;
                     }
                     else
                     {
-                        log.Error(String.Format("Cannot found the key version `{0}` on key entry `{1}`", keyVersion, keyIdentifier));
+                        log.Error(String.Format("Cannot found the key container with selector `{0}` on key entry `{1}`", keyContainerSelector, keyIdentifier));
                     }
                 }
                 else
@@ -188,23 +193,23 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="keClass"></param>
         /// <param name="divInput"></param>
         /// <param name="wrappingKeyId"></param>
-        /// <param name="wrappingKeyVersion"></param>
+        /// <param name="wrappingContainerSelector"></param>
         /// <returns></returns>
         /// <exception cref="KeyStoreException"></exception>
         /// <exception cref="NotSupportedException"></exception>
-        public abstract string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, byte wrappingKeyVersion = 0);
+        public abstract string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null);
 
         /// <summary>
         /// Return the key value.
         /// </summary>
         /// <param name="keyIdentifier"></param>
         /// <param name="keClass"></param>
-        /// <param name="keyVersion"></param>
+        /// <param name="containerSelector"></param>
         /// <param name="divInput"></param>
         /// <returns></returns>
         /// <exception cref="KeyStoreException"></exception>
         /// <exception cref="NotSupportedException"></exception>
-        public abstract string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, byte keyVersion, string? divInput = null);
+        public abstract string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null);
 
         public event EventHandler<KeyEntry>? KeyEntryRetrieved;
 

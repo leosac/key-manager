@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
              xmlns:kslib="clr-namespace:Leosac.KeyManager.Library.KeyStore;assembly=KeyManager.Library"
+             xmlns:lib="clr-namespace:Leosac.KeyManager.Library;assembly=KeyManager.Library"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
@@ -28,8 +29,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="{x:Static properties:Resources.KeyEntryEditHelper}" TextWrapping="Wrap" HorizontalAlignment="Left" />
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Command="{Binding OpenLinkCommand}" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="24" Height="24" Margin="3"
-                            Visibility="{Binding ShowKeyLink, ElementName=keyControl, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Button Command="{Binding OpenLinkCommand}" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="24" Height="24" Margin="3">
                         <Button.ToolTip>
                             <TextBlock Text="{x:Static properties:Resources.LinkHelper}" />
                         </Button.ToolTip>
@@ -84,14 +84,14 @@
                      Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                 <TabControl Grid.Row="4" MinHeight="100">
                     <TabItem Header="{x:Static properties:Resources.KeyVersion}">
-                        <ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding KeyEntry.Variant.KeyVersions}" Padding="5">
+                        <ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding KeyEntry.Variant.KeyContainers}" Padding="5">
                             <ListBox.ItemTemplate>
-                                <DataTemplate DataType="kslib:KeyVersion">
+                                <DataTemplate DataType="lib:KeyContainer">
                                     <materialDesign:Card Grid.Row="3" Grid.ColumnSpan="2">
                                         <StackPanel>
                                             <Expander HorizontalAlignment="Stretch" Header="{Binding Name}">
                                                 <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                                                    <local:KeyVersionControl KeyVersion="{Binding}" />
+                                                    <local:KeyContainerControl KeyContainer="{Binding}" />
                                                 </StackPanel>
                                             </Expander>
                                         </StackPanel>

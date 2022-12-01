@@ -14,6 +14,8 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI
     {
         public override string Name => "PKCS#11 Key Entry";
 
+        public override IEnumerable<KeyEntryClass> KClasses => new KeyEntryClass[] { KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric };
+
         public override KeyEntry CreateKeyEntry()
         {
             return new PKCS11KeyEntry();

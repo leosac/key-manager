@@ -21,27 +21,27 @@ using System.Windows.Shapes;
 namespace Leosac.KeyManager.Library.UI
 {
     /// <summary>
-    /// Interaction logic for KeyStoreControl.xaml
+    /// Interaction logic for KeyEntriesControl.xaml
     /// </summary>
-    public partial class KeyStoreControl : UserControl
+    public partial class KeyEntriesControl : UserControl
     {
-        public KeyStoreControl()
+        public KeyEntriesControl()
         {
             InitializeComponent();
         }
 
-        public KeyStoreControlViewModel? KeyStoreDataContext => DataContext as KeyStoreControlViewModel;
+        public KeyEntriesControlViewModel? KeyEntriesDataContext => DataContext as KeyEntriesControlViewModel;
 
         private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            KeyStoreDataContext?.RefreshKeyEntries();
+            KeyEntriesDataContext?.RefreshKeyEntries();
         }
 
         private void KeyEntryEdit_OnDialogClosed(object sender, DialogClosedEventArgs e)
         {
             if (e.Parameter is KeyStore.KeyEntry keyEntry)
             {
-                KeyStoreDataContext?.KeyStore?.Update(keyEntry);
+                KeyEntriesDataContext?.KeyStore?.Update(keyEntry);
             }
         }
 
@@ -49,22 +49,22 @@ namespace Leosac.KeyManager.Library.UI
         {
             if (e.Parameter is KeyEntryId identifier)
             {
-                KeyStoreDataContext?.DeleteKeyEntryCommand?.ExecuteAsync(identifier);
+                KeyEntriesDataContext?.DeleteKeyEntryCommand?.ExecuteAsync(identifier);
             }
         }
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            KeyStoreDataContext!.SearchTerms = SearchTerms.Text;
-            KeyStoreDataContext.RefreshKeyEntriesView();
+            KeyEntriesDataContext!.SearchTerms = SearchTerms.Text;
+            KeyEntriesDataContext.RefreshKeyEntriesView();
         }
 
         private void SearchTerms_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                KeyStoreDataContext!.SearchTerms = SearchTerms.Text;
-                KeyStoreDataContext.RefreshKeyEntriesView();
+                KeyEntriesDataContext!.SearchTerms = SearchTerms.Text;
+                KeyEntriesDataContext.RefreshKeyEntriesView();
                 e.Handled = true;
             }
         }

@@ -136,9 +136,9 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_DERIVE, true));
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_EXTRACTABLE, true));
             }
-            if (entry.Variant?.KeyVersions.Count > 0 && !string.IsNullOrEmpty(entry.Variant.KeyVersions[0].Key.Value))
+            if (entry.Variant?.KeyContainers.Count > 0 && !string.IsNullOrEmpty(entry.Variant.KeyContainers[0].Key.GetAggregatedValue()))
             {
-                var key = Convert.FromHexString(entry.Variant.KeyVersions[0].Key.Value);
+                var key = Convert.FromHexString(entry.Variant.KeyContainers[0].Key.GetAggregatedValue());
                 //attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE_LEN, (ulong)key.Length));
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE, key));
             }
@@ -333,12 +333,12 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             log.Info("Key Store opened.");
         }
 
-        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, byte wrappingKeyVersion = 0)
+        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null)
         {
             throw new NotImplementedException();
         }
 
-        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, byte keyVersion, string? divInput = null)
+        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null)
         {
             throw new NotImplementedException();
         }

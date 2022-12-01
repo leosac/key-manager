@@ -14,6 +14,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
     {
         public override string Name => "NXP SAM Key Entry";
 
+        public override IEnumerable<KeyEntryClass> KClasses => new KeyEntryClass[] { KeyEntryClass.Symmetric };
+
         public override KeyEntry CreateKeyEntry()
         {
             return new SAMSymmetricKeyEntry();

@@ -243,21 +243,22 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     if (keyEntry.Variant != null)
                     {
                         var keysdata = av2entry.getKeysData();
-                        if (keysdata.Count < 2 || keysdata.Count != keyEntry.Variant.KeyVersions.Count)
+                        var keyVersions = keyEntry.Variant.KeyContainers.OfType<KeyVersion>().ToArray();
+                        if (keysdata.Count < 2 || keysdata.Count != keyVersions.Count())
                         {
                             log.Error(String.Format("Unexpected number of keys ({0}) on the SAM Key Entry.", keysdata.Count));
                             throw new KeyStoreException("Unexpected number of keys on the SAM Key Entry.");
                         }
 
-                        keyEntry.Variant.KeyVersions[0].Key.Value = Convert.ToHexString(keysdata[0].ToArray());
-                        keyEntry.Variant.KeyVersions[0].Version = infoav2.vera;
-                        keyEntry.Variant.KeyVersions[1].Key.Value = Convert.ToHexString(keysdata[1].ToArray());
-                        keyEntry.Variant.KeyVersions[1].Version = infoav2.verb;
+                        keyVersions[0].Key.SetAggregatedValue(Convert.ToHexString(keysdata[0].ToArray()));
+                        keyVersions[0].Version = infoav2.vera;
+                        keyVersions[1].Key.SetAggregatedValue(Convert.ToHexString(keysdata[1].ToArray()));
+                        keyVersions[1].Version = infoav2.verb;
 
-                        if (keyEntry.Variant.KeyVersions.Count >= 3)
+                        if (keyEntry.Variant.KeyContainers.Count >= 3)
                         {
-                            keyEntry.Variant.KeyVersions[2].Key.Value = Convert.ToHexString(keysdata[2].ToArray());
-                            keyEntry.Variant.KeyVersions[2].Version = infoav2.verc;
+                            keyVersions[2].Key.SetAggregatedValue(Convert.ToHexString(keysdata[2].ToArray()));
+                            keyVersions[2].Version = infoav2.verc;
                         }
                     }
                 }
@@ -355,7 +356,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 var cmd = Chip?.getCommands();
                 if (cmd is SAMAV2ISO7816Commands av2cmd)
                 {
-                    if (GetSAMProperties().UnlockKey != null && !string.IsNullOrEmpty(GetSAMProperties().UnlockKey.Key.Value) && !_unlocked)
+                    if (GetSAMProperties().UnlockKey != null && !string.IsNullOrEmpty(GetSAMProperties().UnlockKey.Key.GetAggregatedValue()) && !_unlocked)
                     {
                         UnlockSAM(av2cmd, GetSAMProperties().UnlockKeyEntryIdentifier, GetSAMProperties().UnlockKey);
                         _unlocked = true;
@@ -364,7 +365,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     var key = new DESFireKey();
                     key.setKeyType(DESFireKeyType.DF_KEY_AES);
                     key.setKeyVersion(GetSAMProperties().AuthenticateKey.Version);
-                    key.fromString(Regex.Replace(GetSAMProperties().AuthenticateKey.Key.Value, ".{2}", "$0 "));
+                    key.fromString(Regex.Replace(GetSAMProperties().AuthenticateKey.Key.GetAggregatedValue(), ".{2}", "$0 "));
 
                     var natkey = new AV2SAMKeyEntry();
 
@@ -401,28 +402,29 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
                     if (samkey.Variant != null)
                     {
-                        var keys = new UCharCollectionCollection(samkey.Variant.KeyVersions.Count);
-                        foreach (var keyversion in samkey.Variant.KeyVersions)
+                        var keyVersions = samkey.Variant.KeyContainers.OfType<KeyVersion>().ToArray();
+                        var keys = new UCharCollectionCollection(keyVersions.Count());
+                        foreach (var keyversion in samkey.Variant.KeyContainers)
                         {
-                            if (string.IsNullOrEmpty(keyversion.Key.Value))
+                            if (string.IsNullOrEmpty(keyversion.Key.GetAggregatedValue()))
                                 keys.Add(new ByteVector(new byte[keyversion.Key.KeySize]));
                             else
-                                keys.Add(new ByteVector(Convert.FromHexString(keyversion.Key.Value)));
+                                keys.Add(new ByteVector(Convert.FromHexString(keyversion.Key.GetAggregatedValue())));
                         }
 
-                        infoav2.vera = samkey.Variant.KeyVersions[0].Version;
-                        if (samkey.Variant.KeyVersions.Count >= 2)
-                            infoav2.verb = samkey.Variant.KeyVersions[1].Version;
-                        if (samkey.Variant.KeyVersions.Count >= 3)
-                            infoav2.verc = samkey.Variant.KeyVersions[2].Version;
+                        infoav2.vera = keyVersions[0].Version;
+                        if (keyVersions.Count() >= 2)
+                            infoav2.verb = keyVersions[1].Version;
+                        if (keyVersions.Count() >= 3)
+                            infoav2.verc = keyVersions[2].Version;
 
-                        if (samkey.Variant.KeyVersions[0].Key.Tags.Contains("AES"))
+                        if (keyVersions[0].Key.Tags.Contains("AES"))
                         {
                             natkey.setKeysData(keys, SAMKeyType.SAM_KEY_AES);
                         }
                         else
                         {
-                            if (samkey.Variant.KeyVersions[0].Key.KeySize == 16)
+                            if (keyVersions[0].Key.KeySize == 16)
                             {
                                 natkey.setKeysData(keys, SAMKeyType.SAM_KEY_DES);
                             }
@@ -464,7 +466,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             {
                 key.setKeyType(DESFireKeyType.DF_KEY_AES);
                 key.setKeyVersion(keyVersion.Version);
-                key.fromString(Regex.Replace(keyVersion.Key.Value, ".{2}", "$0 "));
+                key.fromString(Regex.Replace(keyVersion.Key.GetAggregatedValue(), ".{2}", "$0 "));
             }
             else
             {
@@ -510,7 +512,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             var key = new DESFireKey();
             key.setKeyType(DESFireKeyType.DF_KEY_AES);
             key.setKeyVersion(keyVersion.Version);
-            key.fromString(Regex.Replace(keyVersion.Key.Value, ".{2}", "$0 "));
+            key.fromString(Regex.Replace(keyVersion.Key.GetAggregatedValue(), ".{2}", "$0 "));
             av2cmds.lockUnlock(key, SAMLockUnlock.Unlock, keyEntry, 0x00, 0x00);
             log.Info("SAM unlocked.");
         }
@@ -569,7 +571,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             var cmd = Chip?.getCommands();
             if (cmd is SAMAV2ISO7816Commands av2cmd)
             {
-                if (GetSAMProperties().UnlockKey != null && !string.IsNullOrEmpty(GetSAMProperties().UnlockKey.Key.Value) && !_unlocked)
+                if (GetSAMProperties().UnlockKey != null && !string.IsNullOrEmpty(GetSAMProperties().UnlockKey.Key.GetAggregatedValue()) && !_unlocked)
                 {
                     UnlockSAM(av2cmd, GetSAMProperties().UnlockKeyEntryIdentifier, GetSAMProperties().UnlockKey);
                     _unlocked = true;
@@ -578,7 +580,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 var key = new DESFireKey();
                 key.setKeyType(DESFireKeyType.DF_KEY_AES);
                 key.setKeyVersion(GetSAMProperties().AuthenticateKey.Version);
-                key.fromString(Regex.Replace(GetSAMProperties().AuthenticateKey.Key.Value, ".{2}", "$0 "));
+                key.fromString(Regex.Replace(GetSAMProperties().AuthenticateKey.Key.GetAggregatedValue(), ".{2}", "$0 "));
 
                 var kucEntry = new SAMKucEntry();
                 var entry = kucEntry.getKucEntryStruct();
@@ -602,16 +604,16 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             log.Info(String.Format("Key usage counter `{0}` updated.", counter.Identifier));
         }
 
-        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, byte wrappingKeyVersion = 0)
+        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null)
         {
             // Will be supported with SAM AV3
             throw new NotSupportedException();
         }
 
-        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, byte keyVersion, string? divInput = null)
+        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null)
         {
             byte[] div;
-            log.Info(String.Format("Resolving key link with Key Entry Identifier `{0}`, Key Version `{1}`, Div Input `{2}`...", keyIdentifier, keyVersion, divInput));
+            log.Info(String.Format("Resolving key link with Key Entry Identifier `{0}`, Key Version `{1}`, Div Input `{2}`...", keyIdentifier, containerSelector, divInput));
             if (!string.IsNullOrEmpty(divInput))
                 div = Convert.FromHexString(divInput);
             else
@@ -627,6 +629,9 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             var cmd = Chip?.getCommands();
             if (cmd is SAMAV2ISO7816Commands av2cmd)
             {
+                byte keyVersion = 0;
+                if (!byte.TryParse(containerSelector, out keyVersion))
+                    log.Warn("Cannot parse the container selector as a key version, falling back to version 0.");
                 var keyVector = av2cmd.dumpSecretKey(entry, keyVersion, new ByteVector(div));
                 log.Info("Key link completed.");
                 return Convert.ToHexString(keyVector.ToArray());

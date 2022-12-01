@@ -1,5 +1,7 @@
-﻿using Leosac.KeyManager.Library.UI.Domain;
-using Leosac.KeyManager.Library.Policy;
+﻿using Leosac.KeyManager.Library.KeyStore;
+using Leosac.KeyManager.Library.UI.Domain;
+using MaterialDesignThemes.Wpf;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,25 +16,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MaterialDesignThemes.Wpf;
-using Microsoft.Win32;
-using System.Collections.ObjectModel;
-using Leosac.KeyManager.Library.KeyStore;
 
 namespace Leosac.KeyManager.Library.UI
 {
     /// <summary>
-    /// Interaction logic for KeyControl.xaml
+    /// Interaction logic for KeyActionButtonsControl.xaml
     /// </summary>
-    public partial class KeyControl : UserControl
+    public partial class KeyActionButtonsControl : UserControl
     {
-        public KeyControl()
+        public KeyActionButtonsControl()
         {
             InitializeComponent();
-
-            KeyChecksumAlgorithms.Add(new KCV());
-            KeyChecksumAlgorithms.Add(new Sha256Checksum());
-            SelectedKeyChecksumAlgorithm = KeyChecksumAlgorithms[0];
         }
 
         public KeyManager.Library.Key Key
@@ -41,34 +35,8 @@ namespace Leosac.KeyManager.Library.UI
             set { SetValue(KeyProperty, value); }
         }
 
-        public static readonly DependencyProperty KeyProperty = DependencyProperty.Register(nameof(Key), typeof(KeyManager.Library.Key), typeof(KeyControl),
+        public static readonly DependencyProperty KeyProperty = DependencyProperty.Register(nameof(Key), typeof(KeyManager.Library.Key), typeof(KeyActionButtonsControl),
             new FrameworkPropertyMetadata(new KeyManager.Library.Key()));
-
-        public KeyManager.Library.KeyChecksum SelectedKeyChecksumAlgorithm
-        {
-            get { return (KeyManager.Library.KeyChecksum)GetValue(SelectedKeyChecksumAlgorithmProperty); }
-            set { SetValue(SelectedKeyChecksumAlgorithmProperty, value); }
-        }
-
-        public static readonly DependencyProperty SelectedKeyChecksumAlgorithmProperty = DependencyProperty.Register(nameof(SelectedKeyChecksumAlgorithm), typeof(KeyManager.Library.KeyChecksum), typeof(KeyControl));
-
-        public string? KeyChecksumIV
-        {
-            get { return (string)GetValue(KeyChecksumIVProperty); }
-            set { SetValue(KeyChecksumIVProperty, value); }
-        }
-
-        public static readonly DependencyProperty KeyChecksumIVProperty = DependencyProperty.Register(nameof(KeyChecksumIV), typeof(string), typeof(KeyControl),
-            new FrameworkPropertyMetadata(""));
-
-        public bool ShowKCV
-        {
-            get { return (bool)GetValue(ShowKCVProperty); }
-            set { SetValue(ShowKCVProperty, value); }
-        }
-
-        public static readonly DependencyProperty ShowKCVProperty = DependencyProperty.Register(nameof(ShowKCV), typeof(bool), typeof(KeyControl),
-            new FrameworkPropertyMetadata(true));
 
         public bool ShowKeyLink
         {
@@ -76,14 +44,21 @@ namespace Leosac.KeyManager.Library.UI
             set { SetValue(ShowKeyLinkProperty, value); }
         }
 
-        public static readonly DependencyProperty ShowKeyLinkProperty = DependencyProperty.Register(nameof(ShowKeyLink), typeof(bool), typeof(KeyControl),
+        public static readonly DependencyProperty ShowKeyLinkProperty = DependencyProperty.Register(nameof(ShowKeyLink), typeof(bool), typeof(KeyActionButtonsControl),
             new FrameworkPropertyMetadata(true));
 
-        public ObservableCollection<KeyManager.Library.KeyChecksum> KeyChecksumAlgorithms { get; set; } = new ObservableCollection<KeyChecksum>();
+        public KeyEntryClass KClass
+        {
+            get { return (KeyEntryClass)GetValue(KClassProperty); }
+            set { SetValue(KClassProperty, value); }
+        }
+
+        public static readonly DependencyProperty KClassProperty = DependencyProperty.Register(nameof(KClass), typeof(KeyEntryClass), typeof(KeyActionButtonsControl),
+            new FrameworkPropertyMetadata(KeyEntryClass.Symmetric));
 
         private void btnCopy_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(Key?.Value);
+            Clipboard.SetText(Key?.GetAggregatedValue());
         }
 
         private async void btnKeyStoreLink_Click(object sender, RoutedEventArgs e)
@@ -111,7 +86,7 @@ namespace Leosac.KeyManager.Library.UI
             if (ofd.ShowDialog() == true)
             {
                 var key = System.IO.File.ReadAllBytes(ofd.FileName);
-                Key.Value = Convert.ToHexString(key);
+                Key.SetAggregatedValue(Convert.ToHexString(key));
             }
         }
 
@@ -120,7 +95,7 @@ namespace Leosac.KeyManager.Library.UI
             var sfd = new SaveFileDialog();
             if (sfd.ShowDialog() == true)
             {
-                System.IO.File.WriteAllBytes(sfd.FileName, Convert.FromHexString(Key.Value));
+                System.IO.File.WriteAllBytes(sfd.FileName, Convert.FromHexString(Key.GetAggregatedValue()));
             }
         }
 
@@ -131,7 +106,11 @@ namespace Leosac.KeyManager.Library.UI
             {
                 var control = new KeyPrintControl();
                 control.Key = Key;
-                control.KeyChecksum = tbxKCV.Text;
+                if (KClass == KeyEntryClass.Symmetric)
+                {
+                    var kcv = new KCV();
+                    control.KeyChecksum = kcv.ComputeKCV(Key.Tags, Key.GetAggregatedValue());
+                }
                 printDialog.PrintVisual(control, "Leosac Key Manager - Key Printing");
             }
         }

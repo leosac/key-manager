@@ -16,7 +16,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
             KeyEntryFactories = new ObservableCollection<KeyEntryItem>();
             foreach (var factory in KeyEntryFactory.RegisteredFactories)
             {
-                KeyEntryFactories.Add(new KeyEntryItem(factory));
+                if (factory.KClasses.Contains(KClass))
+                {
+                    KeyEntryFactories.Add(new KeyEntryItem(factory));
+                }
             }
             Variants = new ObservableCollection<KeyEntryVariant>();
 
@@ -42,12 +45,19 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         private bool _canChangeFactory = true;
         private bool _autoCreate = true;
+        private KeyEntryClass _kClass = KeyEntryClass.Symmetric;
         private KeyEntry? _keyEntry;
         private KeyEntryItem? _selectedFactoryItem;
 
         public ObservableCollection<KeyEntryItem> KeyEntryFactories { get; }
 
         public ObservableCollection<KeyEntryVariant> Variants { get; set; }
+
+        public KeyEntryClass KClass
+        {
+            get => _kClass;
+            set => SetProperty(ref _kClass, value);
+        }
 
         public KeyEntry? KeyEntry
         {
@@ -93,7 +103,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             if (KeyEntry != null)
             {
                 Variants.Clear();
-                var variants = KeyEntry.GetAllVariants();
+                var variants = KeyEntry.GetAllVariants(KClass);
                 foreach (var variant in variants)
                 {
                     Variants.Add(variant);

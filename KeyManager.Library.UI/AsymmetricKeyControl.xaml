@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="Leosac.KeyManager.Library.UI.AsymmetricKeyControl"
+             x:Name="keyControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
+             xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="500">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <domain:ByteLengthToCharLengthConverter x:Key="ByteLengthToCharLengthConverter" />
+            <domain:KeyChecksumConverter x:Key="KeyChecksumConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <DockPanel LastChildFill="True">
+        <local:KeyActionButtonsControl DockPanel.Dock="Top" Key="{Binding Path=Key, ElementName=keyControl}"
+                                       ShowKeyLink="{Binding Path=ShowKeyLink, ElementName=keyControl}"
+                                       KClass="Asymmetric" Grid.Row="0" Grid.Column="1" />
+        <ListBox ItemsSource="{Binding Path=Key.Materials, ElementName=keyControl}" HorizontalContentAlignment="Stretch">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" HorizontalAlignment="Right" Text="{Binding Name}" />
+                        <TextBox Grid.Row="1" x:Name="tbxKeyValue" Margin="8,8,8,20" Width="380" Height="60"
+                                     materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyValueHelper}"
+                                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyValue}"
+                                     materialDesign:TextFieldAssist.HasClearButton="True"
+                                     materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
+                                     TextWrapping="Wrap"
+                                     MaxLength="{Binding Path=Key.KeySize, Converter={StaticResource ByteLengthToCharLengthConverter}, ElementName=keyControl}"
+                                     materialDesign:PasswordBoxAssist.Password="{Binding Path=Key.Value, Mode=TwoWay, ElementName=keyControl, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</UserControl>

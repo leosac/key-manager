@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Leosac.KeyManager.Library.KeyStore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,9 @@ namespace Leosac.KeyManager.Library.DivInput
     {
         public override string GetFragment(DivInputContext context)
         {
-            return context.KeyVersion!.Version.ToString("X2");
+            if (context.KeyContainer is KeyVersion kv)
+                return kv.Version.ToString("X2");
+            return string.Empty;
         }
     }
 }

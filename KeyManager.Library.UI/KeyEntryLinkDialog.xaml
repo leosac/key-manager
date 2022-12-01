@@ -65,9 +65,9 @@
                                 <TextBox Text="{Binding KeyEntryLink.WrappingKeyId, Mode=TwoWay}" Margin="5"
                                          materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifierHelper}"
                                          materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"/>
-                                <local:NumericUpDownControl MinValue="0" MaxValue="4294967295" CurrentValue="{Binding KeyEntryLink.WrappingKeyVersion, Mode=TwoWay}" Margin="5"
-                                                            HelperText="{x:Static properties:Resources.KeyVersionHelper}"
-                                                            Hint="{x:Static properties:Resources.KeyVersion}"/>
+                                <TextBox Text="{Binding KeyEntryLink.WrappingKeySelector, Mode=TwoWay}" Margin="5"
+                                         materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyVersionHelper}"
+                                         materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyVersion}"/>
                             </StackPanel>
                         </Expander>
                     </StackPanel>

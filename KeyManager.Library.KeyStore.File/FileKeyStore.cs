@@ -170,7 +170,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             log.Info(String.Format("Key entry `{0}` updated.", change.Identifier));
         }
 
-        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, byte wrappingKeyVersion = 0)
+        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingKeyContainerSelector = null)
         {
             string? result = null;
             log.Info(String.Format("Resolving key entry link with Key Entry Identifier `{0}`, Div Input `{1}`...", keyIdentifier, divInput));
@@ -181,7 +181,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
                 log.Info("Key entry link resolved.");
                 if (wrappingKeyId != null)
                 {
-                    var wrappingKey = GetKey(wrappingKeyId, KeyEntryClass.Symmetric, wrappingKeyVersion);
+                    var wrappingKey = GetKey(wrappingKeyId, KeyEntryClass.Symmetric, wrappingKeyContainerSelector);
                     if (wrappingKey != null)
                     {
                         // TODO: do something here to encipher the key value?
@@ -207,10 +207,10 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             return result;
         }
 
-        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, byte keyVersion, string? divInput = null)
+        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput = null)
         {
             string? result = null;
-            log.Info(String.Format("Resolving key link with Key Entry Identifier `{0}`, Key Version `{1}`, Div Input `{2}`...", keyIdentifier, keyVersion, divInput));
+            log.Info(String.Format("Resolving key link with Key Entry Identifier `{0}`, Container Selector `{1}`, Div Input `{2}`...", keyIdentifier, containerSelector, divInput));
 
             if (!CheckKeyEntryExists(keyIdentifier, keClass))
             {
@@ -218,11 +218,11 @@ namespace Leosac.KeyManager.Library.KeyStore.File
                 throw new KeyStoreException("The key entry do not exists.");
             }
 
-            var key = GetKey(keyIdentifier, keClass, keyVersion);
+            var key = GetKey(keyIdentifier, keClass, containerSelector);
             if (key != null)
             {
                 log.Info("Key link resolved.");
-                result = key.Value;
+                result = key.GetAggregatedValue();
             }
             else
             {

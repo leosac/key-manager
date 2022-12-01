@@ -14,6 +14,6 @@ namespace Leosac.KeyManager.Library.DivInput
 
         public KeyStore.KeyEntry? KeyEntry { get; set; }
 
-        public KeyStore.KeyVersion? KeyVersion { get; set; }
+        public KeyContainer? KeyContainer { get; set; }
     }
 }

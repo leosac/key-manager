@@ -8,9 +8,17 @@ namespace Leosac.KeyManager.Library.Policy
 {
     public class HexadecimalPolicy : IKeyPolicy
     {
-        public void Validate(string? key)
+        public void Validate(Key key)
         {
-            throw new NotImplementedException();
+            foreach(var k in key.Materials)
+            {
+                Validate(k.Value);
+            }
+        }
+
+        public void Validate(string value)
+        {
+            Convert.FromHexString(value);
         }
     }
 }

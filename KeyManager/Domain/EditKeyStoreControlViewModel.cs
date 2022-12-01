@@ -8,24 +8,33 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Data;
 using static Net.Codecrete.QrCodeGenerator.QrSegment;
 
 namespace Leosac.KeyManager.Domain
 {
-    public class EditKeyStoreControlViewModel : KeyStoreControlViewModel
+    public class EditKeyStoreControlViewModel : ViewModelBase
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
         public EditKeyStoreControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
-            : base(snackbarMessageQueue)
         {
             _showProgress = false;
-            Tabs = new ObservableCollection<TabItem>(new[]
-            {
-                new TabItem() { Header = "Key Entries", Content = new KeyStoreControl() { DataContext = this } }
-            });
+            _snackbarMessageQueue = snackbarMessageQueue;
+            Tabs = new ObservableCollection<TabItem>();
+        }
+
+        protected ISnackbarMessageQueue _snackbarMessageQueue;
+
+        private KeyStore? _keyStore;
+
+        public KeyStore? KeyStore
+        {
+            get => _keyStore;
+            set => SetProperty(ref _keyStore, value);
         }
 
         private Favorite? _favorite;
@@ -65,11 +74,33 @@ namespace Leosac.KeyManager.Domain
         {
             KeyStore?.Close();
             KeyStore = null;
-            Identifiers.Clear();
+            Tabs.Clear();
             Favorite = null;
 
             if (navigate)
                 HomeCommand?.Execute(null);
+        }
+
+        public void OpenKeyStore()
+        {
+            if (KeyStore != null)
+            {
+                KeyStore.Open();
+                var classes = KeyStore.SupportedClasses;
+                foreach (var kclass in classes)
+                {
+                    var model = new KeyEntriesControlViewModel(_snackbarMessageQueue) { KeyEntryClass = kclass, KeyStore = KeyStore };
+                    Tabs.Add(new TabItem()
+                    {
+                        Header = String.Format("{0} Key Entries", kclass.ToString()),
+                        Content = new KeyEntriesControl()
+                        {
+                            DataContext = model
+                        }
+                    });
+                    model.RefreshKeyEntries();
+                }
+            }
         }
 
         public async void EditFavorite()

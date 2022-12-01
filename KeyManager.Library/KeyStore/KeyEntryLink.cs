@@ -10,7 +10,7 @@ namespace Leosac.KeyManager.Library.KeyStore
     {
         public KeyEntryLink() : base()
         {
-            _wrappingKeyVersion = 0;
+            _wrappingKeySelector = "0";
             _wrappingKeyId = new KeyEntryId();
         }
 
@@ -22,12 +22,12 @@ namespace Leosac.KeyManager.Library.KeyStore
             set => SetProperty(ref _wrappingKeyId, value);
         }
 
-        private byte _wrappingKeyVersion;
+        private string _wrappingKeySelector;
 
-        public byte WrappingKeyVersion
+        public string WrappingKeySelector
         {
-            get => _wrappingKeyVersion;
-            set => SetProperty(ref _wrappingKeyVersion, value);
+            get => _wrappingKeySelector;
+            set => SetProperty(ref _wrappingKeySelector, value);
         }
     }
 }

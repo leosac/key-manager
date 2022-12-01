@@ -55,7 +55,8 @@ namespace Leosac.KeyManager.Domain
                 new Library("zlib", "zlib", "compression library", "https://zlib.net/"),
                 new Library("openssl", "OpenSSL and SSLeay", "cryptographic library", "https://www.openssl.org/"),
                 new Library("boost", "Boost Software", "cross-platform C++ library", "https://www.boost.org/"),
-                new Library("nlohmann/json", "MIT", "JSON library", "https://github.com/nlohmann/json")
+                new Library("nlohmann/json", "MIT", "JSON library", "https://github.com/nlohmann/json"),
+                new Library("Crc32.NET", "MIT", "CRC32 library", "https://github.com/force-net/Crc32.NET")
             });
 
             var plan = MaintenancePlan.GetSingletonInstance();

@@ -13,15 +13,15 @@ namespace Leosac.KeyManager.Library
     {
         public KeyLink() : base()
         {
-            _keyVersion = 0;
+            
         }
 
-        private byte _keyVersion;
+        private string? _containerSelector;
 
-        public byte KeyVersion
+        public string? ContainerSelector
         {
-            get => _keyVersion;
-            set => SetProperty(ref _keyVersion, value);
+            get => _containerSelector;
+            set => SetProperty(ref _containerSelector, value);
         }
     }
 }

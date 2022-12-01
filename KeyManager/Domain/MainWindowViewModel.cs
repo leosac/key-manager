@@ -71,11 +71,10 @@ namespace Leosac.KeyManager.Domain
                                     {
                                         // Ensure everything is back to original state
                                         editModel.CloseKeyStore(false);
+                                        editModel.KeyStore = ks;
+                                        editModel.Favorite = fav;
+                                        editModel.OpenKeyStore();
 
-                                        while (editModel.Tabs.Count > 1)
-                                        {
-                                            editModel.Tabs.RemoveAt(1);
-                                        }
                                         var additionalControls = factory.CreateKeyStoreAdditionalControls();
                                         foreach (var addition in additionalControls)
                                         {
@@ -86,11 +85,6 @@ namespace Leosac.KeyManager.Domain
                                             }
                                             editModel.Tabs.Add(new TabItem() { Header = addition.Key, Content = addition.Value });
                                         }
-
-                                        ks?.Open();
-                                        editModel.KeyStore = ks;
-                                        editModel.Favorite = fav;
-                                        editModel.RefreshKeyEntries();
                                     }
                                 }
                                 catch (KeyStoreException ex)

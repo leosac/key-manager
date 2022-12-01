@@ -25,11 +25,11 @@ using System.Windows.Shapes;
 namespace Leosac.KeyManager.Library.UI
 {
     /// <summary>
-    /// Interaction logic for KeyGenerationDialog.xaml
+    /// Interaction logic for SymmetricKeyGenerationDialog.xaml
     /// </summary>
-    public partial class KeyGenerationDialog : UserControl
+    public partial class SymmetricKeyGenerationDialog : UserControl
     {
-        public KeyGenerationDialog()
+        public SymmetricKeyGenerationDialog()
         {
             CeremonyTypes = new ObservableCollection<KeyCeremonyType>(Enum.GetValues<KeyCeremonyType>());
             MnemonicLanguages = new ObservableCollection<Mnemonic.WordlistLang>(Enum.GetValues<Mnemonic.WordlistLang>());
@@ -46,7 +46,7 @@ namespace Leosac.KeyManager.Library.UI
             set { SetValue(SelectedCeremonyTypeProperty, value); }
         }
 
-        public static readonly DependencyProperty SelectedCeremonyTypeProperty = DependencyProperty.Register(nameof(SelectedCeremonyType), typeof(KeyCeremonyType), typeof(KeyGenerationDialog),
+        public static readonly DependencyProperty SelectedCeremonyTypeProperty = DependencyProperty.Register(nameof(SelectedCeremonyType), typeof(KeyCeremonyType), typeof(SymmetricKeyGenerationDialog),
             new FrameworkPropertyMetadata(KeyCeremonyType.ShamirSecretSharing));
 
         public int Fragments
@@ -55,7 +55,7 @@ namespace Leosac.KeyManager.Library.UI
             set { SetValue(FragmentsProperty, value); }
         }
 
-        public static readonly DependencyProperty FragmentsProperty = DependencyProperty.Register(nameof(Fragments), typeof(int), typeof(KeyGenerationDialog),
+        public static readonly DependencyProperty FragmentsProperty = DependencyProperty.Register(nameof(Fragments), typeof(int), typeof(SymmetricKeyGenerationDialog),
             new FrameworkPropertyMetadata(3));
 
         public ObservableCollection<Mnemonic.WordlistLang> MnemonicLanguages { get; set; }
@@ -66,7 +66,7 @@ namespace Leosac.KeyManager.Library.UI
             set { SetValue(SelectedMnemonicLanguageProperty, value); }
         }
 
-        public static readonly DependencyProperty SelectedMnemonicLanguageProperty = DependencyProperty.Register(nameof(SelectedMnemonicLanguage), typeof(Mnemonic.WordlistLang), typeof(KeyGenerationDialog),
+        public static readonly DependencyProperty SelectedMnemonicLanguageProperty = DependencyProperty.Register(nameof(SelectedMnemonicLanguage), typeof(Mnemonic.WordlistLang), typeof(SymmetricKeyGenerationDialog),
             new FrameworkPropertyMetadata(Mnemonic.WordlistLang.English));
 
         public int KeySize
@@ -75,7 +75,7 @@ namespace Leosac.KeyManager.Library.UI
             set { SetValue(KeySizeProperty, value); }
         }
 
-        public static readonly DependencyProperty KeySizeProperty = DependencyProperty.Register(nameof(KeySize), typeof(int), typeof(KeyGenerationDialog),
+        public static readonly DependencyProperty KeySizeProperty = DependencyProperty.Register(nameof(KeySize), typeof(int), typeof(SymmetricKeyGenerationDialog),
             new FrameworkPropertyMetadata(16));
 
         public string? KeyValue
@@ -84,7 +84,7 @@ namespace Leosac.KeyManager.Library.UI
             set { SetValue(KeyValueProperty, value); }
         }
 
-        public static readonly DependencyProperty KeyValueProperty = DependencyProperty.Register(nameof(KeyValue), typeof(string), typeof(KeyGenerationDialog));
+        public static readonly DependencyProperty KeyValueProperty = DependencyProperty.Register(nameof(KeyValue), typeof(string), typeof(SymmetricKeyGenerationDialog));
 
         public ObservableCollection<string> MnemonicWords { get; set; }
 
@@ -94,7 +94,7 @@ namespace Leosac.KeyManager.Library.UI
             set { SetValue(SelectedWordIndexProperty, value); }
         }
 
-        public static readonly DependencyProperty SelectedWordIndexProperty = DependencyProperty.Register(nameof(SelectedWordIndex), typeof(int), typeof(KeyGenerationDialog));
+        public static readonly DependencyProperty SelectedWordIndexProperty = DependencyProperty.Register(nameof(SelectedWordIndex), typeof(int), typeof(SymmetricKeyGenerationDialog));
 
         private void btnRandom_Click(object sender, RoutedEventArgs e)
         {

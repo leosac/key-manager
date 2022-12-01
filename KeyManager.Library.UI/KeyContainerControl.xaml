@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="Leosac.KeyManager.Library.UI.KeyContainerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="500"
+             x:Name="keyControl" DataContextChanged="keyControl_DataContextChanged">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <ContentControl x:Name="containerExtContent" Grid.Row="0" DataContext="{Binding KeyContainer, Mode=OneWay, ElementName=keyControl}" />
+        <ContentControl x:Name="keyContent" Grid.Row="1" DataContext="{Binding KeyContainer.Key, Mode=OneWay, ElementName=keyControl}" DataContextChanged="keyContent_DataContextChanged" HorizontalContentAlignment="Stretch" />
+    </Grid>
+</UserControl>

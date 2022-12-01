@@ -13,7 +13,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         public KeyEntryVariant()
         {
             _name = string.Empty;
-            KeyVersions = new ObservableCollection<KeyVersion>();
+            KeyContainers = new ObservableCollection<KeyContainer>();
         }
 
         private string _name;
@@ -24,6 +24,6 @@ namespace Leosac.KeyManager.Library.KeyStore
             set => SetProperty(ref _name, value);
         }
 
-        public ObservableCollection<KeyVersion> KeyVersions { get; set; }
+        public ObservableCollection<KeyContainer> KeyContainers { get; set; }
     }
 }

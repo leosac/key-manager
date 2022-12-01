@@ -12,7 +12,7 @@ namespace Leosac.KeyManager.Library
 
         public string ComputeKCV(Key key, string? iv = null)
         {
-            return ComputeKCV(key.Tags, key.Value, iv);
+            return ComputeKCV(key.Tags, key.GetAggregatedValue(), iv);
         }
 
         public string ComputeKCV(string tag, string key, string? iv = null)

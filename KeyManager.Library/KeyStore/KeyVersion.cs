@@ -7,49 +7,29 @@ using System.Xml.Linq;
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
-    public class KeyVersion : KMObject
+    public class KeyVersion : KeyContainer
     {
-        public KeyVersion()
+        public KeyVersion() : base("Key Version")
         {
-            _name = "Key Version";
             _version = 0;
-            _key = new Key();
         }
 
-        public KeyVersion(string name, byte version)
+        public KeyVersion(string name, byte version) : base(name)
         {
-            _name = name;
             _version = version;
-            _key = new Key();
         }
 
-        public KeyVersion(string name, byte version, Key key)
+        public KeyVersion(string name, byte version, Key key) : base(name, key)
         {
-            _name = name;
             _version = version;
-            _key = key;
         }
 
-        private string _name;
         private byte _version;
-        private Key _key;
 
         public byte Version
         {
             get => _version;
             set => SetProperty(ref _version, value);
-        }
-
-        public Key Key
-        {
-            get => _key;
-            set => SetProperty(ref _key, value);
-        }
-
-        public string Name
-        {
-            get => _name;
-            set => SetProperty(ref _name, value);
         }
     }
 }
