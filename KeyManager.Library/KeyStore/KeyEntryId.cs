@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         private string? _id;
         private string? _label;
+        private object? _handle;
 
         public string? Id
         {
@@ -26,6 +28,13 @@ namespace Leosac.KeyManager.Library.KeyStore
         {
             get => _label;
             set => SetProperty(ref _label, value);
+        }
+
+        [JsonIgnore]
+        public object? Handle
+        {
+            get => _handle;
+            set => SetProperty(ref _handle, value);
         }
 
         public bool IsConfigured()

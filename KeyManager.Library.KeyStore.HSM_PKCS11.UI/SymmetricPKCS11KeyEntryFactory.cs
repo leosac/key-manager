@@ -10,35 +10,35 @@ using System.Windows.Controls;
 
 namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI
 {
-    public class PKCS11KeyEntryFactory : KeyEntryFactory
+    public class SymmetricPKCS11KeyEntryFactory : KeyEntryFactory
     {
-        public override string Name => "PKCS#11 Key Entry";
+        public override string Name => "PKCS#11 Symmetric Key Entry";
 
-        public override IEnumerable<KeyEntryClass> KClasses => new KeyEntryClass[] { KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric };
+        public override IEnumerable<KeyEntryClass> KClasses => new KeyEntryClass[] { KeyEntryClass.Symmetric };
 
         public override KeyEntry CreateKeyEntry()
         {
-            return new PKCS11KeyEntry();
+            return new SymmetricPKCS11KeyEntry();
         }
 
         public override Type GetKeyEntryPropertiesType()
         {
-            return typeof(PKCS11KeyEntryProperties);
+            return typeof(SymmetricPKCS11KeyEntryProperties);
         }
 
         public override KeyEntryProperties CreateKeyEntryProperties()
         {
-            return new PKCS11KeyEntryProperties();
+            return new SymmetricPKCS11KeyEntryProperties();
         }
 
         public override UserControl CreateKeyEntryPropertiesControl()
         {
-            return new PKCS11KeyEntryPropertiesControl();
+            return new SymmetricPKCS11KeyEntryPropertiesControl();
         }
 
         public override KeyEntryPropertiesControlViewModel CreateKeyEntryPropertiesControlViewModel()
         {
-            return new PKCS11KeyEntryPropertiesControlViewModel();
+            return new SymmetricPKCS11KeyEntryPropertiesControlViewModel();
         }
     }
 }

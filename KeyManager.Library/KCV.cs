@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,12 +20,12 @@ namespace Leosac.KeyManager.Library
     {
         public override string Name => "KCV";
 
-        public override byte[] ComputeKCV(IEnumerable<string> tags, byte[] key, byte[]? iv = null)
+        public override byte[] ComputeKCV(Key key, byte[]? iv = null)
         {
             var result = new byte[0];
-            var data = new byte[KeyHelper.GetBlockSize(tags)];
-            var paddediv = new byte[KeyHelper.GetBlockSize(tags)];
-            if (tags.Contains("AES"))
+            var data = new byte[KeyHelper.GetBlockSize(key.Tags)];
+            var paddediv = new byte[KeyHelper.GetBlockSize(key.Tags)];
+            if (key.Tags.Contains("AES"))
             {
                 // For AES, GlobalPlatform specification is using a default byte value set to 0x01 and not 0x00
                 for (var i = 0; i < paddediv.Length; i++)
@@ -36,38 +39,13 @@ namespace Leosac.KeyManager.Library
             }
             using (var ms = new MemoryStream())
             {
-                SymmetricAlgorithm? crypto = null;
-                if (tags.Contains("AES"))
-                {
-                    crypto = Aes.Create();
-                }
-                else if (tags.Contains("DES") && key.Length > 8)
-                {
-                    crypto = TripleDES.Create();
-                }
-                else if (tags.Contains("DES"))
-                {
-                    crypto = DES.Create();
-                }
-                else
+                var crypto = KeyHelper.GetSymmetricAlgorithm(key);
+                if (crypto == null)
                     throw new Exception("Unsupported key for KCV calcul.");
-
-                if (crypto != null)
-                {
-                    crypto.Mode = CipherMode.ECB;
-                    using (var encryptor = crypto.CreateEncryptor(key, paddediv))
-                    {
-                        using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-                        {
-                            cs.Write(data, 0, data.Length);
-                            cs.FlushFinalBlock();
-                            result = ms.ToArray();
-                            Array.Resize(ref result, 3);
-                            cs.Close();
-                        }
-                    }
-                    crypto.Dispose();
-                }
+                var parameters = new ParametersWithIV(new KeyParameter(key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary)), paddediv);
+                crypto.Init(true, parameters);
+                result = crypto.DoFinal(data);
+                Array.Resize(ref result, 3);
             }
 
             return result;

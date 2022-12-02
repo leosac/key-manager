@@ -222,7 +222,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             if (key != null)
             {
                 log.Info("Key link resolved.");
-                result = key.GetAggregatedValue();
+                result = key.GetAggregatedValue<string>();
             }
             else
             {

@@ -4,12 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library
 {
     public class KeyMaterial : KMObject
     {
+        public const string PRIVATE_KEY = "Private Key";
+        public const string PUBLIC_KEY = "Public Key";
+
         public KeyMaterial(string value = "", string? name = null)
         {
             _value = value;
@@ -45,6 +49,46 @@ namespace Leosac.KeyManager.Library
         {
             get => _name;
             set { SetProperty(ref _name, value); }
+        }
+
+        public T? GetFormattedValue<T>(KeyValueFormat format) where T : class
+        {
+            T? v;
+            switch (format)
+            {
+                case KeyValueFormat.HexString:
+                    if (typeof(T) != typeof(string))
+                        throw new InvalidCastException();
+                    v = Value as T;
+                    break;
+                case KeyValueFormat.HexStringWithSpace:
+                    if (typeof(T) != typeof(string))
+                        throw new InvalidCastException();
+                    v = Regex.Replace(Value, ".{2}", "$0 ") as T;
+                    break;
+                case KeyValueFormat.Binary:
+                default:
+                    if (typeof(T) != typeof(byte[]))
+                        throw new InvalidCastException();
+                    v = Convert.FromHexString(Value) as T;
+                    break;
+            }
+            return v;
+        }
+
+        public void SetFormattedValue(object value, KeyValueFormat format)
+        {
+            switch (format)
+            {
+                case KeyValueFormat.HexString:
+                case KeyValueFormat.HexStringWithSpace:
+                    Value = value as string;
+                    break;
+                case KeyValueFormat.Binary:
+                default:
+                    Value = Convert.ToHexString(value as byte[]);
+                    break;
+            }
         }
     }
 }

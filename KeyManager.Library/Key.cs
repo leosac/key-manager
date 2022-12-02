@@ -11,7 +11,7 @@ namespace Leosac.KeyManager.Library
 
         }
 
-        public Key(string[]? tags, uint keySize = 0, uint nbMaterials = 1)
+        public Key(IEnumerable<string>? tags, uint keySize = 0, uint nbMaterials = 1)
         {
             Materials = new ObservableCollection<KeyMaterial>();
             Materials.CollectionChanged += Materials_CollectionChanged;
@@ -30,12 +30,20 @@ namespace Leosac.KeyManager.Library
             _link = new KeyLink();
         }
 
-        public Key(string[]? tags, uint keySize, string value) : this(tags, keySize, 0)
+        public Key(IEnumerable<string>? tags, string value) : this(tags, 0, value)
         {
-            Materials.Add(new KeyMaterial(value));
         }
 
-        public Key(string[]? tags, uint keySize, params KeyMaterial[] materials) : this(tags, keySize, 0)
+        public Key(IEnumerable<string>? tags, uint keySize, string value) : this(tags, keySize, 0)
+        {
+            Materials.Add(new KeyMaterial(value));
+            if (keySize == 0)
+            {
+                KeySize = (uint)Materials[0].GetFormattedValue<byte[]>(KeyValueFormat.Binary)!.Length;
+            }
+        }
+
+        public Key(IEnumerable<string>? tags, uint keySize, params KeyMaterial[] materials) : this(tags, keySize, 0)
         {
             foreach(var material in materials)
             {
@@ -98,23 +106,54 @@ namespace Leosac.KeyManager.Library
             }
         }
 
-        public string GetAggregatedValue()
+        public T? GetAggregatedValue<T>(KeyValueFormat format = KeyValueFormat.HexString) where T : class
         {
-            string ret = string.Empty;
-
-            if (Materials.Count > 0)
-                ret = Materials[0].Value;
-
+            T? ret = default(T);
+            foreach (var m in Materials)
+            {
+                var v = m.GetFormattedValue<T>(format);
+                if (ret == default(T))
+                {
+                    ret = v;
+                }
+                else
+                {
+                    if (typeof(T) == typeof(byte[]))
+                    {
+                        ret = (ret as byte[]).Concat(v as byte[]) as T;
+                    }
+                    else if (typeof(T) == typeof(string))
+                    {
+                        ret = (ret.ToString() + Environment.NewLine + ret.ToString()) as T;
+                    }
+                }
+            }
             return ret;
         }
 
-        public void SetAggregatedValue(string? value)
+        public void SetAggregatedValue(object? value, KeyValueFormat format = KeyValueFormat.HexString)
         {
             if (value == null)
                 value = string.Empty;
 
-            if (Materials.Count > 0)
-                Materials[0].Value = value;
+            switch(format)
+            {
+                case KeyValueFormat.HexString:
+                    var values = (value as string).Split(Environment.NewLine);
+                    if (Materials.Count >= values.Length)
+                    {
+                        for (int i = 0; i < values.Length; ++i)
+                        {
+                            Materials[i].SetFormattedValue(values[i], format);
+                        }
+                    }
+                    break;
+                case KeyValueFormat.Binary:
+                default:
+                    if (Materials.Count > 0)
+                        Materials[0].SetFormattedValue(value, format);
+                    break;
+            }
         }
     }
 }

@@ -133,6 +133,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create from seed.
+        /// </summary>
+        public static string CreateFromSeed {
+            get {
+                return ResourceManager.GetString("CreateFromSeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create new key entry.
         /// </summary>
         public static string CreateKeyEntry {
@@ -930,6 +939,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string SearchTerms {
             get {
                 return ResourceManager.GetString("SearchTerms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seed.
+        /// </summary>
+        public static string Seed {
+            get {
+                return ResourceManager.GetString("Seed", resourceCulture);
             }
         }
         

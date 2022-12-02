@@ -141,6 +141,9 @@
   <data name="Create" xml:space="preserve">
     <value>Créer</value>
   </data>
+  <data name="CreateFromSeed" xml:space="preserve">
+    <value>Créer à partir d'une graine</value>
+  </data>
   <data name="CreateKeyEntry" xml:space="preserve">
     <value>Créer un nouvel enregistrement de clés</value>
   </data>
@@ -407,6 +410,9 @@
   </data>
   <data name="SearchTerms" xml:space="preserve">
     <value>Termes de recherche</value>
+  </data>
+  <data name="Seed" xml:space="preserve">
+    <value>Graine</value>
   </data>
   <data name="SelectedFolder" xml:space="preserve">
     <value>Dossier sélectionné :</value>

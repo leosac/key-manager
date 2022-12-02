@@ -176,6 +176,12 @@
     </ComponentGroup>
     
     <ComponentGroup Id="DependenciesComponents" Directory="APPLICATIONFOLDER">
+      <Component Id="BouncyCastleCryptographyComponent" Win64="$(var.Win64)">
+        <File Id="___var.BouncyCastle.Cryptography.dll_" Source="$(var.KeyManager.TargetDir)\BouncyCastle.Cryptography.dll" />
+      </Component>
+      <Component Id="Crc32NETComponent" Win64="$(var.Win64)">
+        <File Id="___var.Crc32.NET.dll_" Source="$(var.KeyManager.TargetDir)\Crc32.NET.dll" />
+      </Component>
       <Component Id="LibLogicalAccessNetCEComponent" Win64="$(var.Win64)">
         <File Id="___var.LibLogicalAccessNetCE.dll_" Source="$(var.KeyManager.TargetDir)\LibLogicalAccessNetCE.dll" />
       </Component>

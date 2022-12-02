@@ -31,32 +31,11 @@ namespace Leosac.KeyManager.Library.UI
     {
         public SymmetricKeyGenerationDialog()
         {
-            CeremonyTypes = new ObservableCollection<KeyCeremonyType>(Enum.GetValues<KeyCeremonyType>());
             MnemonicLanguages = new ObservableCollection<Mnemonic.WordlistLang>(Enum.GetValues<Mnemonic.WordlistLang>());
             MnemonicWords = new ObservableCollection<string>();
 
             InitializeComponent();
         }
-
-        public ObservableCollection<KeyCeremonyType> CeremonyTypes { get; set; }
-
-        public KeyCeremonyType SelectedCeremonyType
-        {
-            get { return (KeyCeremonyType)GetValue(SelectedCeremonyTypeProperty); }
-            set { SetValue(SelectedCeremonyTypeProperty, value); }
-        }
-
-        public static readonly DependencyProperty SelectedCeremonyTypeProperty = DependencyProperty.Register(nameof(SelectedCeremonyType), typeof(KeyCeremonyType), typeof(SymmetricKeyGenerationDialog),
-            new FrameworkPropertyMetadata(KeyCeremonyType.ShamirSecretSharing));
-
-        public int Fragments
-        {
-            get { return (int)GetValue(FragmentsProperty); }
-            set { SetValue(FragmentsProperty, value); }
-        }
-
-        public static readonly DependencyProperty FragmentsProperty = DependencyProperty.Register(nameof(Fragments), typeof(int), typeof(SymmetricKeyGenerationDialog),
-            new FrameworkPropertyMetadata(3));
 
         public ObservableCollection<Mnemonic.WordlistLang> MnemonicLanguages { get; set; }
 
@@ -121,62 +100,6 @@ namespace Leosac.KeyManager.Library.UI
                 rng.GetBytes(randBytes);
             }
             return randBytes;
-        }
-
-        private void btnCeremony_Click(object sender, RoutedEventArgs e)
-        {
-            var model = new KeyCeremonyDialogViewModel()
-            {
-                Fragments = new ObservableCollection<string>(new string[Fragments])
-            };
-            var dialog = new KeyCeremonyDialog()
-            {
-                DataContext = model
-            };
-            if (dialog.ShowDialog() == true)
-            {
-                KeyValue = ComputeKeyCeremony(SelectedCeremonyType, model.Fragments.ToArray());
-            }
-        }
-
-        private string ComputeKeyCeremony(KeyCeremonyType ceremonyType, string[] fragments)
-        {
-            string keystr = string.Empty;
-            switch (ceremonyType)
-            {
-                case KeyCeremonyType.Concat:
-                    {
-                        keystr = String.Join("", fragments);
-                    }
-                    break;
-
-                case KeyCeremonyType.Xor:
-                    {
-                        var key = new byte[KeySize];
-                        foreach (string fragment in fragments)
-                        {
-                            var keyb = Convert.FromHexString(fragment);
-                            for (int i = 0; i < key.Length && i < keyb.Length; ++i)
-                            {
-                                key[i] ^= keyb[i];
-                            }
-                        }
-                        keystr = Convert.ToHexString(key);
-                    }
-                    break;
-
-                case KeyCeremonyType.ShamirSecretSharing:
-                    {
-                        var gcd = new ExtendedEuclideanAlgorithm<BigInteger>();
-                        var combine = new ShamirsSecretSharing<BigInteger>(gcd);
-                        var shares = String.Join(Environment.NewLine, fragments);
-                        var secret = combine.Reconstruction(shares);
-                        var key = secret.ToByteArray();
-                        keystr = Convert.ToHexString(key);
-                    }
-                    break;
-            }
-            return keystr;
         }
 
         private void btnImportMnemonic_Click(object sender, RoutedEventArgs e)

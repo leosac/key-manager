@@ -11,19 +11,20 @@ namespace Leosac.KeyManager.Library
     {
         public override string Name => "CRC32";
 
-        public override byte[] ComputeKCV(IEnumerable<string> tags, byte[] key, byte[]? iv = null)
+        public override byte[] ComputeKCV(Key key, byte[]? iv = null)
         {
+            var rawkey = key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary);
             // Use the IV as a Salt
             byte[] data;
             if (iv != null)
             {
-                data = new byte[iv.Length + key.Length];
+                data = new byte[iv.Length + rawkey.Length];
                 Array.Copy(iv, 0, data, 0, iv.Length);
-                Array.Copy(key, 0, data, iv.Length, key.Length);
+                Array.Copy(rawkey, 0, data, iv.Length, rawkey.Length);
             }
             else
             {
-                data = key;
+                data = rawkey;
             }
             return BitConverter.GetBytes(Crc32Algorithm.ComputeAndWriteToEnd(data));
         }

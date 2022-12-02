@@ -56,7 +56,8 @@ namespace Leosac.KeyManager.Domain
                 new Library("openssl", "OpenSSL and SSLeay", "cryptographic library", "https://www.openssl.org/"),
                 new Library("boost", "Boost Software", "cross-platform C++ library", "https://www.boost.org/"),
                 new Library("nlohmann/json", "MIT", "JSON library", "https://github.com/nlohmann/json"),
-                new Library("Crc32.NET", "MIT", "CRC32 library", "https://github.com/force-net/Crc32.NET")
+                new Library("Crc32.NET", "MIT", "CRC32 library", "https://github.com/force-net/Crc32.NET"),
+                new Library("BouncyCastle.Cryptography", "MIT", "Cryptography API library", "https://www.bouncycastle.org/")
             });
 
             var plan = MaintenancePlan.GetSingletonInstance();

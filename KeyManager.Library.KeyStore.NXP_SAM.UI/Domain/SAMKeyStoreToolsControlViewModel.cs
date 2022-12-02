@@ -73,7 +73,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 else
                     key.setKeyType(DESFireKeyType.DF_KEY_3K3DES);
 
-                key.fromString(Regex.Replace(SAMAuthKey.Key.GetAggregatedValue(), ".{2}", "$0 "));
+                key.fromString(SAMAuthKey.Key.GetAggregatedValue<string>(KeyValueFormat.HexStringWithSpace));
                 key.setKeyVersion(SAMAuthKey.Version);
                 var cmd = (KeyStore as SAMKeyStore)?.Chip?.getCommands();
                 if (cmd is SAMAV1ISO7816Commands samav1cmd)

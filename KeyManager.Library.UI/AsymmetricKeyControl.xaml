@@ -21,9 +21,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
-        <local:KeyActionButtonsControl DockPanel.Dock="Top" Key="{Binding Path=Key, ElementName=keyControl}"
+        <!--<local:KeyActionButtonsControl DockPanel.Dock="Top" Key="{Binding Path=Key, ElementName=keyControl}"
                                        ShowKeyLink="{Binding Path=ShowKeyLink, ElementName=keyControl}"
-                                       KClass="Asymmetric" Grid.Row="0" Grid.Column="1" />
+                                       KClass="Asymmetric" Grid.Row="0" Grid.Column="1" />-->
         <ListBox ItemsSource="{Binding Path=Key.Materials, ElementName=keyControl}" HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate>

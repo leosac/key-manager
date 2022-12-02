@@ -13,7 +13,10 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
             Properties = new MemoryKeyEntryProperties();
         }
 
-        public override KeyEntryClass KClass => KeyEntryClass.Symmetric;
+        public override KeyEntryClass KClass
+        {
+            get => GetKeyEntryClassFromFirstKeyVariant();
+        }
 
         public override IList<KeyEntryVariant> GetAllVariants(KeyEntryClass? classFilter = null)
         {
@@ -43,8 +46,8 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
                 var rsavar = new KeyEntryVariant() { Name = "RSA" };
                 rsavar.KeyContainers.Add(new KeyContainer("Key", new Key(new string[] { "RSA", KeyEntryClass.Asymmetric.ToString() }, 0, new KeyMaterial[]
                 {
-                    new KeyMaterial("", "Private Key"),
-                    new KeyMaterial("", "Public Key")
+                    new KeyMaterial("", KeyMaterial.PRIVATE_KEY),
+                    new KeyMaterial("", KeyMaterial.PUBLIC_KEY)
                 })));
                 variants.Add(rsavar);
             }

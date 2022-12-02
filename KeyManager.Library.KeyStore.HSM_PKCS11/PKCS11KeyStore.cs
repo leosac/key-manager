@@ -1,6 +1,7 @@
 ﻿using Net.Pkcs11Interop.Common;
 using Net.Pkcs11Interop.HighLevelAPI;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Cms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,19 +45,42 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             if (_session == null)
                 throw new KeyStoreException("No valid session.");
 
+            if (identifier.Handle != null && identifier.Handle is IObjectHandle h)
+            {
+                handle = h;
+                return true;
+            }
+
             var attributes = new List<IObjectAttribute>();
             if (!string.IsNullOrEmpty(identifier.Id))
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_ID, Convert.FromHexString(identifier.Id)));
             if (!string.IsNullOrEmpty(identifier.Label))
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_LABEL, UTF8Encoding.UTF8.GetBytes(identifier.Label)));
 
+            var objects = new List<IObjectHandle>();
             if (keClass == KeyEntryClass.Symmetric)
+            {
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_SECRET_KEY));
+            }
+            else if (keClass == KeyEntryClass.Asymmetric)
+            {
+                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PRIVATE_KEY));
+                objects = _session.FindAllObjects(attributes);
+                attributes[attributes.Count - 1] = _session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PUBLIC_KEY);
+            }
+            else if (keClass == KeyEntryClass.PrivateKey)
+            {
+                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PRIVATE_KEY));
+            }
+            else if (keClass == KeyEntryClass.PublicKey)
+            {
+                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PUBLIC_KEY));
+            }
 
             if (attributes.Count == 0)
                 throw new KeyStoreException("No key identifier.");
 
-            var objects = _session.FindAllObjects(attributes);
+            objects.Union(_session.FindAllObjects(attributes));
             if (objects.Count > 0)
             {
                 handle = objects[0];
@@ -87,19 +111,29 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             log.Info("Key Store closed.");
         }
 
-        public override void Create(IChangeKeyEntry change)
+        public override void 
+            Create(IChangeKeyEntry change)
         {
             log.Info(String.Format("Creating key entry `{0}`...", change.Identifier));
-            if (CheckKeyEntryExists(change.Identifier, change.KClass))
-            {
-                log.Error(String.Format("A key entry with the same identifier `{0}` already exists.", change.Identifier));
-                throw new KeyStoreException("A key entry with the same identifier already exists.");
-            }
 
-            if (change is KeyEntry entry)
+            if (change is KeyEntry entry && entry.Variant != null && entry.Variant.KeyContainers.Count > 0)
             {
-                var attributes = GetKeyEntryAttributes(entry, true);
-                _session!.CreateObject(attributes);
+                foreach (var material in entry.Variant.KeyContainers[0].Key.Materials)
+                {
+                    var rawkey = material.GetFormattedValue<byte[]>(KeyValueFormat.Binary);
+                    if (rawkey != null)
+                    {
+                        var attributes = GetKeyEntryAttributes(entry, true);
+                        attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE, rawkey));
+                        if (entry.KClass == KeyEntryClass.PrivateKey || (entry.KClass == KeyEntryClass.Asymmetric && material.Name == KeyMaterial.PRIVATE_KEY))
+                            attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PRIVATE_KEY));
+                        else if (entry.KClass == KeyEntryClass.PublicKey || (entry.KClass == KeyEntryClass.Asymmetric && material.Name == KeyMaterial.PUBLIC_KEY))
+                            attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PUBLIC_KEY));
+                        else
+                            attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_SECRET_KEY));
+                        _session!.CreateObject(attributes);
+                    }
+                }
             }
             else
                 throw new NotImplementedException();
@@ -109,6 +143,11 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 
         private List<IObjectAttribute> GetKeyEntryAttributes(KeyEntry entry, bool create = false)
         {
+            if (entry.Variant?.KeyContainers.Count > 1)
+            {
+                throw new KeyStoreException("This key store do not support key entries with more than one key container.");
+            }
+
             var attributes = new List<IObjectAttribute>();
             if (entry.Identifier.Id != null && create)
                 attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_ID, Convert.FromHexString(entry.Identifier.Id)));
@@ -119,33 +158,30 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                 if (create)
                 {
                     attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_KEY_TYPE, pkcsEntry.GetCKK()));
-                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_EXTRACTABLE, pkcsEntry.PKCS11Properties.Extractable));
+                    if (pkcsEntry.PKCS11Properties.Extractable != null)
+                        attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_EXTRACTABLE, pkcsEntry.PKCS11Properties.Extractable.Value));
                 }
-                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_ENCRYPT, pkcsEntry.PKCS11Properties!.Encrypt));
-                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_DECRYPT, pkcsEntry.PKCS11Properties.Decrypt));
-                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_DERIVE, pkcsEntry.PKCS11Properties.Derive));
+                if (pkcsEntry.PKCS11Properties!.Encrypt != null)
+                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_ENCRYPT, pkcsEntry.PKCS11Properties!.Encrypt.Value));
+                if (pkcsEntry.PKCS11Properties.Decrypt != null)
+                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_DECRYPT, pkcsEntry.PKCS11Properties.Decrypt.Value));
+                if (pkcsEntry.PKCS11Properties.Derive != null)
+                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_DERIVE, pkcsEntry.PKCS11Properties.Derive.Value));
             }
             else
             {
                 if (create)
                 {
-                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_KEY_TYPE, CKK.CKK_GENERIC_SECRET));
+                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_KEY_TYPE, PKCS11KeyEntry.GetCKK(entry)));
                 }
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_ENCRYPT, true));
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_DECRYPT, true));
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_DERIVE, true));
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_EXTRACTABLE, true));
             }
-            if (entry.Variant?.KeyContainers.Count > 0 && !string.IsNullOrEmpty(entry.Variant.KeyContainers[0].Key.GetAggregatedValue()))
-            {
-                var key = Convert.FromHexString(entry.Variant.KeyContainers[0].Key.GetAggregatedValue());
-                //attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE_LEN, (ulong)key.Length));
-                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE, key));
-            }
 
             if (create)
             {
-                attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_SECRET_KEY));
                 attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_TOKEN, true));
             }
 
@@ -182,34 +218,52 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 
             var attributes = _session!.GetAttributeValue(handle, new List<CKA>
             {
-                CKA.CKA_ID,
-                CKA.CKA_LABEL,
+                CKA.CKA_CLASS
+            });
+            var cko = (CKO)attributes[0].GetValueAsUlong();
+
+            attributes = _session!.GetAttributeValue(handle, new List<CKA>
+            {
                 CKA.CKA_KEY_TYPE,
-                CKA.CKA_ENCRYPT,
-                CKA.CKA_DECRYPT,
-                CKA.CKA_DERIVE,
-                CKA.CKA_EXTRACTABLE,
+                CKA.CKA_ID,
+                CKA.CKA_LABEL
             });
 
-            var keyEntry = new PKCS11KeyEntry();
+            PKCS11KeyEntry keyEntry;
+            if (cko == CKO.CKO_SECRET_KEY)
+                keyEntry = new SymmetricPKCS11KeyEntry();
+            else if (cko == CKO.CKO_PRIVATE_KEY)
+                keyEntry = new AsymmetricPKCS11KeyEntry(KeyEntryClass.PrivateKey);
+            else if (cko == CKO.CKO_PUBLIC_KEY)
+                keyEntry = new AsymmetricPKCS11KeyEntry(KeyEntryClass.PublicKey);
+            else
+                throw new KeyStoreException("Unsupported CKO.");
+
+            keyEntry.GetAttributes(_session, handle);
+            keyEntry.Identifier = identifier;
             foreach (var attribute in attributes)
             {
                 if (attribute.Type == (ulong)CKA.CKA_KEY_TYPE)
-                    keyEntry.Variant = PKCS11KeyEntry.CreateVariantFromCKK((CKK)attribute.GetValueAsUlong());
+                    keyEntry.Variant = keyEntry.CreateVariantFromCKK((CKK)attribute.GetValueAsUlong());
                 else if (attribute.Type == (ulong)CKA.CKA_ID)
                     keyEntry.Identifier.Id = Convert.ToHexString(attribute.GetValueAsByteArray());
                 else if (attribute.Type == (ulong)CKA.CKA_LABEL)
                     keyEntry.Identifier.Label = attribute.GetValueAsString();
-                else if (attribute.Type == (ulong)CKA.CKA_ENCRYPT)
-                    keyEntry.PKCS11Properties!.Encrypt = attribute.GetValueAsBool();
-                else if (attribute.Type == (ulong)CKA.CKA_DECRYPT)
-                    keyEntry.PKCS11Properties!.Decrypt = attribute.GetValueAsBool();
-                else if (attribute.Type == (ulong)CKA.CKA_DERIVE)
-                    keyEntry.PKCS11Properties!.Derive = attribute.GetValueAsBool();
-                else if (attribute.Type == (ulong)CKA.CKA_EXTRACTABLE)
-                    keyEntry.PKCS11Properties!.Extractable = attribute.GetValueAsBool();
                 else
                     throw new KeyStoreException("Unexpected attribute.");
+            }
+
+            var materials = keyEntry.Variant!.KeyContainers[0].Key.Materials;
+            if (materials.Count > 0)
+            {
+                if (cko == CKO.CKO_PUBLIC_KEY)
+                {
+                    materials[0].Name = KeyMaterial.PUBLIC_KEY;
+                }
+                else if (cko == CKO.CKO_PRIVATE_KEY)
+                {
+                    materials[0].Name = KeyMaterial.PRIVATE_KEY;
+                }
             }
 
             log.Info(String.Format("Key entry `{0}` retrieved.", identifier));
@@ -229,15 +283,30 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                 _session.Factories.ObjectAttributeFactory.Create(CKA.CKA_TOKEN, true)
             };
 
+            var objects = new List<IObjectHandle>();
             if (keClass != null)
             {
                 if (keClass == KeyEntryClass.Symmetric)
+                {
                     attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_SECRET_KEY));
+                }
                 else if (keClass == KeyEntryClass.Asymmetric)
+                {
                     attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PRIVATE_KEY));
+                    objects = _session.FindAllObjects(attributes);
+                    attributes[1] = _session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PUBLIC_KEY);
+                }
+                else if (keClass == KeyEntryClass.PrivateKey)
+                {
+                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PRIVATE_KEY));
+                }
+                else if (keClass == KeyEntryClass.PublicKey)
+                {
+                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PUBLIC_KEY));
+                }
             }
 
-            var objects = _session.FindAllObjects(attributes);
+            objects.Union(_session.FindAllObjects(attributes));
             foreach (var obj in objects)
             {
                 if (obj.ObjectId != CK.CK_INVALID_HANDLE)
@@ -249,6 +318,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                     });
 
                     var entry = new KeyEntryId();
+                    entry.Handle = obj;
                     if (!objAttributes[0].CannotBeRead)
                         entry.Id = Convert.ToHexString(objAttributes[0].GetValueAsByteArray());
                     if (!objAttributes[1].CannotBeRead)
@@ -362,6 +432,15 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             if (change is KeyEntry entry)
             {
                 var attributes = GetKeyEntryAttributes(entry);
+                if (entry.Variant?.KeyContainers.Count == 1)
+                {
+                    var rawkey = entry.Variant.KeyContainers[0].Key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary);
+                    if (rawkey != null)
+                    {
+                        // We should already have only one key material during an update
+                        attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE, rawkey));
+                    }
+                }
                 _session!.SetAttributeValue(handle, attributes);
             }
             else

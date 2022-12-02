@@ -1,4 +1,5 @@
 ﻿using Net.Pkcs11Interop.Common;
+using Net.Pkcs11Interop.HighLevelAPI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 {
-    public class PKCS11KeyEntry : KeyEntry
+    public abstract class PKCS11KeyEntry : KeyEntry
     {
         public PKCS11KeyEntry()
         {
@@ -22,16 +23,22 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             get { return Properties as PKCS11KeyEntryProperties; }
         }
 
-        public override KeyEntryClass KClass
-        {
-            get => GetKeyEntryClassFromCKK(GetCKK());
-        }
-
         public override IList<KeyEntryVariant> GetAllVariants(KeyEntryClass? classFilter = null)
         {
             var variants = new List<KeyEntryVariant>();
 
-            var ckk = Enum.GetValues<CKK>();
+            IEnumerable<CKK> ckk;
+            var asymckk = GetAsymmetricCKKs();
+            if (classFilter == KeyEntryClass.Asymmetric)
+            {
+                ckk = asymckk;
+            }
+            else
+            {
+                ckk = Enum.GetValues<CKK>();
+                ckk = ckk.Except(asymckk);
+            }
+
             foreach(var k in ckk)
             {
                 variants.Add(CreateVariantFromCKK(k));
@@ -40,14 +47,24 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return variants;
         }
 
-        public static KeyEntryVariant CreateVariantFromCKK(CKK ckk)
+        public IEnumerable<CKK> GetAsymmetricCKKs()
+        {
+            return new CKK[]
+            {
+                CKK.CKK_RSA,
+                CKK.CKK_DSA,
+                CKK.CKK_ECDSA
+            };
+        }
+
+        public KeyEntryVariant CreateVariantFromCKK(CKK ckk)
         {
             var algo = ckk.ToString().Remove(0, 4);
             var variant = new KeyEntryVariant() { Name = algo };
             var tags = new string[]
             {
                     algo,
-                    GetKeyEntryClassFromCKK(ckk).ToString()
+                    KClass.ToString()
             };
             variant.KeyContainers.Add(new KeyContainer("Key", new Key(tags, KeyHelper.GetBlockSize(tags))));
             return variant;
@@ -63,10 +80,15 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 
         public CKK GetCKK()
         {
+            return GetCKK(this);
+        }
+
+        public static CKK GetCKK(KeyEntry entry)
+        {
             var ckk = CKK.CKK_GENERIC_SECRET;
-            if (Variant != null && Variant.KeyContainers.Count > 0)
+            if (entry.Variant != null && entry.Variant.KeyContainers.Count > 0)
             {
-                var tags = Variant.KeyContainers[0].Key.Tags;
+                var tags = entry.Variant.KeyContainers[0].Key.Tags;
                 if (tags.Count > 0)
                 {
                     Enum.TryParse<CKK>("CKK_" + tags[0], out ckk);
@@ -75,5 +97,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 
             return ckk;
         }
+
+        public abstract void GetAttributes(ISession session, IObjectHandle? handle);
     }
 }

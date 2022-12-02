@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Security;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +19,41 @@ namespace Leosac.KeyManager.Library
                 size = 16;
             }
             return size;
+        }
+
+        public static string? GetAlgorithmName(Key key)
+        {
+            string? algoName = null;
+            if (key.Tags.Contains("AES"))
+            {
+                algoName = "AES";
+            }
+            else if (key.Tags.Contains("DES") && key.KeySize > 8)
+            {
+                algoName = "DESEDE";
+            }
+            else if (key.Tags.Contains("DES"))
+            {
+                algoName = "DES";
+            }
+            else if (key.Tags.Contains("Blowfish"))
+            {
+                algoName = "Blowfish";
+            }
+            return algoName;
+        }
+
+        public static IBufferedCipher? GetSymmetricAlgorithm(Key key, CipherMode cipherMode = CipherMode.CBC)
+        {
+            IBufferedCipher? crypto = null;
+
+            var algoName = GetAlgorithmName(key);
+            if (!string.IsNullOrEmpty(algoName))
+            {
+                crypto = CipherUtilities.GetCipher(algoName + "/" + cipherMode.ToString());
+            }
+
+            return crypto;
         }
     }
 }

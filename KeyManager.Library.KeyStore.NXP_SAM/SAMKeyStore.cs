@@ -244,7 +244,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     {
                         var keysdata = av2entry.getKeysData();
                         var keyVersions = keyEntry.Variant.KeyContainers.OfType<KeyVersion>().ToArray();
-                        if (keysdata.Count < 2 || keysdata.Count != keyVersions.Count())
+                        if (keysdata.Count < 2 || keysdata.Count != keyVersions.Length)
                         {
                             log.Error(String.Format("Unexpected number of keys ({0}) on the SAM Key Entry.", keysdata.Count));
                             throw new KeyStoreException("Unexpected number of keys on the SAM Key Entry.");
@@ -356,7 +356,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 var cmd = Chip?.getCommands();
                 if (cmd is SAMAV2ISO7816Commands av2cmd)
                 {
-                    if (GetSAMProperties().UnlockKey != null && !string.IsNullOrEmpty(GetSAMProperties().UnlockKey.Key.GetAggregatedValue()) && !_unlocked)
+                    if (GetSAMProperties().UnlockKey != null && !string.IsNullOrEmpty(GetSAMProperties().UnlockKey.Key.GetAggregatedValue<string>()) && !_unlocked)
                     {
                         UnlockSAM(av2cmd, GetSAMProperties().UnlockKeyEntryIdentifier, GetSAMProperties().UnlockKey);
                         _unlocked = true;
@@ -365,7 +365,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     var key = new DESFireKey();
                     key.setKeyType(DESFireKeyType.DF_KEY_AES);
                     key.setKeyVersion(GetSAMProperties().AuthenticateKey.Version);
-                    key.fromString(Regex.Replace(GetSAMProperties().AuthenticateKey.Key.GetAggregatedValue(), ".{2}", "$0 "));
+                    key.fromString(GetSAMProperties().AuthenticateKey.Key.GetAggregatedValue<string>(KeyValueFormat.HexStringWithSpace));
 
                     var natkey = new AV2SAMKeyEntry();
 
@@ -403,19 +403,19 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     if (samkey.Variant != null)
                     {
                         var keyVersions = samkey.Variant.KeyContainers.OfType<KeyVersion>().ToArray();
-                        var keys = new UCharCollectionCollection(keyVersions.Count());
+                        var keys = new UCharCollectionCollection(keyVersions.Length);
                         foreach (var keyversion in samkey.Variant.KeyContainers)
                         {
-                            if (string.IsNullOrEmpty(keyversion.Key.GetAggregatedValue()))
+                            if (string.IsNullOrEmpty(keyversion.Key.GetAggregatedValue<string>()))
                                 keys.Add(new ByteVector(new byte[keyversion.Key.KeySize]));
                             else
-                                keys.Add(new ByteVector(Convert.FromHexString(keyversion.Key.GetAggregatedValue())));
+                                keys.Add(new ByteVector(keyversion.Key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary)));
                         }
 
                         infoav2.vera = keyVersions[0].Version;
-                        if (keyVersions.Count() >= 2)
+                        if (keyVersions.Length >= 2)
                             infoav2.verb = keyVersions[1].Version;
-                        if (keyVersions.Count() >= 3)
+                        if (keyVersions.Length >= 3)
                             infoav2.verc = keyVersions[2].Version;
 
                         if (keyVersions[0].Key.Tags.Contains("AES"))
@@ -466,7 +466,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             {
                 key.setKeyType(DESFireKeyType.DF_KEY_AES);
                 key.setKeyVersion(keyVersion.Version);
-                key.fromString(Regex.Replace(keyVersion.Key.GetAggregatedValue(), ".{2}", "$0 "));
+                key.fromString(keyVersion.Key.GetAggregatedValue<string>(KeyValueFormat.HexStringWithSpace));
             }
             else
             {
@@ -512,7 +512,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             var key = new DESFireKey();
             key.setKeyType(DESFireKeyType.DF_KEY_AES);
             key.setKeyVersion(keyVersion.Version);
-            key.fromString(Regex.Replace(keyVersion.Key.GetAggregatedValue(), ".{2}", "$0 "));
+            key.fromString(keyVersion.Key.GetAggregatedValue<string>(KeyValueFormat.HexStringWithSpace));
             av2cmds.lockUnlock(key, SAMLockUnlock.Unlock, keyEntry, 0x00, 0x00);
             log.Info("SAM unlocked.");
         }
@@ -571,7 +571,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             var cmd = Chip?.getCommands();
             if (cmd is SAMAV2ISO7816Commands av2cmd)
             {
-                if (GetSAMProperties().UnlockKey != null && !string.IsNullOrEmpty(GetSAMProperties().UnlockKey.Key.GetAggregatedValue()) && !_unlocked)
+                if (GetSAMProperties().UnlockKey != null && !string.IsNullOrEmpty(GetSAMProperties().UnlockKey.Key.GetAggregatedValue<string>()) && !_unlocked)
                 {
                     UnlockSAM(av2cmd, GetSAMProperties().UnlockKeyEntryIdentifier, GetSAMProperties().UnlockKey);
                     _unlocked = true;
@@ -580,7 +580,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 var key = new DESFireKey();
                 key.setKeyType(DESFireKeyType.DF_KEY_AES);
                 key.setKeyVersion(GetSAMProperties().AuthenticateKey.Version);
-                key.fromString(Regex.Replace(GetSAMProperties().AuthenticateKey.Key.GetAggregatedValue(), ".{2}", "$0 "));
+                key.fromString(GetSAMProperties().AuthenticateKey.Key.GetAggregatedValue<string>(KeyValueFormat.HexStringWithSpace));
 
                 var kucEntry = new SAMKucEntry();
                 var entry = kucEntry.getKucEntryStruct();

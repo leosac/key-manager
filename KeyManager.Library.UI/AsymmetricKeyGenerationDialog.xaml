@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="Leosac.KeyManager.Library.UI.AsymmetricKeyGenerationDialog"
+             x:Name="userControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
+             xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             MinWidth="500" MaxWidth="800">
+    <UserControl.Resources>
+        <s:Boolean x:Key="True">True</s:Boolean>
+        <s:Boolean x:Key="False">False</s:Boolean>
+    </UserControl.Resources>
+    <Grid>
+        <DockPanel LastChildFill="True">
+            <TextBlock DockPanel.Dock="Top" Text="{x:Static properties:Resources.KeyGeneration}" FontSize="18" Margin="8" />
+            <StackPanel DockPanel.Dock="Top" Orientation="Vertical" Margin="5">
+                <local:NumericUpDownControl Hint="{x:Static properties:Resources.KeySize}" HelperText="{x:Static properties:Resources.KeySizeHelper}" MinValue="8" CurrentValue="{Binding KeySize, ElementName=userControl, Mode=TwoWay}" Margin="8" />
+                <PasswordBox Margin="5"
+                     materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyValueHelper}"
+                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyValue}"
+                     materialDesign:TextFieldAssist.HasClearButton="True"
+                     materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
+                     Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
+                     materialDesign:PasswordBoxAssist.Password="{Binding Path=KeyValue, ElementName=userControl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+            </StackPanel>
+            <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,5,5,5">
+                <Button Width="100" IsDefault="True" Content="{x:Static properties:Resources.Close}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
+            </WrapPanel>
+            <TabControl TabStripPlacement="Left" Margin="5,15,5,5">
+                <TabItem Header="{x:Static properties:Resources.Random}">
+                    <Grid>
+                        <Button x:Name="btnRandom" Content="{x:Static properties:Resources.GenerateRandom}" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnRandom_Click"/>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="{x:Static properties:Resources.Seed}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="{x:Static properties:Resources.CreateFromSeed}" Margin="10"/>
+                        <local:SymmetricKeyControl Grid.Row="1" Key="{Binding Path=SeedKey, Mode=TwoWay, ElementName=userControl}" ShowKeyLink="False" />
+                        <Button x:Name="btnCreateFromSeed" Grid.Row="2" Content="{x:Static properties:Resources.Create}" Width="150" Click="btnCreateFromSeed_Click" Margin="10" />
+                    </Grid>
+                </TabItem>
+                <TabItem Header="{x:Static properties:Resources.KeyCeremony}">
+                    <local:KeyCeremonySetupControl KeyValue="{Binding Path=KeyValue, Mode=TwoWay, ElementName=userControl}"/>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+    </Grid>
+</UserControl>

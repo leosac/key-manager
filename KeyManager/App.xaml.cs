@@ -26,7 +26,8 @@ namespace KeyManager
 
             Leosac.KeyManager.Library.UI.KeyEntryFactory.Register(new Leosac.KeyManager.Library.KeyStore.Memory.UI.MemoryKeyEntryFactory());
             Leosac.KeyManager.Library.UI.KeyEntryFactory.Register(new Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.SAMSymmetricKeyEntryFactory());
-            Leosac.KeyManager.Library.UI.KeyEntryFactory.Register(new Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.PKCS11KeyEntryFactory());
+            Leosac.KeyManager.Library.UI.KeyEntryFactory.Register(new Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.SymmetricPKCS11KeyEntryFactory());
+            Leosac.KeyManager.Library.UI.KeyEntryFactory.Register(new Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.AsymmetricPKCS11KeyEntryFactory());
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)

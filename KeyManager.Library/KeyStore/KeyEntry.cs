@@ -53,5 +53,24 @@ namespace Leosac.KeyManager.Library.KeyStore
             var variants = GetAllVariants();
             Variant = variants.Where(v => v.Name.ToLower() == name.ToLower()).FirstOrDefault();
         }
+
+        protected KeyEntryClass GetKeyEntryClassFromFirstKeyVariant()
+        {
+            var kclass = KeyEntryClass.Symmetric;
+            if (Variant != null && Variant.KeyContainers.Count > 0)
+            {
+                var tags = Variant.KeyContainers[0].Key.Tags;
+                foreach (var k in Enum.GetValues<KeyEntryClass>())
+                {
+                    if (tags.Contains(k.ToString()))
+                    {
+                        kclass = k;
+                        break;
+                    }
+                }
+            }
+
+            return kclass;
+        }
     }
 }
