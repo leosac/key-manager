@@ -8,6 +8,13 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 {
     public class PKCS11KeyEntryProperties : KeyEntryProperties
     {
+        public PKCS11KeyEntryProperties()
+        {
+            Encrypt = true;
+            Decrypt = true;
+            Modifiable = true;
+        }
+
         public bool? Encrypt { get; set; }
 
         public bool? Decrypt { get; set; }

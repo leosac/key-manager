@@ -119,20 +119,23 @@ namespace Leosac.KeyManager.Domain
                             Message = "Edit the Key Store Favorite"
                         };
                         model.SelectedFactoryItem = model.KeyStoreFactories.Where(item => item.Factory == factory).FirstOrDefault();
-                        model.SelectedFactoryItem!.DataContext!.Properties = Favorite.Properties;
-                        var dialog = new KeyStoreSelectorDialog
+                        if (model.SelectedFactoryItem != null)
                         {
-                            DataContext = model
-                        };
-                        object? ret = await DialogHost.Show(dialog, "RootDialog");
-                        if (ret != null)
-                        {
-                            if (favindex > -1)
+                            model.SelectedFactoryItem.DataContext!.Properties = Favorite.Properties;
+                            var dialog = new KeyStoreSelectorDialog
                             {
-                                favorites.KeyStores.RemoveAt(favindex);
+                                DataContext = model
+                            };
+                            object? ret = await DialogHost.Show(dialog, "RootDialog");
+                            if (ret != null)
+                            {
+                                if (favindex > -1)
+                                {
+                                    favorites.KeyStores.RemoveAt(favindex);
+                                }
+                                favorites.KeyStores.Add(Favorite);
+                                favorites.SaveToFile();
                             }
-                            favorites.KeyStores.Add(Favorite);
-                            favorites.SaveToFile();
                         }
                     }
                 }

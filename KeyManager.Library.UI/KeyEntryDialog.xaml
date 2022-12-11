@@ -38,7 +38,7 @@
                 </StackPanel>
             </Grid>
             <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,5">
-                <Button Width="100" IsDefault="True" Content="{x:Static properties:Resources.OK}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding KeyEntry}"/>
+                <Button Width="100" IsDefault="True" Content="{x:Static properties:Resources.OK}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding KeyEntry}" IsEnabled="{Binding KeyEntry.HasErrors, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}"/>
                 <Button Width="100" IsCancel="True" Content="{x:Static properties:Resources.Cancel}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
             </WrapPanel>
             <Grid Margin="10,10,10,10">

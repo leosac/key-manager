@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -8,36 +9,22 @@ using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library
 {
-    public abstract class KMObject : INotifyPropertyChanged
+    public abstract class KMObject : NotifyPropertyBase, INotifyDataErrorInfo
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        /// <summary>
-        /// Sets property if it does not equal existing value. Notifies listeners if change occurs.
-        /// </summary>
-        /// <typeparam name="T">Type of property.</typeparam>
-        /// <param name="member">The property's backing field.</param>
-        /// <param name="value">The new value.</param>
-        /// <param name="propertyName">Name of the property used to notify listeners.  This
-        /// value is optional and can be provided automatically when invoked from compilers
-        /// that support <see cref="CallerMemberNameAttribute"/>.</param>
-        protected virtual bool SetProperty<T>(ref T member, T value, [CallerMemberName] string? propertyName = null)
+        public KMObject()
         {
-            if (EqualityComparer<T>.Default.Equals(member, value))
-            {
-                return false;
-            }
-
-            member = value;
-            OnPropertyChanged(propertyName);
-            return true;
+            Errors = new PropertyErrors(this, OnErrorsChanged);
         }
 
-        /// <summary>
-        /// Notifies listeners that a property value has changed.
-        /// </summary>
-        /// <param name="propertyName">Name of the property, used to notify listeners.</param>
-        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public PropertyErrors Errors { get; private set; }
+
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+
+        protected virtual void OnErrorsChanged(DataErrorsChangedEventArgs e)
+            => this.ErrorsChanged?.Invoke(this, e);
+
+        public bool HasErrors => Errors.HasErrors;
+
+        public IEnumerable GetErrors(string? propertyName) => Errors.GetErrors(propertyName);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
 {
     public class ViewModelBase : KMObject
     {
-        
+
     }
 }
