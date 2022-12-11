@@ -30,5 +30,21 @@ namespace Leosac.KeyManager.Library.KeyStore
             get => _value;
             set => SetProperty(ref _value, value);
         }
+
+        private KeyEntryId? _wrappingKeyId;
+
+        public KeyEntryId? WrappingKeyId
+        {
+            get => _wrappingKeyId;
+            set => SetProperty(ref _wrappingKeyId, value);
+        }
+
+        private string? _wrappingContainerSelector;
+
+        public string? WrappingContainerSelector
+        {
+            get => _wrappingContainerSelector;
+            set => SetProperty(ref _wrappingContainerSelector, value);
+        }
     }
 }

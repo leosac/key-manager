@@ -55,16 +55,16 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         public abstract void Store(IList<IChangeKeyEntry> changes);
 
-        public virtual void Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
+        public virtual void Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
         {
             var classes = SupportedClasses;
             foreach (var keClass in classes)
             {
-                Publish(store, getFavoriteKeyStore, keClass, initCallback);
+                Publish(store, getFavoriteKeyStore, keClass, wrappingKeyId, wrappingContainerSelector, initCallback);
             }
         }
 
-        public virtual void Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryClass keClass, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
+        public virtual void Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryClass keClass, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
         {
             var changes = new List<IChangeKeyEntry>();
             var ids = GetAll(keClass);
@@ -81,6 +81,9 @@ namespace Leosac.KeyManager.Library.KeyStore
                     {
                         var cryptogram = new KeyEntryCryptogram();
                         cryptogram.Identifier = id;
+                        // TODO: we may want to have multiple wrapping keys later on
+                        cryptogram.WrappingKeyId = wrappingKeyId;
+                        cryptogram.WrappingContainerSelector = wrappingContainerSelector;
 
                         var ks = getFavoriteKeyStore(entry.Link.KeyStoreFavorite);
                         if (ks != null)

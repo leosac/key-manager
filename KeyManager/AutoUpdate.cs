@@ -30,7 +30,7 @@ namespace Leosac.KeyManager
             try
             {
                 var client = new HttpClient();
-                using (var response = client.GetAsync("https://raw.githubusercontent.com/leosac/key-manager/master/latestversion").Result)
+                using (var response = client.GetAsync("https://donwload.leosac.com/leosac-key-manager/latestversion").Result)
                 {
                     using (var content = response.Content)
                     {

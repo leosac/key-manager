@@ -5,6 +5,7 @@ using Org.BouncyCastle.Asn1.Cms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,7 +41,12 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return CheckKeyEntryExists(identifier, keClass, out handle);
         }
 
-        public bool CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass, out IObjectHandle? handle)
+        public bool CheckKeyEntryExists(KeyEntryId identifier, out IObjectHandle? handle)
+        {
+            return CheckKeyEntryExists(identifier, null, out handle);
+        }
+
+        public bool CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass? keClass, out IObjectHandle? handle)
         {
             if (_session == null)
                 throw new KeyStoreException("No valid session.");
@@ -58,23 +64,26 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_LABEL, UTF8Encoding.UTF8.GetBytes(identifier.Label)));
 
             var objects = new List<IObjectHandle>();
-            if (keClass == KeyEntryClass.Symmetric)
+            if (keClass != null)
             {
-                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_SECRET_KEY));
-            }
-            else if (keClass == KeyEntryClass.Asymmetric)
-            {
-                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PRIVATE_KEY));
-                objects = _session.FindAllObjects(attributes);
-                attributes[attributes.Count - 1] = _session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PUBLIC_KEY);
-            }
-            else if (keClass == KeyEntryClass.PrivateKey)
-            {
-                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PRIVATE_KEY));
-            }
-            else if (keClass == KeyEntryClass.PublicKey)
-            {
-                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PUBLIC_KEY));
+                if (keClass == KeyEntryClass.Symmetric)
+                {
+                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_SECRET_KEY));
+                }
+                else if (keClass == KeyEntryClass.Asymmetric)
+                {
+                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PRIVATE_KEY));
+                    objects = _session.FindAllObjects(attributes);
+                    attributes[attributes.Count - 1] = _session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PUBLIC_KEY);
+                }
+                else if (keClass == KeyEntryClass.PrivateKey)
+                {
+                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PRIVATE_KEY));
+                }
+                else if (keClass == KeyEntryClass.PublicKey)
+                {
+                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PUBLIC_KEY));
+                }
             }
 
             if (attributes.Count == 0)
@@ -135,24 +144,43 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                     }
                 }
             }
-            else
-                throw new NotImplementedException();
+            else if (change is KeyEntryCryptogram cryptogram)
+            {
+                if (cryptogram.WrappingKeyId == null)
+                {
+                    log.Error("Wrapping Key Entry Identifier parameter is expected.");
+                    throw new KeyStoreException("Wrapping Key Entry Identifier parameter is expected.");
+                }
+
+                IObjectHandle? wrapHandle;
+                if (!CheckKeyEntryExists(cryptogram.WrappingKeyId, out wrapHandle))
+                {
+                    log.Error(String.Format("The key entry `{0}` doesn't exist.", cryptogram.WrappingKeyId));
+                    throw new KeyStoreException("The key entry doesn't exist.");
+                }
+                var attributes = GetKeyEntryAttributes(null, true);
+                var mechanism = CreateMostExpectedWrappingMechanism(wrapHandle!);
+                _session!.UnwrapKey(mechanism, wrapHandle, Convert.FromHexString(cryptogram.Value), attributes);
+            }
 
             log.Info(String.Format("Key entry `{0}` created.", change.Identifier));
         }
 
-        private List<IObjectAttribute> GetKeyEntryAttributes(KeyEntry entry, bool create = false)
+        private List<IObjectAttribute> GetKeyEntryAttributes(KeyEntry? entry, bool create = false)
         {
-            if (entry.Variant?.KeyContainers.Count > 1)
+            if (entry != null && entry.Variant?.KeyContainers.Count > 1)
             {
                 throw new KeyStoreException("This key store do not support key entries with more than one key container.");
             }
 
             var attributes = new List<IObjectAttribute>();
-            if (entry.Identifier.Id != null && create)
-                attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_ID, Convert.FromHexString(entry.Identifier.Id)));
-            if (entry.Identifier.Label != null)
-                attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_LABEL, UTF8Encoding.UTF8.GetBytes(entry.Identifier.Label)));
+            if (entry != null)
+            {
+                if (entry.Identifier.Id != null && create)
+                    attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_ID, Convert.FromHexString(entry.Identifier.Id)));
+                if (entry.Identifier.Label != null)
+                    attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_LABEL, UTF8Encoding.UTF8.GetBytes(entry.Identifier.Label)));
+            }
             if (entry is PKCS11KeyEntry pkcsEntry)
             {
                 if (create)
@@ -170,7 +198,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             }
             else
             {
-                if (create)
+                if (create && entry != null)
                 {
                     attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_KEY_TYPE, PKCS11KeyEntry.GetCKK(entry)));
                 }
@@ -405,17 +433,116 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 
         public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null)
         {
-            throw new NotImplementedException();
+            log.Info(String.Format("Resolving key entry link with Key Entry Identifier `{0}` and Wrapping Key Entry Identifier...", keyIdentifier, wrappingKeyId));
+            if (wrappingKeyId == null)
+            {
+                log.Error("Wrapping Key Entry Identifier parameter is expected.");
+                throw new KeyStoreException("Wrapping Key Entry Identifier parameter is expected.");
+            }
+            if (!string.IsNullOrEmpty(divInput))
+            {
+                log.Error("Div Input parameter is not supported.");
+                throw new KeyStoreException("Div Input parameter is not supported.");
+            }
+
+            IObjectHandle? handle;
+            if (!CheckKeyEntryExists(keyIdentifier, keClass, out handle))
+            {
+                log.Error(String.Format("The key entry `{0}` doesn't exist.", keyIdentifier));
+                throw new KeyStoreException("The key entry doesn't exist.");
+            }
+            IObjectHandle? wrapHandle;
+            if (!CheckKeyEntryExists(wrappingKeyId, out wrapHandle))
+            {
+                log.Error(String.Format("The key entry `{0}` doesn't exist.", wrappingKeyId));
+                throw new KeyStoreException("The key entry doesn't exist.");
+            }
+
+            IMechanism mechanism = CreateMostExpectedWrappingMechanism(wrapHandle!);
+            log.Info(String.Format("Using mechanism {0}...", (CKM)mechanism.Type));
+            var data = _session!.WrapKey(mechanism, wrapHandle, handle);
+            log.Info("Key entry link completed.");
+            return Convert.ToHexString(data);
+        }
+
+        protected IMechanism CreateMostExpectedWrappingMechanism(IObjectHandle handle)
+        {
+            CKM ckm;
+            var attributes = _session!.GetAttributeValue(handle, new List<CKA>
+            {
+                CKA.CKA_KEY_TYPE
+            });
+            var ckk = (CKK)attributes[0].GetValueAsUlong();
+
+            switch (ckk)
+            {
+                case CKK.CKK_AES:
+                    ckm = CKM.CKM_AES_CBC;
+                    break;
+                case CKK.CKK_DES:
+                    ckm = CKM.CKM_DES_CBC;
+                    break;
+                case CKK.CKK_DES2:
+                case CKK.CKK_DES3:
+                    ckm = CKM.CKM_DES3_CBC;
+                    break;
+                case CKK.CKK_DSA:
+                    ckm = CKM.CKM_DSA;
+                    break;
+                case CKK.CKK_ECDSA:
+                    ckm = CKM.CKM_ECDSA;
+                    break;
+                case CKK.CKK_RSA:
+                    ckm = CKM.CKM_RSA_PKCS;
+                    break;
+                default:
+                    throw new KeyStoreException("Unsupported key type");
+            }
+
+            return _session.Factories.MechanismFactory.Create(ckm);
         }
 
         public override string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null)
         {
-            throw new NotImplementedException();
+            log.Info(String.Format("Resolving key link with Key Entry Identifier `{0}`...", keyIdentifier));
+            if (!string.IsNullOrEmpty(divInput))
+            {
+                log.Error("Div Input parameter is not supported.");
+                throw new KeyStoreException("Div Input parameter is not supported.");
+            }
+
+            IObjectHandle? handle;
+            if (!CheckKeyEntryExists(keyIdentifier, keClass, out handle))
+            {
+                log.Error(String.Format("The key entry `{0}` doesn't exist.", keyIdentifier));
+                throw new KeyStoreException("The key entry doesn't exist.");
+            }
+
+            var attributes = _session!.GetAttributeValue(handle, new List<CKA>
+            {
+                CKA.CKA_VALUE
+            });
+            log.Info("Key link completed.");
+            return Convert.ToHexString(attributes[0].GetValueAsByteArray());
         }
 
         public override void Store(IList<IChangeKeyEntry> changes)
         {
-            throw new NotImplementedException();
+            log.Info(String.Format("Storing `{0}` key entries...", changes.Count));
+
+            foreach (var change in changes)
+            {
+                if (CheckKeyEntryExists(change.Identifier, change.KClass))
+                {
+                    Update(change);
+                }
+                else
+                {
+                    Create(change);
+                }
+            }
+
+            log.Info("Key Entries storing completed.");
         }
 
         public override void Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
@@ -438,7 +565,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                     if (rawkey != null)
                     {
                         // We should already have only one key material during an update
-                        attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE, rawkey));
+                        attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE, rawkey));
                     }
                 }
                 _session!.SetAttributeValue(handle, attributes);

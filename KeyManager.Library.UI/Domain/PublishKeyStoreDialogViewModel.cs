@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Leosac.KeyManager.Library.KeyStore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
     {
         public PublishKeyStoreDialogViewModel()
         {
-
+            _wrappingKeySelector = "0";
+            _wrappingKeyId = new KeyEntryId();
         }
 
         private Favorite? _favorite;
@@ -19,6 +21,22 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             get => _favorite;
             set => SetProperty(ref _favorite, value);
+        }
+
+        private KeyEntryId _wrappingKeyId;
+
+        public KeyEntryId WrappingKeyId
+        {
+            get => _wrappingKeyId;
+            set => SetProperty(ref _wrappingKeyId, value);
+        }
+
+        private string _wrappingKeySelector;
+
+        public string WrappingKeySelector
+        {
+            get => _wrappingKeySelector;
+            set => SetProperty(ref _wrappingKeySelector, value);
         }
     }
 }

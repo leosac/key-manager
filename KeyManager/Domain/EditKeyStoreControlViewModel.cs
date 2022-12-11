@@ -185,6 +185,8 @@ namespace Leosac.KeyManager.Domain
                                         }
                                         return null;
                                     },
+                                    model.WrappingKeyId,
+                                    model.WrappingKeySelector,
                                     (store, keClass, nbentries) =>
                                     {
                                         ProgressMaximum = nbentries * 2;
