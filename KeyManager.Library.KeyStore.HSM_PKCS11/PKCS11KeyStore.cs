@@ -89,15 +89,9 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             if (attributes.Count == 0)
                 throw new KeyStoreException("No key identifier.");
 
-            objects.Union(_session.FindAllObjects(attributes));
-            if (objects.Count > 0)
-            {
-                handle = objects[0];
-                return true;
-            }
-
-            handle = null;
-            return false;
+            var allObjects = objects.Union(_session.FindAllObjects(attributes));
+            handle = allObjects.FirstOrDefault();
+            return (handle != null);
         }
 
         public override void Close()
@@ -133,7 +127,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                     if (rawkey != null)
                     {
                         var attributes = GetKeyEntryAttributes(entry, true);
-                        attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE, rawkey));
+                        attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE, rawkey));
                         if (entry.KClass == KeyEntryClass.PrivateKey || (entry.KClass == KeyEntryClass.Asymmetric && material.Name == KeyMaterial.PRIVATE_KEY))
                             attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PRIVATE_KEY));
                         else if (entry.KClass == KeyEntryClass.PublicKey || (entry.KClass == KeyEntryClass.Asymmetric && material.Name == KeyMaterial.PUBLIC_KEY))
@@ -334,8 +328,8 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                 }
             }
 
-            objects.Union(_session.FindAllObjects(attributes));
-            foreach (var obj in objects)
+            var allObjects = objects.Union(_session.FindAllObjects(attributes));
+            foreach (var obj in allObjects)
             {
                 if (obj.ObjectId != CK.CK_INVALID_HANDLE)
                 {

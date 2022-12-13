@@ -10,8 +10,9 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 {
     public class AsymmetricPKCS11KeyEntry : PKCS11KeyEntry
     {
-        public AsymmetricPKCS11KeyEntry(KeyEntryClass kclass = KeyEntryClass.Asymmetric)
+        public AsymmetricPKCS11KeyEntry(KeyEntryClass kclass = KeyEntryClass.Asymmetric) : base()
         {
+            Properties = new AsymmetricPKCS11KeyEntryProperties();
             _kclass = kclass;
         }
 

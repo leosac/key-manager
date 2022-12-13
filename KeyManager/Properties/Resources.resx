@@ -219,6 +219,9 @@
   <data name="LicenseKeyHelper" xml:space="preserve">
     <value>The plan/license key</value>
   </data>
+  <data name="LightMode" xml:space="preserve">
+    <value>Light</value>
+  </data>
   <data name="LogConsole" xml:space="preserve">
     <value>Log Console</value>
   </data>

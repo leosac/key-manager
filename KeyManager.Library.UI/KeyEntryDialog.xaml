@@ -38,7 +38,14 @@
                 </StackPanel>
             </Grid>
             <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,5">
-                <Button Width="100" IsDefault="True" Content="{x:Static properties:Resources.OK}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding KeyEntry}" IsEnabled="{Binding KeyEntry.HasErrors, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}"/>
+                <Button Width="100" IsDefault="True" Content="{x:Static properties:Resources.OK}" CommandParameter="{Binding KeyEntry}" IsEnabled="{Binding KeyEntry.HasErrors, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}">
+                    <Button.Command>
+                        <domain:CommandGroup>
+                            <domain:CommandReference Command="{Binding BeforeSubmitCommand}"/>
+                            <domain:CommandReference Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
+                        </domain:CommandGroup>
+                    </Button.Command>
+                </Button>
                 <Button Width="100" IsCancel="True" Content="{x:Static properties:Resources.Cancel}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
             </WrapPanel>
             <Grid Margin="10,10,10,10">
@@ -63,10 +70,18 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <TextBox Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding KeyEntry.Identifier.Id}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}" Margin="6"
+                <TextBox Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}" Margin="6"
                      materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifierHelper}"
                      materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"
-                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                    <TextBox.Text>
+                        <Binding Path="KeyEntry.Identifier.Id">
+                            <Binding.ValidationRules>
+                                <domain:NotEmptyValidationRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
                 <ComboBox Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="6"
                       ItemsSource="{Binding Variants}"
                       SelectedItem="{Binding KeyEntry.Variant, UpdateSourceTrigger=PropertyChanged}"

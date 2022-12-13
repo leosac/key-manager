@@ -13,7 +13,6 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
     {
         public PKCS11KeyEntry()
         {
-            Properties = new PKCS11KeyEntryProperties();
             Identifier.Id = Guid.NewGuid().ToString("N");
         }
 

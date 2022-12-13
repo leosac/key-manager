@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,6 +43,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
                         await DialogHost.Show(dialog, "KeyEntryDialog");
                     }
                 });
+            BeforeSubmitCommand = new KeyManagerCommand(
+                parameter =>
+                {
+
+                }, CanSubmit);
         }
 
         private bool _canChangeFactory = true;
@@ -109,9 +115,21 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 {
                     Variants.Add(variant);
                 }
+
+                if (KeyEntry.Variant == null)
+                {
+                    KeyEntry.Variant = Variants.FirstOrDefault();
+                }
             }
         }
 
+        private bool CanSubmit(object parameter)
+        {
+            return !HasErrors;
+        }
+
         public KeyManagerAsyncCommand<object> OpenLinkCommand { get; }
+
+        public KeyManagerCommand BeforeSubmitCommand { get; }
     }
 }

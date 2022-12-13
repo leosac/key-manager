@@ -14,13 +14,13 @@ namespace Leosac.KeyManager.Library
     {
         private static readonly IReadOnlyList<object> EmptyErrors = new object[0];
         private readonly Action<DataErrorsChangedEventArgs> ownerOnErrorsChanged;
-        private readonly Type type;
+        private readonly Type? type;
         private readonly ConcurrentDictionary<string, List<object>> propertyErrors = new ConcurrentDictionary<string, List<object>>();
 
         public PropertyErrors(INotifyDataErrorInfo owner, Action<DataErrorsChangedEventArgs> ownerOnErrorsChanged)
         {
             this.ownerOnErrorsChanged = ownerOnErrorsChanged;
-            this.type = owner.GetType();
+            this.type = owner?.GetType();
         }
 
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
@@ -29,7 +29,7 @@ namespace Leosac.KeyManager.Library
 
         public IEnumerable GetErrors(string? propertyName)
         {
-            Debug.Assert(this.type.GetProperty(propertyName) != null, $"The type {this.type.Name} does not have a property named {propertyName}");
+            Debug.Assert(this.type?.GetProperty(propertyName) != null, $"The type {this.type.Name} does not have a property named {propertyName}");
             List<object>? errors;
             return this.propertyErrors.TryGetValue(propertyName, out errors)
                 ? errors
@@ -38,7 +38,7 @@ namespace Leosac.KeyManager.Library
 
         public void Add(string propertyName, object error)
         {
-            Debug.Assert(this.type.GetProperty(propertyName) != null, $"The type {this.type.Name} does not have a property named {propertyName}");
+            Debug.Assert(this.type?.GetProperty(propertyName) != null, $"The type {this.type.Name} does not have a property named {propertyName}");
             this.propertyErrors.AddOrUpdate(
                 propertyName,
                 _ => new List<object> { error },
@@ -49,7 +49,7 @@ namespace Leosac.KeyManager.Library
 
         public void Remove(string propertyName, Predicate<object> filter)
         {
-            Debug.Assert(this.type.GetProperty(propertyName) != null, $"The type {this.type.Name} does not have a property named {propertyName}");
+            Debug.Assert(this.type?.GetProperty(propertyName) != null, $"The type {this.type.Name} does not have a property named {propertyName}");
             List<object>? errors;
             if (this.propertyErrors.TryGetValue(propertyName, out errors))
             {
@@ -63,7 +63,7 @@ namespace Leosac.KeyManager.Library
 
         public void Clear(string propertyName)
         {
-            Debug.Assert(this.type.GetProperty(propertyName) != null, $"The type {this.type.Name} does not have a property named {propertyName}");
+            Debug.Assert(this.type?.GetProperty(propertyName) != null, $"The type {this.type.Name} does not have a property named {propertyName}");
             List<object>? temp;
             if (this.propertyErrors.TryRemove(propertyName, out temp))
             {

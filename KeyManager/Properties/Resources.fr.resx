@@ -219,6 +219,9 @@
   <data name="LicenseKeyHelper" xml:space="preserve">
     <value>Le plan / clé de licence</value>
   </data>
+  <data name="LightMode" xml:space="preserve">
+    <value>Clair</value>
+  </data>
   <data name="LogConsole" xml:space="preserve">
     <value>Log Console</value>
   </data>
@@ -289,7 +292,7 @@
     <value>Email</value>
   </data>
   <data name="RegisterEmailHelper" xml:space="preserve">
-    <value>L'adresse e-mail enregistré (optionnel)</value>
+    <value>L'adresse e-mail enregistrée (optionnel)</value>
   </data>
   <data name="RegisterLink" xml:space="preserve">
     <value>Enregistrer un plan existant</value>

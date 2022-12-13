@@ -77,5 +77,10 @@ namespace Leosac.KeyManager.Library.KeyStore
         }
 
         public static bool operator !=(KeyEntryId? lhs, KeyEntryId? rhs) => !(lhs == rhs);
+
+        public override string ToString()
+        {
+            return String.Format("Key Entry Id (Identifier: `{0}`, Label: `{1}`)", Id, Label);
+        }
     }
 }
