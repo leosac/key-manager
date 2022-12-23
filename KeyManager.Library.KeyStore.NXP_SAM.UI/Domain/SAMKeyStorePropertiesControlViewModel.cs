@@ -1,4 +1,5 @@
 ﻿using Leosac.KeyManager.Library.UI.Domain;
+using LibLogicalAccess.Card;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,6 +17,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             _lla = LibLogicalAccess.LibraryManager.getInstance();
             ReaderProviders = new ObservableCollection<string>(_lla.getAvailableReaders().ToArray());
             ReaderUnits = new ObservableCollection<string>();
+            KeyTypes = new ObservableCollection<DESFireKeyType>(Enum.GetValues<DESFireKeyType>());
         }
 
         private LibLogicalAccess.LibraryManager _lla;
@@ -28,6 +30,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
         public ObservableCollection<string> ReaderProviders { get; set; }
 
         public ObservableCollection<string> ReaderUnits { get; set; }
+
+        public ObservableCollection<DESFireKeyType> KeyTypes { get; set; }
 
         public void RefreshReaderList()
         {

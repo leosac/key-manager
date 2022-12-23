@@ -423,6 +423,12 @@
   <data name="SearchTerms" xml:space="preserve">
     <value>Termes de recherche</value>
   </data>
+  <data name="Secret" xml:space="preserve">
+    <value>Secret</value>
+  </data>
+  <data name="SecretHelper" xml:space="preserve">
+    <value>Le secret du magasin</value>
+  </data>
   <data name="Seed" xml:space="preserve">
     <value>Graine</value>
   </data>

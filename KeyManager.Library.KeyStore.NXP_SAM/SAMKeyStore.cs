@@ -316,7 +316,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             {
                 if (GetSAMProperties().AutoSwitchToAV2)
                 {
-                    SwitchSAMToAV2(av1cmd, GetSAMProperties().AuthenticateKey);
+                    SwitchSAMToAV2(av1cmd, GetSAMProperties().AuthenticateKeyType, GetSAMProperties().AuthenticateKeyVersion, Properties?.Secret);
                     Close();
                     Open();
                     cmd = Chip.getCommands();
@@ -345,12 +345,6 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         {
             log.Info(String.Format("Updating key entry `{0}`...", change.Identifier));
 
-            if (GetSAMProperties().AuthenticateKey == null)
-            {
-                log.Error("To be updated, a SAM AV2 key store requires at least the Authenticate Key.");
-                throw new KeyStoreException("To be updated, a SAM AV2 key store requires at least the Authenticate Key.");
-            }
-
             if (change is SAMSymmetricKeyEntry samkey)
             {
                 var cmd = Chip?.getCommands();
@@ -364,8 +358,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
                     var key = new DESFireKey();
                     key.setKeyType(DESFireKeyType.DF_KEY_AES);
-                    key.setKeyVersion(GetSAMProperties().AuthenticateKey.Version);
-                    key.fromString(GetSAMProperties().AuthenticateKey.Key.GetAggregatedValue<string>(KeyValueFormat.HexStringWithSpace));
+                    key.setKeyVersion(GetSAMProperties().AuthenticateKeyVersion);
+                    if (!string.IsNullOrEmpty(Properties?.Secret))
+                    {
+                        key.fromString(KeyMaterial.GetFormattedValue<string>(Properties.Secret, KeyValueFormat.HexStringWithSpace));
+                    }
+                    else
+                    {
+                        key.fromString("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+                    }
 
                     var natkey = new AV2SAMKeyEntry();
 
@@ -458,15 +459,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             log.Info(String.Format("Key entry `{0}` updated.", change.Identifier));
         }
 
-        public static void SwitchSAMToAV2(SAMAV1ISO7816Commands av1cmds, KeyVersion keyVersion)
+        public static void SwitchSAMToAV2(SAMAV1ISO7816Commands av1cmds, DESFireKeyType keyType, byte keyVersion, string keyValue)
         {
             log.Info("Switching the SAM to AV2 mode...");
             var key = new DESFireKey();
-            if (keyVersion.Key.Tags.Contains("AES"))
+            key.setKeyType(keyType);
+            if (keyType == DESFireKeyType.DF_KEY_AES)
             {
-                key.setKeyType(DESFireKeyType.DF_KEY_AES);
-                key.setKeyVersion(keyVersion.Version);
-                key.fromString(keyVersion.Key.GetAggregatedValue<string>(KeyValueFormat.HexStringWithSpace));
+                key.setKeyVersion(keyVersion);
+                key.fromString(KeyMaterial.GetFormattedValue<string>(keyValue, KeyValueFormat.HexStringWithSpace));
             }
             else
             {
@@ -488,19 +489,14 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 keyav1entry.setKeyEntryInformation(keyInfo);
                 keyav1entry.setUpdateMask(0xff);
 
-                if (keyVersion.Key.KeySize == 16)
-                    key.setKeyType(DESFireKeyType.DF_KEY_DES);
-                else
-                    key.setKeyType(DESFireKeyType.DF_KEY_3K3DES);
-
                 av1cmds.authenticateHost(key, 0);
                 av1cmds.changeKeyEntry(0, keyav1entry, key);
 
                 key.fromString("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
                 key.setKeyVersion(0);
+                key.setKeyType(DESFireKeyType.DF_KEY_AES);
             }
 
-            key.setKeyType(DESFireKeyType.DF_KEY_AES);
             av1cmds.authenticateHost(key, 0);
             av1cmds.lockUnlock(key, SAMLockUnlock.SwitchAV2Mode, 0, 0, 0);
             log.Info("SAM switched to AV2 mode.");
@@ -562,12 +558,6 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         {
             log.Info(String.Format("Updating key usage counter `{0}`...", counter.Identifier));
 
-            if (GetSAMProperties().AuthenticateKey == null)
-            {
-                log.Error("To be updated, a SAM AV2 key store requires at least the Authenticate Key.");
-                throw new KeyStoreException("To be updated, a SAM AV2 key store requires at least the Authenticate Key.");
-            }
-
             var cmd = Chip?.getCommands();
             if (cmd is SAMAV2ISO7816Commands av2cmd)
             {
@@ -579,8 +569,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
                 var key = new DESFireKey();
                 key.setKeyType(DESFireKeyType.DF_KEY_AES);
-                key.setKeyVersion(GetSAMProperties().AuthenticateKey.Version);
-                key.fromString(GetSAMProperties().AuthenticateKey.Key.GetAggregatedValue<string>(KeyValueFormat.HexStringWithSpace));
+                key.setKeyVersion(GetSAMProperties().AuthenticateKeyVersion);
+                if (!string.IsNullOrEmpty(Properties?.Secret))
+                {
+                    key.fromString(KeyMaterial.GetFormattedValue<string>(Properties.Secret, KeyValueFormat.HexStringWithSpace));
+                }
+                else
+                {
+                    key.fromString("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+                }
 
                 var kucEntry = new SAMKucEntry();
                 var entry = kucEntry.getKucEntryStruct();

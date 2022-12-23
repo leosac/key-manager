@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -47,20 +48,12 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             set => SetProperty(ref _user, value);
         }
 
-        private string? _userPIN;
-
-        public string? UserPIN
-        {
-            get => _userPIN;
-            set => SetProperty(ref _userPIN, value);
-        }
-
         public byte[]? GetUserPINBytes()
         {
-            if (UserPIN == null)
+            if (Secret == null)
                 return null;
 
-            return UTF8Encoding.UTF8.GetBytes(UserPIN);
+            return UTF8Encoding.UTF8.GetBytes(Secret);
         }
 
         public override bool Equals(object? obj)
@@ -79,10 +72,10 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             if (this.GetType() != p.GetType())
                 return false;
 
-            return (LibraryPath == p.LibraryPath && SlotFilterType == p.SlotFilterType && SlotFilter == p.SlotFilter && User == p.User && UserPIN == p.UserPIN);
+            return (LibraryPath == p.LibraryPath && SlotFilterType == p.SlotFilterType && SlotFilter == p.SlotFilter && User == p.User);
         }
 
-        public override int GetHashCode() => (LibraryPath, SlotFilterType, SlotFilter, User, UserPIN).GetHashCode();
+        public override int GetHashCode() => (LibraryPath, SlotFilterType, SlotFilter, User).GetHashCode();
 
         public static bool operator ==(PKCS11KeyStoreProperties lhs, PKCS11KeyStoreProperties rhs)
         {

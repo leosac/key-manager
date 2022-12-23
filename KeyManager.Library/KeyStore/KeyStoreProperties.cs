@@ -14,13 +14,13 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         }
 
-        private Key? _wrappingKey;
+        private string? _secret;
 
         [JsonIgnore]
-        public Key? WrappingKey
+        public string? Secret
         {
-            get => _wrappingKey;
-            set => SetProperty(ref _wrappingKey, value);
+            get => _secret;
+            set => SetProperty(ref _secret, value);
         }
     }
 }

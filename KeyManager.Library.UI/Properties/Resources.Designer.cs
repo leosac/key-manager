@@ -979,6 +979,24 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Secret.
+        /// </summary>
+        public static string Secret {
+            get {
+                return ResourceManager.GetString("Secret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The key store secret.
+        /// </summary>
+        public static string SecretHelper {
+            get {
+                return ResourceManager.GetString("SecretHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Seed.
         /// </summary>
         public static string Seed {

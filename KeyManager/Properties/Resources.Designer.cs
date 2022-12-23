@@ -475,6 +475,15 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string OK {
+            get {
+                return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Online.
         /// </summary>
         public static string Online {
@@ -615,6 +624,24 @@ namespace Leosac.KeyManager.Properties {
         public static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Secret.
+        /// </summary>
+        public static string Secret {
+            get {
+                return ResourceManager.GetString("Secret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The key store secret.
+        /// </summary>
+        public static string SecretHelper {
+            get {
+                return ResourceManager.GetString("SecretHelper", resourceCulture);
             }
         }
         

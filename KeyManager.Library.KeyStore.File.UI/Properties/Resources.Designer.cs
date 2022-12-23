@@ -86,5 +86,23 @@ namespace Leosac.KeyManager.Library.KeyStore.File.UI.Properties {
                 return ResourceManager.GetString("DirectoryHelper", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Encryption Key.
+        /// </summary>
+        public static string EncryptionKey {
+            get {
+                return ResourceManager.GetString("EncryptionKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Master Encryption Key for key storage on disk.
+        /// </summary>
+        public static string EncryptionKeyHelper {
+            get {
+                return ResourceManager.GetString("EncryptionKeyHelper", resourceCulture);
+            }
+        }
     }
 }

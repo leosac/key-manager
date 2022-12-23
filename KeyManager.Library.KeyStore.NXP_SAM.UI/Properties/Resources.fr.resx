@@ -210,6 +210,12 @@
   <data name="KeyTypeHelper" xml:space="preserve">
     <value>Type de clé SAM</value>
   </data>
+  <data name="KeyValue" xml:space="preserve">
+    <value>Valeur</value>
+  </data>
+  <data name="KeyValueHelper" xml:space="preserve">
+    <value>Valeur de la clé</value>
+  </data>
   <data name="KeyVersion" xml:space="preserve">
     <value>Version de clé</value>
   </data>

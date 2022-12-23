@@ -340,6 +340,24 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value.
+        /// </summary>
+        public static string KeyValue {
+            get {
+                return ResourceManager.GetString("KeyValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key Value.
+        /// </summary>
+        public static string KeyValueHelper {
+            get {
+                return ResourceManager.GetString("KeyValueHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Key Version.
         /// </summary>
         public static string KeyVersion {

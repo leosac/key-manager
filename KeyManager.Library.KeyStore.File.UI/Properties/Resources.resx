@@ -126,4 +126,10 @@
   <data name="DirectoryHelper" xml:space="preserve">
     <value>Key Store base directory</value>
   </data>
+  <data name="EncryptionKey" xml:space="preserve">
+    <value>Encryption Key</value>
+  </data>
+  <data name="EncryptionKeyHelper" xml:space="preserve">
+    <value>Master Encryption Key for key storage on disk</value>
+  </data>
 </root>

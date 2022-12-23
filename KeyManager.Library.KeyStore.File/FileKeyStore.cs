@@ -87,15 +87,24 @@ namespace Leosac.KeyManager.Library.KeyStore.File
                 throw new KeyStoreException("A key entry with the same identifier already exists.");
             }
 
-            string serialized;
+            var kefile = GetKeyEntryFile(change.Identifier, change.KClass);
             if (change is KeyEntry)
-                serialized = JsonConvert.SerializeObject(change, typeof(KeyEntry), _jsonSettings);
+            {
+                var serialized = JsonConvert.SerializeObject(change, typeof(KeyEntry), _jsonSettings);
+                using (var aes = System.Security.Cryptography.Aes.Create())
+                {
+                    aes.Key = GetWrappingKey();
+                    var data = aes.EncryptCbc(Encoding.UTF8.GetBytes(serialized), new byte[16], System.Security.Cryptography.PaddingMode.PKCS7);
+                    System.IO.File.WriteAllBytes(kefile, data);
+                }
+            }
             else if (change is KeyEntryCryptogram cryptogram)
-                serialized = cryptogram.Value;
+            {
+                System.IO.File.WriteAllText(kefile, cryptogram.Value);
+            }
             else
                 throw new KeyStoreException("Unsupported `change` parameter.");
 
-            System.IO.File.WriteAllText(GetKeyEntryFile(change.Identifier, change.KClass), serialized);
             log.Info(String.Format("Key entry `{0}` created.", change.Identifier));
         }
 
@@ -125,10 +134,27 @@ namespace Leosac.KeyManager.Library.KeyStore.File
                 throw new KeyStoreException("The key entry doesn't exist.");
             }
 
-            string serialized = System.IO.File.ReadAllText(GetKeyEntryFile(identifier, keClass));
-            var keyEntry = JsonConvert.DeserializeObject<KeyEntry>(serialized, _jsonSettings);
-            log.Info(String.Format("Key entry `{0}` retrieved.", identifier));
-            return keyEntry;
+            var encdata = System.IO.File.ReadAllBytes(GetKeyEntryFile(identifier, keClass));
+            using (var aes = System.Security.Cryptography.Aes.Create())
+            {
+                aes.Key = GetWrappingKey();
+                var data = aes.DecryptCbc(encdata, new byte[16], System.Security.Cryptography.PaddingMode.PKCS7);
+                var keyEntry = JsonConvert.DeserializeObject<KeyEntry>(Encoding.UTF8.GetString(data), _jsonSettings);
+                log.Info(String.Format("Key entry `{0}` retrieved.", identifier));
+                return keyEntry;
+            }
+        }
+
+        private byte[] GetWrappingKey()
+        {
+            if (string.IsNullOrEmpty(Properties?.Secret))
+                return new byte[16];
+
+            var key = Convert.FromHexString(Properties.Secret);
+            if (key.Length != 16 && key.Length != 32)
+                throw new KeyStoreException("Wrong wrapping key length.");
+
+            return key;
         }
 
         public override IList<KeyEntryId> GetAll(KeyEntryClass? keClass = null)

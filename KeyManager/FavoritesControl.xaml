@@ -32,9 +32,32 @@
                 <DataTemplate DataType="lib:Favorite">
                     <DockPanel LastChildFill="True">
                         <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                            <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.KeyStoreCommand, ElementName=userControl}"  CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.OpenFavorite}" Margin="3">
-                                <materialDesign:PackIcon Kind="FolderOpen" Height="24" Width="24" Cursor="Hand" />
-                            </Button>
+                            <materialDesign:DialogHost DialogTheme="Inherit">
+                                <materialDesign:DialogHost.DialogContent>
+                                    <StackPanel Margin="16" Width="250">
+                                        <PasswordBox materialDesign:HintAssist.HelperText="{x:Static properties:Resources.SecretHelper}"
+                                                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.Secret}"
+                                                     materialDesign:TextFieldAssist.HasClearButton="True" Margin="5"
+                                                     Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
+                                                     materialDesign:PasswordBoxAssist.Password="{Binding Properties.Secret}" />
+                                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                            <Button Margin="0,8,8,0" CommandParameter="{Binding}" Content="{x:Static properties:Resources.OK}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}">
+                                                <Button.Command>
+                                                    <libuidomain:CommandGroup>
+                                                        <libuidomain:CommandReference Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
+                                                        <libuidomain:CommandReference Command="{Binding DataContext.KeyStoreCommand, ElementName=userControl}"/>
+                                                    </libuidomain:CommandGroup>
+                                                </Button.Command>
+                                            </Button>
+                                            <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </materialDesign:DialogHost.DialogContent>
+
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" ToolTip="{x:Static properties:Resources.OpenFavorite}" Margin="3">
+                                    <materialDesign:PackIcon Kind="FolderOpen" Height="24" Width="24" Cursor="Hand" />
+                                </Button>
+                            </materialDesign:DialogHost>
                             <materialDesign:DialogHost DialogTheme="Inherit">
                                 <materialDesign:DialogHost.DialogContent>
                                     <StackPanel Margin="16">

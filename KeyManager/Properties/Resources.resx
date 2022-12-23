@@ -255,6 +255,9 @@
   <data name="Offline" xml:space="preserve">
     <value>Offline</value>
   </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="Online" xml:space="preserve">
     <value>Online</value>
   </data>
@@ -302,6 +305,12 @@
   </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
+  </data>
+  <data name="Secret" xml:space="preserve">
+    <value>Secret</value>
+  </data>
+  <data name="SecretHelper" xml:space="preserve">
+    <value>The key store secret</value>
   </data>
   <data name="SoftwareVersion" xml:space="preserve">
     <value>Software Version</value>

@@ -126,4 +126,10 @@
   <data name="DirectoryHelper" xml:space="preserve">
     <value>Le répertoire de base du magasin de clés</value>
   </data>
+  <data name="EncryptionKey" xml:space="preserve">
+    <value>Clé de chiffrement</value>
+  </data>
+  <data name="EncryptionKeyHelper" xml:space="preserve">
+    <value>Clé de chiffrement maitre pour le stockage des clés sur le disque</value>
+  </data>
 </root>

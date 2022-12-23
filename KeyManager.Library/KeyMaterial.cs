@@ -51,7 +51,7 @@ namespace Leosac.KeyManager.Library
             set { SetProperty(ref _name, value); }
         }
 
-        public T? GetFormattedValue<T>(KeyValueFormat format) where T : class
+        public static T? GetFormattedValue<T>(string value, KeyValueFormat format) where T : class
         {
             T? v;
             switch (format)
@@ -59,21 +59,26 @@ namespace Leosac.KeyManager.Library
                 case KeyValueFormat.HexString:
                     if (typeof(T) != typeof(string))
                         throw new InvalidCastException();
-                    v = Value as T;
+                    v = value as T;
                     break;
                 case KeyValueFormat.HexStringWithSpace:
                     if (typeof(T) != typeof(string))
                         throw new InvalidCastException();
-                    v = Regex.Replace(Value, ".{2}", "$0 ") as T;
+                    v = Regex.Replace(value, ".{2}", "$0 ") as T;
                     break;
                 case KeyValueFormat.Binary:
                 default:
                     if (typeof(T) != typeof(byte[]))
                         throw new InvalidCastException();
-                    v = Convert.FromHexString(Value) as T;
+                    v = Convert.FromHexString(value) as T;
                     break;
             }
             return v;
+        }
+
+        public T? GetFormattedValue<T>(KeyValueFormat format) where T : class
+        {
+            return GetFormattedValue<T>(Value, format);
         }
 
         public void SetFormattedValue(object value, KeyValueFormat format)
