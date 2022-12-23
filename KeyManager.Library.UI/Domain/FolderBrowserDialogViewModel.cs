@@ -14,12 +14,34 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             Drives = new ObservableCollection<DriveInfo>(DriveInfo.GetDrives());
             Directories = new ObservableCollection<DirectoryInfo>();
+
+            GoToParentCommand = new KeyManagerCommand(
+                parameter =>
+                {
+                    if (SelectedDirectory?.Parent != null)
+                    {
+                        SelectedDirectory = SelectedDirectory.Parent;
+                    }
+                }
+            );
+
+            CreateFolderCommand = new KeyManagerCommand(
+                parameter =>
+                {
+                    if (SelectedDirectory != null && parameter is string newFolder)
+                    {
+                        var newFolderFullpath = Path.Combine(SelectedDirectory.FullName, newFolder);
+                        SelectedDirectory = Directory.CreateDirectory(newFolderFullpath);
+                    }
+                }
+            );
         }
 
         private bool noDirUpdate = false;
         private DirectoryInfo? _selectedDirectory;
         private string? _ioError;
         private bool _hasError = false;
+        private string? _newFolderName;
 
         private DriveInfo? _selectedDrive;
 
@@ -71,6 +93,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
+        public string? NewFolderName
+        {
+            get => _newFolderName;
+            set => SetProperty(ref _newFolderName, value);
+        }
+
         public void UpdateDirectories()
         {
             UpdateDirectories(SelectedDirectory);
@@ -101,5 +129,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
             noDirUpdate = false;
         }
+
+        public KeyManagerCommand GoToParentCommand { get; }
+
+        public KeyManagerCommand CreateFolderCommand { get; }
     }
 }

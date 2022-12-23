@@ -133,6 +133,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create a new folder.
+        /// </summary>
+        public static string CreateFolder {
+            get {
+                return ResourceManager.GetString("CreateFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create from seed.
         /// </summary>
         public static string CreateFromSeed {
@@ -291,6 +300,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string FromFile {
             get {
                 return ResourceManager.GetString("FromFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string General {
+            get {
+                return ResourceManager.GetString("General", resourceCulture);
             }
         }
         
@@ -822,6 +840,24 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string NewFavorite {
             get {
                 return ResourceManager.GetString("NewFavorite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New folder.
+        /// </summary>
+        public static string NewFolderName {
+            get {
+                return ResourceManager.GetString("NewFolderName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name of the new folder to create.
+        /// </summary>
+        public static string NewFolderNameHelper {
+            get {
+                return ResourceManager.GetString("NewFolderNameHelper", resourceCulture);
             }
         }
         

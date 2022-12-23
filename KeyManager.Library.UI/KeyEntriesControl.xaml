@@ -42,7 +42,7 @@
                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                 </DockPanel>
             </Grid>
-            <ListBox ItemsSource="{Binding Identifiers}" SelectedItem="{Binding SelectedIdentifier, Mode=TwoWay}" Margin="5,15,5,5">
+            <ListBox ItemsSource="{Binding Identifiers}" SelectedItem="{Binding SelectedIdentifier, Mode=TwoWay}" Margin="5,15,5,5" PreviewMouseWheel="HandlePreviewMouseWheel">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>

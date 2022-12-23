@@ -141,6 +141,9 @@
   <data name="Create" xml:space="preserve">
     <value>Create</value>
   </data>
+  <data name="CreateFolder" xml:space="preserve">
+    <value>Create a new folder</value>
+  </data>
   <data name="CreateFromSeed" xml:space="preserve">
     <value>Create from seed</value>
   </data>
@@ -194,6 +197,9 @@
   </data>
   <data name="FromFile" xml:space="preserve">
     <value>From File</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>General</value>
   </data>
   <data name="GenerateRandom" xml:space="preserve">
     <value>Generate Random Key</value>
@@ -371,6 +377,12 @@
   </data>
   <data name="NewFavorite" xml:space="preserve">
     <value>New Favorite Key Store</value>
+  </data>
+  <data name="NewFolderName" xml:space="preserve">
+    <value>New folder</value>
+  </data>
+  <data name="NewFolderNameHelper" xml:space="preserve">
+    <value>Name of the new folder to create</value>
   </data>
   <data name="Note" xml:space="preserve">
     <value>Note</value>

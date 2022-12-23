@@ -85,7 +85,7 @@
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" Margin="5">
                                 <ToggleButton IsChecked="{Binding Properties.DisableGenerateMACFromPICC}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-                                <TextBlock Text="{x:Static properties:Resources.DisableVerifyMACFromPICC}" Padding="3" />
+                                <TextBlock Text="{x:Static properties:Resources.DisableGenerateMACFromPICC}" Padding="3" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="6" Grid.Column="1" Margin="5">
                                 <ToggleButton IsChecked="{Binding Properties.DisableKeyEntry}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />

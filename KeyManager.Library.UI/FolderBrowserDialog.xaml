@@ -45,22 +45,48 @@
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" TextDecorations="Underline" Cursor="Hand" MouseUp="TextBlock_MouseUp" Padding="5,5,5,5" Text="{x:Static properties:Resources.GoToParent}" />
                 <TextBlock Grid.Column="1" TextWrapping="Wrap" Foreground="{DynamicResource MaterialDesignValidationErrorBrush}" Visibility="{Binding HasError, Converter={StaticResource BoolToVisibleConverter}}" Text="{Binding IOError}" Padding="5,5,5,5" />
             </Grid>
             <GroupBox Header="{x:Static properties:Resources.Directories}">
-                <ListBox x:Name="lbDirectories" ItemsSource="{Binding Directories, Mode=OneWay}" SelectedItem="{Binding SelectedDirectory}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Cursor="Hand">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{Binding Name}" />
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <DockPanel LastChildFill="True">
+                    <WrapPanel DockPanel.Dock="Top" HorizontalAlignment="Right">
+                        <Button Content="{materialDesign:PackIcon Kind=ArrowBack}" ToolTip="{x:Static properties:Resources.GoToParent}" Command="{Binding GoToParentCommand}" Margin="5" />
+                            <materialDesign:DialogHost DialogTheme="Inherit">
+                                <materialDesign:DialogHost.DialogContent>
+                                    <StackPanel MinWidth="200" Margin="10">
+                                        <TextBox Text="{Binding NewFolderName, Mode=TwoWay}" Margin="5"
+                                                 materialDesign:HintAssist.HelperText="{x:Static properties:Resources.NewFolderNameHelper}"
+                                                 materialDesign:HintAssist.Hint="{x:Static properties:Resources.NewFolderName}"
+                                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="8">
+                                            <Button Margin="3" CommandParameter="{Binding NewFolderName}" Content="{x:Static properties:Resources.OK}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}">
+                                                <Button.Command>
+                                                    <domain:CommandGroup>
+                                                        <domain:CommandReference Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
+                                                        <domain:CommandReference Command="{Binding CreateFolderCommand}"/>
+                                                    </domain:CommandGroup>
+                                                </Button.Command>
+                                        </Button>
+                                            <Button Margin="3" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </materialDesign:DialogHost.DialogContent>
+                            <Button Content="{materialDesign:PackIcon Kind=CreateNewFolder}" ToolTip="{x:Static properties:Resources.CreateFolder}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" Margin="5" />
+                            </materialDesign:DialogHost>
+                        </WrapPanel>
+                    <ListBox x:Name="lbDirectories" ItemsSource="{Binding Directories, Mode=OneWay}" SelectedItem="{Binding SelectedDirectory}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Cursor="Hand">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{Binding Name}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
             </GroupBox>
         </DockPanel>
 

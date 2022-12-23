@@ -68,5 +68,10 @@ namespace Leosac.KeyManager.Library.UI
                 e.Handled = true;
             }
         }
+
+        private void HandlePreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            SnackbarHelper.HandlePreviewMouseWheel(sender, e);
+        }
     }
 }

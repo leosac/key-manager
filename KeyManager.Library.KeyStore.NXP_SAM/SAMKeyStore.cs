@@ -440,7 +440,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
                     av2cmd.authenticateHost(key, GetSAMProperties().AuthenticateKeyEntryIdentifier);
                     natkey.setUpdateMask(0xFF);
-                    av2cmd.changeKeyEntry((byte)Convert.ToDecimal(samkey.Identifier), natkey, key);
+                    av2cmd.changeKeyEntry((byte)Convert.ToDecimal(samkey.Identifier.Id), natkey, key);
                 }
                 else
                 {

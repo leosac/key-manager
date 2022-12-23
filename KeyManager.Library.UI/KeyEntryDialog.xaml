@@ -12,8 +12,8 @@
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              d:DataContext="{d:DesignInstance domain:KeyEntryDialogViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="430" d:DesignWidth="500"
-             MinWidth="500">
+             d:DesignHeight="500" d:DesignWidth="700"
+             MinHeight="500" MinWidth="700">
     <UserControl.Resources>
         <s:Boolean x:Key="True">True</s:Boolean>
         <s:Boolean x:Key="False">False</s:Boolean>
@@ -24,7 +24,7 @@
             <TextBlock DockPanel.Dock="Top" Text="{x:Static properties:Resources.KeyEntry}" FontSize="18" Margin="5" />
             <Grid DockPanel.Dock="Top" Margin="5">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="400" />
+                    <ColumnDefinition Width="500" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="{x:Static properties:Resources.KeyEntryEditHelper}" TextWrapping="Wrap" HorizontalAlignment="Left" />
@@ -48,58 +48,61 @@
                 </Button>
                 <Button Width="100" IsCancel="True" Content="{x:Static properties:Resources.Cancel}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
             </WrapPanel>
-            <Grid Margin="10,10,10,10">
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <ComboBox x:Name="KeyEntryType" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="6"
-                      ItemsSource="{Binding KeyEntryFactories}"
-                      SelectedItem="{Binding SelectedFactoryItem, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}"
-                      materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryTypeHelper}"
-                      materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryType}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate DataType="domain:KeyEntryFactory">
-                            <TextBlock Margin="24,4,0,4" Text="{Binding Name}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <TextBox Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}" Margin="6"
-                     materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifierHelper}"
-                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"
-                     Style="{StaticResource MaterialDesignFloatingHintTextBox}">
-                    <TextBox.Text>
-                        <Binding Path="KeyEntry.Identifier.Id">
-                            <Binding.ValidationRules>
-                                <domain:NotEmptyValidationRule />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
-                <ComboBox Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="6"
-                      ItemsSource="{Binding Variants}"
-                      SelectedItem="{Binding KeyEntry.Variant, UpdateSourceTrigger=PropertyChanged}"
-                      materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryVariantHelper}"
-                      materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryVariant}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate DataType="kslib:KeyEntryVariant">
-                            <TextBlock Margin="24,4,0,4" Text="{Binding Name}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <TextBox Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding KeyEntry.Identifier.Label}" Margin="6"
-                     materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryLabelHelper}"
-                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryLabel}"
-                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                <TabControl Grid.Row="4" MinHeight="100">
-                    <TabItem Header="{x:Static properties:Resources.KeyVersion}">
-                        <ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding KeyEntry.Variant.KeyContainers}" Padding="5">
+            <TabControl>
+                <TabItem Header="{x:Static properties:Resources.General}">
+                    <Grid Margin="10,10,10,10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <ComboBox x:Name="KeyEntryType" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="6"
+                    ItemsSource="{Binding KeyEntryFactories}"
+                    SelectedItem="{Binding SelectedFactoryItem, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}"
+                    materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryTypeHelper}"
+                    materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryType}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="domain:KeyEntryFactory">
+                                    <TextBlock Margin="24,4,0,4" Text="{Binding Name}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <TextBox Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" IsEnabled="{Binding CanChangeFactory, Mode=OneWay}" Margin="6"
+                    materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifierHelper}"
+                    materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="KeyEntry.Identifier.Id">
+                                    <Binding.ValidationRules>
+                                        <domain:NotEmptyValidationRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <ComboBox Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="6"
+                    ItemsSource="{Binding Variants}"
+                    SelectedItem="{Binding KeyEntry.Variant, UpdateSourceTrigger=PropertyChanged}"
+                    materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryVariantHelper}"
+                    materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryVariant}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="kslib:KeyEntryVariant">
+                                    <TextBlock Margin="24,4,0,4" Text="{Binding Name}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <TextBox Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding KeyEntry.Identifier.Label}" Margin="6"
+                                    materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryLabelHelper}"
+                                    materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryLabel}"
+                                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="{x:Static properties:Resources.KeyVersion}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding KeyEntry.Variant.KeyContainers}" Padding="5" PreviewMouseWheel="HandlePreviewMouseWheel">
                             <ListBox.ItemTemplate>
                                 <DataTemplate DataType="lib:KeyContainer">
                                     <materialDesign:Card Grid.Row="3" Grid.ColumnSpan="2">
@@ -114,15 +117,14 @@
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
-                    </TabItem>
-                    <TabItem Header="{x:Static properties:Resources.KeyEntryProperties}">
-                        <ContentControl Margin="16"
-                                Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"
-                                DataContext="{Binding SelectedFactoryItem}" >
-                        </ContentControl>
-                    </TabItem>
-                </TabControl>
-            </Grid>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="{x:Static properties:Resources.KeyEntryProperties}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ContentControl Margin="16" Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}" DataContext="{Binding SelectedFactoryItem}"></ContentControl>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
         </DockPanel>
     </materialDesign:DialogHost>
 </UserControl>

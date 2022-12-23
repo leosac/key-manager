@@ -41,18 +41,6 @@ namespace Leosac.KeyManager.Library.UI
             }
         }
 
-        private void TextBlock_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            var model = DataContext as FolderBrowserDialogViewModel;
-            if (model != null)
-            {
-                if (model.SelectedDirectory?.Parent != null)
-                {
-                    model.SelectedDirectory = model.SelectedDirectory.Parent;
-                }
-            }
-        }
-
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
