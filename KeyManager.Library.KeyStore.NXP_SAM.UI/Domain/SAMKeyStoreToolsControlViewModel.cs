@@ -1,4 +1,4 @@
-﻿using Leosac.KeyManager.Library.UI;
+﻿    using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using LibLogicalAccess.Card;
 using LibLogicalAccess.Reader;
@@ -30,6 +30,12 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 {
                     SAMAuthenticate();
                 });
+
+            SAMSwitchAV2Command = new KeyManagerCommand(
+                parameter =>
+                {
+                    SAMSwitchAV2();
+                });
         }
 
         private KeyVersion _samAuthKey;
@@ -60,6 +66,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
 
         public KeyManagerCommand SAMAuthCommand { get; }
 
+        public KeyManagerCommand SAMSwitchAV2Command { get; }
+
         private void SAMAuthenticate()
         {
             try
@@ -87,6 +95,32 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             catch (Exception ex)
             {
                 log.Error("SAM Authentication failed.", ex);
+                if (SnackbarMessageQueue != null)
+                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
+            }
+        }
+
+        private void SAMSwitchAV2()
+        {
+            try
+            {
+                var ks = (KeyStore as SAMKeyStore);
+                var cmd = ks?.Chip?.getCommands();
+                if (cmd is SAMAV1ISO7816Commands samav1cmd)
+                {
+                    ks?.SwitchSAMToAV2(samav1cmd);
+                    if (SnackbarMessageQueue != null)
+                        SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "SAM Switch to AV2 succeeded!");
+                }
+                else if (cmd is SAMAV2ISO7816Commands samav2cmd)
+                {
+                    if (SnackbarMessageQueue != null)
+                        SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "SAM Switch to AV2 skipped, already in AV2 mode.");
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("SAM Switch to AV2 failed.", ex);
                 if (SnackbarMessageQueue != null)
                     SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
             }

@@ -106,7 +106,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatically switch the SAM to AV2 mode if required.
+        ///   Looks up a localized string similar to Automatically switch the SAM to AV2 mode if required when performing updates.
         /// </summary>
         public static string AutoSwitchToAV2 {
             get {
@@ -534,6 +534,24 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         public static string SAMAuthentication {
             get {
                 return ResourceManager.GetString("SAMAuthentication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SAM AV1.
+        /// </summary>
+        public static string SAMAV1 {
+            get {
+                return ResourceManager.GetString("SAMAV1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch the SAM to AV2 mode.
+        /// </summary>
+        public static string SwitchToAV2 {
+            get {
+                return ResourceManager.GetString("SwitchToAV2", resourceCulture);
             }
         }
         

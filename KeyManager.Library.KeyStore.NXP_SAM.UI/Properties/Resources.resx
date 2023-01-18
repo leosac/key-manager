@@ -133,7 +133,7 @@
     <value>Authenticate Key</value>
   </data>
   <data name="AutoSwitchToAV2" xml:space="preserve">
-    <value>Automatically switch the SAM to AV2 mode if required</value>
+    <value>Automatically switch the SAM to AV2 mode if required when performing updates</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
@@ -275,6 +275,12 @@
   </data>
   <data name="SAMAuthentication" xml:space="preserve">
     <value>SAM Authentication</value>
+  </data>
+  <data name="SAMAV1" xml:space="preserve">
+    <value>SAM AV1</value>
+  </data>
+  <data name="SwitchToAV2" xml:space="preserve">
+    <value>Switch the SAM to AV2 mode</value>
   </data>
   <data name="UnlockKey" xml:space="preserve">
     <value>Unlock Key</value>
