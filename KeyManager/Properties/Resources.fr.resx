@@ -175,7 +175,7 @@
     <value>Supprimer le magasin de clés des favoris</value>
   </data>
   <data name="DeleteFavoriteConfirmation" xml:space="preserve">
-    <value>Confirmez-vous la suppresion du favori ?</value>
+    <value>Confirmez-vous la suppression du favori ?</value>
   </data>
   <data name="DevelopedBy" xml:space="preserve">
     <value>Développé par</value>
@@ -226,10 +226,10 @@
     <value>Log Console</value>
   </data>
   <data name="MaintenancePlan" xml:space="preserve">
-    <value>Plan de maintenance</value>
+    <value>Plan d'installation et de maintenance</value>
   </data>
   <data name="MaintenancePlanAdvert1" xml:space="preserve">
-    <value>Aucun plan de maintenance actif n'est enregistré pour cette installation</value>
+    <value>Aucun plan actif n'est enregistré pour cette installation</value>
   </data>
   <data name="MaintenancePlanAdvert2" xml:space="preserve">
     <value>Enregistrez-vous maintenant pour bénéficier des services et sécuriser votre activité.</value>
@@ -319,7 +319,7 @@
     <value>Identifiant unique d'installation</value>
   </data>
   <data name="ValidPlan" xml:space="preserve">
-    <value>Vous avez un plan de maintenance valide.</value>
+    <value>Vous avez un plan valide.</value>
   </data>
   <data name="Visit" xml:space="preserve">
     <value>Visiter</value>

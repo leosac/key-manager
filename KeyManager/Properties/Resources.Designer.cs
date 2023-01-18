@@ -331,7 +331,7 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No active maintenance plan..
+        ///   Looks up a localized string similar to No active plan..
         /// </summary>
         public static string InvalidPlan {
             get {
@@ -394,7 +394,7 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No active maintenance plan has been registered with this installation..
+        ///   Looks up a localized string similar to No active plan has been registered with this installation..
         /// </summary>
         public static string MaintenancePlanAdvert1 {
             get {
@@ -664,7 +664,7 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have a valid maintenance plan..
+        ///   Looks up a localized string similar to You have a valid plan..
         /// </summary>
         public static string ValidPlan {
             get {
