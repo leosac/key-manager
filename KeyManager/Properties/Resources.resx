@@ -208,7 +208,7 @@
     <value>An internet connection is required, that's all!</value>
   </data>
   <data name="InvalidPlan" xml:space="preserve">
-    <value>No active maintenance plan.</value>
+    <value>No active plan.</value>
   </data>
   <data name="LibrariesCredits" xml:space="preserve">
     <value>Libraries / Credits</value>
@@ -229,7 +229,7 @@
     <value>Maintenance Plan</value>
   </data>
   <data name="MaintenancePlanAdvert1" xml:space="preserve">
-    <value>No active maintenance plan has been registered with this installation.</value>
+    <value>No active plan has been registered with this installation.</value>
   </data>
   <data name="MaintenancePlanAdvert2" xml:space="preserve">
     <value>Register now to benefit from all the plan related services and to secure your business.</value>
@@ -328,7 +328,7 @@
     <value>Unique Installation Identifier</value>
   </data>
   <data name="ValidPlan" xml:space="preserve">
-    <value>You have a valid maintenance plan.</value>
+    <value>You have a valid plan.</value>
   </data>
   <data name="Visit" xml:space="preserve">
     <value>Visit</value>

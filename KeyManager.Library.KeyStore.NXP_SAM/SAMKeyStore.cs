@@ -371,9 +371,9 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     var natkey = new AV2SAMKeyEntry();
 
                     var infoav2 = new KeyEntryAV2Information();
+
                     if (samkey.SAMProperties != null)
                     {
-                        var set = new SETAV2();
                         infoav2.ExtSET |= (byte)samkey.SAMProperties.SAMKeyEntryType;
 
                         Array.Copy(samkey.SAMProperties.DESFireAID, infoav2.desfireAid, 3);
@@ -384,23 +384,9 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                         infoav2.cekno = samkey.SAMProperties.ChangeKeyRefId;
                         infoav2.cekv = samkey.SAMProperties.ChangeKeyRefVersion;
 
-                        set.dumpsessionkey = Convert.ToByte(samkey.SAMProperties.EnableDumpSessionKey);
-                        set.allowcrypto = Convert.ToByte(samkey.SAMProperties.CryptoBasedOnSecretKey);
-                        set.disabledecryption = Convert.ToByte(samkey.SAMProperties.DisableDecryptData);
-                        set.disableencryption = Convert.ToByte(samkey.SAMProperties.DisableEncryptData);
-                        set.disablegeneratemac = Convert.ToByte(samkey.SAMProperties.DisableGenerateMACFromPICC);
-                        set.disablekeyentry = Convert.ToByte(samkey.SAMProperties.DisableKeyEntry);
-                        set.disableverifymac = Convert.ToByte(samkey.SAMProperties.DisableVerifyMACFromPICC);
-                        set.disablewritekeytopicc = Convert.ToByte(samkey.SAMProperties.DisableChangeKeyPICC);
-                        set.lockkey = Convert.ToByte(samkey.SAMProperties.LockUnlock);
-                        set.keepIV = Convert.ToByte(samkey.SAMProperties.KeepIV);
-                        set.authkey = Convert.ToByte(samkey.SAMProperties.AuthenticateHost);
                         infoav2.ExtSET |= (byte)(Convert.ToByte(samkey.SAMProperties.AllowDumpSecretKey) << 3);
                         infoav2.ExtSET |= (byte)(Convert.ToByte(samkey.SAMProperties.AllowDumpSecretKeyWithDiv) << 4);
-
-                        natkey.setSET(set);
                     }
-
                     if (samkey.Variant != null)
                     {
                         var keyVersions = samkey.Variant.KeyContainers.OfType<KeyVersion>().ToArray();
@@ -435,8 +421,26 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                             }
                         }
                     }
-
                     natkey.setKeyEntryInformation(infoav2);
+
+                    if (samkey.SAMProperties != null)
+                    {
+                        var set = new SETAV2();
+
+                        set.dumpsessionkey = Convert.ToByte(samkey.SAMProperties.EnableDumpSessionKey);
+                        set.allowcrypto = Convert.ToByte(samkey.SAMProperties.CryptoBasedOnSecretKey);
+                        set.disabledecryption = Convert.ToByte(samkey.SAMProperties.DisableDecryptData);
+                        set.disableencryption = Convert.ToByte(samkey.SAMProperties.DisableEncryptData);
+                        set.disablegeneratemac = Convert.ToByte(samkey.SAMProperties.DisableGenerateMACFromPICC);
+                        set.disablekeyentry = Convert.ToByte(samkey.SAMProperties.DisableKeyEntry);
+                        set.disableverifymac = Convert.ToByte(samkey.SAMProperties.DisableVerifyMACFromPICC);
+                        set.disablewritekeytopicc = Convert.ToByte(samkey.SAMProperties.DisableChangeKeyPICC);
+                        set.lockkey = Convert.ToByte(samkey.SAMProperties.LockUnlock);
+                        set.keepIV = Convert.ToByte(samkey.SAMProperties.KeepIV);
+                        set.authkey = Convert.ToByte(samkey.SAMProperties.AuthenticateHost);
+
+                        natkey.setSET(set);
+                    }
                     natkey.setSETKeyTypeFromKeyType();
 
                     av2cmd.authenticateHost(key, GetSAMProperties().AuthenticateKeyEntryIdentifier);
