@@ -27,7 +27,8 @@
             var kcv = new KCV();
             var checksum = kcv.ComputeKCV("AES", "11223344556677889900AABBCCDDEEFF");
 
-            Assert.AreEqual("DD566B", checksum);
+            // Would be DD566B if not using 0x01 as padding value for IV
+            Assert.AreEqual("CDE1DE", checksum);
         }
     }
 }

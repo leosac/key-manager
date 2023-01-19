@@ -39,7 +39,7 @@ namespace Leosac.KeyManager.Library
             }
             using (var ms = new MemoryStream())
             {
-                var crypto = KeyHelper.GetSymmetricAlgorithm(key);
+                var crypto = KeyHelper.GetSymmetricAlgorithm(key, CipherMode.CBC, true);
                 if (crypto == null)
                     throw new Exception("Unsupported key for KCV calcul.");
                 var parameters = new ParametersWithIV(new KeyParameter(key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary)), paddediv);

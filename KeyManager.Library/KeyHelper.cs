@@ -43,14 +43,17 @@ namespace Leosac.KeyManager.Library
             return algoName;
         }
 
-        public static IBufferedCipher? GetSymmetricAlgorithm(Key key, CipherMode cipherMode = CipherMode.CBC)
+        public static IBufferedCipher? GetSymmetricAlgorithm(Key key, CipherMode cipherMode = CipherMode.CBC, bool noPadding = false)
         {
             IBufferedCipher? crypto = null;
 
             var algoName = GetAlgorithmName(key);
             if (!string.IsNullOrEmpty(algoName))
             {
-                crypto = CipherUtilities.GetCipher(algoName + "/" + cipherMode.ToString());
+                var fullName = algoName + "/" + cipherMode.ToString();
+                if (noPadding)
+                    fullName += "/" + "NoPadding";
+                crypto = CipherUtilities.GetCipher(fullName);
             }
 
             return crypto;

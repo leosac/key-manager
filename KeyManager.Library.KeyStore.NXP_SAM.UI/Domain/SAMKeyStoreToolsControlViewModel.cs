@@ -1,4 +1,4 @@
-﻿    using Leosac.KeyManager.Library.UI;
+﻿using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using LibLogicalAccess.Card;
 using LibLogicalAccess.Reader;
