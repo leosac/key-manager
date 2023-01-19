@@ -444,6 +444,9 @@
   <data name="Test" xml:space="preserve">
     <value>Test</value>
   </data>
+  <data name="Wizard" xml:space="preserve">
+    <value>Wizard</value>
+  </data>
   <data name="Words" xml:space="preserve">
     <value>Words</value>
   </data>

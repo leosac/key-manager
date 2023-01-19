@@ -155,6 +155,9 @@
       <Component Id="KeyManagerLibraryNXP_SAMUIComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetPath)" />
       </Component>
+      <Component Id="KeyManagerLibraryWizardSAMAccessControlComponent" Win64="$(var.Win64)">
+        <File Id="___var.KeyManager.Library.Wizard.SAMAccessControl.TargetPath_" Source="$(var.KeyManager.Library.Wizard.SAMAccessControl.TargetPath)" />
+      </Component>
     </ComponentGroup>
 
     <ComponentGroup Id="KeyManagerResourcesFR" Directory="RESOURCESFR">
@@ -172,6 +175,9 @@
       </Component>
       <Component Id="KeyManagerLibraryKeyStoreNXP_SAMUIResourcesFRComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetDir)\fr\KeyManager.Library.KeyStore.NXP_SAM.UI.resources.dll" />
+      </Component>
+      <Component Id="KeyManagerLibraryWizardSAMAccessControlResourcesFRComponent" Win64="$(var.Win64)">
+        <File Id="___var.KeyManager.Library.Wizard.SAMAccessControl.ResourcesFR.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetDir)\fr\KeyManager.Library.Wizard.SAMAccessControl.resources.dll" />
       </Component>
     </ComponentGroup>
     

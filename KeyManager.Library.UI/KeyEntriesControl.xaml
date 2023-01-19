@@ -14,9 +14,14 @@
              x:Name="keyStoreControl"
              DataContextChanged="UserControl_DataContextChanged">
     <UserControl.Resources>
-        <s:Boolean x:Key="True">True</s:Boolean>
-        <s:Boolean x:Key="False">False</s:Boolean>
-        <materialDesign:BooleanToVisibilityConverter x:Key="BoolToVisibleConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <s:Boolean x:Key="True">True</s:Boolean>
+            <s:Boolean x:Key="False">False</s:Boolean>
+            <materialDesign:BooleanToVisibilityConverter x:Key="BoolToVisibleConverter" />
+        </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
         <DockPanel LastChildFill="True" Margin="5,5,5,5">
@@ -32,6 +37,24 @@
                     <Button Style="{StaticResource MaterialDesignFloatingActionButton}" Command="{Binding DataContext.ImportCryptogramCommand, ElementName=keyStoreControl}" ToolTip="{x:Static properties:Resources.ImportCryptogram}" Margin="5">
                         <materialDesign:PackIcon Kind="KeyArrowRight" Height="24" Width="24" Cursor="Hand" />
                     </Button>
+                    <materialDesign:PopupBox
+                        PlacementMode="BottomAndAlignCentres"
+                        ToolTip="{x:Static properties:Resources.Wizard}" Margin="5"
+                        Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}">
+                        <materialDesign:PopupBox.ToggleContent>
+                            <materialDesign:PackIcon Kind="MagicWand" Height="24" Width="24" Cursor="Hand" />
+                        </materialDesign:PopupBox.ToggleContent>
+                        <ListBox ItemsSource="{Binding WizardFactories}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource MaterialDesignRaisedButton}"
+                                            Content="{Binding Path=Name, Mode=OneWay}"
+                                            Command="{Binding DataContext.WizardCommand, ElementName=keyStoreControl}"
+                                            CommandParameter="{Binding}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </materialDesign:PopupBox>
                 </WrapPanel>
                 <DockPanel LastChildFill="True" Grid.Column="1">
                     <Button DockPanel.Dock="Right" x:Name="btnSearch" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="24" Height="24" Margin="3" ToolTip="{x:Static properties:Resources.Search}" Click="btnSearch_Click">

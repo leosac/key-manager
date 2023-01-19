@@ -10,7 +10,7 @@
 	<Description>Key Manager for Access Control and RFID related technologies, by Leosac.</Description>
 	<Company>Leosac SAS</Company>
 	<AssemblyTitle>Leosac Key Manager</AssemblyTitle>
-	<Copyright>Copyright © Leosac 2022</Copyright>
+	<Copyright>Copyright © Leosac 2023</Copyright>
 	<RootNamespace>Leosac.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
 	<ApplicationIcon>leosac_key.ico</ApplicationIcon>
   </PropertyGroup>
@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <PackageReference Include="log4net" Version="2.0.15" />
-    <PackageReference Include="MaterialDesignThemes" Version="4.6.1" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.7.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
 
@@ -43,6 +43,7 @@
     <ProjectReference Include="..\KeyManager.Library.KeyStore.NXP_SAM.UI\KeyManager.Library.KeyStore.NXP_SAM.UI.csproj" />
     <ProjectReference Include="..\KeyManager.Library.KeyStore.NXP_SAM\KeyManager.Library.KeyStore.NXP_SAM.csproj" />
     <ProjectReference Include="..\KeyManager.Library.UI\KeyManager.Library.UI.csproj" />
+    <ProjectReference Include="..\KeyManager.Library.Wizard.SAMAccessControl\KeyManager.Library.Wizard.SAMAccessControl.csproj" />
     <ProjectReference Include="..\KeyManager.Library\KeyManager.Library.csproj" />
   </ItemGroup>
 

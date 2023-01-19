@@ -21,6 +21,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             _snackbarMessageQueue = snackbarMessageQueue;
             Identifiers = new ObservableCollection<KeyEntryId>();
+            WizardFactories = new ObservableCollection<WizardFactory>(WizardFactory.RegisteredFactories);
 
             CreateKeyEntryCommand = new KeyManagerAsyncCommand<string>(async
                 parameter =>
@@ -113,6 +114,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
         private string? _searchTerms;
 
         public ObservableCollection<KeyEntryId> Identifiers { get; }
+
+        public ObservableCollection<WizardFactory> WizardFactories { get; }
 
         public KeyStore.KeyStore? KeyStore
         {

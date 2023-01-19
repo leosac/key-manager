@@ -1042,6 +1042,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wizard.
+        /// </summary>
+        public static string Wizard {
+            get {
+                return ResourceManager.GetString("Wizard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Words.
         /// </summary>
         public static string Words {
