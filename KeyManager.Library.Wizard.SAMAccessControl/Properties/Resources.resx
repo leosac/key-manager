@@ -120,4 +120,7 @@
   <data name="FactoryName" xml:space="preserve">
     <value>SAM for Access Control</value>
   </data>
+  <data name="WizardDescription" xml:space="preserve">
+    <value>Define SAM key entries following recommended guidelines for a SAM used by Access Control systems.</value>
+  </data>
 </root>

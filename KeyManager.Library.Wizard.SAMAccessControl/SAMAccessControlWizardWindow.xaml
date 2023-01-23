@@ -6,8 +6,11 @@
         xmlns:local="clr-namespace:Leosac.KeyManager.Library.Wizard.SAMAccessControl"
         xmlns:properties="clr-namespace:Leosac.KeyManager.Library.Wizard.SAMAccessControl.Properties"
         mc:Ignorable="d"
-        Title="{x:Static properties:Resources.FactoryName}" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="{x:Static properties:Resources.FactoryName}" Height="450" Width="800" WindowStartupLocation="CenterOwner">
+    <StackPanel Orientation="Vertical">
+        <TextBlock Text="{x:Static properties:Resources.WizardDescription}" Margin="5" />
+    </StackPanel>
 </Window>

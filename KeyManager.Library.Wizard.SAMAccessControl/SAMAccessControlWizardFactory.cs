@@ -15,10 +15,13 @@ namespace Leosac.KeyManager.Library.Wizard.SAMAccessControl
 
         public override IList<KeyStore.KeyEntry> GetKeyEntries(Window window)
         {
+            var entries = new List<KeyStore.KeyEntry>();
             if (window is SAMAccessControlWizardWindow w)
             {
                 var model = w.DataContext as SAMAccessControlWizardWindowViewModel;
+
             }
+            return entries;
         }
     }
 }

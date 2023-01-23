@@ -120,4 +120,7 @@
   <data name="FactoryName" xml:space="preserve">
     <value>SAM pour le Contrôle d'Accès</value>
   </data>
+  <data name="WizardDescription" xml:space="preserve">
+    <value>Définissez les enregistrements de clés de votre SAM en suivant les recommandations pour un usage des SAMs dans un système de contrôle d'accès.</value>
+  </data>
 </root>

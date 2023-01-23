@@ -68,5 +68,14 @@ namespace Leosac.KeyManager.Library.Wizard.SAMAccessControl.Properties {
                 return ResourceManager.GetString("FactoryName", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Define SAM key entries following recommended guidelines for a SAM used by Access Control systems..
+        /// </summary>
+        public static string WizardDescription {
+            get {
+                return ResourceManager.GetString("WizardDescription", resourceCulture);
+            }
+        }
     }
 }

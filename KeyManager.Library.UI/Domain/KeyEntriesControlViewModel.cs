@@ -101,7 +101,16 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 ImportCryptogram(dialog);
             });
 
-            _keClass = KeyEntryClass.Symmetric;
+            WizardCommand = new KeyManagerCommand(
+                parameter =>
+            {
+                if (parameter is WizardFactory factory) 
+                {
+                    RunWizard(factory);
+                }
+            });
+
+                _keClass = KeyEntryClass.Symmetric;
             _identifiersView = CollectionViewSource.GetDefaultView(Identifiers);
             _identifiersView.Filter = KeyEntryIdentifiersFilter;
         }
@@ -249,6 +258,24 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 log.Error("Importing the Key Entry Cryptogram failed unexpected.", ex);
                 SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
                 ImportCryptogram(dialog);
+            }
+        }
+
+        public KeyManagerCommand WizardCommand { get; }
+
+        private void RunWizard(WizardFactory factory)
+        {
+            var w = factory.CreateWizardWindow();
+            if (w.ShowDialog() == true)
+            {
+                var entries = factory.GetKeyEntries(w);
+                if (KeyStore != null && entries != null && entries.Count > 0)
+                {
+                    foreach (var entry in entries)
+                    {
+                        KeyStore.Update(entry, true);
+                    }
+                }
             }
         }
 
