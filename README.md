@@ -25,3 +25,9 @@ You probably need specific hardware or software server in addition to this softw
 ## Operating System support
 
 Only **Windows** is supported. See [this thread](https://github.com/leosac/key-manager/issues/1) for more information and to vote for Linux support.
+
+## License and Support
+
+The source code of this software is distributed under the GPLv3 license. Dual license may be provided, contact Leosac SAS for more information.
+
+For support, premium services and further updates guarantees, please subscribe to a lifetime or annual plan. See https://leosac.com/key-manager/.
