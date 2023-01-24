@@ -203,6 +203,9 @@
       <Component Id="MaterialDesignThemesWpfComponent" Win64="$(var.Win64)">
         <File Id="___var.MaterialDesignThemes.Wpf.dll_" Source="$(var.KeyManager.TargetDir)\MaterialDesignThemes.Wpf.dll" />
       </Component>
+      <Component Id="MicrosoftXamlBehaviorsComponent" Win64="$(var.Win64)">
+        <File Id="___var.Microsoft.Xaml.Behaviors.dll_" Source="$(var.KeyManager.TargetDir)\Microsoft.Xaml.Behaviors.dll" />
+      </Component>
       <Component Id="NewtonsoftJsonComponent" Win64="$(var.Win64)">
         <File Id="___var.Newtonsoft.Json.dll_" Source="$(var.KeyManager.TargetDir)\Newtonsoft.Json.dll" />
       </Component>
