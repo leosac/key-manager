@@ -26,18 +26,21 @@ namespace Leosac.KeyManager.Library.Wizard.SAMAccessControl
                     var masterke = CreateKeyEntry("0", "SAM Master Key");
                     masterke.SAMProperties!.LockUnlock = true;
                     entries.Add(masterke);
+                }
+                if (model.ChangeSAMUnlockKey)
+                {
                     var unlockke = CreateKeyEntry("1", "SAM Unlock Key");
                     unlockke.SAMProperties!.LockUnlock = true;
                     entries.Add(unlockke);
-                    var piccke = CreateKeyEntry("2", "DESFire Read Key", false);
-                    piccke.SAMProperties!.KeepIV = true;
-                    piccke.SAMProperties.EnableDumpSessionKey = true;
-                    piccke.SAMProperties.DisableChangeKeyPICC = true;
-                    piccke.SAMProperties.DESFireAID = model.PICCAID;
-                    piccke.SAMProperties.DESFireKeyNum = model.PICCKeyNo;
-                    piccke.Variant!.KeyContainers[0] = model.PICCKey;
-                    entries.Add(piccke);
                 }
+                var piccke = CreateKeyEntry("2", "DESFire Read Key", false);
+                piccke.SAMProperties!.KeepIV = true;
+                piccke.SAMProperties.EnableDumpSessionKey = true;
+                piccke.SAMProperties.DisableChangeKeyPICC = true;
+                piccke.SAMProperties.DESFireAID = model.PICCAID;
+                piccke.SAMProperties.DESFireKeyNum = model.PICCKeyNo;
+                piccke.Variant!.KeyContainers[0] = model.PICCKey;
+                entries.Add(piccke);
             }
             return entries;
         }

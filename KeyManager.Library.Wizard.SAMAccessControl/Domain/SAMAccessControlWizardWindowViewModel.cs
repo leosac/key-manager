@@ -14,7 +14,7 @@ namespace Leosac.KeyManager.Library.Wizard.SAMAccessControl.Domain
         {
             _changeSAMMasterKey = false;
             _changeSAMUnlockKey = true;
-            _piccKey = new KeyVersion("DESFire Key", 0x00);
+            _piccKey = new KeyVersion("DESFire Key", 1, new Key(new string[] { "AES", KeyEntryClass.Symmetric.ToString() }, 16));
             _piccAID = new byte[3];
         }
 
