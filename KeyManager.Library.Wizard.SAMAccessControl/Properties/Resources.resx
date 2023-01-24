@@ -117,8 +117,35 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="DESFireAID" xml:space="preserve">
+    <value>AID</value>
+  </data>
+  <data name="DESFireAIDHelper" xml:space="preserve">
+    <value>The DESFire Application Identifier</value>
+  </data>
+  <data name="DESFireKeyNumber" xml:space="preserve">
+    <value>Key Number</value>
+  </data>
+  <data name="DESFireKeyNumberHelper" xml:space="preserve">
+    <value>The DESFire Key Number</value>
+  </data>
   <data name="FactoryName" xml:space="preserve">
     <value>SAM for Access Control</value>
+  </data>
+  <data name="GenerateSAMMasterKey" xml:space="preserve">
+    <value>Generate new SAM Master Key</value>
+  </data>
+  <data name="GenerateSAMUnlockKey" xml:space="preserve">
+    <value>Generate new SAM Unlock Key</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="PICCKey" xml:space="preserve">
+    <value>PICC Key</value>
   </data>
   <data name="WizardDescription" xml:space="preserve">
     <value>Define SAM key entries following recommended guidelines for a SAM used by Access Control systems.</value>

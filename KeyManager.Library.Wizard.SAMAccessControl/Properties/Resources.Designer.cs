@@ -61,11 +61,92 @@ namespace Leosac.KeyManager.Library.Wizard.SAMAccessControl.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AID.
+        /// </summary>
+        public static string DESFireAID {
+            get {
+                return ResourceManager.GetString("DESFireAID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The DESFire Application Identifier.
+        /// </summary>
+        public static string DESFireAIDHelper {
+            get {
+                return ResourceManager.GetString("DESFireAIDHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key Number.
+        /// </summary>
+        public static string DESFireKeyNumber {
+            get {
+                return ResourceManager.GetString("DESFireKeyNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The DESFire Key Number.
+        /// </summary>
+        public static string DESFireKeyNumberHelper {
+            get {
+                return ResourceManager.GetString("DESFireKeyNumberHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SAM for Access Control.
         /// </summary>
         public static string FactoryName {
             get {
                 return ResourceManager.GetString("FactoryName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generate new SAM Master Key.
+        /// </summary>
+        public static string GenerateSAMMasterKey {
+            get {
+                return ResourceManager.GetString("GenerateSAMMasterKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generate new SAM Unlock Key.
+        /// </summary>
+        public static string GenerateSAMUnlockKey {
+            get {
+                return ResourceManager.GetString("GenerateSAMUnlockKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string OK {
+            get {
+                return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PICC Key.
+        /// </summary>
+        public static string PICCKey {
+            get {
+                return ResourceManager.GetString("PICCKey", resourceCulture);
             }
         }
         

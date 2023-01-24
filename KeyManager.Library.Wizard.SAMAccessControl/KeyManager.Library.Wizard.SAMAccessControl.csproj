@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KeyManager.Library.KeyStore.NXP_SAM\KeyManager.Library.KeyStore.NXP_SAM.csproj" />
     <ProjectReference Include="..\KeyManager.Library.UI\KeyManager.Library.UI.csproj" />
   </ItemGroup>
 

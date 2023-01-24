@@ -77,29 +77,12 @@ namespace Leosac.KeyManager.Library.UI
 
         private void btnRandom_Click(object sender, RoutedEventArgs e)
         {
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                var key = new byte[KeySize];
-                rng.GetBytes(key);
-                KeyValue = Convert.ToHexString(key);
-            }
+            KeyValue = KeyGeneration.Random(KeySize);
         }
 
         private void btnPassword_Click(object sender, RoutedEventArgs e)
         {
-            var deriv = new Rfc2898DeriveBytes(tbxPassword.Password, Encoding.UTF8.GetBytes(tbxSalt.Text));
-            var key = deriv.GetBytes(KeySize);
-            KeyValue = Convert.ToHexString(key);
-        }
-
-        public static byte[] CreateRandomSalt(int length)
-        {
-            byte[] randBytes = (length >= 1) ? new byte[length] : new byte[1];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randBytes);
-            }
-            return randBytes;
+            KeyValue = KeyGeneration.FromPassword(tbxPassword.Password, tbxSalt.Text, KeySize);
         }
 
         private void btnImportMnemonic_Click(object sender, RoutedEventArgs e)

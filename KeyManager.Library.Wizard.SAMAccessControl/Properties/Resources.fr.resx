@@ -117,8 +117,35 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="DESFireAID" xml:space="preserve">
+    <value>AID</value>
+  </data>
+  <data name="DESFireAIDHelper" xml:space="preserve">
+    <value>L'identifiant d'application DESFire</value>
+  </data>
+  <data name="DESFireKeyNumber" xml:space="preserve">
+    <value>Numéro de clé</value>
+  </data>
+  <data name="DESFireKeyNumberHelper" xml:space="preserve">
+    <value>Le numéro de clé DESFire</value>
+  </data>
   <data name="FactoryName" xml:space="preserve">
     <value>SAM pour le Contrôle d'Accès</value>
+  </data>
+  <data name="GenerateSAMMasterKey" xml:space="preserve">
+    <value>Générer une nouvelle clé maitre SAM</value>
+  </data>
+  <data name="GenerateSAMUnlockKey" xml:space="preserve">
+    <value>Générer une nouvelle clé de déverrouillage SAM</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="PICCKey" xml:space="preserve">
+    <value>Clé PICC</value>
   </data>
   <data name="WizardDescription" xml:space="preserve">
     <value>Définissez les enregistrements de clés de votre SAM en suivant les recommandations pour un usage des SAMs dans un système de contrôle d'accès.</value>

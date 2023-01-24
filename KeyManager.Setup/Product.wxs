@@ -177,7 +177,7 @@
         <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetDir)\fr\KeyManager.Library.KeyStore.NXP_SAM.UI.resources.dll" />
       </Component>
       <Component Id="KeyManagerLibraryWizardSAMAccessControlResourcesFRComponent" Win64="$(var.Win64)">
-        <File Id="___var.KeyManager.Library.Wizard.SAMAccessControl.ResourcesFR.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetDir)\fr\KeyManager.Library.Wizard.SAMAccessControl.resources.dll" />
+        <File Id="___var.KeyManager.Library.Wizard.SAMAccessControl.ResourcesFR.TargetPath_" Source="$(var.KeyManager.Library.Wizard.SAMAccessControl.TargetDir)\fr\KeyManager.Library.Wizard.SAMAccessControl.resources.dll" />
       </Component>
     </ComponentGroup>
     

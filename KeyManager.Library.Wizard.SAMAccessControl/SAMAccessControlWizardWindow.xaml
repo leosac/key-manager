@@ -2,15 +2,52 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:domain="clr-namespace:Leosac.KeyManager.Library.Wizard.SAMAccessControl.Domain"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Leosac.KeyManager.Library.Wizard.SAMAccessControl"
+        xmlns:libui="clr-namespace:Leosac.KeyManager.Library.UI;assembly=KeyManager.Library.UI"
+        xmlns:libuidomain="clr-namespace:Leosac.KeyManager.Library.UI.Domain;assembly=KeyManager.Library.UI"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:properties="clr-namespace:Leosac.KeyManager.Library.Wizard.SAMAccessControl.Properties"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance domain:SAMAccessControlWizardWindowViewModel}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Title="{x:Static properties:Resources.FactoryName}" Height="450" Width="800" WindowStartupLocation="CenterOwner">
-    <StackPanel Orientation="Vertical">
-        <TextBlock Text="{x:Static properties:Resources.WizardDescription}" Margin="5" />
-    </StackPanel>
+    <Window.Resources>
+        <libuidomain:ByteArrayToStringConverter x:Key="ByteArrayToStringConverter" />
+        <libuidomain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+    </Window.Resources>
+    <DockPanel>
+        <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
+            <Button x:Name="btnOK" Width="100" IsCancel="True" Content="{x:Static properties:Resources.OK}" Margin="10" Click="btnOK_Click"/>
+            <Button x:Name="btnCancel" Width="100" IsCancel="True" Content="{x:Static properties:Resources.Cancel}" Margin="10" Click="btnCancel_Click"/>
+        </WrapPanel>
+        <StackPanel Orientation="Vertical">
+            <TextBlock Text="{x:Static properties:Resources.WizardDescription}" Margin="5" />
+            <WrapPanel>
+                <CheckBox Content="{x:Static properties:Resources.GenerateSAMMasterKey}" IsChecked="{Binding ChangeSAMMasterKey}" Margin="5" />
+                <CheckBox Content="{x:Static properties:Resources.GenerateSAMUnlockKey}" IsChecked="{Binding ChangeSAMUnlockKey}" Margin="5" />
+            </WrapPanel>
+            <Expander HorizontalAlignment="Stretch" Header="{x:Static properties:Resources.PICCKey}" IsExpanded="True">
+                <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBox Grid.Row="0" Text="{Binding PICCAID, Mode=TwoWay, Converter={StaticResource ByteArrayToStringConverter}}"
+                                     materialDesign:HintAssist.HelperText="{x:Static properties:Resources.DESFireAIDHelper}"
+                                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.DESFireAID}" Margin="0,0,0,10"/>
+                        <libui:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding PICCKeyNo, Mode=TwoWay}" Grid.Row="1"
+                                                        HelperText="{x:Static properties:Resources.DESFireKeyNumberHelper}"
+                                                        Hint="{x:Static properties:Resources.DESFireKeyNumber}"/>
+                        <libui:KeyContainerControl Grid.Row="2" KeyContainer="{Binding PICCKey}" ShowKeyLink="False" />
+                    </Grid>
+                </StackPanel>
+            </Expander>
+        </StackPanel>
+    </DockPanel>
 </Window>
