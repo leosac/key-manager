@@ -28,17 +28,25 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 {
                     if (identifier != null)
                     {
-                        var model = new SAMKeyUsageCounterDialogViewModel()
+                        try
                         {
-                            Counter = (KeyStore as SAMKeyStore)?.GetCounter(identifier.Value)
-                        };
+                            var model = new SAMKeyUsageCounterDialogViewModel()
+                            {
+                                Counter = (KeyStore as SAMKeyStore)?.GetCounter(identifier.Value)
+                            };
 
-                        var dialog = new SAMKeyUsageCounterDialog()
+                            var dialog = new SAMKeyUsageCounterDialog()
+                            {
+                                DataContext = model
+                            };
+
+                            UpdateKeyCounter(dialog);
+                        }
+                        catch (KeyStoreException ex)
                         {
-                            DataContext = model
-                        };
-
-                        UpdateKeyCounter(dialog);
+                            if (SnackbarMessageQueue != null)
+                                SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex, "Key Store Error");
+                        }
                     }
                 });
         }

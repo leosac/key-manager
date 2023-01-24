@@ -465,17 +465,33 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         public static void SwitchSAMToAV2(SAMAV1ISO7816Commands av1cmds, byte keyno, DESFireKeyType keyType, byte keyVersion, string keyValue)
         {
             log.Info("Switching the SAM to AV2 mode...");
+            var keyav1entry = av1cmds.getKeyEntry(keyno);
             var key = new DESFireKey();
-            key.setKeyType(keyType);
             key.setKeyVersion(keyVersion);
             if (!string.IsNullOrEmpty(keyValue))
             {
+                key.setKeyType(keyType);
                 key.fromString(KeyMaterial.GetFormattedValue<string>(keyValue, KeyValueFormat.HexStringWithSpace));
             }
-
-            if (keyType != DESFireKeyType.DF_KEY_AES)
+            else
             {
-                var keyav1entry = av1cmds.getKeyEntry(keyno);
+                keyValue = "00000000000000000000000000000000";
+                switch (keyav1entry.getKeyType())
+                {
+                    case SAMKeyType.SAM_KEY_3K3DES:
+                        key.setKeyType(DESFireKeyType.DF_KEY_3K3DES);
+                        break;
+                    case SAMKeyType.SAM_KEY_AES:
+                        key.setKeyType(DESFireKeyType.DF_KEY_AES);
+                        break;
+                    default:
+                        key.setKeyType(DESFireKeyType.DF_KEY_DES);
+                        break;
+                }
+            }
+
+            if (key.getKeyType() != DESFireKeyType.DF_KEY_AES)
+            {
                 var kb = KeyMaterial.GetFormattedValue<byte[]>(keyValue, KeyValueFormat.Binary);
                 var keys = new UCharCollectionCollection(3)
                 {

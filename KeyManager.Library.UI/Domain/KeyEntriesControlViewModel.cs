@@ -1,4 +1,5 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
+using log4net;
 using MaterialDesignThemes.Wpf;
 using Newtonsoft.Json.Linq;
 using System;
@@ -9,8 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using System.Windows.Input;
-using static Net.Codecrete.QrCodeGenerator.QrSegment;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
@@ -71,7 +70,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
                     UpdateKeyEntry(dialog);
                 }
-                catch(Exception ex)
+                catch (KeyStoreException ex)
+                {
+                    SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
+                }
+                catch (Exception ex)
                 {
                     log.Error("Unexpected error occured.", ex);
                 }
