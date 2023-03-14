@@ -1,6 +1,6 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.KeyStore.NXP_SAM;
-using Leosac.KeyManager.Library.UI;
+using Leosac.KeyManager.Library.Plugin;
 using Leosac.KeyManager.Library.Wizard.SAMAccessControl.Domain;
 using System.Windows;
 

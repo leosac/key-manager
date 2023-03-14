@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows;
-using Leosac.KeyManager.Library.UI.Domain;
-using System.Reflection.Metadata;
+using Leosac.KeyManager.Library.Plugin.Domain;
 
 namespace Leosac.KeyManager.Domain
 {

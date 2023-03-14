@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Leosac.KeyManager.Library.UI.Domain
+namespace Leosac.KeyManager.Library.Plugin.Domain
 {
     public abstract class KeyEntryPropertiesControlViewModel : ViewModelBase
     {

@@ -1,10 +1,4 @@
-﻿using Leosac.KeyManager.Library.UI.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Navigation;
+﻿using Leosac.KeyManager.Library.Plugin.Domain;
 
 namespace Leosac.KeyManager.Library.KeyStore.File.UI.Domain
 {

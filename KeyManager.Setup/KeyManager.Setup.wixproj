@@ -101,6 +101,14 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
+    <ProjectReference Include="..\KeyManager.Library.Plugin\KeyManager.Library.Plugin.csproj">
+      <Name>KeyManager.Library.Plugin</Name>
+      <Project>{84717a14-9bf0-4ba5-9ea7-2232eee3c794}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
     <ProjectReference Include="..\KeyManager.Library.UI\KeyManager.Library.UI.csproj">
       <Name>KeyManager.Library.UI</Name>
       <Project>{15123309-8695-4d44-857d-f9c6e44296b0}</Project>

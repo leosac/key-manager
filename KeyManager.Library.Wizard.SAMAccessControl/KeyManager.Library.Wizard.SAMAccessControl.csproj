@@ -19,10 +19,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KeyManager.Library.KeyStore.NXP_SAM\KeyManager.Library.KeyStore.NXP_SAM.csproj" />
-    <ProjectReference Include="..\KeyManager.Library.UI\KeyManager.Library.UI.csproj">
-      <Private>False</Private>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </ProjectReference>
+    <ProjectReference Include="..\KeyManager.Library.Plugin\KeyManager.Library.Plugin.csproj" />
+    <ProjectReference Include="..\KeyManager.Library.UI\KeyManager.Library.UI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

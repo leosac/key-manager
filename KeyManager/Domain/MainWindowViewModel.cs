@@ -1,24 +1,17 @@
 ﻿using Leosac.KeyManager.Library.UI.Domain;
-using MaterialDesignThemes.Wpf.Transitions;
 using MaterialDesignThemes.Wpf;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Configuration;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using Leosac.KeyManager.Library.KeyStore;
 using System.Windows;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library;
-using System.Globalization;
-using System.Threading;
+using Leosac.KeyManager.Library.Plugin.Domain;
+using Leosac.KeyManager.Library.Plugin;
 
 namespace Leosac.KeyManager.Domain
 {

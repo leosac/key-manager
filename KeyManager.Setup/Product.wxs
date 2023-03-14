@@ -134,6 +134,9 @@
       <Component Id="KeyManagerLibraryComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.TargetPath_" Source="$(var.KeyManager.Library.TargetPath)" />
       </Component>
+      <Component Id="KeyManagerLibraryPluginComponent" Win64="$(var.Win64)">
+        <File Id="___var.KeyManager.Library.Plugin.TargetPath_" Source="$(var.KeyManager.Library.Plugin.TargetPath)" />
+      </Component>
       <Component Id="KeyManagerLibraryUIComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.UI.TargetPath_" Source="$(var.KeyManager.Library.UI.TargetPath)" />
       </Component>

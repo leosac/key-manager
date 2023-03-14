@@ -1,23 +1,17 @@
-﻿using Leosac.KeyManager.Library.KeyStore;
-using Leosac.KeyManager.Library.UI.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Leosac.KeyManager.Library.Plugin.Domain;
 using System.Windows.Controls;
 
-namespace Leosac.KeyManager.Library.UI
+namespace Leosac.KeyManager.Library.Plugin
 {
     public abstract class KeyEntryFactory : KMFactory<KeyEntryFactory>
     {
-        public abstract IEnumerable<KeyEntryClass> KClasses { get; }
+        public abstract IEnumerable<Leosac.KeyManager.Library.KeyStore.KeyEntryClass> KClasses { get; }
 
-        public abstract KeyEntry CreateKeyEntry();
+        public abstract Leosac.KeyManager.Library.KeyStore.KeyEntry CreateKeyEntry();
 
         public abstract Type GetKeyEntryPropertiesType();
 
-        public abstract KeyEntryProperties CreateKeyEntryProperties();
+        public abstract Leosac.KeyManager.Library.KeyStore.KeyEntryProperties CreateKeyEntryProperties();
 
         public abstract UserControl CreateKeyEntryPropertiesControl();
 

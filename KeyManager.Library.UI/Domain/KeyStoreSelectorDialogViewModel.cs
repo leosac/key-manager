@@ -1,13 +1,6 @@
-﻿using Leosac.KeyManager.Library.KeyStore;
-using Leosac.KeyManager.Library.UI;
-using MaterialDesignThemes.Wpf;
-using System;
-using System.Collections.Generic;
+﻿using Leosac.KeyManager.Library.Plugin;
+using Leosac.KeyManager.Library.Plugin.Domain;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {

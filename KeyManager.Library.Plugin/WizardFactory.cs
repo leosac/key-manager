@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Leosac.KeyManager.Library.UI
+namespace Leosac.KeyManager.Library.Plugin
 {
     public abstract class WizardFactory : KMFactory<WizardFactory>
     {
         public abstract Window CreateWizardWindow();
 
-        public abstract IList<KeyStore.KeyEntry> GetKeyEntries(Window window);
+        public abstract IList<Leosac.KeyManager.Library.KeyStore.KeyEntry> GetKeyEntries(Window window);
     }
 }

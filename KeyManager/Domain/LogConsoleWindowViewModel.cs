@@ -1,12 +1,7 @@
-﻿using Leosac.KeyManager.Library.UI.Domain;
-using log4net;
+﻿using Leosac.KeyManager.Library.Plugin.Domain;
+using Leosac.KeyManager.Library.UI.Domain;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Leosac.KeyManager.Domain

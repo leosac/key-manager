@@ -1,9 +1,5 @@
-﻿using MaterialDesignThemes.Wpf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Leosac.KeyManager.Library.Plugin.Domain;
+using MaterialDesignThemes.Wpf;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {

@@ -1,13 +1,6 @@
-﻿using Leosac.KeyManager.Library.UI.Domain;
+﻿using Leosac.KeyManager.Library.Plugin.Domain;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Runtime;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Domain
 {

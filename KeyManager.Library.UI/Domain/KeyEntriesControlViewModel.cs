@@ -1,14 +1,9 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
-using log4net;
+using Leosac.KeyManager.Library.Plugin;
+using Leosac.KeyManager.Library.Plugin.Domain;
 using MaterialDesignThemes.Wpf;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace Leosac.KeyManager.Library.UI.Domain

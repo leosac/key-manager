@@ -1,19 +1,14 @@
 ﻿using Leosac.KeyManager.Library;
 using Leosac.KeyManager.Library.KeyStore;
+using Leosac.KeyManager.Library.Plugin;
+using Leosac.KeyManager.Library.Plugin.Domain;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
-using log4net;
 using MaterialDesignThemes.Wpf;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Data;
-using static Net.Codecrete.QrCodeGenerator.QrSegment;
 
 namespace Leosac.KeyManager.Domain
 {

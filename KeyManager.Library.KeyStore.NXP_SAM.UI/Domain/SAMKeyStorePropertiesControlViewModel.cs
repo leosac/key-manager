@@ -1,11 +1,6 @@
-﻿using Leosac.KeyManager.Library.UI.Domain;
+﻿using Leosac.KeyManager.Library.Plugin.Domain;
 using LibLogicalAccess.Card;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
 {
@@ -35,7 +30,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
 
         public void RefreshReaderList()
         {
-            var prevru = SAMProperties.ReaderUnit;
+            var prevru = SAMProperties!.ReaderUnit;
             ReaderUnits.Clear();
             var rp = _lla.getReaderProvider(SAMProperties.ReaderProvider);
             var ruList = rp.getReaderList();

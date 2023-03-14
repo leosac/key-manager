@@ -33,7 +33,9 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "KeyManager.Setup", "KeyMana
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wizard", "Wizard", "{318D3A94-8F3A-422D-BFDA-AC14CFB9F553}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyManager.Library.Wizard.SAMAccessControl", "KeyManager.Library.Wizard.SAMAccessControl\KeyManager.Library.Wizard.SAMAccessControl.csproj", "{D94A8553-9D9F-4B7C-A9A4-D2F6F12E9CB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyManager.Library.Wizard.SAMAccessControl", "KeyManager.Library.Wizard.SAMAccessControl\KeyManager.Library.Wizard.SAMAccessControl.csproj", "{D94A8553-9D9F-4B7C-A9A4-D2F6F12E9CB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyManager.Library.Plugin", "KeyManager.Library.Plugin\KeyManager.Library.Plugin.csproj", "{84717A14-9BF0-4BA5-9EA7-2232EEE3C794}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -211,6 +213,18 @@ Global
 		{D94A8553-9D9F-4B7C-A9A4-D2F6F12E9CB9}.Release|x64.Build.0 = Release|Any CPU
 		{D94A8553-9D9F-4B7C-A9A4-D2F6F12E9CB9}.Release|x86.ActiveCfg = Release|Any CPU
 		{D94A8553-9D9F-4B7C-A9A4-D2F6F12E9CB9}.Release|x86.Build.0 = Release|Any CPU
+		{84717A14-9BF0-4BA5-9EA7-2232EEE3C794}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84717A14-9BF0-4BA5-9EA7-2232EEE3C794}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84717A14-9BF0-4BA5-9EA7-2232EEE3C794}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{84717A14-9BF0-4BA5-9EA7-2232EEE3C794}.Debug|x64.Build.0 = Debug|Any CPU
+		{84717A14-9BF0-4BA5-9EA7-2232EEE3C794}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{84717A14-9BF0-4BA5-9EA7-2232EEE3C794}.Debug|x86.Build.0 = Debug|Any CPU
+		{84717A14-9BF0-4BA5-9EA7-2232EEE3C794}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84717A14-9BF0-4BA5-9EA7-2232EEE3C794}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84717A14-9BF0-4BA5-9EA7-2232EEE3C794}.Release|x64.ActiveCfg = Release|Any CPU
+		{84717A14-9BF0-4BA5-9EA7-2232EEE3C794}.Release|x64.Build.0 = Release|Any CPU
+		{84717A14-9BF0-4BA5-9EA7-2232EEE3C794}.Release|x86.ActiveCfg = Release|Any CPU
+		{84717A14-9BF0-4BA5-9EA7-2232EEE3C794}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
