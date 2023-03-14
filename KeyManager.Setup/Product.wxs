@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?include config.wxi ?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="$(var.ProductName)" Language="1033" Version="1.0.0.0" Manufacturer="$(var.Manufacturer)" UpgradeCode="fd14ef4f-fe2a-44ce-a744-9d0103039487">
+	<Product Id="*" Name="$(var.ProductName)" Language="1033" Version="1.1.0.0" Manufacturer="$(var.Manufacturer)" UpgradeCode="fd14ef4f-fe2a-44ce-a744-9d0103039487">
 		<Package InstallerVersion="200" Compressed="yes" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
@@ -10,9 +10,11 @@
 
 		<Feature Id="ProductFeature" Title="$(var.ProductName)" Description="The $(var.ProductName) application" Absent="disallow" Level="1">
 			<ComponentGroupRef Id="KeyManagerComponents" />
+      <ComponentGroupRef Id="PluginsComponents" />
       <ComponentGroupRef Id="NativeWinx64RuntimeComponents" />
       <ComponentGroupRef Id="NativeWinx86RuntimeComponents" />
       <ComponentGroupRef Id="DependenciesComponents" />
+      <ComponentGroupRef Id="PluginsDependenciesComponents" />
 		</Feature>
     <Feature Id="LibLogicalAccessFeature" Title="LibLogicalAccess" Description="The RFID/SmartCard middleware" Absent="disallow" Level="1">
       <ComponentGroupRef Id="LibLogicalAccessComponents" />
@@ -20,6 +22,7 @@
     <Feature Id="TranslationsFeature" Title="Translations" Description="Available application translations" Level="1">
       <Feature Id="FrenchTranslation" Title="French Translation" Description="The application French translation" Level="1">
         <ComponentGroupRef Id="KeyManagerResourcesFR" />
+        <ComponentGroupRef Id="PluginsResourcesFR" />
       </Feature>
     </Feature>
     <Feature Id="StartMenuShortcut" Title="Start Menu Shortcut" Level="1">
@@ -73,6 +76,9 @@
         <Directory Id="COMPANYFOLDER" Name="$(var.Manufacturer)">
           <Directory Id="APPLICATIONFOLDER" Name="$(var.ProductName)">
             <Directory Id="RESOURCESFR" Name="fr" />
+            <Directory Id="PLUGINS" Name="Plugins">
+              <Directory Id="PLUGINSFR" Name="fr" />
+            </Directory>
             <Directory Id="APPRUNTIMES" Name="runtimes">
               <Directory Id="RUNTIMEWINX64" Name="win-x64">
                 <Directory Id="RUNTIMEWINX64NATIVE" Name="native" />
@@ -131,6 +137,9 @@
       <Component Id="KeyManagerLibraryUIComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.UI.TargetPath_" Source="$(var.KeyManager.Library.UI.TargetPath)" />
       </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="PluginsComponents" Directory="PLUGINS">
       <Component Id="KeyManagerLibraryKeyStoreFileComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.File.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.File.TargetPath)" />
       </Component>
@@ -167,6 +176,9 @@
       <Component Id="KeyManagerLibraryUIResourcesFRComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.UI.ResourcesFR_" Source="$(var.KeyManager.Library.UI.TargetDir)\fr\KeyManager.Library.UI.resources.dll" />
       </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="PluginsResourcesFR" Directory="PLUGINSFR">
       <Component Id="KeyManagerLibraryKeyStoreFileUIResourcesFRComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.File.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.File.UI.TargetDir)\fr\KeyManager.Library.KeyStore.File.UI.resources.dll" />
       </Component>
@@ -188,9 +200,6 @@
       <Component Id="Crc32NETComponent" Win64="$(var.Win64)">
         <File Id="___var.Crc32.NET.dll_" Source="$(var.KeyManager.TargetDir)\Crc32.NET.dll" />
       </Component>
-      <Component Id="LibLogicalAccessNetCEComponent" Win64="$(var.Win64)">
-        <File Id="___var.LibLogicalAccessNetCE.dll_" Source="$(var.KeyManager.TargetDir)\LibLogicalAccessNetCE.dll" />
-      </Component>
       <Component Id="log4netComponent" Win64="$(var.Win64)">
         <File Id="___var.log4net.dll_" Source="$(var.KeyManager.TargetDir)\log4net.dll" />
       </Component>
@@ -208,9 +217,6 @@
       </Component>
       <Component Id="NewtonsoftJsonComponent" Win64="$(var.Win64)">
         <File Id="___var.Newtonsoft.Json.dll_" Source="$(var.KeyManager.TargetDir)\Newtonsoft.Json.dll" />
-      </Component>
-      <Component Id="Pkcs11InteropComponent" Win64="$(var.Win64)">
-        <File Id="___var.Pkcs11Interop.dll_" Source="$(var.KeyManager.TargetDir)\Pkcs11Interop.dll" />
       </Component>
       <Component Id="QrCodeGeneratorComponent" Win64="$(var.Win64)">
         <File Id="___var.QrCodeGenerator.dll_" Source="$(var.KeyManager.TargetDir)\QrCodeGenerator.dll" />
@@ -230,6 +236,15 @@
     <ComponentGroup Id="NativeWinx86RuntimeComponents" Directory="RUNTIMEWINX86NATIVE">
       <Component Id="libSkiaSharp_winx86Component" Win64="$(var.Win64)">
         <File Id="___var.libSkiaSharp_winx86.dll_" Source="$(var.KeyManager.TargetDir)\runtimes\win-x86\native\libSkiaSharp.dll" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="PluginsDependenciesComponents" Directory="PLUGINS">
+      <Component Id="LibLogicalAccessNetCEComponent" Win64="$(var.Win64)">
+        <File Id="___var.LibLogicalAccessNetCE.dll_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.TargetDir)\LibLogicalAccessNetCE.dll" />
+      </Component>
+      <Component Id="Pkcs11InteropComponent" Win64="$(var.Win64)">
+        <File Id="___var.Pkcs11Interop.dll_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.TargetDir)\Pkcs11Interop.dll" />
       </Component>
     </ComponentGroup>
 

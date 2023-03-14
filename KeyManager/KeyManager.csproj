@@ -5,7 +5,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-	<Version>1.0.0</Version>
+	<Version>1.1.0</Version>
 	<Product>Leosac Key Manager</Product>
 	<Description>Key Manager for Access Control and RFID related technologies, by Leosac.</Description>
 	<Company>Leosac SAS</Company>
@@ -34,16 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KeyManager.Library.KeyStore.File.UI\KeyManager.Library.KeyStore.File.UI.csproj" />
-    <ProjectReference Include="..\KeyManager.Library.KeyStore.File\KeyManager.Library.KeyStore.File.csproj" />
-    <ProjectReference Include="..\KeyManager.Library.KeyStore.HSM_PKCS11.UI\KeyManager.Library.KeyStore.HSM_PKCS11.UI.csproj" />
-    <ProjectReference Include="..\KeyManager.Library.KeyStore.HSM_PKCS11\KeyManager.Library.KeyStore.HSM_PKCS11.csproj" />
-    <ProjectReference Include="..\KeyManager.Library.KeyStore.Memory.UI\KeyManager.Library.KeyStore.Memory.UI.csproj" />
-    <ProjectReference Include="..\KeyManager.Library.KeyStore.Memory\KeyManager.Library.KeyStore.Memory.csproj" />
-    <ProjectReference Include="..\KeyManager.Library.KeyStore.NXP_SAM.UI\KeyManager.Library.KeyStore.NXP_SAM.UI.csproj" />
-    <ProjectReference Include="..\KeyManager.Library.KeyStore.NXP_SAM\KeyManager.Library.KeyStore.NXP_SAM.csproj" />
     <ProjectReference Include="..\KeyManager.Library.UI\KeyManager.Library.UI.csproj" />
-    <ProjectReference Include="..\KeyManager.Library.Wizard.SAMAccessControl\KeyManager.Library.Wizard.SAMAccessControl.csproj" />
     <ProjectReference Include="..\KeyManager.Library\KeyManager.Library.csproj" />
   </ItemGroup>
 

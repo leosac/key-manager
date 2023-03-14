@@ -19,17 +19,7 @@ namespace KeyManager
 
         public App()
         {
-            Leosac.KeyManager.Library.UI.KeyStoreFactory.Register(new Leosac.KeyManager.Library.KeyStore.Memory.UI.MemoryKeyStoreFactory());
-            Leosac.KeyManager.Library.UI.KeyStoreFactory.Register(new Leosac.KeyManager.Library.KeyStore.File.UI.FileKeyStoreFactory());
-            Leosac.KeyManager.Library.UI.KeyStoreFactory.Register(new Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.SAMKeyStoreFactory());
-            Leosac.KeyManager.Library.UI.KeyStoreFactory.Register(new Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.PKCSC11KeyStoreFactory());
-
-            Leosac.KeyManager.Library.UI.KeyEntryFactory.Register(new Leosac.KeyManager.Library.KeyStore.Memory.UI.MemoryKeyEntryFactory());
-            Leosac.KeyManager.Library.UI.KeyEntryFactory.Register(new Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.SAMSymmetricKeyEntryFactory());
-            Leosac.KeyManager.Library.UI.KeyEntryFactory.Register(new Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.SymmetricPKCS11KeyEntryFactory());
-            Leosac.KeyManager.Library.UI.KeyEntryFactory.Register(new Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.AsymmetricPKCS11KeyEntryFactory());
-
-            Leosac.KeyManager.Library.UI.WizardFactory.Register(new Leosac.KeyManager.Library.Wizard.SAMAccessControl.SAMAccessControlWizardFactory());
+            KMPlugins.Load();
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)

@@ -31,3 +31,8 @@ Only **Windows** is supported. See [this thread](https://github.com/leosac/key-m
 The source code of this software is distributed under the GPLv3 license. Dual license may be provided, contact Leosac SAS for more information.
 
 For support, premium services and further updates guarantees, please subscribe to a lifetime or annual plan. See https://leosac.com/key-manager/.
+
+## Plugins
+Key Stores, Key Entries and UI Wizards are handled as plugins. Plugins are loaded from `Plugins` folder on the installation directory.
+
+To load a new plugin, simply copy the main plugin dll file and all its dependencies into this folder. You shouldn't copy the Leosac Key Manager core libraries, only the external/additional ones.
