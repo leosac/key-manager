@@ -24,12 +24,15 @@ namespace Leosac.KeyManager
             log.Info("Loading plugins...");
             paths.ForEach(pluginPath =>
             {
-                var files = Directory.GetFiles(pluginPath, "KeyManager.Library.*.dll").ToList();
-                files.ForEach(file =>
+                if (Directory.Exists(pluginPath))
                 {
-                    var pluginAssembly = LoadPlugin(file);
-                    CreateFactories(pluginAssembly);
-                });
+                    var files = Directory.GetFiles(pluginPath, "KeyManager.Library.*.dll").ToList();
+                    files.ForEach(file =>
+                    {
+                        var pluginAssembly = LoadPlugin(file);
+                        CreateFactories(pluginAssembly);
+                    });
+                }
             });
             log.Info("Plugins loaded.");
         }

@@ -134,7 +134,10 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         private string? ComputeDivInput(DivInputContext divContext, IList<DivInputFragment> divInput)
         {
-            throw new NotImplementedException();
+            if (divInput != null && divInput.Count > 0)
+                throw new NotImplementedException();
+
+            return null;
         }
 
         protected void OnKeyEntryRetrieved(KeyEntry keyEntry)
