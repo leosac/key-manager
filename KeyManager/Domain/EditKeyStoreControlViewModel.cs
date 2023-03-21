@@ -20,6 +20,15 @@ namespace Leosac.KeyManager.Domain
             _showProgress = false;
             _snackbarMessageQueue = snackbarMessageQueue;
             Tabs = new ObservableCollection<TabItem>();
+            SaveFavoriteCommand = new KeyManagerCommand(
+                parameter =>
+                {
+                    var favorites = Favorites.GetSingletonInstance();
+                    if (favorites != null)
+                    {
+                        favorites.SaveToFile();
+                    }
+                });
         }
 
         protected ISnackbarMessageQueue _snackbarMessageQueue;
@@ -64,6 +73,8 @@ namespace Leosac.KeyManager.Domain
         public ObservableCollection<TabItem> Tabs { get; set; }
 
         public KeyManagerCommand? HomeCommand { get; set; }
+
+        public KeyManagerCommand SaveFavoriteCommand { get; }
 
         public void CloseKeyStore(bool navigate = true)
         {
