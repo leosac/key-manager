@@ -1,7 +1,5 @@
-﻿using Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.Domain;
-using Leosac.KeyManager.Library.Plugin;
-using Leosac.KeyManager.Library.Plugin.Domain;
-using System.Windows.Controls;
+﻿using Leosac.KeyManager.Library.Plugin;
+using Newtonsoft.Json;
 
 namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI
 {
@@ -16,7 +14,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI
             return new AsymmetricPKCS11KeyEntry();
         }
 
-        public override Type GetKeyEntryPropertiesType()
+        public override Type GetPropertiesType()
         {
             return typeof(AsymmetricPKCS11KeyEntryProperties);
         }
@@ -26,14 +24,9 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI
             return new AsymmetricPKCS11KeyEntryProperties();
         }
 
-        public override UserControl CreateKeyEntryPropertiesControl()
+        public override KeyEntryProperties? CreateKeyEntryProperties(string serialized)
         {
-            return new AsymmetricPKCS11KeyEntryPropertiesControl();
-        }
-
-        public override KeyEntryPropertiesControlViewModel CreateKeyEntryPropertiesControlViewModel()
-        {
-            return new AsymmetricPKCS11KeyEntryPropertiesControlViewModel();
+            return JsonConvert.DeserializeObject<AsymmetricPKCS11KeyEntryProperties>(serialized);
         }
     }
 }

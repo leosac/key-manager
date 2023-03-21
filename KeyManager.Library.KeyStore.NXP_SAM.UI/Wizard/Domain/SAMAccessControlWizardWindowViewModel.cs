@@ -1,7 +1,6 @@
-﻿using Leosac.KeyManager.Library.KeyStore;
-using Leosac.KeyManager.Library.Plugin.Domain;
+﻿using Leosac.KeyManager.Library.Plugin.UI.Domain;
 
-namespace Leosac.KeyManager.Library.Wizard.SAMAccessControl.Domain
+namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Wizard.Domain
 {
     public class SAMAccessControlWizardWindowViewModel : ViewModelBase
     {

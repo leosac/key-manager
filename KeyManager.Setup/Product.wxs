@@ -10,11 +10,15 @@
 
 		<Feature Id="ProductFeature" Title="$(var.ProductName)" Description="The $(var.ProductName) application" Absent="disallow" Level="1">
 			<ComponentGroupRef Id="KeyManagerComponents" />
-      <ComponentGroupRef Id="PluginsComponents" />
+      <ComponentGroupRef Id="FilePluginComponents" />
+      <ComponentGroupRef Id="HSM_PKCS11PluginComponents" />
+      <ComponentGroupRef Id="MemoryPluginComponents" />
+      <ComponentGroupRef Id="NXP_SAMPluginComponents" />
       <ComponentGroupRef Id="NativeWinx64RuntimeComponents" />
       <ComponentGroupRef Id="NativeWinx86RuntimeComponents" />
       <ComponentGroupRef Id="DependenciesComponents" />
-      <ComponentGroupRef Id="PluginsDependenciesComponents" />
+      <ComponentGroupRef Id="HSM_PKCS11PluginDependenciesComponents" />
+      <ComponentGroupRef Id="NXP_SAMPluginDependenciesComponents" />
 		</Feature>
     <Feature Id="LibLogicalAccessFeature" Title="LibLogicalAccess" Description="The RFID/SmartCard middleware" Absent="disallow" Level="1">
       <ComponentGroupRef Id="LibLogicalAccessComponents" />
@@ -22,7 +26,9 @@
     <Feature Id="TranslationsFeature" Title="Translations" Description="Available application translations" Level="1">
       <Feature Id="FrenchTranslation" Title="French Translation" Description="The application French translation" Level="1">
         <ComponentGroupRef Id="KeyManagerResourcesFR" />
-        <ComponentGroupRef Id="PluginsResourcesFR" />
+        <ComponentGroupRef Id="FilePluginResourcesFR" />
+        <ComponentGroupRef Id="HSM_PKCS11PluginResourcesFR" />
+        <ComponentGroupRef Id="NXP_SAMPluginResourcesFR" />
       </Feature>
     </Feature>
     <Feature Id="StartMenuShortcut" Title="Start Menu Shortcut" Level="1">
@@ -77,7 +83,18 @@
           <Directory Id="APPLICATIONFOLDER" Name="$(var.ProductName)">
             <Directory Id="RESOURCESFR" Name="fr" />
             <Directory Id="PLUGINS" Name="Plugins">
-              <Directory Id="PLUGINSFR" Name="fr" />
+              <Directory Id="FILEPLUGIN" Name="File">
+                <Directory Id="FILEPLUGINFR" Name="fr" />
+              </Directory>
+              <Directory Id="HSM_PKCS11PLUGIN" Name="HSM_PKCS11">
+                <Directory Id="HSM_PKCS11PLUGINFR" Name="fr" />
+              </Directory>
+              <Directory Id="MEMORYPLUGIN" Name="Memory">
+                <Directory Id="MEMORYPLUGINFR" Name="fr" />
+              </Directory>
+              <Directory Id="NXP_SAMPLUGIN" Name="NXP_SAM">
+                <Directory Id="NXP_SAMPLUGINFR" Name="fr" />
+              </Directory>
             </Directory>
             <Directory Id="APPRUNTIMES" Name="runtimes">
               <Directory Id="RUNTIMEWINX64" Name="win-x64">
@@ -137,38 +154,44 @@
       <Component Id="KeyManagerLibraryPluginComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.Plugin.TargetPath_" Source="$(var.KeyManager.Library.Plugin.TargetPath)" />
       </Component>
+      <Component Id="KeyManagerLibraryPluginUIComponent" Win64="$(var.Win64)">
+        <File Id="___var.KeyManager.Library.Plugin.UI.TargetPath_" Source="$(var.KeyManager.Library.Plugin.UI.TargetPath)" />
+      </Component>
       <Component Id="KeyManagerLibraryUIComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.UI.TargetPath_" Source="$(var.KeyManager.Library.UI.TargetPath)" />
       </Component>
     </ComponentGroup>
 
-    <ComponentGroup Id="PluginsComponents" Directory="PLUGINS">
+    <ComponentGroup Id="FilePluginComponents" Directory="FILEPLUGIN">
       <Component Id="KeyManagerLibraryKeyStoreFileComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.File.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.File.TargetPath)" />
       </Component>
       <Component Id="KeyManagerLibraryKeyStoreFileUIComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.File.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.File.UI.TargetPath)" />
       </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="HSM_PKCS11PluginComponents" Directory="HSM_PKCS11PLUGIN">
       <Component Id="KeyManagerLibraryHSM_PKCS11Component" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.HSM_PKCS11.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.TargetPath)" />
       </Component>
       <Component Id="KeyManagerLibraryHSM_PKCS11UIComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.TargetPath)" />
       </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="MemoryPluginComponents" Directory="MEMORYPLUGIN">
       <Component Id="KeyManagerLibraryMemoryComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.Memory.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.Memory.TargetPath)" />
       </Component>
       <Component Id="KeyManagerLibraryMemoryUIComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.Memory.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.Memory.UI.TargetPath)" />
       </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="NXP_SAMPluginComponents" Directory="NXP_SAMPLUGIN">
       <Component Id="KeyManagerLibraryNXP_SAMComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.TargetPath)" />
       </Component>
       <Component Id="KeyManagerLibraryNXP_SAMUIComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetPath)" />
-      </Component>
-      <Component Id="KeyManagerLibraryWizardSAMAccessControlComponent" Win64="$(var.Win64)">
-        <File Id="___var.KeyManager.Library.Wizard.SAMAccessControl.TargetPath_" Source="$(var.KeyManager.Library.Wizard.SAMAccessControl.TargetPath)" />
       </Component>
     </ComponentGroup>
 
@@ -181,18 +204,19 @@
       </Component>
     </ComponentGroup>
 
-    <ComponentGroup Id="PluginsResourcesFR" Directory="PLUGINSFR">
+    <ComponentGroup Id="FilePluginResourcesFR" Directory="FILEPLUGINFR">
       <Component Id="KeyManagerLibraryKeyStoreFileUIResourcesFRComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.File.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.File.UI.TargetDir)\fr\KeyManager.Library.KeyStore.File.UI.resources.dll" />
       </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="HSM_PKCS11PluginResourcesFR" Directory="HSM_PKCS11PLUGINFR">
       <Component Id="KeyManagerLibraryKeyStoreHSM_PKCS11UIResourcesFRComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.TargetDir)\fr\KeyManager.Library.KeyStore.HSM_PKCS11.UI.resources.dll" />
       </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="NXP_SAMPluginResourcesFR" Directory="NXP_SAMPLUGINFR">
       <Component Id="KeyManagerLibraryKeyStoreNXP_SAMUIResourcesFRComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetDir)\fr\KeyManager.Library.KeyStore.NXP_SAM.UI.resources.dll" />
-      </Component>
-      <Component Id="KeyManagerLibraryWizardSAMAccessControlResourcesFRComponent" Win64="$(var.Win64)">
-        <File Id="___var.KeyManager.Library.Wizard.SAMAccessControl.ResourcesFR.TargetPath_" Source="$(var.KeyManager.Library.Wizard.SAMAccessControl.TargetDir)\fr\KeyManager.Library.Wizard.SAMAccessControl.resources.dll" />
       </Component>
     </ComponentGroup>
     
@@ -242,12 +266,14 @@
       </Component>
     </ComponentGroup>
 
-    <ComponentGroup Id="PluginsDependenciesComponents" Directory="PLUGINS">
-      <Component Id="LibLogicalAccessNetCEComponent" Win64="$(var.Win64)">
-        <File Id="___var.LibLogicalAccessNetCE.dll_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.TargetDir)\LibLogicalAccessNetCE.dll" />
-      </Component>
+    <ComponentGroup Id="HSM_PKCS11PluginDependenciesComponents" Directory="HSM_PKCS11PLUGIN">
       <Component Id="Pkcs11InteropComponent" Win64="$(var.Win64)">
         <File Id="___var.Pkcs11Interop.dll_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.TargetDir)\Pkcs11Interop.dll" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="NXP_SAMPluginDependenciesComponents" Directory="NXP_SAMPLUGIN">
+      <Component Id="LibLogicalAccessNetCEComponent" Win64="$(var.Win64)">
+        <File Id="___var.LibLogicalAccessNetCE.dll_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.TargetDir)\LibLogicalAccessNetCE.dll" />
       </Component>
     </ComponentGroup>
 

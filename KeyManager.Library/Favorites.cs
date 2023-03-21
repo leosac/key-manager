@@ -15,6 +15,15 @@ namespace Leosac.KeyManager.Library
         private static object _objlock = new object();
         private static Favorites? _singleton;
 
+        public static EventHandler? SingletonCreated;
+        private static void OnSingletonCreated()
+        {
+            if (SingletonCreated != null)
+            {
+                SingletonCreated(_singleton, new EventArgs());
+            }
+        }
+
         public static Favorites GetSingletonInstance(bool forceRecreate = false)
         {
             lock (_objlock)
@@ -22,6 +31,7 @@ namespace Leosac.KeyManager.Library
                 if (_singleton == null || forceRecreate)
                 {
                     _singleton = LoadFromFile();
+                    OnSingletonCreated();
                 }
 
                 return _singleton!;

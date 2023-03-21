@@ -1,5 +1,5 @@
 ﻿using Leosac.KeyManager.Library.Plugin;
-using Leosac.KeyManager.Library.Plugin.Domain;
+using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using System.Collections.ObjectModel;
 
 namespace Leosac.KeyManager.Library.UI.Domain
@@ -11,7 +11,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public KeyStoreSelectorDialogViewModel()
         {
             KeyStoreFactories = new ObservableCollection<KeyStoreItem>();
-            foreach (var factory in KeyStoreFactory.RegisteredFactories)
+            foreach (var factory in KeyStoreUIFactory.RegisteredFactories)
             {
                 try
                 {
@@ -46,7 +46,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             KeyStore.KeyStore? store = null;
             if (SelectedFactoryItem != null)
             {
-                store = SelectedFactoryItem.Factory.CreateKeyStore();
+                store = SelectedFactoryItem.Factory.TargetFactory?.CreateKeyStore();
                 store.Properties = SelectedFactoryItem.DataContext?.Properties;
             }
             return store;

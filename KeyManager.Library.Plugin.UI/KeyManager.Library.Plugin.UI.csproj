@@ -1,19 +1,20 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
     <RootNamespace>Leosac.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>Leosac.$(AssemblyName)</PackageId>
-    <Title>Leosac Key Manager Plugin Library</Title>
+    <Title>Leosac Key Manager Plugin UI Library</Title>
     <Company>Leosac SAS</Company>
     <Product>Leosac Key Manager</Product>
     <Authors>islog</Authors>
-    <Description>Library for Leosac Key Manager plugin development</Description>
+    <Description>Library for Leosac Key Manager plugin UI development</Description>
     <Copyright>Copyright ©2023 Leosac SAS</Copyright>
     <PackageProjectUrl>https://github.com/leosac/key-manager</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
@@ -25,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KeyManager.Library\KeyManager.Library.csproj" />
+    <ProjectReference Include="..\KeyManager.Library.Plugin\KeyManager.Library.Plugin.csproj" />
   </ItemGroup>
 
 </Project>

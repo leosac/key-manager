@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Leosac.KeyManager.Library.Plugin;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -140,6 +141,15 @@ namespace Leosac.KeyManager.Library.KeyStore.File
                 aes.Key = GetWrappingKey();
                 var data = aes.DecryptCbc(encdata, new byte[16], System.Security.Cryptography.PaddingMode.PKCS7);
                 var keyEntry = JsonConvert.DeserializeObject<KeyEntry>(Encoding.UTF8.GetString(data), _jsonSettings);
+                // Plugin context workaround
+                if (keyEntry != null)
+                {
+                    var factory = KeyEntryFactory.GetFactoryFromPropertyType(keyEntry.Properties?.GetType());
+                    if (factory != null)
+                    {
+                        keyEntry.Properties = factory.CreateKeyEntryProperties(JsonConvert.SerializeObject(keyEntry.Properties));
+                    }
+                }
                 log.Info(String.Format("Key entry `{0}` retrieved.", identifier));
                 return keyEntry;
             }

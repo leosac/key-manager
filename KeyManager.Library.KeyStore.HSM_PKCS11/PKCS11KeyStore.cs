@@ -179,24 +179,24 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             {
                 if (create)
                 {
-                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_KEY_TYPE, pkcsEntry.GetCKK()));
-                    if (pkcsEntry.PKCS11Properties.Extractable != null)
+                    attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_KEY_TYPE, pkcsEntry.GetCKK()));
+                    if (pkcsEntry.PKCS11Properties!.Extractable != null)
                         attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_EXTRACTABLE, pkcsEntry.PKCS11Properties.Extractable.Value));
                 }
                 if (pkcsEntry.PKCS11Properties!.Encrypt != null)
-                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_ENCRYPT, pkcsEntry.PKCS11Properties!.Encrypt.Value));
+                    attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_ENCRYPT, pkcsEntry.PKCS11Properties!.Encrypt.Value));
                 if (pkcsEntry.PKCS11Properties.Decrypt != null)
-                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_DECRYPT, pkcsEntry.PKCS11Properties.Decrypt.Value));
+                    attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_DECRYPT, pkcsEntry.PKCS11Properties.Decrypt.Value));
                 if (pkcsEntry.PKCS11Properties.Derive != null)
-                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_DERIVE, pkcsEntry.PKCS11Properties.Derive.Value));
+                    attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_DERIVE, pkcsEntry.PKCS11Properties.Derive.Value));
             }
             else
             {
                 if (create && entry != null)
                 {
-                    attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_KEY_TYPE, PKCS11KeyEntry.GetCKK(entry)));
+                    attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_KEY_TYPE, PKCS11KeyEntry.GetCKK(entry)));
                 }
-                attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_ENCRYPT, true));
+                attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_ENCRYPT, true));
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_DECRYPT, true));
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_DERIVE, true));
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_EXTRACTABLE, true));

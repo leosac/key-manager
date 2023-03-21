@@ -1,12 +1,6 @@
 ﻿using LibLogicalAccess.Reader;
 using LibLogicalAccess;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LibLogicalAccess.Card;
-using System.Text.RegularExpressions;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 {

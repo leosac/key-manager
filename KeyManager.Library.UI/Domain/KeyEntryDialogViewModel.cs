@@ -1,6 +1,6 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin;
-using Leosac.KeyManager.Library.Plugin.Domain;
+using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 
@@ -11,9 +11,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public KeyEntryDialogViewModel()
         {
             KeyEntryFactories = new ObservableCollection<KeyEntryItem>();
-            foreach (var factory in KeyEntryFactory.RegisteredFactories)
+            foreach (var factory in KeyEntryUIFactory.RegisteredFactories)
             {
-                if (factory.KClasses.Contains(KClass))
+                if (factory.TargetFactory != null && factory.TargetFactory.KClasses.Contains(KClass))
                 {
                     KeyEntryFactories.Add(new KeyEntryItem(factory));
                 }
@@ -82,7 +82,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 SetProperty(ref _selectedFactoryItem, value);
                 if (value != null && value?.GetType() != KeyEntry?.GetType() && AutoCreate)
                 {
-                    KeyEntry = _selectedFactoryItem?.Factory.CreateKeyEntry();
+                    KeyEntry = _selectedFactoryItem?.Factory.TargetFactory?.CreateKeyEntry();
                     RefreshVariants();
                 }
             }

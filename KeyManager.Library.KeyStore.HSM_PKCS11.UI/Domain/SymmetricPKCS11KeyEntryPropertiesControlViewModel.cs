@@ -1,4 +1,4 @@
-﻿using Leosac.KeyManager.Library.Plugin.Domain;
+﻿using Leosac.KeyManager.Library.Plugin.UI.Domain;
 
 namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.Domain
 {

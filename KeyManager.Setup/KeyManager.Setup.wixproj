@@ -101,6 +101,14 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
+    <ProjectReference Include="..\KeyManager.Library.Plugin.UI\KeyManager.Library.Plugin.UI.csproj">
+      <Name>KeyManager.Library.Plugin.UI</Name>
+      <Project>{da74a075-d143-43fe-a977-eddbd3741f26}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
     <ProjectReference Include="..\KeyManager.Library.Plugin\KeyManager.Library.Plugin.csproj">
       <Name>KeyManager.Library.Plugin</Name>
       <Project>{84717a14-9bf0-4ba5-9ea7-2232eee3c794}</Project>
@@ -112,14 +120,6 @@
     <ProjectReference Include="..\KeyManager.Library.UI\KeyManager.Library.UI.csproj">
       <Name>KeyManager.Library.UI</Name>
       <Project>{15123309-8695-4d44-857d-f9c6e44296b0}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-    <ProjectReference Include="..\KeyManager.Library.Wizard.SAMAccessControl\KeyManager.Library.Wizard.SAMAccessControl.csproj">
-      <Name>KeyManager.Library.Wizard.SAMAccessControl</Name>
-      <Project>{d94a8553-9d9f-4b7c-a9a4-d2f6f12e9cb9}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>

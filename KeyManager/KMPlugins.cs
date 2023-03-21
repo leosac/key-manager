@@ -1,4 +1,5 @@
 ﻿using Leosac.KeyManager.Library.Plugin;
+using Leosac.KeyManager.Library.Plugin.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +15,8 @@ namespace Leosac.KeyManager
         static KMPlugins()
         {
             paths = new List<string>();
-            paths.Add(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "Plugins"));
+            var root = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "Plugins");
+            paths.AddRange(Directory.GetDirectories(root));
         }
 
         private static List<string> paths;
@@ -48,6 +50,10 @@ namespace Leosac.KeyManager
             foreach (var type in assembly.GetTypes())
             {
                 CreateFactories<KeyStoreFactory>(type);
+                CreateFactories<KeyEntryFactory>(type);
+                CreateFactories<KeyStoreUIFactory>(type);
+                CreateFactories<KeyEntryUIFactory>(type);
+                CreateFactories<WizardFactory>(type);
             }
         }
 

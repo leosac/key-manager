@@ -1,23 +1,26 @@
-﻿using Leosac.KeyManager.Library.KeyStore;
-using Leosac.KeyManager.Library.KeyStore.NXP_SAM;
-using Leosac.KeyManager.Library.Plugin;
-using Leosac.KeyManager.Library.Wizard.SAMAccessControl.Domain;
+﻿using Leosac.KeyManager.Library.Plugin.UI;
+using Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Wizard.Domain;
 using System.Windows;
 
-namespace Leosac.KeyManager.Library.Wizard.SAMAccessControl
+namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Wizard
 {
     public class SAMAccessControlWizardFactory : WizardFactory
     {
-        public override string Name => Properties.Resources.FactoryName;
+        public override string Name => Properties.Resources.AccessControlWizard;
+
+        public override Type? GetPropertiesType()
+        {
+            return null;
+        }
 
         public override Window CreateWizardWindow()
         {
             return new SAMAccessControlWizardWindow();
         }
 
-        public override IList<KeyStore.KeyEntry> GetKeyEntries(Window window)
+        public override IList<Leosac.KeyManager.Library.KeyStore.KeyEntry> GetKeyEntries(Window window)
         {
-            var entries = new List<KeyStore.KeyEntry>();
+            var entries = new List<Leosac.KeyManager.Library.KeyStore.KeyEntry>();
             if (window is SAMAccessControlWizardWindow w)
             {
                 var model = w.DataContext as SAMAccessControlWizardWindowViewModel;

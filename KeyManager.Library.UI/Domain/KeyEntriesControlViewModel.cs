@@ -1,6 +1,7 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin;
-using Leosac.KeyManager.Library.Plugin.Domain;
+using Leosac.KeyManager.Library.Plugin.UI;
+using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -39,7 +40,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                         KeyEntry = KeyStore?.Get(keyEntryIdentifier, _keClass),
                         CanChangeFactory = false
                     };
-                    var factory = KeyEntryFactory.GetFactoryFromPropertyType(model.KeyEntry!.Properties?.GetType());
+                    var factory = KeyEntryUIFactory.GetFactoryFromPropertyType(model.KeyEntry!.Properties?.GetType());
                     if (factory != null)
                     {
                         model.AutoCreate = false;
@@ -273,6 +274,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     {
                         KeyStore.Update(entry, true);
                     }
+                    RefreshKeyEntries();
                 }
             }
         }

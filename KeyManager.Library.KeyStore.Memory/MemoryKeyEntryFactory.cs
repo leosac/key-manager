@@ -1,7 +1,5 @@
-﻿using Leosac.KeyManager.Library.KeyStore.Memory.UI.Domain;
-using Leosac.KeyManager.Library.Plugin;
-using Leosac.KeyManager.Library.Plugin.Domain;
-using System.Windows.Controls;
+﻿using Leosac.KeyManager.Library.Plugin;
+using Newtonsoft.Json;
 
 namespace Leosac.KeyManager.Library.KeyStore.Memory.UI
 {
@@ -16,7 +14,7 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory.UI
             return new MemoryKeyEntry();
         }
 
-        public override Type GetKeyEntryPropertiesType()
+        public override Type GetPropertiesType()
         {
             return typeof(MemoryKeyEntryProperties);
         }
@@ -26,14 +24,9 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory.UI
             return new MemoryKeyEntryProperties();
         }
 
-        public override UserControl CreateKeyEntryPropertiesControl()
+        public override KeyEntryProperties? CreateKeyEntryProperties(string serialized)
         {
-            return new MemoryKeyEntryPropertiesControl();
-        }
-
-        public override KeyEntryPropertiesControlViewModel CreateKeyEntryPropertiesControlViewModel()
-        {
-            return new MemoryKeyEntryPropertiesControlViewModel();
+            return JsonConvert.DeserializeObject<MemoryKeyEntryProperties>(serialized);
         }
     }
 }

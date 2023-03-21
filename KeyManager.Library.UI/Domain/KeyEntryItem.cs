@@ -1,24 +1,24 @@
 ﻿using System.Windows;
 using Leosac.KeyManager.Library.Plugin;
-using Leosac.KeyManager.Library.Plugin.Domain;
+using Leosac.KeyManager.Library.Plugin.UI.Domain;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
     public class KeyEntryItem : ViewModelBase
     {
-        private readonly KeyEntryFactory _factory;
+        private readonly KeyEntryUIFactory _factory;
 
         private KeyEntryPropertiesControlViewModel? _dataContext;
 
         private object? _content;
 
-        public KeyEntryItem(KeyEntryFactory factory, KeyEntryPropertiesControlViewModel? dataContext = null)
+        public KeyEntryItem(KeyEntryUIFactory factory, KeyEntryPropertiesControlViewModel? dataContext = null)
         {
             _factory = factory;
             _dataContext = dataContext ?? factory.CreateKeyEntryPropertiesControlViewModel();
         }
 
-        public KeyEntryFactory Factory
+        public KeyEntryUIFactory Factory
         {
             get => _factory;
         }

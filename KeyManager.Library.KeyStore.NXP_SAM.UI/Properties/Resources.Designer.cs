@@ -61,6 +61,24 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SAM for Access Control.
+        /// </summary>
+        public static string AccessControlWizard {
+            get {
+                return ResourceManager.GetString("AccessControlWizard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Define SAM key entries following recommended guidelines for a SAM used by Access Control systems..
+        /// </summary>
+        public static string AccessControlWizardDescription {
+            get {
+                return ResourceManager.GetString("AccessControlWizardDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allow dump SecretKey.
         /// </summary>
         public static string AllowDumpSecretKey {
@@ -264,6 +282,24 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         public static string EnableDumpSessionKey {
             get {
                 return ResourceManager.GetString("EnableDumpSessionKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generate new SAM Master Key.
+        /// </summary>
+        public static string GenerateSAMMasterKey {
+            get {
+                return ResourceManager.GetString("GenerateSAMMasterKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generate new SAM Unlock Key.
+        /// </summary>
+        public static string GenerateSAMUnlockKey {
+            get {
+                return ResourceManager.GetString("GenerateSAMUnlockKey", resourceCulture);
             }
         }
         
@@ -480,6 +516,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         public static string Options {
             get {
                 return ResourceManager.GetString("Options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PICC Key.
+        /// </summary>
+        public static string PICCKey {
+            get {
+                return ResourceManager.GetString("PICCKey", resourceCulture);
             }
         }
         

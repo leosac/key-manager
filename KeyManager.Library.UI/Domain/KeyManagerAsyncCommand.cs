@@ -4,7 +4,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 {
     public class KeyManagerAsyncCommand<T> : IKeyManagerAsyncCommand<T>
     {
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler? CanExecuteChanged;
 
         private bool _isExecuting;
         private readonly Func<T, Task> _execute;
@@ -47,12 +47,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
         }
 
         #region Explicit implementations
-        bool ICommand.CanExecute(object parameter)
+        bool ICommand.CanExecute(object? parameter)
         {
             return CanExecute((T)parameter);
         }
 
-        void ICommand.Execute(object parameter)
+        void ICommand.Execute(object? parameter)
         {
             try
             {

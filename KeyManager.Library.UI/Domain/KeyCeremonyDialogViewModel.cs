@@ -1,4 +1,4 @@
-﻿using Leosac.KeyManager.Library.Plugin.Domain;
+﻿using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using System.Collections.ObjectModel;
 
 namespace Leosac.KeyManager.Library.UI.Domain

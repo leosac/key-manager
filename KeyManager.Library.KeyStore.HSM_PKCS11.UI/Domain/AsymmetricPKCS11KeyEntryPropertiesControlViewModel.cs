@@ -1,12 +1,4 @@
-﻿using Leosac.KeyManager.Library.UI.Domain;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.Domain
+﻿namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.Domain
 {
     public class AsymmetricPKCS11KeyEntryPropertiesControlViewModel : PKCS11KeyEntryPropertiesControlViewModel
     {

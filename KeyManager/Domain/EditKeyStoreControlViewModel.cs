@@ -1,7 +1,7 @@
 ﻿using Leosac.KeyManager.Library;
 using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin;
-using Leosac.KeyManager.Library.Plugin.Domain;
+using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using MaterialDesignThemes.Wpf;
@@ -102,7 +102,7 @@ namespace Leosac.KeyManager.Domain
         {
             if (Favorite != null)
             {
-                var factory = KeyStoreFactory.GetFactoryFromPropertyType(Favorite.Properties?.GetType());
+                var factory = KeyStoreUIFactory.GetFactoryFromPropertyType(Favorite.Properties?.GetType());
                 if (factory != null)
                 {
                     var favorites = Favorites.GetSingletonInstance();

@@ -1,19 +1,8 @@
-﻿using Leosac.KeyManager.Library.Wizard.SAMAccessControl.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Wizard.Domain;
+using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
-namespace Leosac.KeyManager.Library.Wizard.SAMAccessControl
+namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Wizard
 {
     /// <summary>
     /// Interaction logic for SAMAccessControlWizardWindow.xaml
@@ -24,7 +13,10 @@ namespace Leosac.KeyManager.Library.Wizard.SAMAccessControl
         {
             InitializeComponent();
 
-            DataContext = new SAMAccessControlWizardWindowViewModel();
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                DataContext = new SAMAccessControlWizardWindowViewModel();
+            }
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)

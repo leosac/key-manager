@@ -1,27 +1,17 @@
 ﻿using Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.Domain;
 using Leosac.KeyManager.Library.Plugin;
-using Leosac.KeyManager.Library.Plugin.Domain;
+using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using System.Windows.Controls;
 
 namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI
 {
-    public class PKCSC11KeyStoreFactory : KeyStoreFactory
+    public class PKCSC11KeyStoreUIFactory : KeyStoreUIFactory
     {
         public override string Name => "HSM PKCS#11";
 
-        public override KeyStore CreateKeyStore()
-        {
-            return new PKCS11KeyStore();
-        }
-
-        public override Type GetKeyStorePropertiesType()
+        public override Type GetPropertiesType()
         {
             return typeof(PKCS11KeyStoreProperties);
-        }
-
-        public override KeyStoreProperties CreateKeyStoreProperties()
-        {
-            return new PKCS11KeyStoreProperties();
         }
 
         public override UserControl CreateKeyStorePropertiesControl()

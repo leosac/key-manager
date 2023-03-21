@@ -77,7 +77,7 @@ namespace Leosac.KeyManager.Library.UI
 
         private void btnRandom_Click(object sender, RoutedEventArgs e)
         {
-            KeyValue = KeyGeneration.Random(KeySize);
+            KeyValue = KeyGeneration.Random(KeySize > 0 ? KeySize : 16);
         }
 
         private void btnPassword_Click(object sender, RoutedEventArgs e)

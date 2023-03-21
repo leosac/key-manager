@@ -10,8 +10,8 @@ using Leosac.KeyManager.Library.KeyStore;
 using System.Windows;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library;
-using Leosac.KeyManager.Library.Plugin.Domain;
 using Leosac.KeyManager.Library.Plugin;
+using Leosac.KeyManager.Library.Plugin.UI.Domain;
 
 namespace Leosac.KeyManager.Domain
 {
@@ -40,7 +40,7 @@ namespace Leosac.KeyManager.Domain
                     {
                         KeyStore? ks = null;
                         Favorite? fav = null;
-                        KeyStoreFactory? factory = null;
+                        KeyStoreUIFactory? factory = null;
                         if (parameter is KeyStore)
                         {
                             ks = parameter as KeyStore;
@@ -53,7 +53,7 @@ namespace Leosac.KeyManager.Domain
 
                         if (ks != null)
                         {
-                            factory = KeyStoreFactory.GetFactoryFromPropertyType(ks.Properties!.GetType());
+                            factory = KeyStoreUIFactory.GetFactoryFromPropertyType(ks.Properties!.GetType());
                             if (factory != null)
                             {
                                 try

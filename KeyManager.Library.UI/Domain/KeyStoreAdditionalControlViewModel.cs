@@ -1,4 +1,4 @@
-﻿using Leosac.KeyManager.Library.Plugin.Domain;
+﻿using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using MaterialDesignThemes.Wpf;
 
 namespace Leosac.KeyManager.Library.UI.Domain

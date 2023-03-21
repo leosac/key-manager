@@ -1,5 +1,5 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
-using Leosac.KeyManager.Library.Plugin.Domain;
+using Leosac.KeyManager.Library.Plugin.UI.Domain;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {

@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KeyManager.Library.Plugin.UI\KeyManager.Library.Plugin.UI.csproj" />
     <ProjectReference Include="..\KeyManager.Library.Plugin\KeyManager.Library.Plugin.csproj" />
     <ProjectReference Include="..\KeyManager.Library.UI\KeyManager.Library.UI.csproj" />
     <ProjectReference Include="..\KeyManager.Library\KeyManager.Library.csproj" />

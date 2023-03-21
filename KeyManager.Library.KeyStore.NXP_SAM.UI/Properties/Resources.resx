@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccessControlWizard" xml:space="preserve">
+    <value>SAM for Access Control</value>
+  </data>
+  <data name="AccessControlWizardDescription" xml:space="preserve">
+    <value>Define SAM key entries following recommended guidelines for a SAM used by Access Control systems.</value>
+  </data>
   <data name="AllowDumpSecretKey" xml:space="preserve">
     <value>Allow dump SecretKey</value>
   </data>
@@ -185,6 +191,12 @@
   </data>
   <data name="EnableDumpSessionKey" xml:space="preserve">
     <value>Enable Dump SessionKey</value>
+  </data>
+  <data name="GenerateSAMMasterKey" xml:space="preserve">
+    <value>Generate new SAM Master Key</value>
+  </data>
+  <data name="GenerateSAMUnlockKey" xml:space="preserve">
+    <value>Generate new SAM Unlock Key</value>
   </data>
   <data name="KeepIV" xml:space="preserve">
     <value>Keep IV</value>
@@ -257,6 +269,9 @@
   </data>
   <data name="Options" xml:space="preserve">
     <value>Options</value>
+  </data>
+  <data name="PICCKey" xml:space="preserve">
+    <value>PICC Key</value>
   </data>
   <data name="ReaderProvider" xml:space="preserve">
     <value>Reader Provider</value>

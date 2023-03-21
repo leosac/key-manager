@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KeyManager.Library.Plugin.UI\KeyManager.Library.Plugin.UI.csproj" />
     <ProjectReference Include="..\KeyManager.Library.Plugin\KeyManager.Library.Plugin.csproj" />
     <ProjectReference Include="..\KeyManager.Library\KeyManager.Library.csproj" />
   </ItemGroup>
