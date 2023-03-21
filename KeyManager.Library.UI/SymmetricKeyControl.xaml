@@ -8,6 +8,7 @@
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="500">
     <UserControl.Resources>
@@ -18,13 +19,16 @@
             </ResourceDictionary.MergedDictionaries>
             <domain:ByteLengthToCharLengthConverter x:Key="ByteLengthToCharLengthConverter" />
             <domain:KeyChecksumConverter x:Key="KeyChecksumConverter" />
+            <domain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+            <s:Boolean x:Key="True">True</s:Boolean>
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
         <local:KeyActionButtonsControl DockPanel.Dock="Top" Key="{Binding Path=Key, ElementName=keyControl}"
                                        ShowKeyLink="{Binding Path=ShowKeyLink, ElementName=keyControl}"
                                        KClass="Symmetric" HorizontalAlignment="Right" />
-        <ListBox ItemsSource="{Binding Path=Key.Materials, ElementName=keyControl}" HorizontalContentAlignment="Stretch">
+        <ListBox ItemsSource="{Binding Path=Key.Materials, ElementName=keyControl}" HorizontalContentAlignment="Stretch"
+                 IsEnabled="{Binding Path=Key.Link.KeyStoreFavorite, ElementName=keyControl, Converter={StaticResource NullToBooleanConverter}, ConverterParameter={StaticResource True}}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>

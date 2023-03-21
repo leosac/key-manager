@@ -5,16 +5,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
+             xmlns:libuidomain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="50" d:DesignWidth="200">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <s:Boolean x:Key="True">True</s:Boolean>
+            <libuidomain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8">
         <materialDesign:DialogHost Identifier="KeyGenerationDialog" DialogTheme="Inherit" DataContext="{Binding Path=Key, ElementName=userControl}">
             <materialDesign:DialogHost.DialogContent>
                 <local:SymmetricKeyGenerationDialog KeySize="{Binding Path=KeySize, Mode=OneWay}" KeyValue="{Binding Materials[0].Value, Mode=TwoWay}" />
             </materialDesign:DialogHost.DialogContent>
-            <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" Width="24" Height="24" ToolTip="{x:Static properties:Resources.KeyGeneration}" Margin="3">
+            <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                    Width="24" Height="24" Margin="3"
+                    ToolTip="{x:Static properties:Resources.KeyGeneration}"
+                    IsEnabled="{Binding Path=Link.KeyStoreFavorite, Converter={StaticResource NullToBooleanConverter}, ConverterParameter={StaticResource True}}">
                 <materialDesign:PackIcon Kind="ShuffleVariant" Height="16" Width="16"/>
             </Button>
         </materialDesign:DialogHost>
@@ -22,7 +33,7 @@
                     Visibility="{Binding ShowKeyLink, ElementName=userControl, Converter={StaticResource BooleanToVisibilityConverter}}">
             <materialDesign:PackIcon Kind="KeyLink" Height="16" Width="16"/>
         </Button>
-        <materialDesign:PopupBox PlacementMode="BottomAndAlignCentres" ToolTip="Export the key value" ToolTipService.Placement="Right">
+        <materialDesign:PopupBox PlacementMode="BottomAndAlignCentres" ToolTip="Export the key value" ToolTipService.Placement="Right" IsEnabled="{Binding Path=Link.KeyStoreFavorite, Converter={StaticResource NullToBooleanConverter}, ConverterParameter={StaticResource True}}">
             <StackPanel>
                 <Button x:Name="btnCopy" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="btnCopy_Click" Width="24" Height="24" ToolTip="{x:Static properties:Resources.CopyClipboard}" Margin="3">
                     <materialDesign:PackIcon Kind="ContentCopy" Height="16" Width="16"/>
