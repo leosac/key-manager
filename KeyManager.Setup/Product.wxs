@@ -145,6 +145,9 @@
       <Component Id="KeyManagerExeComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManagerExe.TargetPath_" Source="$(var.KeyManager.TargetDir)\KeyManager.exe" />
       </Component>
+      <Component Id="KeyManagerDepsComponent" Win64="$(var.Win64)">
+        <File Id="___var.KeyManager.deps.TargetPath_" Source="$(var.KeyManager.TargetDir)\KeyManager.deps.json" />
+      </Component>
       <Component Id="KeyManagerRuntimeconfigComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.runtimeconfig.TargetPath_" Source="$(var.KeyManager.TargetDir)\KeyManager.runtimeconfig.json" />
       </Component>

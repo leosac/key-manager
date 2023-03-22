@@ -72,7 +72,13 @@
                 <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="1" />
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static properties:Resources.KeyValue}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
                 <Border Grid.Row="0" Grid.Column="1" BorderBrush="Black" BorderThickness="1" />
-                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Key.Value, ElementName=userControl}" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <ListBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Key.Materials, ElementName=userControl}" VerticalAlignment="Center" HorizontalAlignment="Center" materialDesign:ListBoxItemAssist.ShowSelection="False">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Value}" TextWrapping="Wrap" Foreground="Black" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
                 <Border Grid.Row="1" Grid.Column="0" BorderBrush="Black" BorderThickness="1" />
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static properties:Resources.KeySizeHelper}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
                 <Border Grid.Row="1" Grid.Column="1" BorderBrush="Black" BorderThickness="1" />
