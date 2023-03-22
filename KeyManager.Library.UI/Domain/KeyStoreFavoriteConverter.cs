@@ -22,7 +22,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             if (value != null && value is string v)
                 return _favorites.KeyStores.Where(ks => ks.Name == v).FirstOrDefault(); 
 
-            return Binding.DoNothing;
+            return null;
         }
 
         public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -30,7 +30,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             if (value != null && value is Favorite v)
                 return v.Name;
 
-            return Binding.DoNothing;
+            return null;
         }
     }
 }

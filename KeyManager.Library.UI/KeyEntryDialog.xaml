@@ -17,6 +17,7 @@
     <UserControl.Resources>
         <s:Boolean x:Key="True">True</s:Boolean>
         <s:Boolean x:Key="False">False</s:Boolean>
+        <domain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
     </UserControl.Resources>
     <materialDesign:DialogHost DialogTheme="Inherit"
                              Identifier="KeyEntryDialog">
@@ -100,7 +101,7 @@
                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                     </Grid>
                 </TabItem>
-                <TabItem Header="{x:Static properties:Resources.KeyVersion}">
+                <TabItem Header="{x:Static properties:Resources.KeyVersion}" IsEnabled="{Binding KeyEntry, Converter={StaticResource NullToBooleanConverter}}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding KeyEntry.Variant.KeyContainers}" Padding="5" PreviewMouseWheel="HandlePreviewMouseWheel">
                             <ListBox.ItemTemplate>
@@ -119,7 +120,7 @@
                         </ListBox>
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Header="{x:Static properties:Resources.KeyEntryProperties}">
+                <TabItem Header="{x:Static properties:Resources.KeyEntryProperties}" IsEnabled="{Binding KeyEntry, Converter={StaticResource NullToBooleanConverter}}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <ContentControl Margin="16" Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}" DataContext="{Binding SelectedFactoryItem}"></ContentControl>
                     </ScrollViewer>
