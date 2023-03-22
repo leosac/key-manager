@@ -24,7 +24,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File.UI
             return new FileKeyStorePropertiesControl();
         }
 
-        public override KeyStorePropertiesControlViewModel CreateKeyStorePropertiesControlViewModel()
+        public override KeyStorePropertiesControlViewModel? CreateKeyStorePropertiesControlViewModel()
         {
             return new FileKeyStorePropertiesControlViewModel();
         }

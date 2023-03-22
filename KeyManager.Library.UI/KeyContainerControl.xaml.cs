@@ -26,15 +26,6 @@ namespace Leosac.KeyManager.Library.UI
             InitializeComponent();
         }
 
-        public KeyManager.Library.KeyContainer KeyContainer
-        {
-            get { return (KeyManager.Library.KeyContainer)GetValue(KeyContainerProperty); }
-            set { SetValue(KeyContainerProperty, value); }
-        }
-
-        public static readonly DependencyProperty KeyContainerProperty = DependencyProperty.Register(nameof(KeyContainer), typeof(KeyManager.Library.KeyContainer), typeof(KeyContainerControl),
-           new FrameworkPropertyMetadata(new KeyManager.Library.KeyContainer()));
-
         private void RecreateKeyControl()
         {
             UserControl? control = null;

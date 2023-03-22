@@ -77,7 +77,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 
         public override int GetHashCode() => (LibraryPath, SlotFilterType, SlotFilter, User).GetHashCode();
 
-        public static bool operator ==(PKCS11KeyStoreProperties lhs, PKCS11KeyStoreProperties rhs)
+        public static bool operator ==(PKCS11KeyStoreProperties? lhs, PKCS11KeyStoreProperties? rhs)
         {
             if (lhs is null)
             {
@@ -90,6 +90,6 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(PKCS11KeyStoreProperties lhs, PKCS11KeyStoreProperties rhs) => !(lhs == rhs);
+        public static bool operator !=(PKCS11KeyStoreProperties? lhs, PKCS11KeyStoreProperties? rhs) => !(lhs == rhs);
     }
 }

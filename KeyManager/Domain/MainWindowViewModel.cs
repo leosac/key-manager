@@ -109,10 +109,14 @@ namespace Leosac.KeyManager.Domain
             ChangeLanguageCommand = new KeyManagerCommand(
                 parameter =>
                 {
-                    var lang = "en-US";
+                    string? lang = null;
                     if (parameter != null)
                     {
                         lang = parameter.ToString();
+                    }
+                    if (string.IsNullOrEmpty(lang))
+                    {
+                        lang = "en-US";
                     }
 
                     var settings = KMSettings.GetSingletonInstance();

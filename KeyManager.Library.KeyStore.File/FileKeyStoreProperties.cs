@@ -44,7 +44,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
 
         public override int GetHashCode() => (Fullpath).GetHashCode();
 
-        public static bool operator ==(FileKeyStoreProperties lhs, FileKeyStoreProperties rhs)
+        public static bool operator ==(FileKeyStoreProperties? lhs, FileKeyStoreProperties? rhs)
         {
             if (lhs is null)
             {
@@ -57,6 +57,6 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(FileKeyStoreProperties lhs, FileKeyStoreProperties rhs) => !(lhs == rhs);
+        public static bool operator !=(FileKeyStoreProperties? lhs, FileKeyStoreProperties? rhs) => !(lhs == rhs);
     }
 }

@@ -16,9 +16,10 @@ namespace Leosac.KeyManager.Library.Policy
             }
         }
 
-        public void Validate(string value)
+        public void Validate(string? value)
         {
-            Convert.FromHexString(value);
+            if (!string.IsNullOrEmpty(value))
+                Convert.FromHexString(value);
         }
     }
 }

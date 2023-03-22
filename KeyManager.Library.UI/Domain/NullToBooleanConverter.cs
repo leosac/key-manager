@@ -23,7 +23,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             return false;
         }
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var b = NullToBoolean(parameter);
             if (value == null)
@@ -38,7 +38,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             return !b;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var b = NullToBoolean(parameter);
             if (value is bool v)

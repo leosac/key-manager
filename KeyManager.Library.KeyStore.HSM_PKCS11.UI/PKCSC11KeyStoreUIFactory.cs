@@ -19,7 +19,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI
             return new PKCS11KeyStorePropertiesControl();
         }
 
-        public override KeyStorePropertiesControlViewModel CreateKeyStorePropertiesControlViewModel()
+        public override KeyStorePropertiesControlViewModel? CreateKeyStorePropertiesControlViewModel()
         {
             return new PKCS11KeyStorePropertiesControlViewModel();
         }

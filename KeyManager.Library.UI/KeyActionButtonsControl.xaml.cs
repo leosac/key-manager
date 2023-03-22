@@ -95,21 +95,21 @@ namespace Leosac.KeyManager.Library.UI
             var sfd = new SaveFileDialog();
             if (sfd.ShowDialog() == true)
             {
-                System.IO.File.WriteAllBytes(sfd.FileName, Convert.FromHexString(Key.GetAggregatedValue<string>()));
+                System.IO.File.WriteAllBytes(sfd.FileName, Convert.FromHexString(Key.GetAggregatedValue<string>() ?? ""));
             }
         }
 
         private void btnPrint_Click(object sender, RoutedEventArgs e)
         {
             PrintDialog printDialog = new PrintDialog();
-            if (printDialog.ShowDialog() == true)
+            if (Key != null && printDialog.ShowDialog() == true)
             {
                 var control = new KeyPrintControl();
                 control.Key = Key;
                 if (KClass == KeyEntryClass.Symmetric)
                 {
                     var kcv = new KCV();
-                    control.KeyChecksum = kcv.ComputeKCV(Key.Tags, Key.GetAggregatedValue<string>());
+                    control.KeyChecksum = kcv.ComputeKCV(Key.Tags, Key.GetAggregatedValue<string>() ?? "");
                 }
                 printDialog.PrintVisual(control, "Leosac Key Manager - Key Printing");
             }

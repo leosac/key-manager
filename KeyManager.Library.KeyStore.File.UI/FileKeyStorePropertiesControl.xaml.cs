@@ -37,9 +37,9 @@ namespace Leosac.KeyManager.Library.KeyStore.File.UI
             if (fbd.ShowDialog() == true)
             {
                 var model = DataContext as FileKeyStorePropertiesControlViewModel;
-                if (model != null && model.FileProperties != null)
+                if (model?.FileProperties != null)
                 {
-                    model.FileProperties.Fullpath = fbdm.SelectedFolder;
+                    model.FileProperties.Fullpath = fbdm.SelectedFolder ?? "";
                 }
             }
         }

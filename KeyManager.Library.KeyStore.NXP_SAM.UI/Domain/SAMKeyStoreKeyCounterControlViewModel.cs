@@ -23,16 +23,17 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             {
                 CounterIdentifiers.Add(i);
             }
-            EditKeyUsageCounterCommand = new KeyManagerAsyncCommand<byte?>(async
-                identifier =>
+            EditKeyUsageCounterCommand = new KeyManagerCommand(
+                parameter =>
                 {
+                    var identifier = parameter as byte?;
                     if (identifier != null)
                     {
                         try
                         {
                             var model = new SAMKeyUsageCounterDialogViewModel()
                             {
-                                Counter = (KeyStore as SAMKeyStore)?.GetCounter(identifier.Value)
+                                Counter = (KeyStore as SAMKeyStore)!.GetCounter(identifier.Value)
                             };
 
                             var dialog = new SAMKeyUsageCounterDialog()
@@ -61,7 +62,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
 
         public ObservableCollection<byte> CounterIdentifiers { get; set; }
 
-        public KeyManagerAsyncCommand<byte?> EditKeyUsageCounterCommand { get; set; }
+        public KeyManagerCommand EditKeyUsageCounterCommand { get; set; }
 
         private async void UpdateKeyCounter(SAMKeyUsageCounterDialog dialog)
         {

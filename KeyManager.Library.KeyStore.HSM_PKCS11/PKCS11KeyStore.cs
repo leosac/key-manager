@@ -152,9 +152,12 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                     log.Error(String.Format("The key entry `{0}` doesn't exist.", cryptogram.WrappingKeyId));
                     throw new KeyStoreException("The key entry doesn't exist.");
                 }
-                var attributes = GetKeyEntryAttributes(null, true);
-                var mechanism = CreateMostExpectedWrappingMechanism(wrapHandle!);
-                _session!.UnwrapKey(mechanism, wrapHandle, Convert.FromHexString(cryptogram.Value), attributes);
+                if (!string.IsNullOrEmpty(cryptogram.Value))
+                {
+                    var attributes = GetKeyEntryAttributes(null, true);
+                    var mechanism = CreateMostExpectedWrappingMechanism(wrapHandle!);
+                    _session!.UnwrapKey(mechanism, wrapHandle, Convert.FromHexString(cryptogram.Value), attributes);
+                }
             }
 
             log.Info(String.Format("Key entry `{0}` created.", change.Identifier));

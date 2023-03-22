@@ -51,27 +51,34 @@ namespace Leosac.KeyManager.Library
             set { SetProperty(ref _name, value); }
         }
 
-        public static T? GetFormattedValue<T>(string value, KeyValueFormat format) where T : class
+        public static T? GetFormattedValue<T>(string? value, KeyValueFormat format) where T : class
         {
             T? v;
-            switch (format)
+            if (value != null)
             {
-                case KeyValueFormat.HexString:
-                    if (typeof(T) != typeof(string))
-                        throw new InvalidCastException();
-                    v = value as T;
-                    break;
-                case KeyValueFormat.HexStringWithSpace:
-                    if (typeof(T) != typeof(string))
-                        throw new InvalidCastException();
-                    v = Regex.Replace(value, ".{2}", "$0 ") as T;
-                    break;
-                case KeyValueFormat.Binary:
-                default:
-                    if (typeof(T) != typeof(byte[]))
-                        throw new InvalidCastException();
-                    v = Convert.FromHexString(value) as T;
-                    break;
+                switch (format)
+                {
+                    case KeyValueFormat.HexString:
+                        if (typeof(T) != typeof(string))
+                            throw new InvalidCastException();
+                        v = value as T;
+                        break;
+                    case KeyValueFormat.HexStringWithSpace:
+                        if (typeof(T) != typeof(string))
+                            throw new InvalidCastException();
+                        v = Regex.Replace(value, ".{2}", "$0 ") as T;
+                        break;
+                    case KeyValueFormat.Binary:
+                    default:
+                        if (typeof(T) != typeof(byte[]))
+                            throw new InvalidCastException();
+                        v = Convert.FromHexString(value) as T;
+                        break;
+                }
+            }
+            else
+            {
+                v = null;
             }
             return v;
         }
@@ -87,11 +94,17 @@ namespace Leosac.KeyManager.Library
             {
                 case KeyValueFormat.HexString:
                 case KeyValueFormat.HexStringWithSpace:
-                    Value = value as string;
+                    {
+                        var v = value as string;
+                        Value = v != null ? v : "";
+                    }
                     break;
                 case KeyValueFormat.Binary:
                 default:
-                    Value = Convert.ToHexString(value as byte[]);
+                    {
+                        var v = value as byte[];
+                        Value = v != null ? Convert.ToHexString(v) : "";
+                    }
                     break;
             }
         }

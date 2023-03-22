@@ -49,7 +49,7 @@ namespace Leosac.KeyManager.Library.UI
         {
             if (e.Parameter is KeyEntryId identifier)
             {
-                KeyEntriesDataContext?.DeleteKeyEntryCommand?.ExecuteAsync(identifier);
+                KeyEntriesDataContext?.DeleteKeyEntryCommand?.Execute(identifier);
             }
         }
 

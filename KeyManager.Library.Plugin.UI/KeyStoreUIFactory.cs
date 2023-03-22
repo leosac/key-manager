@@ -10,7 +10,7 @@ namespace Leosac.KeyManager.Library.Plugin
 
         public abstract UserControl CreateKeyStorePropertiesControl();
 
-        public abstract KeyStorePropertiesControlViewModel CreateKeyStorePropertiesControlViewModel();
+        public abstract KeyStorePropertiesControlViewModel? CreateKeyStorePropertiesControlViewModel();
 
         public abstract IDictionary<string, UserControl> CreateKeyStoreAdditionalControls();
 

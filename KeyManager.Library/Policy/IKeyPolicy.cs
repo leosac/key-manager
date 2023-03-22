@@ -10,6 +10,6 @@ namespace Leosac.KeyManager.Library.Policy
     {
         void Validate(Key key);
 
-        void Validate(string value);
+        void Validate(string? value);
     }
 }

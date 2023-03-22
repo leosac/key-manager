@@ -120,7 +120,7 @@ namespace Leosac.KeyManager.Library
                 {
                     if (typeof(T) == typeof(byte[]))
                     {
-                        ret = (ret as byte[]).Concat(v as byte[]) as T;
+                        ret = (ret as byte[])!.Concat((v as byte[])!) as T;
                     }
                     else if (typeof(T) == typeof(string))
                     {
@@ -139,12 +139,18 @@ namespace Leosac.KeyManager.Library
             switch(format)
             {
                 case KeyValueFormat.HexString:
-                    var values = (value as string).Split(Environment.NewLine);
-                    if (Materials.Count >= values.Length)
                     {
-                        for (int i = 0; i < values.Length; ++i)
+                        var v = value as string;
+                        if (v != null)
                         {
-                            Materials[i].SetFormattedValue(values[i], format);
+                            var values = v.Split(Environment.NewLine);
+                            if (Materials.Count >= values.Length)
+                            {
+                                for (int i = 0; i < values.Length; ++i)
+                                {
+                                    Materials[i].SetFormattedValue(values[i], format);
+                                }
+                            }
                         }
                     }
                     break;

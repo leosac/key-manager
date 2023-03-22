@@ -9,7 +9,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 {
     public interface IKeyManagerAsyncCommand<T> : ICommand
     {
-        Task ExecuteAsync(T parameter);
-        bool CanExecute(T parameter);
+        Task ExecuteAsync(T? parameter);
+        bool CanExecute(T? parameter);
     }
 }

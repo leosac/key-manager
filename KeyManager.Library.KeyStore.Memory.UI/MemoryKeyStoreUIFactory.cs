@@ -24,7 +24,7 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory.UI
             return new MemoryKeyStorePropertiesControl();
         }
 
-        public override KeyStorePropertiesControlViewModel CreateKeyStorePropertiesControlViewModel()
+        public override KeyStorePropertiesControlViewModel? CreateKeyStorePropertiesControlViewModel()
         {
             return new MemoryKeyStorePropertiesControlViewModel();
         }

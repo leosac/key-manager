@@ -128,7 +128,11 @@ namespace Leosac.KeyManager.Library.UI
         {
             if (e.Source is MaterialDesignThemes.Wpf.Chip chip)
             {
-                MnemonicWords.Remove(chip.Content as string);
+                var w = chip.Content as string;
+                if (!string.IsNullOrEmpty(w))
+                {
+                    MnemonicWords.Remove(w);
+                }
             }
         }
 

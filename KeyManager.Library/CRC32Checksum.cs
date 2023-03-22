@@ -14,6 +14,9 @@ namespace Leosac.KeyManager.Library
         public override byte[] ComputeKCV(Key key, byte[]? iv = null)
         {
             var rawkey = key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary);
+            if (rawkey == null)
+                throw new Exception("Key value is null");
+
             // Use the IV as a Salt
             byte[] data;
             if (iv != null)

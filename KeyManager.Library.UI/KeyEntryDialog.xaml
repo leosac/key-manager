@@ -109,7 +109,7 @@
                                         <StackPanel>
                                             <Expander HorizontalAlignment="Stretch" Header="{Binding Name}">
                                                 <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                                                    <local:KeyContainerControl KeyContainer="{Binding}" />
+                                                    <local:KeyContainerControl />
                                                 </StackPanel>
                                             </Expander>
                                         </StackPanel>

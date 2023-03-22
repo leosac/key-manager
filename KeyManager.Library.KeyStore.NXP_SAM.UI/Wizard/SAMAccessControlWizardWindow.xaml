@@ -45,7 +45,7 @@
                         <libui:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding PICCKeyNo, Mode=TwoWay}" Grid.Row="1"
                                                         HelperText="{x:Static properties:Resources.DESFireKeyNumberHelper}"
                                                         Hint="{x:Static properties:Resources.DESFireKeyNumber}"/>
-                        <!--<libui:KeyContainerControl Grid.Row="2" DataContext="{Binding PICCKey}" KeyContainer="{Binding PICCKey}" ShowKeyLink="False" />-->
+                        <libui:KeyContainerControl Grid.Row="2" DataContext="{Binding PICCKey}" ShowKeyLink="False" />
                     </Grid>
                 </StackPanel>
             </Expander>

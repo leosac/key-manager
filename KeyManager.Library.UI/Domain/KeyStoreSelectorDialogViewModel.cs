@@ -47,7 +47,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
             if (SelectedFactoryItem != null)
             {
                 store = SelectedFactoryItem.Factory.TargetFactory?.CreateKeyStore();
-                store.Properties = SelectedFactoryItem.DataContext?.Properties;
+                if (store != null)
+                {
+                    store.Properties = SelectedFactoryItem.DataContext?.Properties;
+                }
             }
             return store;
         }

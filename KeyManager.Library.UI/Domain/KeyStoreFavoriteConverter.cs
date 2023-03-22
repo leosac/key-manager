@@ -17,7 +17,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         private Favorites _favorites;
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value != null && value is string v)
                 return _favorites.KeyStores.Where(ks => ks.Name == v).FirstOrDefault(); 
@@ -25,7 +25,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             return Binding.DoNothing;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value != null && value is Favorite v)
                 return v.Name;

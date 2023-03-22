@@ -118,7 +118,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        private bool CanSubmit(object parameter)
+        private bool CanSubmit(object? parameter)
         {
             return !HasErrors;
         }

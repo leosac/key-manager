@@ -91,7 +91,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
         public override int GetHashCode() => (ReaderProvider, ReaderUnit, AutoSwitchToAV2, AuthenticateKeyEntryIdentifier, _authenticateKeyVersion).GetHashCode();
 
-        public static bool operator ==(SAMKeyStoreProperties lhs, SAMKeyStoreProperties rhs)
+        public static bool operator ==(SAMKeyStoreProperties? lhs, SAMKeyStoreProperties? rhs)
         {
             if (lhs is null)
             {
@@ -104,6 +104,6 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             return lhs.Equals(rhs);
         }
 
-        public static bool operator !=(SAMKeyStoreProperties lhs, SAMKeyStoreProperties rhs) => !(lhs == rhs);
+        public static bool operator !=(SAMKeyStoreProperties? lhs, SAMKeyStoreProperties? rhs) => !(lhs == rhs);
     }
 }

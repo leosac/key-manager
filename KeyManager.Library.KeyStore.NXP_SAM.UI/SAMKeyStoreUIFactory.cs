@@ -26,7 +26,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
             return new SAMKeyStorePropertiesControl();
         }
 
-        public override KeyStorePropertiesControlViewModel CreateKeyStorePropertiesControlViewModel()
+        public override KeyStorePropertiesControlViewModel? CreateKeyStorePropertiesControlViewModel()
         {
             try
             {

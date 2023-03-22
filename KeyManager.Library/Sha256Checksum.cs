@@ -16,6 +16,9 @@ namespace Leosac.KeyManager.Library
             using (var hash = SHA256.Create())
             {
                 var rawkey = key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary);
+                if (rawkey == null)
+                    throw new Exception("Key value is null");
+
                 // Use the IV as a Salt
                 byte[] data;
                 if (iv != null)

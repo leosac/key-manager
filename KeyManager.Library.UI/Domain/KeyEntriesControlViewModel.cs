@@ -18,7 +18,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             Identifiers = new ObservableCollection<KeyEntryId>();
             WizardFactories = new ObservableCollection<WizardFactory>(WizardFactory.RegisteredFactories);
 
-            CreateKeyEntryCommand = new KeyManagerAsyncCommand<string>(async
+            CreateKeyEntryCommand = new KeyManagerCommand(
                 parameter =>
             {
                 var model = new KeyEntryDialogViewModel() { KClass = _keClass };
@@ -29,42 +29,46 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 CreateKeyEntry(dialog);
             });
 
-            EditKeyEntryCommand = new KeyManagerAsyncCommand<KeyEntryId>(async
-                keyEntryIdentifier =>
+            EditKeyEntryCommand = new KeyManagerCommand(
+                parameter =>
             {
+                var keyEntryIdentifier = parameter as KeyEntryId;
                 try
                 {
-                    var model = new KeyEntryDialogViewModel()
+                    if (keyEntryIdentifier != null)
                     {
-                        KClass = _keClass,
-                        KeyEntry = KeyStore?.Get(keyEntryIdentifier, _keClass),
-                        CanChangeFactory = false
-                    };
-                    var factory = KeyEntryUIFactory.GetFactoryFromPropertyType(model.KeyEntry!.Properties?.GetType());
-                    if (factory != null)
-                    {
-                        model.AutoCreate = false;
-                        model.SelectedFactoryItem = model.KeyEntryFactories.Where(item => item.Factory == factory).FirstOrDefault();
-                        model.SelectedFactoryItem!.DataContext!.Properties = model.KeyEntry.Properties;
-                        var variant = model.KeyEntry.Variant;
-                        if (variant != null)
+                        var model = new KeyEntryDialogViewModel()
                         {
-                            model.RefreshVariants();
-                            var emptyv = model.Variants.Where(v => v.Name == variant.Name).FirstOrDefault();
-                            if (emptyv != null)
+                            KClass = _keClass,
+                            KeyEntry = KeyStore?.Get(keyEntryIdentifier, _keClass),
+                            CanChangeFactory = false
+                        };
+                        var factory = KeyEntryUIFactory.GetFactoryFromPropertyType(model.KeyEntry!.Properties?.GetType());
+                        if (factory != null)
+                        {
+                            model.AutoCreate = false;
+                            model.SelectedFactoryItem = model.KeyEntryFactories.Where(item => item.Factory == factory).FirstOrDefault();
+                            model.SelectedFactoryItem!.DataContext!.Properties = model.KeyEntry.Properties;
+                            var variant = model.KeyEntry.Variant;
+                            if (variant != null)
                             {
-                                model.Variants.Remove(emptyv);
+                                model.RefreshVariants();
+                                var emptyv = model.Variants.Where(v => v.Name == variant.Name).FirstOrDefault();
+                                if (emptyv != null)
+                                {
+                                    model.Variants.Remove(emptyv);
+                                }
+                                model.Variants.Add(variant);
+                                model.KeyEntry.Variant = variant;
                             }
-                            model.Variants.Add(variant);
-                            model.KeyEntry.Variant = variant;
                         }
-                    }
-                    var dialog = new KeyEntryDialog()
-                    {
-                        DataContext = model
-                    };
+                        var dialog = new KeyEntryDialog()
+                        {
+                            DataContext = model
+                        };
 
-                    UpdateKeyEntry(dialog);
+                        UpdateKeyEntry(dialog);
+                    }
                 }
                 catch (KeyStoreException ex)
                 {
@@ -76,22 +80,27 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             });
 
-            DeleteKeyEntryCommand = new KeyManagerAsyncCommand<KeyEntryId>(async
-                keyEntryIdentifier =>
-            {
-                DeleteKeyEntry(keyEntryIdentifier);
-            });
-
-            ImportCryptogramCommand = new KeyManagerAsyncCommand<KeyEntryId?>(async
+            DeleteKeyEntryCommand = new KeyManagerCommand(
                 parameter =>
             {
+                var keyEntryIdentifier = parameter as KeyEntryId;
+                if (keyEntryIdentifier != null)
+                {
+                    DeleteKeyEntry(keyEntryIdentifier);
+                }
+            });
+
+            ImportCryptogramCommand = new KeyManagerCommand(
+                parameter =>
+            {
+                var keyEntryId = parameter as KeyEntryId;
                 var model = new ImportCryptogramDialogViewModel()
                 {
-                    CanChangeIdentifier = parameter == null || !parameter.IsConfigured()
+                    CanChangeIdentifier = keyEntryId == null || !keyEntryId.IsConfigured()
                 };
-                if (parameter != null)
+                if (keyEntryId != null)
                 {
-                    model.Cryptogram.Identifier = parameter;
+                    model.Cryptogram.Identifier = keyEntryId;
                 }
                 var dialog = new ImportCryptogramDialog()
                 {
@@ -155,7 +164,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public KeyManagerAsyncCommand<string> CreateKeyEntryCommand { get; }
+        public KeyManagerCommand CreateKeyEntryCommand { get; }
 
         private async void CreateKeyEntry(KeyEntryDialog dialog)
         {
@@ -184,7 +193,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public KeyManagerAsyncCommand<KeyEntryId> EditKeyEntryCommand { get; }
+        public KeyManagerCommand EditKeyEntryCommand { get; }
 
         private async void UpdateKeyEntry(KeyEntryDialog dialog)
         {
@@ -212,7 +221,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public KeyManagerAsyncCommand<KeyEntryId> DeleteKeyEntryCommand { get; }
+        public KeyManagerCommand DeleteKeyEntryCommand { get; }
 
         private void DeleteKeyEntry(KeyEntryId identifier)
         {
@@ -232,7 +241,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public KeyManagerAsyncCommand<KeyEntryId?> ImportCryptogramCommand { get; }
+        public KeyManagerCommand ImportCryptogramCommand { get; }
 
         private async void ImportCryptogram(ImportCryptogramDialog dialog)
         {

@@ -305,13 +305,13 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         {
             log.Info(String.Format("Storing `{0}` key entries...", changes.Count));
 
-            var cmd = Chip.getCommands();
+            var cmd = Chip?.getCommands();
             if (cmd is SAMAV1ISO7816Commands av1cmd)
             {
                 if (GetSAMProperties().AutoSwitchToAV2)
                 {
                     SwitchSAMToAV2(av1cmd);
-                    cmd = Chip.getCommands();
+                    cmd = Chip?.getCommands();
                     if (cmd is SAMAV1ISO7816Commands)
                     {
                         log.Error("The SAM didn't switched properly to AV2 mode.");
@@ -456,7 +456,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             Open();
         }
 
-        public static void SwitchSAMToAV2(SAMAV1ISO7816Commands av1cmds, byte keyno, DESFireKeyType keyType, byte keyVersion, string keyValue)
+        public static void SwitchSAMToAV2(SAMAV1ISO7816Commands av1cmds, byte keyno, DESFireKeyType keyType, byte keyVersion, string? keyValue)
         {
             log.Info("Switching the SAM to AV2 mode...");
             var keyav1entry = av1cmds.getKeyEntry(keyno);
@@ -515,13 +515,13 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             log.Info("SAM switched to AV2 mode.");
         }
 
-        public static void UnlockSAM(SAMAV2ISO7816Commands av2cmds, byte keyEntry, byte keyVersion, string keyValue)
+        public static void UnlockSAM(SAMAV2ISO7816Commands av2cmds, byte keyEntry, byte keyVersion, string? keyValue)
         {
             log.Info("Unlocking SAM...");
             var key = new DESFireKey();
             key.setKeyType(DESFireKeyType.DF_KEY_AES);
             key.setKeyVersion(keyVersion);
-            key.fromString(keyValue);
+            key.fromString(keyValue ?? "");
             av2cmds.lockUnlock(key, SAMLockUnlock.Unlock, keyEntry, 0x00, 0x00);
             log.Info("SAM unlocked.");
         }
@@ -636,7 +636,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             {
                 if (!string.IsNullOrEmpty(GetSAMProperties().Secret) && !_unlocked)
                 {
-                    UnlockSAM(av2cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetFormattedValue<string>(Properties.Secret, KeyValueFormat.HexStringWithSpace));
+                    UnlockSAM(av2cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetFormattedValue<string>(Properties?.Secret, KeyValueFormat.HexStringWithSpace));
                     _unlocked = true;
                 }
 

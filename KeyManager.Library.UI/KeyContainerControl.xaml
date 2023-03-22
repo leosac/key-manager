@@ -14,7 +14,7 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <ContentControl x:Name="containerExtContent" Grid.Row="0" DataContext="{Binding KeyContainer, Mode=OneWay, ElementName=keyControl}" />
-        <ContentControl x:Name="keyContent" Grid.Row="1" DataContext="{Binding KeyContainer.Key, Mode=OneWay, ElementName=keyControl}" DataContextChanged="keyContent_DataContextChanged" HorizontalContentAlignment="Stretch" />
+        <ContentControl x:Name="containerExtContent" Grid.Row="0" DataContext="{Binding DataContext, Mode=OneWay, ElementName=keyControl}" />
+        <ContentControl x:Name="keyContent" Grid.Row="1" DataContext="{Binding DataContext.Key, Mode=OneWay, ElementName=keyControl}" DataContextChanged="keyContent_DataContextChanged" HorizontalContentAlignment="Stretch" />
     </Grid>
 </UserControl>

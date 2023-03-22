@@ -7,23 +7,23 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public event EventHandler? CanExecuteChanged;
 
         private bool _isExecuting;
-        private readonly Func<T, Task> _execute;
-        private readonly Func<T, bool> _canExecute;
-        private readonly IKeyManagerErrorHandler _errorHandler;
+        private readonly Func<T?, Task> _execute;
+        private readonly Func<T?, bool>? _canExecute;
+        private readonly IKeyManagerErrorHandler? _errorHandler;
 
-        public KeyManagerAsyncCommand(Func<T, Task> execute, Func<T, bool> canExecute = null, IKeyManagerErrorHandler errorHandler = null)
+        public KeyManagerAsyncCommand(Func<T?, Task> execute, Func<T?, bool>? canExecute = null, IKeyManagerErrorHandler? errorHandler = null)
         {
             _execute = execute;
             _canExecute = canExecute;
             _errorHandler = errorHandler;
         }
 
-        public bool CanExecute(T parameter)
+        public bool CanExecute(T? parameter)
         {
             return !_isExecuting && (_canExecute?.Invoke(parameter) ?? true);
         }
 
-        public async Task ExecuteAsync(T parameter)
+        public async Task ExecuteAsync(T? parameter)
         {
             if (CanExecute(parameter))
             {
@@ -49,14 +49,14 @@ namespace Leosac.KeyManager.Library.UI.Domain
         #region Explicit implementations
         bool ICommand.CanExecute(object? parameter)
         {
-            return CanExecute((T)parameter);
+            return CanExecute((T?)parameter);
         }
 
         void ICommand.Execute(object? parameter)
         {
             try
             {
-                ExecuteAsync((T)parameter);
+                ExecuteAsync((T?)parameter).Start();
             }
             catch (Exception ex)
             {

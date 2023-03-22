@@ -66,7 +66,10 @@ namespace Leosac.KeyManager.Library.UI
                 if (store != null)
                 {
                     var fav = Favorites?.CreateFromKeyStore(store);
-                    SelectedKeyStoreFavorite = fav;
+                    if (fav != null)
+                    {
+                        SelectedKeyStoreFavorite = fav;
+                    }
                 }
             }
         }

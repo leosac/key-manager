@@ -29,6 +29,9 @@ namespace Leosac.KeyManager.Library
 
         public IEnumerable GetErrors(string? propertyName)
         {
+            if (propertyName == null)
+                throw new ArgumentNullException(nameof(propertyName));
+
             Debug.Assert(this.type?.GetProperty(propertyName) != null, $"The type {this.type.Name} does not have a property named {propertyName}");
             List<object>? errors;
             return this.propertyErrors.TryGetValue(propertyName, out errors)
