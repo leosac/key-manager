@@ -275,8 +275,8 @@
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="NXP_SAMPluginDependenciesComponents" Directory="NXP_SAMPLUGIN">
-      <Component Id="LibLogicalAccessNetCEComponent" Win64="$(var.Win64)">
-        <File Id="___var.LibLogicalAccessNetCE.dll_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.TargetDir)\LibLogicalAccessNetCE.dll" />
+      <Component Id="LibLogicalAccessNetComponent" Win64="$(var.Win64)">
+        <File Id="___var.LibLogicalAccessNet.dll_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.TargetDir)\LibLogicalAccessNet.dll" />
       </Component>
     </ComponentGroup>
 
@@ -368,12 +368,6 @@
       <Component Id="LibLogicalAccessNetwin32Component" Win64="$(var.Win64)">
         <File Id="___var.LibLogicalAccessNet.win32.dll.TargetPath_" Source="$(var.LLASourceDir)\LibLogicalAccessNet.win32.dll" />
       </Component>
-      <Component Id="libnfcComponent" Win64="$(var.Win64)">
-        <File Id="___var.libnfc.dll.TargetPath_" Source="$(var.LLASourceDir)\libnfc.dll" />
-      </Component>
-      <Component Id="libnfcnfcreadersComponent" Win64="$(var.Win64)">
-        <File Id="___var.libnfcnfcreaders.dll.TargetPath_" Source="$(var.LLASourceDir)\libnfc-nfcreaders.dll" />
-      </Component>
       <Component Id="libsslx64Component" Win64="$(var.Win64)">
         <Condition><![CDATA[PLATFORM=x64]]></Condition>
         <File Id="___var.libsslx64.dll.TargetPath_" Source="$(var.LLASourceDirX64)\libssl-1_1-x64.dll" />
@@ -381,9 +375,6 @@
       <Component Id="libsslComponent" Win64="$(var.Win64)">
         <Condition><![CDATA[PLATFORM=x86]]></Condition>
         <File Id="___var.libssl.dll.TargetPath_" Source="$(var.LLASourceDirX86)\libssl-1_1.dll" />
-      </Component>
-      <Component Id="libusb0Component" Win64="$(var.Win64)">
-        <File Id="___var.libusb0.dll.TargetPath_" Source="$(var.LLASourceDir)\libusb0.dll" />
       </Component>
       <Component Id="llacommonComponent" Win64="$(var.Win64)">
         <File Id="___var.llacommon.dll.TargetPath_" Source="$(var.LLASourceDir)\llacommon.dll" />
@@ -409,9 +400,6 @@
       <Component Id="osdpreadersComponent" Win64="$(var.Win64)">
         <File Id="___var.osdpreaders.dll.TargetPath_" Source="$(var.LLASourceDir)\osdpreaders.dll" />
       </Component>
-      <Component Id="pcProxAPIComponent" Win64="$(var.Win64)">
-        <File Id="___var.pcProxAPI.dll.TargetPath_" Source="$(var.LLASourceDir)\pcProxAPI.dll" />
-      </Component>
       <Component Id="pcscreadersComponent" Win64="$(var.Win64)">
         <File Id="___var.pcscreaders.dll.TargetPath_" Source="$(var.LLASourceDir)\pcscreaders.dll" />
       </Component>
@@ -424,11 +412,23 @@
       <Component Id="proxlitecardsComponent" Win64="$(var.Win64)">
         <File Id="___var.proxlitecards.dll.TargetPath_" Source="$(var.LLASourceDir)\proxlitecards.dll" />
       </Component>
+      <!--<Component Id="libnfcComponent" Win64="$(var.Win64)">
+        <File Id="___var.libnfc.dll.TargetPath_" Source="$(var.LLASourceDir)\libnfc.dll" />
+      </Component>
+      <Component Id="libnfcnfcreadersComponent" Win64="$(var.Win64)">
+        <File Id="___var.libnfcnfcreaders.dll.TargetPath_" Source="$(var.LLASourceDir)\libnfc-nfcreaders.dll" />
+      </Component>
+      <Component Id="libusb0Component" Win64="$(var.Win64)">
+        <File Id="___var.libusb0.dll.TargetPath_" Source="$(var.LLASourceDir)\libusb0.dll" />
+      </Component>
+      <Component Id="pcProxAPIComponent" Win64="$(var.Win64)">
+        <File Id="___var.pcProxAPI.dll.TargetPath_" Source="$(var.LLASourceDir)\pcProxAPI.dll" />
+      </Component>
       <Component Id="rfideasreadersComponent" Win64="$(var.Win64)">
         <File Id="___var.rfideasreaders.dll.TargetPath_" Source="$(var.LLASourceDir)\rfideasreaders.dll" />
-      </Component>
-      <Component Id="samav2cardsComponent" Win64="$(var.Win64)">
-        <File Id="___var.samav2cards.dll.TargetPath_" Source="$(var.LLASourceDir)\samav2cards.dll" />
+      </Component>-->
+      <Component Id="samavcardsComponent" Win64="$(var.Win64)">
+        <File Id="___var.samavcards.dll.TargetPath_" Source="$(var.LLASourceDir)\samavcards.dll" />
       </Component>
       <Component Id="seoscardsComponent" Win64="$(var.Win64)">
         <File Id="___var.seoscards.dll.TargetPath_" Source="$(var.LLASourceDir)\seoscards.dll" />
