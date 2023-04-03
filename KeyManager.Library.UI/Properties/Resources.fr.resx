@@ -439,7 +439,7 @@
     <value>Sélectionnez le dossier cible</value>
   </data>
   <data name="StartKeyCeremony" xml:space="preserve">
-    <value>Démarrer la cérémonie de clés</value>
+    <value>Démarrer la cérémonie</value>
   </data>
   <data name="Test" xml:space="preserve">
     <value>Tester</value>

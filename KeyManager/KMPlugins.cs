@@ -28,21 +28,24 @@ namespace Leosac.KeyManager
             {
                 if (Directory.Exists(pluginPath))
                 {
-                    var files = Directory.GetFiles(pluginPath, "KeyManager.Library.*.dll").ToList();
-                    files.ForEach(file =>
+                    var entryFile = Directory.GetFiles(pluginPath, "KeyManager.Library.KeyStore.*.UI.dll").FirstOrDefault();
+                    if (entryFile != null)
                     {
-                        var pluginAssembly = LoadPlugin(file);
-                        CreateFactories(pluginAssembly);
-                    });
+                        var loadContext = new PluginLoadContext(entryFile);
+                        var files = Directory.GetFiles(pluginPath, "KeyManager.Library.*.dll").ToList();
+                        files.ForEach(file =>
+                        {
+                            var pluginAssembly = loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(file)));
+                            CreateFactories(pluginAssembly);
+                        });
+                    }
+                    else
+                    {
+                        log.Warn(String.Format("Plugin `{0}` is missing an entry file matching `KeyManager.Library.KeyStore.*.UI.dll`.", pluginPath));
+                    }
                 }
             });
             log.Info("Plugins loaded.");
-        }
-
-        private static Assembly LoadPlugin(string pluginPath)
-        {
-            var loadContext = new PluginLoadContext(pluginPath);
-            return loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(pluginPath)));
         }
 
         private static void CreateFactories(Assembly assembly)
