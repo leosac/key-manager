@@ -26,6 +26,7 @@
     <Feature Id="TranslationsFeature" Title="Translations" Description="Available application translations" Level="1">
       <Feature Id="FrenchTranslation" Title="French Translation" Description="The application French translation" Level="1">
         <ComponentGroupRef Id="KeyManagerResourcesFR" />
+        <ComponentGroupRef Id="DependenciesResourcesFR"/>
         <ComponentGroupRef Id="FilePluginResourcesFR" />
         <ComponentGroupRef Id="HSM_PKCS11PluginResourcesFR" />
         <ComponentGroupRef Id="NXP_SAMPluginResourcesFR" />
@@ -220,6 +221,12 @@
     <ComponentGroup Id="NXP_SAMPluginResourcesFR" Directory="NXP_SAMPLUGINFR">
       <Component Id="KeyManagerLibraryKeyStoreNXP_SAMUIResourcesFRComponent" Win64="$(var.Win64)">
         <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetDir)\fr\KeyManager.Library.KeyStore.NXP_SAM.UI.resources.dll" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="DependenciesResourcesFR" Directory="RESOURCESFR">
+      <Component Id="WpfAppResourcesFRComponent" Win64="$(var.Win64)">
+        <File Id="___var.WpfApp.ResourcesFR_" Source="$(var.KeyManager.TargetDir)\fr\WpfApp.resources.dll" />
       </Component>
     </ComponentGroup>
     
