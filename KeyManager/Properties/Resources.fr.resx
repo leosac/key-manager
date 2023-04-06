@@ -117,32 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="About" xml:space="preserve">
-    <value>A propos</value>
-  </data>
-  <data name="Actions" xml:space="preserve">
-    <value>Actions</value>
-  </data>
   <data name="AddFavorite" xml:space="preserve">
     <value>Ajouter le magasin de clés aux favoris</value>
-  </data>
-  <data name="AlreadyLastUpdate" xml:space="preserve">
-    <value>Vous avez déjà la dernière version.</value>
-  </data>
-  <data name="AutomaticUpdates" xml:space="preserve">
-    <value>Mises à jour automatiques</value>
   </data>
   <data name="Back" xml:space="preserve">
     <value>Retour</value>
   </data>
-  <data name="Call" xml:space="preserve">
-    <value>Appeler</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Annuler</value>
-  </data>
-  <data name="CheckUpdate" xml:space="preserve">
-    <value>Vérifier les mises à jour</value>
   </data>
   <data name="Clear" xml:space="preserve">
     <value>Effacer</value>
@@ -153,23 +135,11 @@
   <data name="CloseKeyStore" xml:space="preserve">
     <value>Fermer le magasin de clés</value>
   </data>
-  <data name="CodeLicense" xml:space="preserve">
-    <value>Le code source du logiciel est publié sous la licence GNU GPL v3.</value>
-  </data>
   <data name="Confirm" xml:space="preserve">
     <value>Confirmer</value>
   </data>
-  <data name="Copy" xml:space="preserve">
-    <value>Copier</value>
-  </data>
   <data name="CreateKeyStore" xml:space="preserve">
     <value>Créer un nouveau magasin de clés</value>
-  </data>
-  <data name="Cut" xml:space="preserve">
-    <value>Couper</value>
-  </data>
-  <data name="DarkMode" xml:space="preserve">
-    <value>Sombre</value>
   </data>
   <data name="DeleteFavorite" xml:space="preserve">
     <value>Supprimer le magasin de clés des favoris</value>
@@ -177,17 +147,8 @@
   <data name="DeleteFavoriteConfirmation" xml:space="preserve">
     <value>Confirmez-vous la suppression du favori ?</value>
   </data>
-  <data name="DevelopedBy" xml:space="preserve">
-    <value>Développé par</value>
-  </data>
-  <data name="DownloadNow" xml:space="preserve">
-    <value>Télécharger la nouvelle version</value>
-  </data>
   <data name="EditFavorite" xml:space="preserve">
     <value>Modifier le magasin de clés favoris</value>
-  </data>
-  <data name="EmailSupport" xml:space="preserve">
-    <value>Email Support</value>
   </data>
   <data name="FavoriteName" xml:space="preserve">
     <value>Nom</value>
@@ -198,44 +159,8 @@
   <data name="Favorites" xml:space="preserve">
     <value>Magasins de clés favoris</value>
   </data>
-  <data name="FontSize" xml:space="preserve">
-    <value>Taille :</value>
-  </data>
   <data name="Information" xml:space="preserve">
     <value>Information</value>
-  </data>
-  <data name="InternetRequired" xml:space="preserve">
-    <value>Une connexion internet est requise, c'est tout !</value>
-  </data>
-  <data name="InvalidPlan" xml:space="preserve">
-    <value>Aucun plan de maintenance actif.</value>
-  </data>
-  <data name="LibrariesCredits" xml:space="preserve">
-    <value>Bibliothèques / Crédits</value>
-  </data>
-  <data name="LicenseKey" xml:space="preserve">
-    <value>Clé</value>
-  </data>
-  <data name="LicenseKeyHelper" xml:space="preserve">
-    <value>Le plan / clé de licence</value>
-  </data>
-  <data name="LightMode" xml:space="preserve">
-    <value>Clair</value>
-  </data>
-  <data name="LogConsole" xml:space="preserve">
-    <value>Log Console</value>
-  </data>
-  <data name="MaintenancePlan" xml:space="preserve">
-    <value>Plan d'installation et de maintenance</value>
-  </data>
-  <data name="MaintenancePlanAdvert1" xml:space="preserve">
-    <value>Aucun plan actif n'est enregistré pour cette installation</value>
-  </data>
-  <data name="MaintenancePlanAdvert2" xml:space="preserve">
-    <value>Enregistrez-vous maintenant pour bénéficier des services et sécuriser votre activité.</value>
-  </data>
-  <data name="MaxLines" xml:space="preserve">
-    <value>Lignes max :</value>
   </data>
   <data name="MenuFavorites" xml:space="preserve">
     <value>Favoris</value>
@@ -249,17 +174,8 @@
   <data name="NewFavorite" xml:space="preserve">
     <value>Nouveau magasin de clés favori</value>
   </data>
-  <data name="NewUpdateAvailable" xml:space="preserve">
-    <value>Mise à jour logicielle disponible !</value>
-  </data>
-  <data name="Offline" xml:space="preserve">
-    <value>Hors ligne</value>
-  </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
-  </data>
-  <data name="Online" xml:space="preserve">
-    <value>En ligne</value>
   </data>
   <data name="Open" xml:space="preserve">
     <value>Ouvrir</value>
@@ -270,38 +186,11 @@
   <data name="OpenKeyStore" xml:space="preserve">
     <value>Ouvrir un magasin de clé</value>
   </data>
-  <data name="OpenWebsite" xml:space="preserve">
-    <value>Ouvrir le site web</value>
-  </data>
-  <data name="Phone" xml:space="preserve">
-    <value>Téléphone</value>
-  </data>
-  <data name="PlanExpiration" xml:space="preserve">
-    <value>Le plan expire le</value>
-  </data>
-  <data name="Product" xml:space="preserve">
-    <value>Produit</value>
-  </data>
   <data name="PublishKeyStore" xml:space="preserve">
     <value>Publier vers un autre magasin de clés</value>
   </data>
   <data name="RefreshFavorites" xml:space="preserve">
     <value>Actualiser les favoris</value>
-  </data>
-  <data name="Register" xml:space="preserve">
-    <value>Enregister</value>
-  </data>
-  <data name="RegisterEmail" xml:space="preserve">
-    <value>Email</value>
-  </data>
-  <data name="RegisterEmailHelper" xml:space="preserve">
-    <value>L'adresse e-mail enregistrée (optionnel)</value>
-  </data>
-  <data name="RegisterLink" xml:space="preserve">
-    <value>Enregistrer un plan existant</value>
-  </data>
-  <data name="RegisterPlan" xml:space="preserve">
-    <value>Enregistrez un nouveau plan et bénéficiez-en</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Enregistrer</value>
@@ -311,32 +200,5 @@
   </data>
   <data name="SecretHelper" xml:space="preserve">
     <value>Le secret du magasin</value>
-  </data>
-  <data name="SoftwareVersion" xml:space="preserve">
-    <value>Version logicielle</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>Souscrire</value>
-  </data>
-  <data name="Updates" xml:space="preserve">
-    <value>Mises à jour</value>
-  </data>
-  <data name="UUID" xml:space="preserve">
-    <value>UUID</value>
-  </data>
-  <data name="UUIDHelper" xml:space="preserve">
-    <value>Identifiant unique d'installation</value>
-  </data>
-  <data name="ValidPlan" xml:space="preserve">
-    <value>Vous avez un plan valide.</value>
-  </data>
-  <data name="Visit" xml:space="preserve">
-    <value>Visiter</value>
-  </data>
-  <data name="WebBrowser" xml:space="preserve">
-    <value>Navigateur web</value>
-  </data>
-  <data name="Website" xml:space="preserve">
-    <value>Site web</value>
   </data>
 </root>

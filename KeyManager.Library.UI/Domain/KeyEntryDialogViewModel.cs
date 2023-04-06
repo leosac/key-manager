@@ -1,12 +1,13 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin;
 using Leosac.KeyManager.Library.Plugin.UI.Domain;
+using Leosac.WpfApp.Domain;
 using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public class KeyEntryDialogViewModel : ViewModelBase
+    public class KeyEntryDialogViewModel : KMObject
     {
         public KeyEntryDialogViewModel()
         {
@@ -38,7 +39,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                         await DialogHost.Show(dialog, "KeyEntryDialog");
                     }
                 });
-            BeforeSubmitCommand = new KeyManagerCommand(
+            BeforeSubmitCommand = new LeosacAppCommand(
                 parameter =>
                 {
 
@@ -125,6 +126,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public KeyManagerAsyncCommand<object> OpenLinkCommand { get; }
 
-        public KeyManagerCommand BeforeSubmitCommand { get; }
+        public LeosacAppCommand BeforeSubmitCommand { get; }
     }
 }

@@ -1,17 +1,18 @@
 ﻿using Leosac.KeyManager.Library.Plugin.UI.Domain;
+using Leosac.WpfApp.Domain;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public class FolderBrowserDialogViewModel : ViewModelBase
+    public class FolderBrowserDialogViewModel : KMObject
     {
         public FolderBrowserDialogViewModel()
         {
             Drives = new ObservableCollection<DriveInfo>(DriveInfo.GetDrives());
             Directories = new ObservableCollection<DirectoryInfo>();
 
-            GoToParentCommand = new KeyManagerCommand(
+            GoToParentCommand = new LeosacAppCommand(
                 parameter =>
                 {
                     if (SelectedDirectory?.Parent != null)
@@ -21,7 +22,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             );
 
-            CreateFolderCommand = new KeyManagerCommand(
+            CreateFolderCommand = new LeosacAppCommand(
                 parameter =>
                 {
                     if (SelectedDirectory != null && parameter is string newFolder)
@@ -126,8 +127,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
             noDirUpdate = false;
         }
 
-        public KeyManagerCommand GoToParentCommand { get; }
+        public LeosacAppCommand GoToParentCommand { get; }
 
-        public KeyManagerCommand CreateFolderCommand { get; }
+        public LeosacAppCommand CreateFolderCommand { get; }
     }
 }

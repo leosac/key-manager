@@ -1,4 +1,5 @@
 ﻿using Leosac.KeyManager.Library.UI.Domain;
+using Leosac.WpfApp.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,6 @@ namespace Leosac.KeyManager.Library.UI
             InitializeComponent();
         }
 
-        public KeyManagerCommand? CloseCommand { get; set; }
+        public LeosacAppCommand? CloseCommand { get; set; }
     }
 }

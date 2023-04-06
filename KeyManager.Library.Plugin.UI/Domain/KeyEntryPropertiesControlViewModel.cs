@@ -2,7 +2,7 @@
 
 namespace Leosac.KeyManager.Library.Plugin.UI.Domain
 {
-    public abstract class KeyEntryPropertiesControlViewModel : ViewModelBase
+    public abstract class KeyEntryPropertiesControlViewModel : KMObject
     {
         protected KeyEntryProperties? _properties;
 

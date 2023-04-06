@@ -1,9 +1,10 @@
 ﻿using Leosac.KeyManager.Library.Plugin.UI.Domain;
+using Leosac.WpfApp.Domain;
 using MaterialDesignThemes.Wpf;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public abstract class KeyStoreAdditionalControlViewModel : ViewModelBase
+    public abstract class KeyStoreAdditionalControlViewModel : KMObject
     {
         private KeyStore.KeyStore? _keyStore;
 

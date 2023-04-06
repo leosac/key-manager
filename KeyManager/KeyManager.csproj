@@ -16,9 +16,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="images\flag_french.png" />
-    <None Remove="images\flag_usa.png" />
-    <None Remove="images\leosac_banner.png" />
     <None Remove="images\leosac_key.png" />
     <None Remove="leosac.png" />
   </ItemGroup>
@@ -28,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Leosac.WpfApp" Version="1.0.0" />
     <PackageReference Include="log4net" Version="2.0.15" />
     <PackageReference Include="MaterialDesignThemes" Version="4.8.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -41,14 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="images\flag_french.png" />
-    <Resource Include="images\flag_usa.png" />
-    <Resource Include="images\leosac_banner.png" />
     <Resource Include="images\leosac_key.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="images\leosac.png" />
   </ItemGroup>
 
   <ItemGroup>

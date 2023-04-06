@@ -2,7 +2,7 @@
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Wizard.Domain
 {
-    public class SAMAccessControlWizardWindowViewModel : ViewModelBase
+    public class SAMAccessControlWizardWindowViewModel : KMObject
     {
         public SAMAccessControlWizardWindowViewModel()
         {

@@ -1,15 +1,21 @@
 ﻿using Leosac.KeyManager;
-using Leosac.KeyManager.Library;
+using Leosac.KeyManager.Domain;
 using Leosac.KeyManager.Library.Plugin;
+using Leosac.KeyManager.Library.UI;
+using Leosac.WpfApp;
+using Leosac.WpfApp.Domain;
 using log4net;
+using MaterialDesignThemes.Wpf;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace KeyManager
 {
@@ -36,13 +42,14 @@ namespace KeyManager
                     }
                 });
             };
+            LeosacAppInfo.Instance = new KMLeosacAppInfo();
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             log.Debug("Starting up the application...");
 
-            var settings = KMSettings.GetSingletonInstance();
+            var settings = AppSettings.GetSingletonInstance();
             if (!string.IsNullOrEmpty(settings.Language))
             {
                 LangHelper.ChangeLanguage(settings.Language);

@@ -1,5 +1,6 @@
 ﻿using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
+using Leosac.WpfApp.Domain;
 using LibLogicalAccess.Card;
 using LibLogicalAccess.Reader;
 using log4net;
@@ -25,13 +26,13 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
 
             KeyTypes = new ObservableCollection<SAMKeyType>(Enum.GetValues<SAMKeyType>());
 
-            SAMAuthCommand = new KeyManagerCommand(
+            SAMAuthCommand = new LeosacAppCommand(
                 parameter =>
                 {
                     SAMAuthenticate();
                 });
 
-            SAMSwitchAV2Command = new KeyManagerCommand(
+            SAMSwitchAV2Command = new LeosacAppCommand(
                 parameter =>
                 {
                     SAMSwitchAV2();
@@ -64,9 +65,9 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
 
         public ObservableCollection<SAMKeyType> KeyTypes { get; set; }
 
-        public KeyManagerCommand SAMAuthCommand { get; }
+        public LeosacAppCommand SAMAuthCommand { get; }
 
-        public KeyManagerCommand SAMSwitchAV2Command { get; }
+        public LeosacAppCommand SAMSwitchAV2Command { get; }
 
         private void SAMAuthenticate()
         {

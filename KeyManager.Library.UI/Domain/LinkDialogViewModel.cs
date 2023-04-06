@@ -1,15 +1,16 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin.UI.Domain;
+using Leosac.WpfApp.Domain;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public abstract class LinkDialogViewModel : ViewModelBase
+    public abstract class LinkDialogViewModel : KMObject
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         public LinkDialogViewModel()
         {
-            RunLinkCommand = new KeyManagerCommand(
+            RunLinkCommand = new LeosacAppCommand(
                 parameter =>
                 {
                     RunLink();
@@ -59,7 +60,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _divInputResult, value);
         }
 
-        public KeyManagerCommand RunLinkCommand { get; }
+        public LeosacAppCommand RunLinkCommand { get; }
 
         public abstract void RunLinkImpl(KeyStore.KeyStore ks);
 

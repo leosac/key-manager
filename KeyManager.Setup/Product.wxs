@@ -257,6 +257,9 @@
       <Component Id="SkiaSharpComponent" Win64="$(var.Win64)">
         <File Id="___var.SkiaSharp.dll_" Source="$(var.KeyManager.TargetDir)\SkiaSharp.dll" />
       </Component>
+      <Component Id="WpfAppComponent" Win64="$(var.Win64)">
+        <File Id="___var.WpfApp.dll_" Source="$(var.KeyManager.TargetDir)\WpfApp.dll" />
+      </Component>
     </ComponentGroup>
     <ComponentGroup Id="NativeWinx64RuntimeComponents" Directory="RUNTIMEWINX64NATIVE">
       <Component Id="libSkiaSharp_winx64Component" Win64="$(var.Win64)">

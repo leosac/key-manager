@@ -2,19 +2,20 @@
 using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
+using Leosac.WpfApp.Domain;
 using MaterialDesignThemes.Wpf;
 using System;
 
 namespace Leosac.KeyManager.Domain
 {
-    public class FavoritesControlViewModel : ViewModelBase
+    public class FavoritesControlViewModel : KMObject
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         public FavoritesControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
             _favorites = Favorites.GetSingletonInstance();
-            RefreshFavoritesCommand = new KeyManagerCommand(
+            RefreshFavoritesCommand = new LeosacAppCommand(
                 parameter =>
                 {
                     Favorites = Favorites.GetSingletonInstance(true);
@@ -38,7 +39,7 @@ namespace Leosac.KeyManager.Domain
                         }
                     }
                 });
-            RemoveFavoriteCommand = new KeyManagerCommand(
+            RemoveFavoriteCommand = new LeosacAppCommand(
                 parameter =>
                 {
                     if (parameter is Favorite favorite)
@@ -58,9 +59,9 @@ namespace Leosac.KeyManager.Domain
             set => SetProperty(ref _favorites, value);
         }
 
-        public KeyManagerCommand? RefreshFavoritesCommand { get; set; }
+        public LeosacAppCommand? RefreshFavoritesCommand { get; set; }
         public KeyManagerAsyncCommand<object>? CreateFavoriteCommand { get; set; }
-        public KeyManagerCommand? RemoveFavoriteCommand { get; set; }
-        public KeyManagerCommand? KeyStoreCommand { get; set; }
+        public LeosacAppCommand? RemoveFavoriteCommand { get; set; }
+        public LeosacAppCommand? KeyStoreCommand { get; set; }
     }
 }

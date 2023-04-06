@@ -117,32 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="About" xml:space="preserve">
-    <value>About</value>
-  </data>
-  <data name="Actions" xml:space="preserve">
-    <value>Actions</value>
-  </data>
   <data name="AddFavorite" xml:space="preserve">
     <value>Add Key Store to favorites</value>
-  </data>
-  <data name="AlreadyLastUpdate" xml:space="preserve">
-    <value>You already have the latest version.</value>
-  </data>
-  <data name="AutomaticUpdates" xml:space="preserve">
-    <value>Automatic updates</value>
   </data>
   <data name="Back" xml:space="preserve">
     <value>Back</value>
   </data>
-  <data name="Call" xml:space="preserve">
-    <value>Call</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
-  </data>
-  <data name="CheckUpdate" xml:space="preserve">
-    <value>Check for update now</value>
   </data>
   <data name="Clear" xml:space="preserve">
     <value>Clear</value>
@@ -153,23 +135,11 @@
   <data name="CloseKeyStore" xml:space="preserve">
     <value>Close Key Store</value>
   </data>
-  <data name="CodeLicense" xml:space="preserve">
-    <value>The source code of this software is released under the GNU GPL v3 license.</value>
-  </data>
   <data name="Confirm" xml:space="preserve">
     <value>Confirm</value>
   </data>
-  <data name="Copy" xml:space="preserve">
-    <value>Copy</value>
-  </data>
   <data name="CreateKeyStore" xml:space="preserve">
     <value>Create a new Key Store</value>
-  </data>
-  <data name="Cut" xml:space="preserve">
-    <value>Cut</value>
-  </data>
-  <data name="DarkMode" xml:space="preserve">
-    <value>Dark</value>
   </data>
   <data name="DeleteFavorite" xml:space="preserve">
     <value>Remove Key Store from favorites</value>
@@ -177,17 +147,8 @@
   <data name="DeleteFavoriteConfirmation" xml:space="preserve">
     <value>Do you confirm the favorite deletion?</value>
   </data>
-  <data name="DevelopedBy" xml:space="preserve">
-    <value>Developed by</value>
-  </data>
-  <data name="DownloadNow" xml:space="preserve">
-    <value>Download the new version now</value>
-  </data>
   <data name="EditFavorite" xml:space="preserve">
     <value>Edit the Key Store Favorite</value>
-  </data>
-  <data name="EmailSupport" xml:space="preserve">
-    <value>Email Support</value>
   </data>
   <data name="FavoriteName" xml:space="preserve">
     <value>Name</value>
@@ -198,44 +159,8 @@
   <data name="Favorites" xml:space="preserve">
     <value>Key Store Favorites</value>
   </data>
-  <data name="FontSize" xml:space="preserve">
-    <value>Font size:</value>
-  </data>
   <data name="Information" xml:space="preserve">
     <value>Information</value>
-  </data>
-  <data name="InternetRequired" xml:space="preserve">
-    <value>An internet connection is required, that's all!</value>
-  </data>
-  <data name="InvalidPlan" xml:space="preserve">
-    <value>No active plan.</value>
-  </data>
-  <data name="LibrariesCredits" xml:space="preserve">
-    <value>Libraries / Credits</value>
-  </data>
-  <data name="LicenseKey" xml:space="preserve">
-    <value>Key</value>
-  </data>
-  <data name="LicenseKeyHelper" xml:space="preserve">
-    <value>The plan/license key</value>
-  </data>
-  <data name="LightMode" xml:space="preserve">
-    <value>Light</value>
-  </data>
-  <data name="LogConsole" xml:space="preserve">
-    <value>Log Console</value>
-  </data>
-  <data name="MaintenancePlan" xml:space="preserve">
-    <value>Maintenance Plan</value>
-  </data>
-  <data name="MaintenancePlanAdvert1" xml:space="preserve">
-    <value>No active plan has been registered with this installation.</value>
-  </data>
-  <data name="MaintenancePlanAdvert2" xml:space="preserve">
-    <value>Register now to benefit from all the plan related services and to secure your business.</value>
-  </data>
-  <data name="MaxLines" xml:space="preserve">
-    <value>Max lines:</value>
   </data>
   <data name="MenuFavorites" xml:space="preserve">
     <value>Favorites</value>
@@ -248,9 +173,6 @@
   </data>
   <data name="NewFavorite" xml:space="preserve">
     <value>New Key Store Favorite</value>
-  </data>
-  <data name="NewUpdateAvailable" xml:space="preserve">
-    <value>New software update available!</value>
   </data>
   <data name="Offline" xml:space="preserve">
     <value>Offline</value>
@@ -270,38 +192,11 @@
   <data name="OpenKeyStore" xml:space="preserve">
     <value>Open a Key Store</value>
   </data>
-  <data name="OpenWebsite" xml:space="preserve">
-    <value>Open website</value>
-  </data>
-  <data name="Phone" xml:space="preserve">
-    <value>Phone</value>
-  </data>
-  <data name="PlanExpiration" xml:space="preserve">
-    <value>The plan expires at</value>
-  </data>
-  <data name="Product" xml:space="preserve">
-    <value>Product</value>
-  </data>
   <data name="PublishKeyStore" xml:space="preserve">
     <value>Publish to another Key Store</value>
   </data>
   <data name="RefreshFavorites" xml:space="preserve">
     <value>Refresh Favorites</value>
-  </data>
-  <data name="Register" xml:space="preserve">
-    <value>Register</value>
-  </data>
-  <data name="RegisterEmail" xml:space="preserve">
-    <value>Email</value>
-  </data>
-  <data name="RegisterEmailHelper" xml:space="preserve">
-    <value>The registered email address (optional)</value>
-  </data>
-  <data name="RegisterLink" xml:space="preserve">
-    <value>Register an existing plan</value>
-  </data>
-  <data name="RegisterPlan" xml:space="preserve">
-    <value>Register a new plan and benefit from it</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
@@ -311,32 +206,5 @@
   </data>
   <data name="SecretHelper" xml:space="preserve">
     <value>The key store secret</value>
-  </data>
-  <data name="SoftwareVersion" xml:space="preserve">
-    <value>Software Version</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>Subscribe</value>
-  </data>
-  <data name="Updates" xml:space="preserve">
-    <value>Updates</value>
-  </data>
-  <data name="UUID" xml:space="preserve">
-    <value>UUID</value>
-  </data>
-  <data name="UUIDHelper" xml:space="preserve">
-    <value>Unique Installation Identifier</value>
-  </data>
-  <data name="ValidPlan" xml:space="preserve">
-    <value>You have a valid plan.</value>
-  </data>
-  <data name="Visit" xml:space="preserve">
-    <value>Visit</value>
-  </data>
-  <data name="WebBrowser" xml:space="preserve">
-    <value>Web browser</value>
-  </data>
-  <data name="Website" xml:space="preserve">
-    <value>Website</value>
   </data>
 </root>

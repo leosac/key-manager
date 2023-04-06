@@ -4,6 +4,7 @@ using Leosac.KeyManager.Library.Plugin;
 using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
+using Leosac.WpfApp.Domain;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.ObjectModel;
@@ -12,7 +13,7 @@ using System.Windows.Controls;
 
 namespace Leosac.KeyManager.Domain
 {
-    public class EditKeyStoreControlViewModel : ViewModelBase
+    public class EditKeyStoreControlViewModel : KMObject
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
         public EditKeyStoreControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
@@ -20,7 +21,7 @@ namespace Leosac.KeyManager.Domain
             _showProgress = false;
             _snackbarMessageQueue = snackbarMessageQueue;
             Tabs = new ObservableCollection<TabItem>();
-            SaveFavoriteCommand = new KeyManagerCommand(
+            SaveFavoriteCommand = new LeosacAppCommand(
                 parameter =>
                 {
                     var favorites = Favorites.GetSingletonInstance();
@@ -72,9 +73,9 @@ namespace Leosac.KeyManager.Domain
 
         public ObservableCollection<TabItem> Tabs { get; set; }
 
-        public KeyManagerCommand? HomeCommand { get; set; }
+        public LeosacAppCommand? HomeCommand { get; set; }
 
-        public KeyManagerCommand SaveFavoriteCommand { get; }
+        public LeosacAppCommand SaveFavoriteCommand { get; }
 
         public void CloseKeyStore(bool navigate = true)
         {

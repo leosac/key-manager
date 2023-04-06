@@ -4,7 +4,7 @@ using Leosac.KeyManager.Library.Plugin.UI.Domain;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public class KeyEntryItem : ViewModelBase
+    public class KeyEntryItem : KMObject
     {
         private readonly KeyEntryUIFactory _factory;
 

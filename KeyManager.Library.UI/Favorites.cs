@@ -1,4 +1,5 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
+using Leosac.WpfApp;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,9 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Leosac.KeyManager.Library
+namespace Leosac.KeyManager.Library.UI
 {
-    public class Favorites : KMPermanentConfig<Favorites>
+    public class Favorites : PermanentConfig<Favorites>
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
         private static object _objlock = new object();

@@ -2,6 +2,7 @@
 using Leosac.KeyManager.Library.Plugin;
 using Leosac.KeyManager.Library.Plugin.UI;
 using Leosac.KeyManager.Library.Plugin.UI.Domain;
+using Leosac.WpfApp.Domain;
 using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -9,7 +10,7 @@ using System.Windows.Data;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public class KeyEntriesControlViewModel : ViewModelBase
+    public class KeyEntriesControlViewModel : KMObject
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
         public KeyEntriesControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
@@ -18,7 +19,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             Identifiers = new ObservableCollection<KeyEntryId>();
             WizardFactories = new ObservableCollection<WizardFactory>(WizardFactory.RegisteredFactories);
 
-            CreateKeyEntryCommand = new KeyManagerCommand(
+            CreateKeyEntryCommand = new LeosacAppCommand(
                 parameter =>
             {
                 var model = new KeyEntryDialogViewModel() { KClass = _keClass };
@@ -29,7 +30,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 CreateKeyEntry(dialog);
             });
 
-            EditKeyEntryCommand = new KeyManagerCommand(
+            EditKeyEntryCommand = new LeosacAppCommand(
                 parameter =>
             {
                 var keyEntryIdentifier = parameter as KeyEntryId;
@@ -80,7 +81,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             });
 
-            DeleteKeyEntryCommand = new KeyManagerCommand(
+            DeleteKeyEntryCommand = new LeosacAppCommand(
                 parameter =>
             {
                 var keyEntryIdentifier = parameter as KeyEntryId;
@@ -90,7 +91,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             });
 
-            ImportCryptogramCommand = new KeyManagerCommand(
+            ImportCryptogramCommand = new LeosacAppCommand(
                 parameter =>
             {
                 var keyEntryId = parameter as KeyEntryId;
@@ -109,7 +110,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 ImportCryptogram(dialog);
             });
 
-            WizardCommand = new KeyManagerCommand(
+            WizardCommand = new LeosacAppCommand(
                 parameter =>
             {
                 if (parameter is WizardFactory factory) 
@@ -164,7 +165,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public KeyManagerCommand CreateKeyEntryCommand { get; }
+        public LeosacAppCommand CreateKeyEntryCommand { get; }
 
         private async void CreateKeyEntry(KeyEntryDialog dialog)
         {
@@ -193,7 +194,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public KeyManagerCommand EditKeyEntryCommand { get; }
+        public LeosacAppCommand EditKeyEntryCommand { get; }
 
         private async void UpdateKeyEntry(KeyEntryDialog dialog)
         {
@@ -221,7 +222,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public KeyManagerCommand DeleteKeyEntryCommand { get; }
+        public LeosacAppCommand DeleteKeyEntryCommand { get; }
 
         private void DeleteKeyEntry(KeyEntryId identifier)
         {
@@ -241,7 +242,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public KeyManagerCommand ImportCryptogramCommand { get; }
+        public LeosacAppCommand ImportCryptogramCommand { get; }
 
         private async void ImportCryptogram(ImportCryptogramDialog dialog)
         {
@@ -269,7 +270,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public KeyManagerCommand WizardCommand { get; }
+        public LeosacAppCommand WizardCommand { get; }
 
         private void RunWizard(WizardFactory factory)
         {

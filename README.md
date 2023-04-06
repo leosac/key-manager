@@ -35,4 +35,4 @@ For support, premium services and further updates guarantees, please subscribe t
 ## Plugins
 Key Stores, Key Entries and UI Wizards are handled as plugins. Plugins are loaded from `Plugins` folder on the installation directory.
 
-To load a new plugin, simply copy the main plugin dll file and all its dependencies into this folder. You shouldn't copy the Leosac Key Manager core libraries, only the external/additional ones.
+To load a new plugin, simply copy the main plugin dll file and all its dependencies into a subfolder of the Plugins folder. You shouldn't copy the Leosac Key Manager core libraries, only the external/additional ones.
