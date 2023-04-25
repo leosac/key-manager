@@ -20,7 +20,7 @@ namespace Leosac.KeyManager.Domain
                 {
                     Favorites = Favorites.GetSingletonInstance(true);
                 });
-            CreateFavoriteCommand = new KeyManagerAsyncCommand<object>(async
+            CreateFavoriteCommand = new LeosacAppAsyncCommand<object>(async
                 parameter =>
                 {
                     var model = new KeyStoreSelectorDialogViewModel() { Message = "Save a new Favorite Key Store" };
@@ -60,7 +60,7 @@ namespace Leosac.KeyManager.Domain
         }
 
         public LeosacAppCommand? RefreshFavoritesCommand { get; set; }
-        public KeyManagerAsyncCommand<object>? CreateFavoriteCommand { get; set; }
+        public LeosacAppAsyncCommand<object>? CreateFavoriteCommand { get; set; }
         public LeosacAppCommand? RemoveFavoriteCommand { get; set; }
         public LeosacAppCommand? KeyStoreCommand { get; set; }
     }

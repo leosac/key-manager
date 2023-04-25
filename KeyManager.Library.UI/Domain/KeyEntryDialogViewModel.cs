@@ -1,6 +1,5 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin;
-using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using Leosac.WpfApp.Domain;
 using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
@@ -21,7 +20,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
             Variants = new ObservableCollection<KeyEntryVariant>();
 
-            OpenLinkCommand = new KeyManagerAsyncCommand<object>(async
+            OpenLinkCommand = new LeosacAppAsyncCommand<object>(async
                 parameter =>
                 {
                     if (KeyEntry != null)
@@ -124,7 +123,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             return !HasErrors;
         }
 
-        public KeyManagerAsyncCommand<object> OpenLinkCommand { get; }
+        public LeosacAppAsyncCommand<object> OpenLinkCommand { get; }
 
         public LeosacAppCommand BeforeSubmitCommand { get; }
     }
