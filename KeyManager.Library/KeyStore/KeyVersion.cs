@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-namespace Leosac.KeyManager.Library.KeyStore
+﻿namespace Leosac.KeyManager.Library.KeyStore
 {
     public class KeyVersion : KeyContainer
     {

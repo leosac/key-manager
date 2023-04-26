@@ -1,7 +1,6 @@
 ﻿using Leosac.KeyManager.Library;
 using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin;
-using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using Leosac.WpfApp.Domain;
@@ -200,7 +199,10 @@ namespace Leosac.KeyManager.Domain
                                     (store, keClass, nbentries) =>
                                     {
                                         ProgressMaximum = nbentries * 2;
-                                    });
+                                    }
+                                );
+
+                                SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "Key Entries have been successfully published.");
                             }
                             catch (KeyStoreException ex)
                             {

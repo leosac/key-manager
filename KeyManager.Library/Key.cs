@@ -1,6 +1,5 @@
 ﻿using Leosac.KeyManager.Library.Policy;
 using System.Collections.ObjectModel;
-using System.Security.Cryptography;
 
 namespace Leosac.KeyManager.Library
 {

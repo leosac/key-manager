@@ -1,12 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Leosac.KeyManager.Library.KeyStore
+﻿namespace Leosac.KeyManager.Library.KeyStore
 {
     public abstract class KeyEntry : KMObject, IKeyEntry
     {
