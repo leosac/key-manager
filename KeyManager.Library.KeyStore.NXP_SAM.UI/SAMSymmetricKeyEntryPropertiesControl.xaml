@@ -9,6 +9,7 @@
              xmlns:libui="clr-namespace:Leosac.KeyManager.Library.UI;assembly=KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties"
+             xmlns:wpfappctrls="clr-namespace:Leosac.WpfApp.Controls;assembly=WpfApp"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance domain:SAMSymmetricKeyEntryPropertiesControlViewModel}"
              d:DesignHeight="500" d:DesignWidth="500">
@@ -109,7 +110,7 @@
                                 <ToggleButton IsChecked="{Binding Properties.KeyUsageCounter, Mode=TwoWay, Converter={StaticResource NullToBooleanConverter}}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
                                 <TextBlock Text="{x:Static properties:Resources.Enabled}" Padding="3" />
                             </StackPanel>
-                            <libui:NumericUpDownControl MinValue="0" MaxValue="15" CurrentValue="{Binding Properties.KeyUsageCounter, Mode=TwoWay}" Grid.Row="1"
+                            <wpfappctrls:NumericUpDownControl MinValue="0" MaxValue="15" CurrentValue="{Binding Properties.KeyUsageCounter, Mode=TwoWay}" Grid.Row="1"
                                                         HelperText="{x:Static properties:Resources.KUCReferenceHelper}"
                                                         Hint="{x:Static properties:Resources.KUCReference}"/>
                         </Grid>
@@ -129,7 +130,7 @@
                             <TextBox Grid.Row="0" Text="{Binding Properties.DESFireAID, Mode=TwoWay, Converter={StaticResource ByteArrayToStringConverter}}"
                                      materialDesign:HintAssist.HelperText="{x:Static properties:Resources.DESFireAIDHelper}"
                                      materialDesign:HintAssist.Hint="{x:Static properties:Resources.DESFireAID}" Margin="0,0,0,10"/>
-                            <libui:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding Properties.DESFireKeyNum, Mode=TwoWay}" Grid.Row="1"
+                            <wpfappctrls:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding Properties.DESFireKeyNum, Mode=TwoWay}" Grid.Row="1"
                                                         HelperText="{x:Static properties:Resources.DESFireKeyNumberHelper}"
                                                         Hint="{x:Static properties:Resources.DESFireKeyNumber}"/>
                         </Grid>

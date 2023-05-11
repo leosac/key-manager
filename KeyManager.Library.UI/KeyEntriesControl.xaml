@@ -50,7 +50,7 @@
                                     <Button Style="{StaticResource MaterialDesignRaisedButton}"
                                             Content="{Binding Path=Name, Mode=OneWay}"
                                             Command="{Binding DataContext.WizardCommand, ElementName=keyStoreControl}"
-                                            CommandParameter="{Binding}"/>
+                                            CommandParameter="{Binding}" />
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>

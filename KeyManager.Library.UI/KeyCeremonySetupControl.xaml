@@ -7,6 +7,7 @@
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
+             xmlns:wpfappctrls="clr-namespace:Leosac.WpfApp.Controls;assembly=WpfApp"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="500">
     <Grid>
@@ -17,7 +18,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Text="{x:Static properties:Resources.KeyCeremonyHelper}" Margin="10"/>
-        <local:NumericUpDownControl Grid.Row="1" Hint="{x:Static properties:Resources.KeyCeremonyFragments}" HelperText="{x:Static properties:Resources.KeyCeremonyFragmentsHelper}" HorizontalAlignment="Stretch" MaxValue="255" MinValue="2" CurrentValue="{Binding Fragments, Mode=TwoWay, ElementName=userControl}" VerticalAlignment="Center" Margin="10"/>
+        <wpfappctrls:NumericUpDownControl Grid.Row="1" Hint="{x:Static properties:Resources.KeyCeremonyFragments}" HelperText="{x:Static properties:Resources.KeyCeremonyFragmentsHelper}" HorizontalAlignment="Stretch" MaxValue="255" MinValue="2" CurrentValue="{Binding Fragments, Mode=TwoWay, ElementName=userControl}" VerticalAlignment="Center" Margin="10"/>
         <ComboBox Grid.Row="2" Margin="10"
                   ItemsSource="{Binding CeremonyTypes, ElementName=userControl}"
                   SelectedItem="{Binding SelectedCeremonyType, ElementName=userControl}"

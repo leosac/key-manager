@@ -8,6 +8,7 @@
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties"
+             xmlns:wpfappctrls="clr-namespace:Leosac.WpfApp.Controls;assembly=WpfApp"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="400">
     <materialDesign:Card>
@@ -19,10 +20,10 @@
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <libui:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding ChangeKeyRefId, Mode=TwoWay, ElementName=userControl}" Grid.Row="0"
+                        <wpfappctrls:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding ChangeKeyRefId, Mode=TwoWay, ElementName=userControl}" Grid.Row="0"
                                                         HelperText="{x:Static properties:Resources.KeyEntryIdentifierHelper}"
                                                         Hint="{x:Static properties:Resources.KeyEntryIdentifier}"/>
-                        <libui:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding ChangeKeyRefVersion, Mode=TwoWay, ElementName=userControl}" Grid.Row="1"
+                        <wpfappctrls:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding ChangeKeyRefVersion, Mode=TwoWay, ElementName=userControl}" Grid.Row="1"
                                                         HelperText="{x:Static properties:Resources.KeyVersionHelper}"
                                                         Hint="{x:Static properties:Resources.KeyVersion}"/>
                     </Grid>

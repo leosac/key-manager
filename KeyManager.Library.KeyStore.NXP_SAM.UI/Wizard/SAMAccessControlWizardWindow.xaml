@@ -9,6 +9,7 @@
         xmlns:libuidomain="clr-namespace:Leosac.KeyManager.Library.UI.Domain;assembly=KeyManager.Library.UI"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:properties="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties"
+        xmlns:wpfappctrls="clr-namespace:Leosac.WpfApp.Controls;assembly=WpfApp"
         x:Name="window"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance domain:SAMAccessControlWizardWindowViewModel}"
@@ -42,7 +43,7 @@
                         <TextBox Grid.Row="0" Text="{Binding PICCAID, Mode=TwoWay, Converter={StaticResource ByteArrayToStringConverter}}"
                                      materialDesign:HintAssist.HelperText="{x:Static properties:Resources.DESFireAIDHelper}"
                                      materialDesign:HintAssist.Hint="{x:Static properties:Resources.DESFireAID}" Margin="0,0,0,10"/>
-                        <libui:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding PICCKeyNo, Mode=TwoWay}" Grid.Row="1"
+                        <wpfappctrls:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding PICCKeyNo, Mode=TwoWay}" Grid.Row="1"
                                                         HelperText="{x:Static properties:Resources.DESFireKeyNumberHelper}"
                                                         Hint="{x:Static properties:Resources.DESFireKeyNumber}"/>
                         <libui:KeyContainerControl Grid.Row="2" DataContext="{Binding PICCKey}" ShowKeyLink="False" />

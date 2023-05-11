@@ -8,6 +8,7 @@
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties"
+             xmlns:wpfappctrls="clr-namespace:Leosac.WpfApp.Controls;assembly=WpfApp"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance domain:SAMKeyUsageCounterDialogViewModel}"
              d:DesignHeight="370" d:DesignWidth="500">
@@ -31,10 +32,10 @@
                                     <RowDefinition />
                                     <RowDefinition />
                                 </Grid.RowDefinitions>
-                                <libui:NumericUpDownControl MinValue="0" MaxValue="4294967295" CurrentValue="{Binding Counter.Value, Mode=TwoWay}" Grid.Row="0"
+                                <wpfappctrls:NumericUpDownControl MinValue="0" MaxValue="4294967295" CurrentValue="{Binding Counter.Value, Mode=TwoWay}" Grid.Row="0"
                                                         HelperText="{x:Static properties:Resources.KUCValueHelper}"
                                                         Hint="{x:Static properties:Resources.KUCValue}"/>
-                                <libui:NumericUpDownControl MinValue="0" MaxValue="4294967295" CurrentValue="{Binding Counter.Limit, Mode=TwoWay}" Grid.Row="1"
+                                <wpfappctrls:NumericUpDownControl MinValue="0" MaxValue="4294967295" CurrentValue="{Binding Counter.Limit, Mode=TwoWay}" Grid.Row="1"
                                                         HelperText="{x:Static properties:Resources.KUCLimitHelper}"
                                                         Hint="{x:Static properties:Resources.KUCLimit}"/>
                             </Grid>
