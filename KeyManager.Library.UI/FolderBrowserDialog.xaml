@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
+        xmlns:wpfappdomain="clr-namespace:Leosac.WpfApp.Domain;assembly=WpfApp"
         d:DataContext="{d:DesignInstance domain:FolderBrowserDialogViewModel}"
         mc:Ignorable="d"
         Title="{x:Static properties:Resources.SelectTargetFolder}" Height="450" Width="800" Loaded="Window_Loaded"
@@ -61,10 +62,10 @@
                                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="8">
                                             <Button Margin="3" CommandParameter="{Binding NewFolderName}" Content="{x:Static properties:Resources.OK}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}">
                                                 <Button.Command>
-                                                    <domain:CommandGroup>
-                                                        <domain:CommandReference Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
-                                                        <domain:CommandReference Command="{Binding CreateFolderCommand}"/>
-                                                    </domain:CommandGroup>
+                                                    <wpfappdomain:CommandGroup>
+                                                        <wpfappdomain:CommandReference Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
+                                                        <wpfappdomain:CommandReference Command="{Binding CreateFolderCommand}"/>
+                                                    </wpfappdomain:CommandGroup>
                                                 </Button.Command>
                                         </Button>
                                             <Button Margin="3" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />

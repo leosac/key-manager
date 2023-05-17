@@ -10,6 +10,7 @@
              xmlns:local="clr-namespace:Leosac.KeyManager"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Properties"
+             xmlns:wpfappdomain="clr-namespace:Leosac.WpfApp.Domain;assembly=WpfApp"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance domain:FavoritesControlViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -43,10 +44,10 @@
                                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                             <Button Margin="0,8,8,0" CommandParameter="{Binding}" Content="{x:Static properties:Resources.OK}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}">
                                                 <Button.Command>
-                                                    <libuidomain:CommandGroup>
-                                                        <libuidomain:CommandReference Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
-                                                        <libuidomain:CommandReference Command="{Binding DataContext.KeyStoreCommand, ElementName=userControl}"/>
-                                                    </libuidomain:CommandGroup>
+                                                    <wpfappdomain:CommandGroup>
+                                                        <wpfappdomain:CommandReference Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
+                                                        <wpfappdomain:CommandReference Command="{Binding DataContext.KeyStoreCommand, ElementName=userControl}"/>
+                                                    </wpfappdomain:CommandGroup>
                                                 </Button.Command>
                                             </Button>
                                             <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />
@@ -66,10 +67,10 @@
                                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                             <Button Margin="0,8,8,0" CommandParameter="{Binding}" Content="{x:Static properties:Resources.Confirm}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}">
                                                 <Button.Command>
-                                                    <libuidomain:CommandGroup>
-                                                        <libuidomain:CommandReference Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
-                                                        <libuidomain:CommandReference Command="{Binding DataContext.RemoveFavoriteCommand, ElementName=userControl}"/>
-                                                    </libuidomain:CommandGroup>
+                                                    <wpfappdomain:CommandGroup>
+                                                        <wpfappdomain:CommandReference Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
+                                                        <wpfappdomain:CommandReference Command="{Binding DataContext.RemoveFavoriteCommand, ElementName=userControl}"/>
+                                                    </wpfappdomain:CommandGroup>
                                                 </Button.Command>
                                             </Button>
 

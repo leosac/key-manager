@@ -9,6 +9,7 @@
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
+             xmlns:wpfappdomain="clr-namespace:Leosac.WpfApp.Domain;assembly=WpfApp"
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              d:DataContext="{d:DesignInstance domain:KeyEntryDialogViewModel}"
              mc:Ignorable="d" 
@@ -41,10 +42,10 @@
             <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,5">
                 <Button Width="100" IsDefault="True" Content="{x:Static properties:Resources.OK}" CommandParameter="{Binding KeyEntry}" IsEnabled="{Binding KeyEntry.HasErrors, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}">
                     <Button.Command>
-                        <domain:CommandGroup>
-                            <domain:CommandReference Command="{Binding BeforeSubmitCommand}"/>
-                            <domain:CommandReference Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
-                        </domain:CommandGroup>
+                        <wpfappdomain:CommandGroup>
+                            <wpfappdomain:CommandReference Command="{Binding BeforeSubmitCommand}"/>
+                            <wpfappdomain:CommandReference Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
+                        </wpfappdomain:CommandGroup>
                     </Button.Command>
                 </Button>
                 <Button Width="100" IsCancel="True" Content="{x:Static properties:Resources.Cancel}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>

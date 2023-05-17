@@ -8,6 +8,7 @@
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
+             xmlns:wpfappdomain="clr-namespace:Leosac.WpfApp.Domain;assembly=WpfApp"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="500">
     <UserControl.Resources>
@@ -16,7 +17,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <domain:ByteLengthToCharLengthConverter x:Key="ByteLengthToCharLengthConverter" />
+            <wpfappdomain:ByteLengthToCharLengthConverter x:Key="ByteLengthToCharLengthConverter" />
             <domain:KeyChecksumConverter x:Key="KeyChecksumConverter" />
         </ResourceDictionary>
     </UserControl.Resources>

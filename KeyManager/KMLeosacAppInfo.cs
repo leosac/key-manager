@@ -140,9 +140,9 @@ namespace Leosac.KeyManager
             model.Libraries.Add(new AboutWindowViewModel.Library("SkiaSharp", "MIT", "Graphic library", "https://github.com/mono/SkiaSharp"));
             model.Libraries.Add(new AboutWindowViewModel.Library("Pkcs11Interop", "Apache v2", "PKCS#11 libraries wrapper", "https://github.com/Pkcs11Interop/Pkcs11Interop"));
             model.Libraries.Add(new AboutWindowViewModel.Library("LibLogicalAccess", "LGPL", "RFID/NFC Library", "https://liblogicalaccess.com"));
-            model.Libraries.Add(new AboutWindowViewModel.Library("zlib", "zlib", "compression library", "https://zlib.net/"));
-            model.Libraries.Add(new AboutWindowViewModel.Library("openssl", "OpenSSL and SSLeay", "cryptographic library", "https://www.openssl.org/"));
-            model.Libraries.Add(new AboutWindowViewModel.Library("boost", "Boost Software", "cross-platform C++ library", "https://www.boost.org/"));
+            model.Libraries.Add(new AboutWindowViewModel.Library("zlib", "zlib", "Compression library", "https://zlib.net/"));
+            model.Libraries.Add(new AboutWindowViewModel.Library("openssl", "OpenSSL and SSLeay", "Cryptographic library", "https://www.openssl.org/"));
+            model.Libraries.Add(new AboutWindowViewModel.Library("boost", "Boost Software", "Cross-platform C++ library", "https://www.boost.org/"));
             model.Libraries.Add(new AboutWindowViewModel.Library("nlohmann/json", "MIT", "JSON library", "https://github.com/nlohmann/json"));
             model.Libraries.Add(new AboutWindowViewModel.Library("Crc32.NET", "MIT", "CRC32 library", "https://github.com/force-net/Crc32.NET"));
             model.Libraries.Add(new AboutWindowViewModel.Library("BouncyCastle.Cryptography", "MIT", "Cryptography API library", "https://www.bouncycastle.org/"));

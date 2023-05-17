@@ -7,6 +7,7 @@
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
+             xmlns:wpfappdomain="clr-namespace:Leosac.WpfApp.Domain;assembly=WpfApp"
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              d:DataContext="{d:DesignInstance domain:KeyLinkDialogViewModel}"
              mc:Ignorable="d"
@@ -41,10 +42,10 @@
             <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,20,5,5">
                 <Button Width="100" Content="{x:Static properties:Resources.Test}" Style="{StaticResource MaterialDesignRaisedLightButton}" CommandParameter="{x:Static Dock.Bottom}" Margin="5">
                     <Button.Command>
-                        <domain:CommandGroup>
-                            <domain:CommandReference Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}" />
-                            <domain:CommandReference Command="{Binding RunLinkCommand}"/>
-                        </domain:CommandGroup>
+                        <wpfappdomain:CommandGroup>
+                            <wpfappdomain:CommandReference Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}" />
+                            <wpfappdomain:CommandReference Command="{Binding RunLinkCommand}"/>
+                        </wpfappdomain:CommandGroup>
                     </Button.Command>
                 </Button>
                 <Button Width="100" IsDefault="True" Content="{x:Static properties:Resources.Close}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding Link}" Margin="5" />
