@@ -35,7 +35,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                             DataContext = model
                         };
 
-                        await DialogHost.Show(dialog, "KeyEntryDialog");
+                        await DialogHelper.ForceShow(dialog, "KeyEntryDialog");
                     }
                 });
             BeforeSubmitCommand = new LeosacAppCommand(

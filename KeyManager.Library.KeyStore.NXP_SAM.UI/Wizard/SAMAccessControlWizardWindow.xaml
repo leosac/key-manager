@@ -10,6 +10,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:properties="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties"
         xmlns:wpfappctrls="clr-namespace:Leosac.WpfApp.Controls;assembly=WpfApp"
+        xmlns:wpfappdomain="clr-namespace:Leosac.WpfApp.Domain;assembly=WpfApp"
         x:Name="window"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance domain:SAMAccessControlWizardWindowViewModel}"
@@ -18,7 +19,7 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         Title="{x:Static properties:Resources.AccessControlWizard}" Height="600" Width="800" WindowStartupLocation="CenterOwner">
     <Window.Resources>
-        <libuidomain:ByteArrayToStringConverter x:Key="ByteArrayToStringConverter" />
+        <wpfappdomain:ByteArrayToStringConverter x:Key="ByteArrayToStringConverter" />
         <libuidomain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
     </Window.Resources>
     <DockPanel>

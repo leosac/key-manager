@@ -169,7 +169,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         private async void CreateKeyEntry(KeyEntryDialog dialog)
         {
-            object? ret = await DialogHost.Show(dialog, "RootDialog");
+            var ret = await DialogHelper.ForceShow(dialog, "RootDialog");
             if (ret != null && dialog.DataContext is KeyEntryDialogViewModel model)
             {
                 if (model.KeyEntry != null)
@@ -200,7 +200,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             try
             {
-                object? ret = await DialogHost.Show(dialog, "RootDialog");
+                object? ret = await DialogHelper.ForceShow(dialog, "RootDialog");
                 if (ret != null && dialog.DataContext is KeyEntryDialogViewModel model)
                 {
                     if (model.KeyEntry != null)
@@ -248,7 +248,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             try
             {
-                object? ret = await DialogHost.Show(dialog, "RootDialog");
+                object? ret = await DialogHelper.ForceShow(dialog, "RootDialog");
                 if (ret != null && dialog.DataContext is ImportCryptogramDialogViewModel model)
                 {
                     if (!string.IsNullOrEmpty(model.Cryptogram.Value))

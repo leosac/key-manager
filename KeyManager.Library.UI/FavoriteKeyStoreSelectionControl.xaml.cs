@@ -59,7 +59,7 @@ namespace Leosac.KeyManager.Library.UI
                 DataContext = model
             };
 
-            object? ret = await DialogHost.Show(dialog, "FavSelectionDialog");
+            object? ret = await DialogHelper.ForceShow(dialog, "FavSelectionDialog");
             if (ret != null)
             {
                 var store = model.CreateKeyStore();

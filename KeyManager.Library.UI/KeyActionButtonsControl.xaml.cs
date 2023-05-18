@@ -75,7 +75,7 @@ namespace Leosac.KeyManager.Library.UI
                     DataContext = model
                 };
 
-                await DialogHost.Show(dialog, "KeyEntryDialog");
+                await DialogHelper.ForceShow(dialog, "KeyEntryDialog");
             }
         }
 

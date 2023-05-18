@@ -10,11 +10,12 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties"
              xmlns:wpfappctrls="clr-namespace:Leosac.WpfApp.Controls;assembly=WpfApp"
+             xmlns:wpfappdomain="clr-namespace:Leosac.WpfApp.Domain;assembly=WpfApp"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance domain:SAMSymmetricKeyEntryPropertiesControlViewModel}"
              d:DesignHeight="500" d:DesignWidth="500">
     <UserControl.Resources>
-        <libuidomain:ByteArrayToStringConverter x:Key="ByteArrayToStringConverter" />
+        <wpfappdomain:ByteArrayToStringConverter x:Key="ByteArrayToStringConverter" />
         <libuidomain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
     </UserControl.Resources>
     <StackPanel>
