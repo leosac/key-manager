@@ -49,6 +49,14 @@ namespace Leosac.KeyManager.Domain
                         log.Info(String.Format("Favorite `{0}` removed.", favorite.Name));
                     }
                 });
+            EditFavoriteCommand = new LeosacAppCommand(
+                parameter =>
+                {
+                    if (parameter is Favorite fav)
+                    {
+                        EditKeyStoreControlViewModel.EditFavorite(Favorites, fav);
+                    }
+                });
         }
 
         private Favorites? _favorites;
@@ -62,6 +70,7 @@ namespace Leosac.KeyManager.Domain
         public LeosacAppCommand? RefreshFavoritesCommand { get; set; }
         public LeosacAppAsyncCommand<object>? CreateFavoriteCommand { get; set; }
         public LeosacAppCommand? RemoveFavoriteCommand { get; set; }
+        public LeosacAppCommand EditFavoriteCommand { get; }
         public LeosacAppCommand? KeyStoreCommand { get; set; }
     }
 }

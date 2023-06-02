@@ -81,6 +81,26 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             });
 
+            MoveUpKeyEntryCommand = new LeosacAppCommand(
+                parameter =>
+            {
+                var keyEntryIdentifier = parameter as KeyEntryId;
+                if (keyEntryIdentifier != null)
+                {
+                    MoveUpKeyEntry(keyEntryIdentifier);
+                }
+            });
+
+            MoveDownKeyEntryCommand = new LeosacAppCommand(
+                parameter =>
+            {
+                var keyEntryIdentifier = parameter as KeyEntryId;
+                if (keyEntryIdentifier != null)
+                {
+                    MoveDownKeyEntry(keyEntryIdentifier);
+                }
+            });
+
             DeleteKeyEntryCommand = new LeosacAppCommand(
                 parameter =>
             {
@@ -238,6 +258,54 @@ namespace Leosac.KeyManager.Library.UI.Domain
             catch (Exception ex)
             {
                 log.Error("Deleting the Key Entry failed unexpected.", ex);
+                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
+            }
+        }
+
+        public LeosacAppCommand MoveUpKeyEntryCommand { get; }
+
+        private void MoveUpKeyEntry(KeyEntryId identifier)
+        {
+            try
+            {
+                KeyStore?.MoveUp(identifier, _keClass);
+                var oldIndex = Identifiers.IndexOf(identifier);
+                if (oldIndex > 0)
+                {
+                    Identifiers.Move(oldIndex, oldIndex - 1);
+                }
+            }
+            catch (KeyStoreException ex)
+            {
+                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
+            }
+            catch (Exception ex)
+            {
+                log.Error("Moving Up the Key Entry failed unexpected.", ex);
+                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
+            }
+        }
+
+        public LeosacAppCommand MoveDownKeyEntryCommand { get; }
+
+        private void MoveDownKeyEntry(KeyEntryId identifier)
+        {
+            try
+            {
+                KeyStore?.MoveDown(identifier, _keClass);
+                var oldIndex = Identifiers.IndexOf(identifier);
+                if (oldIndex != -1 && oldIndex < Identifiers.Count - 1)
+                {
+                    Identifiers.Move(oldIndex, oldIndex + 1);
+                }
+            }
+            catch (KeyStoreException ex)
+            {
+                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
+            }
+            catch (Exception ex)
+            {
+                log.Error("Moving Up the Key Entry failed unexpected.", ex);
                 SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
             }
         }

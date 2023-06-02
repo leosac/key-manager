@@ -59,6 +59,9 @@
                                     <materialDesign:PackIcon Kind="FolderOpen" Height="24" Width="24" Cursor="Hand" />
                                 </Button>
                             </materialDesign:DialogHost>
+                            <Button Command="{Binding Path=DataContext.EditFavoriteCommand, ElementName=userControl}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="{x:Static properties:Resources.EditFavorite}" Margin="3">
+                                <materialDesign:PackIcon Kind="FolderEdit" Height="24" Width="24" Cursor="Hand" />
+                            </Button>
                             <materialDesign:DialogHost DialogTheme="Inherit">
                                 <materialDesign:DialogHost.DialogContent>
                                     <StackPanel Margin="16">

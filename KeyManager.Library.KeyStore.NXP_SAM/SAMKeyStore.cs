@@ -36,6 +36,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
         public override bool CanDeleteKeyEntries => false;
 
+        public override bool CanReorderKeyEntries => false;
+
         public override IEnumerable<KeyEntryClass> SupportedClasses
         {
             get => new KeyEntryClass[] { KeyEntryClass.Symmetric };
@@ -178,6 +180,20 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             log.Info(String.Format("Deleting key entry `{0}`...", identifier));
             log.Error("A SAM key entry cannot be deleted, only updated.");
             throw new KeyStoreException("A SAM key entry cannot be deleted, only updated.");
+        }
+
+        public override void MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
+        {
+            log.Info(String.Format("Moving Down key entry `{0}`...", identifier));
+            log.Error("A SAM key entry cannot be reordered.");
+            throw new KeyStoreException("A SAM key entry cannot be reordered.");
+        }
+
+        public override void MoveUp(KeyEntryId identifier, KeyEntryClass keClass)
+        {
+            log.Info(String.Format("Moving Up key entry `{0}`...", identifier));
+            log.Error("A SAM key entry cannot be reordered.");
+            throw new KeyStoreException("A SAM key entry cannot be reordered.");
         }
 
         public override KeyEntry? Get(KeyEntryId identifier, KeyEntryClass keClass)

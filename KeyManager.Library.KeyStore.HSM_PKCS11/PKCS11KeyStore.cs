@@ -30,6 +30,8 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 
         public override bool CanDeleteKeyEntries => true;
 
+        public override bool CanReorderKeyEntries => false;
+
         public override IEnumerable<KeyEntryClass> SupportedClasses
         {
             get => new KeyEntryClass[] { KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric };
@@ -367,6 +369,16 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             if (p == null)
                 throw new KeyStoreException("Missing PKCS#11 key store properties.");
             return p;
+        }
+
+        public override void MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void MoveUp(KeyEntryId identifier, KeyEntryClass keClass)
+        {
+            throw new NotImplementedException();
         }
 
         public override void Open()

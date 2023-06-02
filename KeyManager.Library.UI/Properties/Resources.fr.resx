@@ -375,6 +375,12 @@
   <data name="MnemonicHelper" xml:space="preserve">
     <value>Créer une clé à partir de Mnemonic (BIP-39)</value>
   </data>
+  <data name="MoveDown" xml:space="preserve">
+    <value>Descendre</value>
+  </data>
+  <data name="MoveUp" xml:space="preserve">
+    <value>Monter</value>
+  </data>
   <data name="NewFavorite" xml:space="preserve">
     <value>Nouveau magasin de clés favori</value>
   </data>

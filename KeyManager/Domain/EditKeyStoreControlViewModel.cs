@@ -8,6 +8,7 @@ using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace Leosac.KeyManager.Domain
@@ -113,35 +114,39 @@ namespace Leosac.KeyManager.Domain
         {
             if (Favorite != null)
             {
-                var factory = KeyStoreUIFactory.GetFactoryFromPropertyType(Favorite.Properties?.GetType());
-                if (factory != null)
+                await EditFavorite(Favorites.GetSingletonInstance(), Favorite);
+            }
+        }
+
+        public static async Task EditFavorite(Favorites favorites, Favorite fav)
+        {
+            var factory = KeyStoreUIFactory.GetFactoryFromPropertyType(fav.Properties?.GetType());
+            if (factory != null)
+            {
+                if (favorites != null)
                 {
-                    var favorites = Favorites.GetSingletonInstance();
-                    if (favorites != null)
+                    int favindex = favorites.KeyStores.IndexOf(fav);
+                    var model = new KeyStoreSelectorDialogViewModel()
                     {
-                        int favindex = favorites.KeyStores.IndexOf(Favorite);
-                        var model = new KeyStoreSelectorDialogViewModel()
+                        Message = "Edit the Key Store Favorite"
+                    };
+                    model.SelectedFactoryItem = model.KeyStoreFactories.Where(item => item.Factory == factory).FirstOrDefault();
+                    if (model.SelectedFactoryItem != null)
+                    {
+                        model.SelectedFactoryItem.DataContext!.Properties = fav.Properties;
+                        var dialog = new KeyStoreSelectorDialog
                         {
-                            Message = "Edit the Key Store Favorite"
+                            DataContext = model
                         };
-                        model.SelectedFactoryItem = model.KeyStoreFactories.Where(item => item.Factory == factory).FirstOrDefault();
-                        if (model.SelectedFactoryItem != null)
+                        object? ret = await DialogHost.Show(dialog, "RootDialog");
+                        if (ret != null)
                         {
-                            model.SelectedFactoryItem.DataContext!.Properties = Favorite.Properties;
-                            var dialog = new KeyStoreSelectorDialog
+                            if (favindex > -1)
                             {
-                                DataContext = model
-                            };
-                            object? ret = await DialogHost.Show(dialog, "RootDialog");
-                            if (ret != null)
-                            {
-                                if (favindex > -1)
-                                {
-                                    favorites.KeyStores.RemoveAt(favindex);
-                                }
-                                favorites.KeyStores.Add(Favorite);
-                                favorites.SaveToFile();
+                                favorites.KeyStores.RemoveAt(favindex);
                             }
+                            favorites.KeyStores.Add(fav);
+                            favorites.SaveToFile();
                         }
                     }
                 }

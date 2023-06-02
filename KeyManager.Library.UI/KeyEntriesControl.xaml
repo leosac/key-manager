@@ -99,6 +99,21 @@
                                         <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" Cursor="Hand" />
                                     </Button>
                                 </materialDesign:DialogHost>
+                                <materialDesign:PopupBox
+                                    PlacementMode="BottomAndAlignCentres" Margin="3"
+                                    Visibility="{Binding DataContext.KeyStore.CanReorderKeyEntries, ElementName=keyStoreControl, Converter={StaticResource BoolToVisibleConverter}}">
+                                    <materialDesign:PopupBox.ToggleContent>
+                                        <materialDesign:PackIcon Kind="DotsVertical" Height="24" Width="24" Cursor="Hand" />
+                                    </materialDesign:PopupBox.ToggleContent>
+                                    <StackPanel>
+                                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.MoveUpKeyEntryCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.MoveUp}" Margin="3">
+                                            <materialDesign:PackIcon Kind="ArrowUp" Height="24" Width="24" Cursor="Hand" />
+                                        </Button>
+                                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.MoveDownKeyEntryCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.MoveDown}" Margin="3">
+                                            <materialDesign:PackIcon Kind="ArrowDown" Height="24" Width="24" Cursor="Hand" />
+                                        </Button>
+                                    </StackPanel>
+                                </materialDesign:PopupBox>
                             </WrapPanel>
                             <TextBox Text="{Binding Path=Id, Mode=OneWay}" IsReadOnly="True" Margin="10"
                                                materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"

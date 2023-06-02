@@ -42,6 +42,8 @@ namespace Leosac.KeyManager.Library.KeyStore.File
 
         public override bool CanDeleteKeyEntries => true;
 
+        public override bool CanReorderKeyEntries => false;
+
         public override IEnumerable<KeyEntryClass> SupportedClasses
         {
             get => new KeyEntryClass[] { KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric };
@@ -185,6 +187,16 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             }
             log.Info(String.Format("{0} key entries returned.", keyEntries.Count));
             return keyEntries;
+        }
+
+        public override void MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void MoveUp(KeyEntryId identifier, KeyEntryClass keClass)
+        {
+            throw new NotImplementedException();
         }
 
         public override void Store(IList<IChangeKeyEntry> changes)

@@ -12,6 +12,8 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         public abstract bool CanDeleteKeyEntries { get; }
 
+        public abstract bool CanReorderKeyEntries { get; }
+
         public abstract IEnumerable<KeyEntryClass> SupportedClasses { get; }
 
         public KeyStoreProperties? Properties { get; set; }
@@ -38,6 +40,10 @@ namespace Leosac.KeyManager.Library.KeyStore
         public abstract void Update(IChangeKeyEntry keyEntry, bool ignoreIfMissing = false);
 
         public abstract void Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false);
+
+        public abstract void MoveUp(KeyEntryId identifier, KeyEntryClass keClass);
+
+        public abstract void MoveDown(KeyEntryId identifier, KeyEntryClass keClass);
 
         public virtual void Store(IChangeKeyEntry change)
         {
