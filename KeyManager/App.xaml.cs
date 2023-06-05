@@ -1,23 +1,11 @@
-﻿using Leosac.KeyManager;
-using Leosac.KeyManager.Domain;
-using Leosac.KeyManager.Library.Plugin;
+﻿using Leosac.KeyManager.Library.Plugin;
 using Leosac.KeyManager.Library.UI;
 using Leosac.WpfApp;
-using Leosac.WpfApp.Domain;
-using log4net;
-using MaterialDesignThemes.Wpf;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Configuration;
-using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 
-namespace KeyManager
+namespace Leosac.KeyManager
 {
     /// <summary>
     /// Interaction logic for App.xaml

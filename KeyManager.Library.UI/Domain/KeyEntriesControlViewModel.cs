@@ -1,8 +1,8 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin;
 using Leosac.KeyManager.Library.Plugin.UI;
-using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using Leosac.WpfApp.Domain;
+using Leosac.WpfApp;
 using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 using System.ComponentModel;

@@ -4,6 +4,7 @@ using Leosac.KeyManager.Library.Plugin;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using Leosac.WpfApp.Domain;
+using Leosac.WpfApp;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.ObjectModel;
