@@ -2,20 +2,41 @@
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
+    /// <summary>
+    /// The base class for a Key Store implementation.
+    /// </summary>
     public abstract class KeyStore
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
+        /// <summary>
+        /// The key store name.
+        /// </summary>
         public abstract string Name { get; }
 
+        /// <summary>
+        /// True to allowed key entry creation, false otherwise.
+        /// </summary>
         public abstract bool CanCreateKeyEntries { get; }
 
+        /// <summary>
+        /// True to allowed key entry deletion, false otherwise.
+        /// </summary>
         public abstract bool CanDeleteKeyEntries { get; }
 
+        /// <summary>
+        /// True if key entries can be reordered, false otherwise.
+        /// </summary>
         public abstract bool CanReorderKeyEntries { get; }
 
+        /// <summary>
+        /// Get the supported key entry classes.
+        /// </summary>
         public abstract IEnumerable<KeyEntryClass> SupportedClasses { get; }
 
+        /// <summary>
+        /// The key store properties.
+        /// </summary>
         public KeyStoreProperties? Properties { get; set; }
 
         public bool CreateIfMissing { get; set; } = false;
@@ -25,26 +46,78 @@ namespace Leosac.KeyManager.Library.KeyStore
             return CheckKeyEntryExists(keyEntry.Identifier, keyEntry.KClass);
         }
 
+        /// <summary>
+        /// Open the key store.
+        /// </summary>
         public abstract void Open();
 
+        /// <summary>
+        /// Close the key store.
+        /// </summary>
         public abstract void Close();
 
+        /// <summary>
+        /// Check if a key entry exists.
+        /// </summary>
+        /// <param name="identifier">The key entry identifier</param>
+        /// <param name="keClass">The key entry class</param>
+        /// <returns></returns>
         public abstract bool CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass);
 
+        /// <summary>
+        /// Get all key entry identifiers.
+        /// </summary>
+        /// <param name="keClass">The key entry class (optional, null means all)</param>
+        /// <returns>List of key entry identifiers</returns>
         public abstract IList<KeyEntryId> GetAll(KeyEntryClass? keClass = null);
 
+        /// <summary>
+        /// Create a new key entry.
+        /// </summary>
+        /// <param name="keyEntry">The key entry details</param>
         public abstract void Create(IChangeKeyEntry keyEntry);
 
+        /// <summary>
+        /// Get a key entry.
+        /// </summary>
+        /// <param name="identifier">The key entry identifier</param>
+        /// <param name="keClass">The key entry class</param>
+        /// <returns>The key entry</returns>
         public abstract KeyEntry? Get(KeyEntryId identifier, KeyEntryClass keClass);
 
+        /// <summary>
+        /// Update an existing key entry.
+        /// </summary>
+        /// <param name="keyEntry">The key entry details</param>
+        /// <param name="ignoreIfMissing">Ignore if the targeted key entry is missing, throw otherwise.</param>
         public abstract void Update(IChangeKeyEntry keyEntry, bool ignoreIfMissing = false);
 
+        /// <summary>
+        /// Delete an existing key entry.
+        /// </summary>
+        /// <param name="identifier">The key entry identifier</param>
+        /// <param name="keClass">The key entry class</param>
+        /// <param name="ignoreIfMissing">Ignore if the targeted key entry is missing, throw otherwise.</param>
         public abstract void Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false);
 
+        /// <summary>
+        /// Move up a key entry on the list, if reordering is supported.
+        /// </summary>
+        /// <param name="identifier">The key entry identifier</param>
+        /// <param name="keClass">The key entry class</param>
         public abstract void MoveUp(KeyEntryId identifier, KeyEntryClass keClass);
 
+        /// <summary>
+        /// Move down a key entry on the list, if reordering is supported.
+        /// </summary>
+        /// <param name="identifier">The key entry identifier</param>
+        /// <param name="keClass">The key entry class</param>
         public abstract void MoveDown(KeyEntryId identifier, KeyEntryClass keClass);
 
+        /// <summary>
+        /// Store a key entry change.
+        /// </summary>
+        /// <param name="change">The key entry details.</param>
         public virtual void Store(IChangeKeyEntry change)
         {
             Store(new List<IChangeKeyEntry>
@@ -53,6 +126,10 @@ namespace Leosac.KeyManager.Library.KeyStore
             });
         }
 
+        /// <summary>
+        /// Store a list of key entry changes.
+        /// </summary>
+        /// <param name="changes">The key entries details.</param>
         public abstract void Store(IList<IChangeKeyEntry> changes);
 
         public virtual void Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
@@ -156,6 +233,13 @@ namespace Leosac.KeyManager.Library.KeyStore
             }
         }
 
+        /// <summary>
+        /// Get a key from a key entry.
+        /// </summary>
+        /// <param name="keyIdentifier">The key entry identifier</param>
+        /// <param name="keClass">The key entry class</param>
+        /// <param name="keyContainerSelector">The key container selector</param>
+        /// <returns></returns>
         public Key? GetKey(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? keyContainerSelector = null)
         {
             log.Info(String.Format("Getting key with Key Entry Identifier `{0}` and Container Selector `{1}`...", keyIdentifier, keyContainerSelector));
@@ -193,28 +277,24 @@ namespace Leosac.KeyManager.Library.KeyStore
         }
 
         /// <summary>
-        /// Return the change key entry cryptogram.
+        /// Resolve a key entry link.
         /// </summary>
-        /// <param name="keyIdentifier"></param>
-        /// <param name="keClass"></param>
-        /// <param name="divInput"></param>
-        /// <param name="wrappingKeyId"></param>
-        /// <param name="wrappingContainerSelector"></param>
-        /// <returns></returns>
-        /// <exception cref="KeyStoreException"></exception>
-        /// <exception cref="NotSupportedException"></exception>
+        /// <param name="keyIdentifier">The key entry identifier</param>
+        /// <param name="keClass">The key entry class</param>
+        /// <param name="divInput">The key div input (optional)</param>
+        /// <param name="wrappingKeyId">The wrapping key identifier for cryptogram computation (optional)</param>
+        /// <param name="wrappingContainerSelector">The wrapping key container selector for cryptogram computation (optional)</param>
+        /// <returns>The change key entry cryptogram</returns>
         public abstract string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null);
 
         /// <summary>
-        /// Return the key value.
+        /// Resolve a key link.
         /// </summary>
-        /// <param name="keyIdentifier"></param>
-        /// <param name="keClass"></param>
-        /// <param name="containerSelector"></param>
-        /// <param name="divInput"></param>
-        /// <returns></returns>
-        /// <exception cref="KeyStoreException"></exception>
-        /// <exception cref="NotSupportedException"></exception>
+        /// <param name="keyIdentifier">The key entry identifier</param>
+        /// <param name="keClass">The key entry class</param>
+        /// <param name="containerSelector">The key container selector (optional)</param>
+        /// <param name="divInput">The key div input (optional)</param>
+        /// <returns>The key value</returns>
         public abstract string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null);
 
         public event EventHandler<KeyEntry>? KeyEntryRetrieved;
