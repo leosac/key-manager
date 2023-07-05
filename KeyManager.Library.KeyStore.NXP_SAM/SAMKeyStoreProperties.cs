@@ -69,6 +69,13 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             set => SetProperty(ref _authenticateKeyVersion, value);
         }
 
+        private string? _forceCardType;
+        public string? ForceCardType
+        {
+            get => _forceCardType;
+            set => SetProperty(ref _forceCardType, value);
+        }
+
         public override bool Equals(object? obj)
         {
             return this.Equals(obj as SAMKeyStoreProperties);
@@ -86,10 +93,11 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 return false;
 
             return (ReaderProvider == p.ReaderProvider) && (ReaderUnit == p.ReaderUnit) && (AutoSwitchToAV2 == p.AutoSwitchToAV2) &&
-                (AuthenticateKeyEntryIdentifier == p.AuthenticateKeyEntryIdentifier) && (_authenticateKeyVersion == p._authenticateKeyVersion);
+                (AuthenticateKeyEntryIdentifier == p.AuthenticateKeyEntryIdentifier) && (_authenticateKeyVersion == p._authenticateKeyVersion) &&
+                (ForceCardType == p.ForceCardType);
         }
 
-        public override int GetHashCode() => (ReaderProvider, ReaderUnit, AutoSwitchToAV2, AuthenticateKeyEntryIdentifier, _authenticateKeyVersion).GetHashCode();
+        public override int GetHashCode() => (ReaderProvider, ReaderUnit, AutoSwitchToAV2, AuthenticateKeyEntryIdentifier, AuthenticateKeyVersion, ForceCardType).GetHashCode();
 
         public static bool operator ==(SAMKeyStoreProperties? lhs, SAMKeyStoreProperties? rhs)
         {

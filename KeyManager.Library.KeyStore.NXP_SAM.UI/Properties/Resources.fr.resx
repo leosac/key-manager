@@ -192,6 +192,12 @@
   <data name="EnableDumpSessionKey" xml:space="preserve">
     <value>Activer le dump de la clé de session</value>
   </data>
+  <data name="ForceCardType" xml:space="preserve">
+    <value>Forcer la version de SAM à utiliser</value>
+  </data>
+  <data name="ForceCardTypeHelper" xml:space="preserve">
+    <value>Par défaut le logiciel détermine automatiquement le type / la version de SAM utilisés. Ce comportement peut être forcé à une version en particulier.</value>
+  </data>
   <data name="GenerateSAMMasterKey" xml:space="preserve">
     <value>Générer une nouvelle clé maitre SAM</value>
   </data>
@@ -293,6 +299,9 @@
   </data>
   <data name="SAMAV1" xml:space="preserve">
     <value>SAM AV1</value>
+  </data>
+  <data name="StoreSecret" xml:space="preserve">
+    <value>Enregistrer</value>
   </data>
   <data name="SwitchToAV2" xml:space="preserve">
     <value>Basculer la SAM en mode AV2</value>

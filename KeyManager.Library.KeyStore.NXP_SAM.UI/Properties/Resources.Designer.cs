@@ -286,6 +286,24 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Force the SAM version.
+        /// </summary>
+        public static string ForceCardType {
+            get {
+                return ResourceManager.GetString("ForceCardType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By default the software will automatically detect the SAM type/version. Such automatic detection can be overriden..
+        /// </summary>
+        public static string ForceCardTypeHelper {
+            get {
+                return ResourceManager.GetString("ForceCardTypeHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Generate new SAM Master Key.
         /// </summary>
         public static string GenerateSAMMasterKey {
@@ -588,6 +606,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         public static string SAMAV1 {
             get {
                 return ResourceManager.GetString("SAMAV1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string StoreSecret {
+            get {
+                return ResourceManager.GetString("StoreSecret", resourceCulture);
             }
         }
         

@@ -192,6 +192,12 @@
   <data name="EnableDumpSessionKey" xml:space="preserve">
     <value>Enable Dump SessionKey</value>
   </data>
+  <data name="ForceCardType" xml:space="preserve">
+    <value>Force the SAM version</value>
+  </data>
+  <data name="ForceCardTypeHelper" xml:space="preserve">
+    <value>By default the software will automatically detect the SAM type/version. Such automatic detection can be overriden.</value>
+  </data>
   <data name="GenerateSAMMasterKey" xml:space="preserve">
     <value>Generate new SAM Master Key</value>
   </data>
@@ -293,6 +299,9 @@
   </data>
   <data name="SAMAV1" xml:space="preserve">
     <value>SAM AV1</value>
+  </data>
+  <data name="StoreSecret" xml:space="preserve">
+    <value>Save</value>
   </data>
   <data name="SwitchToAV2" xml:space="preserve">
     <value>Switch the SAM to AV2 mode</value>

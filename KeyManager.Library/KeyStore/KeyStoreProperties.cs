@@ -8,7 +8,6 @@ namespace Leosac.KeyManager.Library.KeyStore
     public abstract class KeyStoreProperties : KMObject
     {
         private string? _secret;
-
         /// <summary>
         /// The key store secret. Volatile memory only.
         /// </summary>
@@ -16,6 +15,20 @@ namespace Leosac.KeyManager.Library.KeyStore
         public string? Secret
         {
             get => _secret;
+            set => SetProperty(ref _secret, value);
+        }
+
+        private bool _storeSecret = false;
+        public bool StoreSecret
+        {
+            get => _storeSecret;
+            set => SetProperty(ref _storeSecret, value);
+        }
+
+        [JsonConverter(typeof(EncryptJsonConverter))]
+        public string? StoredSecret
+        {
+            get => _storeSecret ? _secret : null;
             set => SetProperty(ref _secret, value);
         }
     }

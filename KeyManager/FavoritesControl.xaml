@@ -14,6 +14,9 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance domain:FavoritesControlViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <materialDesign:BooleanToVisibilityConverter x:Key="ReverseBoolToVisibleConverter" TrueValue="Collapsed" FalseValue="Visible" />
+    </UserControl.Resources>
     <DockPanel LastChildFill="True">
         <DockPanel DockPanel.Dock="Top" Margin="15,5,15,5">
             <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
@@ -36,11 +39,13 @@
                             <materialDesign:DialogHost DialogTheme="Inherit">
                                 <materialDesign:DialogHost.DialogContent>
                                     <StackPanel Margin="16" Width="250">
+                                        <Label Content="{x:Static properties:Resources.OpenFavorite}" Margin="5" />
                                         <PasswordBox materialDesign:HintAssist.HelperText="{x:Static properties:Resources.SecretHelper}"
                                                      materialDesign:HintAssist.Hint="{x:Static properties:Resources.Secret}"
                                                      materialDesign:TextFieldAssist.HasClearButton="True" Margin="5"
                                                      Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
-                                                     materialDesign:PasswordBoxAssist.Password="{Binding Properties.Secret}" />
+                                                     materialDesign:PasswordBoxAssist.Password="{Binding Properties.Secret}"
+                                                     Visibility="{Binding Properties.StoreSecret, Converter={StaticResource ReverseBoolToVisibleConverter}}"/>
                                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                             <Button Margin="0,8,8,0" CommandParameter="{Binding}" Content="{x:Static properties:Resources.OK}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}">
                                                 <Button.Command>

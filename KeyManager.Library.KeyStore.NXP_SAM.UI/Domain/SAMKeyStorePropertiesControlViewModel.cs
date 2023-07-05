@@ -13,6 +13,12 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             ReaderProviders = new ObservableCollection<string>(_lla.getAvailableReaders().ToArray());
             ReaderUnits = new ObservableCollection<string>();
             KeyTypes = new ObservableCollection<DESFireKeyType>(Enum.GetValues<DESFireKeyType>());
+            CardTypes = new ObservableCollection<string>(new[]
+            {
+                "SAM_AV1",
+                "SAM_AV2",
+                "SAM_AV3"
+            });
         }
 
         private LibLogicalAccess.LibraryManager _lla;
@@ -27,6 +33,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
         public ObservableCollection<string> ReaderUnits { get; set; }
 
         public ObservableCollection<DESFireKeyType> KeyTypes { get; set; }
+
+        public ObservableCollection<string> CardTypes { get; set; }
 
         public void RefreshReaderList()
         {

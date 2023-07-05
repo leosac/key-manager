@@ -18,7 +18,7 @@ namespace Leosac.KeyManager.Domain
             RefreshFavoritesCommand = new LeosacAppCommand(
                 parameter =>
                 {
-                    Favorites = Favorites.GetSingletonInstance(true);
+                    RefreshFavorites();
                 });
             CreateFavoriteCommand = new LeosacAppAsyncCommand<object>(async
                 parameter =>
@@ -55,6 +55,7 @@ namespace Leosac.KeyManager.Domain
                     if (parameter is Favorite fav)
                     {
                         EditKeyStoreControlViewModel.EditFavorite(Favorites, fav);
+                        RefreshFavorites();
                     }
                 });
         }
@@ -65,6 +66,11 @@ namespace Leosac.KeyManager.Domain
         {
             get => _favorites;
             set => SetProperty(ref _favorites, value);
+        }
+
+        public void RefreshFavorites()
+        {
+            Favorites = Favorites.GetSingletonInstance(true);
         }
 
         public LeosacAppCommand? RefreshFavoritesCommand { get; set; }

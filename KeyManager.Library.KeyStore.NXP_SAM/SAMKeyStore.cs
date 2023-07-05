@@ -88,6 +88,12 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 throw new KeyStoreException("Cannot connect to the Reader Unit.");
             }
 
+            var cardType = GetSAMProperties().ForceCardType;
+            if (!string.IsNullOrEmpty(cardType))
+            {
+                ReaderUnit.setCardType(cardType);
+            }
+
             if (ReaderUnit.waitInsertion(1000))
             {
                 if (ReaderUnit.connect())
