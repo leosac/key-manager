@@ -34,12 +34,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Wizard
                 {
                     var unlockke = CreateKeyEntry("1", "SAM Unlock Key");
                     unlockke.SAMProperties!.LockUnlock = true;
+                    unlockke.SAMProperties.AuthenticateHost = false;
                     entries.Add(unlockke);
                 }
                 var piccke = CreateKeyEntry("2", "DESFire Read Key", false);
-                piccke.SAMProperties!.KeepIV = true;
+                piccke.SAMProperties!.SAMKeyEntryType = SAMKeyEntryType.PICC;
+                piccke.SAMProperties.KeepIV = true;
                 piccke.SAMProperties.EnableDumpSessionKey = true;
                 piccke.SAMProperties.DisableChangeKeyPICC = true;
+                piccke.SAMProperties.AuthenticateHost = false;
                 piccke.SAMProperties.DESFireAID = model.PICCAID;
                 piccke.SAMProperties.DESFireKeyNum = model.PICCKeyNo;
                 piccke.Variant!.KeyContainers[0] = model.PICCKey;
