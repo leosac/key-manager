@@ -3,6 +3,7 @@ using Leosac.KeyManager.Library;
 using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
+using Leosac.WpfApp;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
@@ -80,7 +81,15 @@ namespace Leosac.KeyManager
         {
             if (DataContext is EditKeyStoreControlViewModel model)
             {
-                model.Publish();
+                var plan = MaintenancePlan.GetSingletonInstance();
+                if (!string.IsNullOrEmpty(plan.LicenseKey))
+                {
+                    model.Publish();
+                }
+                else
+                {
+                    MaintenancePlan.OpenRegistration();
+                }
             }
         }
     }
