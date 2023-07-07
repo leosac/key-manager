@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Collections.Generic;
 
 namespace Leosac.KeyManager.Domain
 {
@@ -22,6 +23,7 @@ namespace Leosac.KeyManager.Domain
             _showProgress = false;
             _snackbarMessageQueue = snackbarMessageQueue;
             Tabs = new ObservableCollection<TabItem>();
+            _keModels = new List<KeyEntriesControlViewModel>();
             SaveFavoriteCommand = new LeosacAppCommand(
                 parameter =>
                 {
@@ -34,6 +36,8 @@ namespace Leosac.KeyManager.Domain
         }
 
         protected ISnackbarMessageQueue _snackbarMessageQueue;
+
+        protected IList<KeyEntriesControlViewModel> _keModels;
 
         private KeyStore? _keyStore;
 
@@ -82,6 +86,7 @@ namespace Leosac.KeyManager.Domain
         {
             KeyStore?.Close();
             KeyStore = null;
+            _keModels.Clear();
             Tabs.Clear();
             Favorite = null;
 
@@ -98,6 +103,7 @@ namespace Leosac.KeyManager.Domain
                 foreach (var kclass in classes)
                 {
                     var model = new KeyEntriesControlViewModel(_snackbarMessageQueue) { KeyEntryClass = kclass, KeyStore = KeyStore };
+                    _keModels.Add(model);
                     Tabs.Add(new TabItem()
                     {
                         Header = String.Format("{0} Key Entries", kclass.ToString()),
@@ -181,32 +187,54 @@ namespace Leosac.KeyManager.Domain
                                 deststore.Properties = prop;
                                 deststore.KeyEntryRetrieved += (sender, e) => { ProgressValue++; };
                                 deststore.KeyEntryUpdated += (sender, e) => { ProgressValue++; };
-                                KeyStore.Publish(deststore,
-                                    (favoriteName) =>
+                                var initCallback = new Action<KeyStore, KeyEntryClass, int>((store, keClass, nbentries) =>
+                                {
+                                    ProgressMaximum = nbentries * 2;
+                                });
+                                var getFavoriteKeyStore = new Func<string, KeyStore?>((favoriteName) =>
+                                {
+                                    if (!string.IsNullOrEmpty(favoriteName))
                                     {
-                                        if (!string.IsNullOrEmpty(favoriteName))
+                                        var favorites = Favorites.GetSingletonInstance();
+                                        var fav = favorites.KeyStores.Where(ks => ks.Name.ToLower() == favoriteName.ToLower()).SingleOrDefault();
+                                        if (fav != null)
                                         {
-                                            var favorites = Favorites.GetSingletonInstance();
-                                            var fav = favorites.KeyStores.Where(ks => ks.Name.ToLower() == favoriteName.ToLower()).SingleOrDefault();
-                                            if (fav != null)
-                                            {
-                                                return fav.CreateKeyStore();
-                                            }
-                                            else
-                                            {
-                                                log.Error(String.Format("Cannot found the favorite Key Store `{0}`.", favoriteName));
-                                                throw new KeyStoreException("Cannot found the favorite Key Store.");
-                                            }
+                                            return fav.CreateKeyStore();
                                         }
-                                        return null;
-                                    },
-                                    model.WrappingKeyId,
-                                    model.WrappingKeySelector,
-                                    (store, keClass, nbentries) =>
-                                    {
-                                        ProgressMaximum = nbentries * 2;
+                                        else
+                                        {
+                                            log.Error(String.Format("Cannot found the favorite Key Store `{0}`.", favoriteName));
+                                            throw new KeyStoreException("Cannot found the favorite Key Store.");
+                                        }
                                     }
-                                );
+                                    return null;
+                                });
+
+                                foreach(var keModel in _keModels)
+                                {
+                                    if (keModel.ShowSelection)
+                                    {
+                                        var entries = keModel.Identifiers.Where(k => k.Selected).Select(k => k.KeyEntryId);
+                                        KeyStore.Publish(deststore,
+                                            getFavoriteKeyStore,
+                                            entries,
+                                            keModel.KeyEntryClass,
+                                            model.WrappingKeyId,
+                                            model.WrappingKeySelector,
+                                            initCallback
+                                        );
+                                    }
+                                    else
+                                    {
+                                        KeyStore.Publish(deststore,
+                                            getFavoriteKeyStore,
+                                            keModel.KeyEntryClass,
+                                            model.WrappingKeyId,
+                                            model.WrappingKeySelector,
+                                            initCallback
+                                        );
+                                    }
+                                }
 
                                 SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "Key Entries have been successfully published.");
                             }

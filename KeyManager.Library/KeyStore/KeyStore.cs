@@ -143,11 +143,16 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         public virtual void Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryClass keClass, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
         {
-            var changes = new List<IChangeKeyEntry>();
             var ids = GetAll(keClass);
+            Publish(store, getFavoriteKeyStore, ids, keClass, wrappingKeyId, wrappingContainerSelector, initCallback);
+        }
+
+        public virtual void Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, IEnumerable<KeyEntryId> ids, KeyEntryClass keClass, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
+        {
+            var changes = new List<IChangeKeyEntry>();
             if (initCallback != null)
             {
-                initCallback(this, keClass, ids.Count);
+                initCallback(this, keClass, ids.Count());
             }
             foreach (var id in ids)
             {

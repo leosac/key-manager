@@ -450,6 +450,9 @@
   <data name="Test" xml:space="preserve">
     <value>Tester</value>
   </data>
+  <data name="ToggleSelection" xml:space="preserve">
+    <value>Afficher / Cacher les boîtes de sélection des clés</value>
+  </data>
   <data name="Wizard" xml:space="preserve">
     <value>Assistant</value>
   </data>

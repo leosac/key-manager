@@ -1060,6 +1060,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show / Hide key entries selection boxes.
+        /// </summary>
+        public static string ToggleSelection {
+            get {
+                return ResourceManager.GetString("ToggleSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Wizard.
         /// </summary>
         public static string Wizard {

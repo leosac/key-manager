@@ -450,6 +450,9 @@
   <data name="Test" xml:space="preserve">
     <value>Test</value>
   </data>
+  <data name="ToggleSelection" xml:space="preserve">
+    <value>Show / Hide key entries selection boxes</value>
+  </data>
   <data name="Wizard" xml:space="preserve">
     <value>Wizard</value>
   </data>

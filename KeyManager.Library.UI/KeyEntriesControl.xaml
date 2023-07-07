@@ -55,6 +55,37 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                     </materialDesign:PopupBox>
+                    <ToggleButton materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=CheckboxBlankOff,Size=24}"
+                                  Content="{materialDesign:PackIcon Kind=CheckboxesMarked,Size=24}"
+                                  Style="{StaticResource MaterialDesignActionToggleButton}"
+                                  ToolTip="{x:Static properties:Resources.ToggleSelection}"
+                                  Margin="5" Width="56" Height="56"
+                                  IsChecked="{Binding DataContext.ShowSelection, ElementName=keyStoreControl}"
+                                  Command="{Binding DataContext.ShowSelectionChangedCommand, ElementName=keyStoreControl}"/>
+                    <WrapPanel Orientation="Horizontal" Visibility="{Binding DataContext.ShowSelection, ElementName=keyStoreControl, Converter={StaticResource BoolToVisibleConverter}}">
+                        <Rectangle VerticalAlignment="Stretch" Width="1" Margin="2" Stroke="Gray" />
+                        <materialDesign:DialogHost DialogClosed="KeyEntryDeletion_OnDialogClosed" DialogTheme="Inherit">
+                            <materialDesign:DialogHost.DialogContent>
+                                <StackPanel Margin="16">
+                                    <TextBlock Text="{x:Static properties:Resources.DeleteKeyEntryConfirmation}" />
+
+                                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                        <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding Identifiers}" Content="{x:Static properties:Resources.Confirm}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}">
+                                        </Button>
+
+                                        <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </materialDesign:DialogHost.DialogContent>
+
+                            <Button x:Name="btnDeleteKeyEntry" Style="{StaticResource MaterialDesignFloatingActionButton}"
+                                    Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                                    ToolTip="{x:Static properties:Resources.DeleteKeyEntry}" Margin="5"
+                                    Visibility="{Binding DataContext.KeyStore.CanDeleteKeyEntries, ElementName=keyStoreControl, Converter={StaticResource BoolToVisibleConverter}}">
+                                <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" Cursor="Hand" />
+                            </Button>
+                        </materialDesign:DialogHost>
+                    </WrapPanel>
                 </WrapPanel>
                 <DockPanel LastChildFill="True" Grid.Column="1">
                     <Button DockPanel.Dock="Right" x:Name="btnSearch" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="24" Height="24" Margin="3" ToolTip="{x:Static properties:Resources.Search}" Click="btnSearch_Click">
@@ -65,63 +96,72 @@
                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                 </DockPanel>
             </Grid>
-            <ListBox ItemsSource="{Binding Identifiers}" SelectedItem="{Binding SelectedIdentifier, Mode=TwoWay}" Margin="5,15,5,5" PreviewMouseWheel="HandlePreviewMouseWheel">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="s:String">
-                        <DockPanel LastChildFill="True">
-                            <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                                <Button x:Name="btnEditKeyEntry" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.EditKeyEntryCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.EditKeyEntry}" Margin="3">
-                                    <materialDesign:PackIcon Kind="Edit" Height="24" Width="24" Cursor="Hand" />
-                                </Button>
-                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.ImportCryptogramCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.ImportKeyEntryCryptogram}" Margin="3">
-                                    <materialDesign:PackIcon Kind="KeyArrowRight" Height="24" Width="24" Cursor="Hand" />
-                                </Button>
-                                <materialDesign:DialogHost DialogClosed="KeyEntryDeletion_OnDialogClosed" DialogTheme="Inherit">
-                                    <materialDesign:DialogHost.DialogContent>
-                                        <StackPanel Margin="16">
-                                            <TextBlock Text="{x:Static properties:Resources.DeleteKeyEntryConfirmation}" />
+            <ItemsControl ItemsSource="{Binding Identifiers}" Margin="5,15,5,5" PreviewMouseWheel="HandlePreviewMouseWheel">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border x:Name="ItemBorder" Padding="5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="0" VerticalAlignment="Center" IsChecked="{Binding Selected}" Visibility="{Binding DataContext.ShowSelection, ElementName=keyStoreControl, Converter={StaticResource BoolToVisibleConverter}}" />
+                                <DockPanel Grid.Column="1" LastChildFill="True">
+                                    <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                        <Button x:Name="btnEditKeyEntry" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.EditKeyEntryCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.EditKeyEntry}" Margin="3">
+                                            <materialDesign:PackIcon Kind="Edit" Height="24" Width="24" Cursor="Hand" />
+                                        </Button>
+                                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.ImportCryptogramCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.ImportKeyEntryCryptogram}" Margin="3">
+                                            <materialDesign:PackIcon Kind="KeyArrowRight" Height="24" Width="24" Cursor="Hand" />
+                                        </Button>
+                                        <materialDesign:DialogHost DialogClosed="KeyEntryDeletion_OnDialogClosed" DialogTheme="Inherit">
+                                            <materialDesign:DialogHost.DialogContent>
+                                                <StackPanel Margin="16">
+                                                    <TextBlock Text="{x:Static properties:Resources.DeleteKeyEntryConfirmation}" />
 
-                                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                                                <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding}" Content="{x:Static properties:Resources.Confirm}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}">
+                                                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                                        <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding}" Content="{x:Static properties:Resources.Confirm}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}">
+                                                        </Button>
+
+                                                        <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </materialDesign:DialogHost.DialogContent>
+
+                                            <Button x:Name="btnDeleteKeyEntry" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" ToolTip="{x:Static properties:Resources.DeleteKeyEntry}" Margin="3" Visibility="{Binding DataContext.KeyStore.CanDeleteKeyEntries, ElementName=keyStoreControl, Converter={StaticResource BoolToVisibleConverter}}">
+                                                <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" Cursor="Hand" />
+                                            </Button>
+                                        </materialDesign:DialogHost>
+                                        <materialDesign:PopupBox
+                                            PlacementMode="BottomAndAlignCentres" Margin="3"
+                                            Visibility="{Binding DataContext.KeyStore.CanReorderKeyEntries, ElementName=keyStoreControl, Converter={StaticResource BoolToVisibleConverter}}">
+                                            <materialDesign:PopupBox.ToggleContent>
+                                                <materialDesign:PackIcon Kind="DotsVertical" Height="24" Width="24" Cursor="Hand" />
+                                            </materialDesign:PopupBox.ToggleContent>
+                                            <StackPanel>
+                                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.MoveUpKeyEntryCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.MoveUp}" Margin="3">
+                                                    <materialDesign:PackIcon Kind="ArrowUp" Height="24" Width="24" Cursor="Hand" />
                                                 </Button>
-
-                                                <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />
+                                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.MoveDownKeyEntryCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.MoveDown}" Margin="3">
+                                                    <materialDesign:PackIcon Kind="ArrowDown" Height="24" Width="24" Cursor="Hand" />
+                                                </Button>
                                             </StackPanel>
-                                        </StackPanel>
-                                    </materialDesign:DialogHost.DialogContent>
-
-                                    <Button x:Name="btnDeleteKeyEntry" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" ToolTip="{x:Static properties:Resources.DeleteKeyEntry}" Margin="3" Visibility="{Binding DataContext.KeyStore.CanDeleteKeyEntries, ElementName=keyStoreControl, Converter={StaticResource BoolToVisibleConverter}}">
-                                        <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" Cursor="Hand" />
-                                    </Button>
-                                </materialDesign:DialogHost>
-                                <materialDesign:PopupBox
-                                    PlacementMode="BottomAndAlignCentres" Margin="3"
-                                    Visibility="{Binding DataContext.KeyStore.CanReorderKeyEntries, ElementName=keyStoreControl, Converter={StaticResource BoolToVisibleConverter}}">
-                                    <materialDesign:PopupBox.ToggleContent>
-                                        <materialDesign:PackIcon Kind="DotsVertical" Height="24" Width="24" Cursor="Hand" />
-                                    </materialDesign:PopupBox.ToggleContent>
-                                    <StackPanel>
-                                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.MoveUpKeyEntryCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.MoveUp}" Margin="3">
-                                            <materialDesign:PackIcon Kind="ArrowUp" Height="24" Width="24" Cursor="Hand" />
-                                        </Button>
-                                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.MoveDownKeyEntryCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.MoveDown}" Margin="3">
-                                            <materialDesign:PackIcon Kind="ArrowDown" Height="24" Width="24" Cursor="Hand" />
-                                        </Button>
-                                    </StackPanel>
-                                </materialDesign:PopupBox>
-                            </WrapPanel>
-                            <TextBox Text="{Binding Path=Id, Mode=OneWay}" IsReadOnly="True" Margin="10"
-                                               materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"
-                                               materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifier}"/>
-                        </DockPanel>
+                                        </materialDesign:PopupBox>
+                                    </WrapPanel>
+                                    <TextBox Text="{Binding Path=KeyEntryId.Id, Mode=OneWay}" IsReadOnly="True" Margin="10"
+                                                       materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"
+                                                       materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifier}"/>
+                                </DockPanel>
+                            </Grid>
+                        </Border>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Selected}" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource MaterialDesignSelection}" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </DockPanel>
     </DockPanel>
 </UserControl>

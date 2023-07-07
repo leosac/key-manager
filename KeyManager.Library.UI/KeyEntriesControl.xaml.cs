@@ -1,5 +1,4 @@
-﻿using Leosac.KeyManager.Library.KeyStore;
-using Leosac.KeyManager.Library.UI.Domain;
+﻿using Leosac.KeyManager.Library.UI.Domain;
 using Leosac.WpfApp;
 using MaterialDesignThemes.Wpf;
 using System.Windows;
@@ -35,9 +34,17 @@ namespace Leosac.KeyManager.Library.UI
 
         private void KeyEntryDeletion_OnDialogClosed(object sender, DialogClosedEventArgs e)
         {
-            if (e.Parameter is KeyEntryId identifier)
+            if (e.Parameter is SelectableKeyEntryId identifier)
             {
                 KeyEntriesDataContext?.DeleteKeyEntryCommand?.Execute(identifier);
+            }
+            else if (e.Parameter is IList<SelectableKeyEntryId> identifiers)
+            {
+                var ids = identifiers.Where(id => id.Selected).ToList();
+                foreach (var id in ids)
+                {
+                    KeyEntriesDataContext?.DeleteKeyEntryCommand?.Execute(id);
+                }
             }
         }
 

@@ -16,7 +16,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public KeyEntriesControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
             _snackbarMessageQueue = snackbarMessageQueue;
-            Identifiers = new ObservableCollection<KeyEntryId>();
+            Identifiers = new ObservableCollection<SelectableKeyEntryId>();
             WizardFactories = new ObservableCollection<WizardFactory>(WizardFactory.RegisteredFactories);
 
             CreateKeyEntryCommand = new LeosacAppCommand(
@@ -33,15 +33,15 @@ namespace Leosac.KeyManager.Library.UI.Domain
             EditKeyEntryCommand = new LeosacAppCommand(
                 parameter =>
             {
-                var keyEntryIdentifier = parameter as KeyEntryId;
+                var identifier = parameter as SelectableKeyEntryId;
                 try
                 {
-                    if (keyEntryIdentifier != null)
+                    if (identifier != null)
                     {
                         var model = new KeyEntryDialogViewModel()
                         {
                             KClass = _keClass,
-                            KeyEntry = KeyStore?.Get(keyEntryIdentifier, _keClass),
+                            KeyEntry = KeyStore?.Get(identifier.KeyEntryId, _keClass),
                             CanChangeFactory = false
                         };
                         var factory = KeyEntryUIFactory.GetFactoryFromPropertyType(model.KeyEntry!.Properties?.GetType());
@@ -84,7 +84,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             MoveUpKeyEntryCommand = new LeosacAppCommand(
                 parameter =>
             {
-                var keyEntryIdentifier = parameter as KeyEntryId;
+                var keyEntryIdentifier = parameter as SelectableKeyEntryId;
                 if (keyEntryIdentifier != null)
                 {
                     MoveUpKeyEntry(keyEntryIdentifier);
@@ -94,7 +94,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             MoveDownKeyEntryCommand = new LeosacAppCommand(
                 parameter =>
             {
-                var keyEntryIdentifier = parameter as KeyEntryId;
+                var keyEntryIdentifier = parameter as SelectableKeyEntryId;
                 if (keyEntryIdentifier != null)
                 {
                     MoveDownKeyEntry(keyEntryIdentifier);
@@ -104,7 +104,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             DeleteKeyEntryCommand = new LeosacAppCommand(
                 parameter =>
             {
-                var keyEntryIdentifier = parameter as KeyEntryId;
+                var keyEntryIdentifier = parameter as SelectableKeyEntryId;
                 if (keyEntryIdentifier != null)
                 {
                     DeleteKeyEntry(keyEntryIdentifier);
@@ -139,6 +139,15 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             });
 
+            ShowSelectionChangedCommand = new LeosacAppCommand(
+                parameter =>
+            {
+                if (!ShowSelection)
+                {
+                    ToggleAllSelection(false);
+                }
+            });
+
                 _keClass = KeyEntryClass.Symmetric;
             _identifiersView = CollectionViewSource.GetDefaultView(Identifiers);
             _identifiersView.Filter = KeyEntryIdentifiersFilter;
@@ -147,11 +156,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
         protected ISnackbarMessageQueue _snackbarMessageQueue;
         private KeyStore.KeyStore? _keyStore;
         private KeyEntryClass _keClass;
+        private bool _showSelection;
         private readonly ICollectionView _identifiersView;
-        private KeyEntryId? _selectedIdentifier;
         private string? _searchTerms;
 
-        public ObservableCollection<KeyEntryId> Identifiers { get; }
+        public ObservableCollection<SelectableKeyEntryId> Identifiers { get; }
 
         public ObservableCollection<WizardFactory> WizardFactories { get; }
 
@@ -167,12 +176,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _keClass, value);
         }
 
-        public KeyEntryId? SelectedIdentifier
-        {
-            get => _selectedIdentifier;
-            set => SetProperty(ref _selectedIdentifier, value);
-        }
-
         public string? SearchTerms
         {
             get => _searchTerms;
@@ -183,6 +186,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     RefreshKeyEntriesView();
                 }
             }
+        }
+
+        public bool ShowSelection
+        {
+            get => _showSelection;
+            set => SetProperty(ref _showSelection, value);
         }
 
         public LeosacAppCommand CreateKeyEntryCommand { get; }
@@ -197,7 +206,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     try
                     {
                         KeyStore?.Create(model.KeyEntry);
-                        Identifiers.Add(model.KeyEntry.Identifier);
+                        Identifiers.Add(new SelectableKeyEntryId() {
+                            Selected = false,
+                            KeyEntryId = model.KeyEntry.Identifier
+                        });
                     }
                     catch (KeyStoreException ex)
                     {
@@ -244,11 +256,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public LeosacAppCommand DeleteKeyEntryCommand { get; }
 
-        private void DeleteKeyEntry(KeyEntryId identifier)
+        private void DeleteKeyEntry(SelectableKeyEntryId identifier)
         {
             try
             {
-                KeyStore?.Delete(identifier, _keClass);
+                KeyStore?.Delete(identifier.KeyEntryId, _keClass);
                 Identifiers.Remove(identifier);
             }
             catch (KeyStoreException ex)
@@ -264,11 +276,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public LeosacAppCommand MoveUpKeyEntryCommand { get; }
 
-        private void MoveUpKeyEntry(KeyEntryId identifier)
+        private void MoveUpKeyEntry(SelectableKeyEntryId identifier)
         {
             try
             {
-                KeyStore?.MoveUp(identifier, _keClass);
+                KeyStore?.MoveUp(identifier.KeyEntryId, _keClass);
                 var oldIndex = Identifiers.IndexOf(identifier);
                 if (oldIndex > 0)
                 {
@@ -288,11 +300,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public LeosacAppCommand MoveDownKeyEntryCommand { get; }
 
-        private void MoveDownKeyEntry(KeyEntryId identifier)
+        private void MoveDownKeyEntry(SelectableKeyEntryId identifier)
         {
             try
             {
-                KeyStore?.MoveDown(identifier, _keClass);
+                KeyStore?.MoveDown(identifier.KeyEntryId, _keClass);
                 var oldIndex = Identifiers.IndexOf(identifier);
                 if (oldIndex != -1 && oldIndex < Identifiers.Count - 1)
                 {
@@ -357,6 +369,16 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
+        public LeosacAppCommand ShowSelectionChangedCommand { get; }
+
+        private void ToggleAllSelection(bool selected)
+        {
+            foreach (var identifier in Identifiers)
+            {
+                identifier.Selected = selected;
+            }
+        }
+
         public void RefreshKeyEntries()
         {
             Identifiers.Clear();
@@ -364,7 +386,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 foreach (var id in KeyStore.GetAll(_keClass))
                 {
-                    Identifiers.Add(id);
+                    Identifiers.Add(new SelectableKeyEntryId() {
+                        Selected = false,
+                        KeyEntryId = id
+                    });
                 }
             }
         }
