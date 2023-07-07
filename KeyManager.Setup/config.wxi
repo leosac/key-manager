@@ -2,7 +2,7 @@
   <Include>
     <?define Manufacturer = "Leosac" ?>
     <?define ProductName = "Leosac Key Manager" ?>
-	<?define Version = "1.4.0.0" ?>
+	<?define Version = "1.5.0.0" ?>
     <?define AboutURL = "https://www.leosac.com" ?>
     <?define SupportURL = "https://www.leosac.com" ?>
     <?define UpdatesURL = "https://www.leosac.com" ?>
