@@ -41,18 +41,6 @@ namespace Leosac.KeyManager.Library.UI
 
         public ObservableCollection<Favorite> KeyStores { get; set; } = new ObservableCollection<Favorite>();
 
-        public static string DefaultFileName { get => "Favorites.json"; }
-
-        public static Favorites? LoadFromFile()
-        {
-            return LoadFromFile(GetConfigFilePath(DefaultFileName));
-        }
-
-        public override string GetDefaultFileName()
-        {
-            return DefaultFileName;
-        }
-
         public Favorite CreateFromKeyStore(KeyStore.KeyStore store, bool save = true)
         {
             var favorite = new Favorite();
