@@ -79,6 +79,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Activate Mifare SAM features.
+        /// </summary>
+        public static string ActivateMifareSAM {
+            get {
+                return ResourceManager.GetString("ActivateMifareSAM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allow dump SecretKey.
         /// </summary>
         public static string AllowDumpSecretKey {
@@ -610,6 +619,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SAM Versions.
+        /// </summary>
+        public static string SAMVersions {
+            get {
+                return ResourceManager.GetString("SAMVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string StoreSecret {
@@ -619,7 +637,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Switch the SAM to AV2 mode.
+        ///   Looks up a localized string similar to Switch the SAM from AV1 to AV2 mode.
         /// </summary>
         public static string SwitchToAV2 {
             get {

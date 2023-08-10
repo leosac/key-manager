@@ -123,6 +123,9 @@
   <data name="AccessControlWizardDescription" xml:space="preserve">
     <value>Définissez les enregistrements de clés de votre SAM en suivant les recommandations pour un usage des SAMs dans un système de contrôle d'accès.</value>
   </data>
+  <data name="ActivateMifareSAM" xml:space="preserve">
+    <value>Activer les fonctionnalités Mifare SAM</value>
+  </data>
   <data name="AllowDumpSecretKey" xml:space="preserve">
     <value>Autoriser le dump de la clé secrète</value>
   </data>
@@ -300,11 +303,14 @@
   <data name="SAMAV1" xml:space="preserve">
     <value>SAM AV1</value>
   </data>
+  <data name="SAMVersions" xml:space="preserve">
+    <value>SAM Versions</value>
+  </data>
   <data name="StoreSecret" xml:space="preserve">
     <value>Enregistrer</value>
   </data>
   <data name="SwitchToAV2" xml:space="preserve">
-    <value>Basculer la SAM en mode AV2</value>
+    <value>Basculer la SAM du mode AV1 au mode AV2</value>
   </data>
   <data name="UnlockKey" xml:space="preserve">
     <value>Clé de déverrouillage</value>

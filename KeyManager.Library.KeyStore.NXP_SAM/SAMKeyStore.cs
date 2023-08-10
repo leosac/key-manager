@@ -478,35 +478,28 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             Open();
         }
 
-        public static void SwitchSAMToAV2(SAMAV1ISO7816Commands av1cmds, byte keyno, DESFireKeyType keyType, byte keyVersion, string? keyValue)
+        public static void SwitchSAMToAV2(SAMAV1ISO7816Commands av1cmd, byte keyno, DESFireKeyType keyType, byte keyVersion, string? keyValue)
         {
             log.Info("Switching the SAM to AV2 mode...");
-            var keyav1entry = av1cmds.getKeyEntry(keyno);
-            var key = new DESFireKey();
-            key.setKeyVersion(keyVersion);
-            if (!string.IsNullOrEmpty(keyValue))
-            {
-                key.setKeyType(keyType);
-                key.fromString(KeyMaterial.GetFormattedValue<string>(keyValue, KeyValueFormat.HexStringWithSpace));
-            }
-            else
+            var keyav1entry = av1cmd.getKeyEntry(keyno);
+            if (string.IsNullOrEmpty(keyValue))
             {
                 keyValue = "00000000000000000000000000000000";
                 switch (keyav1entry.getKeyType())
                 {
                     case SAMKeyType.SAM_KEY_3K3DES:
-                        key.setKeyType(DESFireKeyType.DF_KEY_3K3DES);
+                        keyType = DESFireKeyType.DF_KEY_3K3DES;
                         break;
                     case SAMKeyType.SAM_KEY_AES:
-                        key.setKeyType(DESFireKeyType.DF_KEY_AES);
+                        keyType = DESFireKeyType.DF_KEY_AES;
                         break;
                     default:
-                        key.setKeyType(DESFireKeyType.DF_KEY_DES);
+                        keyType = DESFireKeyType.DF_KEY_DES;
                         break;
                 }
             }
-
-            if (key.getKeyType() != DESFireKeyType.DF_KEY_AES)
+            var key = CreateDESFireKey(keyType, keyVersion, keyValue);
+            if (keyType != DESFireKeyType.DF_KEY_AES)
             {
                 var kb = KeyMaterial.GetFormattedValue<byte[]>(keyValue, KeyValueFormat.Binary);
                 var keys = new UCharCollectionCollection(3)
@@ -526,25 +519,51 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 keyav1entry.setKeyEntryInformation(keyInfo);
                 keyav1entry.setUpdateMask(0xff);
 
-                av1cmds.authenticateHost(key, keyno);
-                av1cmds.changeKeyEntry(keyno, keyav1entry, key);
+                av1cmd.authenticateHost(key, keyno);
+                av1cmd.changeKeyEntry(keyno, keyav1entry, key);
 
                 key.setKeyType(DESFireKeyType.DF_KEY_AES);
             }
 
-            av1cmds.authenticateHost(key, keyno);
-            av1cmds.lockUnlock(key, SAMLockUnlock.SwitchAV2Mode, keyno, 0, 0);
+            av1cmd.authenticateHost(key, keyno);
+            av1cmd.lockUnlock(key, SAMLockUnlock.SwitchAV2Mode, keyno, 0, 0);
             log.Info("SAM switched to AV2 mode.");
         }
 
-        public static void UnlockSAM(SAMAV2ISO7816Commands av2cmds, byte keyEntry, byte keyVersion, string? keyValue)
+        public static DESFireKey CreateDESFireKey(DESFireKeyType keyType, byte keyVersion, string? keyValue)
+        {
+            var key = new DESFireKey();
+            key.setKeyVersion(keyVersion);
+            key.setKeyType(keyType);
+            if (!string.IsNullOrEmpty(keyValue))
+            {
+                key.fromString(KeyMaterial.GetFormattedValue<string>(keyValue, KeyValueFormat.HexStringWithSpace));
+            }
+            return key;
+        }
+
+        public void ActivateMifareSAM(SAMAV2ISO7816Commands av2cmd)
+        {
+            ActivateMifareSAM(av2cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyType, GetSAMProperties().AuthenticateKeyVersion, Properties?.Secret);
+            Close();
+            Open();
+        }
+
+        public void ActivateMifareSAM(SAMAV2ISO7816Commands av2cmd, byte keyno, DESFireKeyType keyType, byte keyVersion, string? keyValue)
+        {
+            var key = CreateDESFireKey(keyType, keyVersion, keyValue);
+            av2cmd.lockUnlock(key, SAMLockUnlock.SwitchAV2Mode /* AV3 = Active Mifare SAM */, keyno, keyno, keyVersion);
+            log.Info("Mifare SAM features activation completed.");
+        }
+
+        public static void UnlockSAM(SAMAV2ISO7816Commands av2cmd, byte keyEntry, byte keyVersion, string? keyValue)
         {
             log.Info("Unlocking SAM...");
             var key = new DESFireKey();
             key.setKeyType(DESFireKeyType.DF_KEY_AES);
             key.setKeyVersion(keyVersion);
             key.fromString(keyValue ?? "");
-            av2cmds.lockUnlock(key, SAMLockUnlock.Unlock, keyEntry, 0x00, 0x00);
+            av2cmd.lockUnlock(key, SAMLockUnlock.Unlock, keyEntry, 0x00, 0x00);
             log.Info("SAM unlocked.");
         }
 

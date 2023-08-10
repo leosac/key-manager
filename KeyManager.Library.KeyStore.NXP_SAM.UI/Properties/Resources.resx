@@ -123,6 +123,9 @@
   <data name="AccessControlWizardDescription" xml:space="preserve">
     <value>Define SAM key entries following recommended guidelines for a SAM used by Access Control systems.</value>
   </data>
+  <data name="ActivateMifareSAM" xml:space="preserve">
+    <value>Activate Mifare SAM features</value>
+  </data>
   <data name="AllowDumpSecretKey" xml:space="preserve">
     <value>Allow dump SecretKey</value>
   </data>
@@ -300,11 +303,14 @@
   <data name="SAMAV1" xml:space="preserve">
     <value>SAM AV1</value>
   </data>
+  <data name="SAMVersions" xml:space="preserve">
+    <value>SAM Versions</value>
+  </data>
   <data name="StoreSecret" xml:space="preserve">
     <value>Save</value>
   </data>
   <data name="SwitchToAV2" xml:space="preserve">
-    <value>Switch the SAM to AV2 mode</value>
+    <value>Switch the SAM from AV1 to AV2 mode</value>
   </data>
   <data name="UnlockKey" xml:space="preserve">
     <value>Unlock Key</value>

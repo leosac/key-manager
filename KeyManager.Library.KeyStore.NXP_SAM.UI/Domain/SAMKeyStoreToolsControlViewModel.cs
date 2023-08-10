@@ -30,6 +30,12 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 {
                     SAMSwitchAV2();
                 });
+
+            SAMActivateMifareSAMCommand = new LeosacAppCommand(
+                parameter =>
+                {
+                    SAMActivateMifareSAM();
+                });
         }
 
         private KeyVersion _samAuthKey;
@@ -61,6 +67,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
         public LeosacAppCommand SAMAuthCommand { get; }
 
         public LeosacAppCommand SAMSwitchAV2Command { get; }
+
+        public LeosacAppCommand SAMActivateMifareSAMCommand { get; }
 
         private void SAMAuthenticate()
         {
@@ -115,6 +123,32 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             catch (Exception ex)
             {
                 log.Error("SAM Switch to AV2 failed.", ex);
+                if (SnackbarMessageQueue != null)
+                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
+            }
+        }
+
+        private void SAMActivateMifareSAM()
+        {
+            try
+            {
+                var ks = (KeyStore as SAMKeyStore);
+                var cmd = ks?.Chip?.getCommands();
+                if (cmd is SAMAV1ISO7816Commands samav1cmd)
+                {
+                    if (SnackbarMessageQueue != null)
+                        SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "Activate Mifare SAM skipped, the SAM is in AV2 mode.");
+                }   
+                else if (cmd is SAMAV2ISO7816Commands samav2cmd)
+                {
+                    ks?.ActivateMifareSAM(samav2cmd);
+                    if (SnackbarMessageQueue != null)
+                        SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "Activate Mifare SAM completed.");
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("Activate Mifare SAM failed.", ex);
                 if (SnackbarMessageQueue != null)
                     SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
             }
