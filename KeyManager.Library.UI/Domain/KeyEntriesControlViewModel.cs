@@ -367,6 +367,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                             KeyStore.Update(entry, true);
                         }
                         RefreshKeyEntries();
+                        SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "Wizard completed, key entries updated.");
                     }
                 }
                 catch (Exception ex)
