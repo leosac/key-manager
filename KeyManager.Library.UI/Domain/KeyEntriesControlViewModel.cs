@@ -357,14 +357,22 @@ namespace Leosac.KeyManager.Library.UI.Domain
             var w = factory.CreateWizardWindow();
             if (w.ShowDialog() == true)
             {
-                var entries = factory.GetKeyEntries(w);
-                if (KeyStore != null && entries != null && entries.Count > 0)
+                try
                 {
-                    foreach (var entry in entries)
+                    var entries = factory.GetKeyEntries(w);
+                    if (KeyStore != null && entries != null && entries.Count > 0)
                     {
-                        KeyStore.Update(entry, true);
+                        foreach (var entry in entries)
+                        {
+                            KeyStore.Update(entry, true);
+                        }
+                        RefreshKeyEntries();
                     }
-                    RefreshKeyEntries();
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Updating the key store with resulting key entries from the wizard failed.", ex);
+                    SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
                 }
             }
         }
