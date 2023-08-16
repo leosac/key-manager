@@ -1,41 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" InitialTargets="EnsureWixToolsetInstalled" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>3.10</ProductVersion>
-    <ProjectGuid>6d7024d4-f698-4c90-98fe-a3e609d7014f</ProjectGuid>
-    <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>KeyManager.Setup</OutputName>
-    <OutputType>Package</OutputType>
-  </PropertyGroup>
+<Project Sdk="WixToolset.Sdk/4.0.1">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Product.wxs" />
-  </ItemGroup>
-  <ItemGroup>
-    <WixExtension Include="WixUIExtension">
-      <HintPath>$(WixToolPath)WixUIExtension.dll</HintPath>
-      <Name>WixUIExtension</Name>
-    </WixExtension>
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KeyManager.Library.KeyStore.File.UI\KeyManager.Library.KeyStore.File.UI.csproj">
       <Name>KeyManager.Library.KeyStore.File.UI</Name>
@@ -150,17 +119,8 @@
     <Content Include="leosac.ico" />
     <Content Include="leosac_key.ico" />
   </ItemGroup>
-  <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />
-  <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' AND ('$(Configuration)' == 'Debug' OR '$(Configuration)' == 'Release')">
-    <Error Text="The WiX Toolset v3.11 build tools must be installed to build this project. To download the WiX Toolset, see https://wixtoolset.org/releases/v3.11/stable" />
-  </Target>
-  <!--
-	To modify your build process, add your task inside one of the targets below and uncomment it.
-	Other similar extension points exist, see Wix.targets.
-	<Target Name="BeforeBuild">
-	</Target>
-	<Target Name="AfterBuild">
-	</Target>
-	-->
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.1" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.1" />
+  </ItemGroup>
 </Project>

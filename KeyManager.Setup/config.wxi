@@ -1,23 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-  <Include>
+﻿<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
     <?define Manufacturer = "Leosac" ?>
     <?define ProductName = "Leosac Key Manager" ?>
-	<?define Version = "1.6.0.0" ?>
+	  <?define Version = "1.6.0.0" ?>
     <?define AboutURL = "https://www.leosac.com" ?>
     <?define SupportURL = "https://www.leosac.com" ?>
     <?define UpdatesURL = "https://www.leosac.com" ?>
 
     <?if $(var.Platform) = "x64" ?>
-      <?define Win64 = "yes" ?>
-      <?define PlatformString = "64-bit"?>
-      <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
       <?define LLAMSMPath = "packages\liblogicalaccess-swig\msm\LibLogicalAccessNetCEMerge-x64.msm" ?>
-    <?else ?>
-      <?define Win64 = "no" ?>
-      <?define PlatformString = "32-bit"?>
-      <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
-      <?define LLAMSMPath = "packages\liblogicalaccess-swig\msm\LibLogicalAccessNetCEMerge-x86.msm" ?>?>
-    <?endif ?>
+    <?else?>
+      <?define LLAMSMPath = "packages\liblogicalaccess-swig\msm\LibLogicalAccessNetCEMerge-x86.msm" ?>
+    <?endif?>
     
     <?define BaseGuid = "4a0e1d81-8dab-4a42-a5af-671b018926" ?>
     <?define CompInstallRegDir = "$(var.BaseGuid)10" ?>

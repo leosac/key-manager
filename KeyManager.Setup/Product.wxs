@@ -1,14 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?include config.wxi ?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="$(var.ProductName)" Language="1033" Version="$(var.Version)" Manufacturer="$(var.Manufacturer)" UpgradeCode="fd14ef4f-fe2a-44ce-a744-9d0103039487">
-		<Package InstallerVersion="200" Compressed="yes" />
+﻿<?include config.wxi ?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui" xmlns:netfx="http://wixtoolset.org/schemas/v4/wxs/netfx">
+	<Package Name="$(var.ProductName)" Version="$(var.Version)" Manufacturer="$(var.Manufacturer)" UpgradeCode="fd14ef4f-fe2a-44ce-a744-9d0103039487" InstallerVersion="200">
+		
 
-		<MajorUpgrade DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
+		<MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
     <MediaTemplate EmbedCab="yes" />
     <Icon Id="leosac_key.ico" SourceFile="leosac_key.ico" />
 
-		<Feature Id="ProductFeature" Title="$(var.ProductName)" Description="The $(var.ProductName) application" Absent="disallow" Level="1">
+		<Feature Id="ProductFeature" Title="$(var.ProductName)" Description="!(loc.ProductDescr)" Level="1" AllowAbsent="no">
 			<ComponentGroupRef Id="KeyManagerComponents" />
       <ComponentGroupRef Id="FilePluginComponents" />
       <ComponentGroupRef Id="HSM_PKCS11PluginComponents" />
@@ -20,26 +19,26 @@
       <ComponentGroupRef Id="HSM_PKCS11PluginDependenciesComponents" />
       <ComponentGroupRef Id="NXP_SAMPluginDependenciesComponents" />
 		</Feature>
-    <Feature Id="LibLogicalAccessFeature" Title="LibLogicalAccess" Description="The RFID/SmartCard middleware" Absent="disallow" Level="1">
+    <Feature Id="LibLogicalAccessFeature" Title="!(loc.RFIDMiddleware)" Description="!(loc.RFIDMiddlewareDescr)" Level="1" AllowAbsent="no">
       <MergeRef Id="LLAMSM" />
     </Feature>
-    <Feature Id="TranslationsFeature" Title="Translations" Description="Available application translations" Level="1">
-      <Feature Id="FrenchTranslation" Title="French Translation" Description="The application French translation" Level="1">
+    <Feature Id="TranslationsFeature" Title="!(loc.Translations)" Description="!(loc.TranslationsDescr)" Level="1">
+      <Feature Id="FrenchTranslation" Title="!(loc.FrenchTranslation)" Description="!(loc.FrenchTranslationDescr)" Level="1">
         <ComponentGroupRef Id="KeyManagerResourcesFR" />
-        <ComponentGroupRef Id="DependenciesResourcesFR"/>
+        <ComponentGroupRef Id="DependenciesResourcesFR" />
         <ComponentGroupRef Id="FilePluginResourcesFR" />
         <ComponentGroupRef Id="HSM_PKCS11PluginResourcesFR" />
         <ComponentGroupRef Id="NXP_SAMPluginResourcesFR" />
       </Feature>
     </Feature>
-    <Feature Id="StartMenuShortcut" Title="Start Menu Shortcut" Level="1">
+    <Feature Id="StartMenuShortcut" Title="!(loc.StartMenuShortcut)" Level="1">
       <ComponentRef Id="ProgramMenuDir" />
     </Feature>
-    <Feature Id="DesktopShortcut" Title="Desktop Shortcut" Level="1">
+    <Feature Id="DesktopShortcut" Title="!(loc.DesktopShortcut)" Level="1">
       <ComponentRef Id="ApplicationShortcutDesktop" />
     </Feature>
 
-    <UIRef Id="WixUI_Advanced" />
+    <ui:WixUI Id="WixUI_Advanced" />
 
     <!-- The about link that appears in Add & Remove Programs. -->
     <Property Id="ARPURLINFOABOUT" Value="$(var.AboutURL)" />
@@ -54,7 +53,7 @@
     <Property Id="Platform" Value="$(var.Platform)" />
     <Property Id="WixAppFolder" Value="WixPerUserFolder" />
     <Property Id="APPLICATIONFOLDER">
-      <RegistrySearch Id="FindInstallRegDir" Type="raw" Root="HKLM" Win64="$(var.Win64)" Key="Software\$(var.Manufacturer)\$(var.ProductName)" Name="InstallDir" />
+      <RegistrySearch Id="FindInstallRegDir" Type="raw" Root="HKLM" Key="Software\$(var.Manufacturer)\$(var.ProductName)" Name="InstallDir" />
     </Property>
 
 
@@ -63,23 +62,23 @@
     <WixVariable Id="WixUIDialogBmp" Value="dialog.bmp" />
     <WixVariable Id="WixUIInfoIco" Value="leosac.ico" />
 
+    <netfx:DotNetCompatibilityCheck RuntimeType="desktop" Platform="$(var.Platform)" RollForward="latestMinor" Version ="7.0.0" Property="NETCORESTATUS" />
+    <Launch Condition="Installed OR NETCORESTATUS=&quot;0&quot;" Message="!(loc.DotNetRequiredError)" />
+
     <!-- Launch the application after setup exits -->
-    <CustomAction Id = "StartAppOnExit" FileKey = "___var.KeyManagerExe.TargetPath_" ExeCommand = "" Execute = "immediate" Impersonate = "yes" Return = "asyncNoWait" />
-    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Leosac Key Manager when setup exits." />
+    <CustomAction Id="StartAppOnExit" ExeCommand="" Execute="immediate" Impersonate="yes" Return="asyncNoWait" FileRef="___var.KeyManagerExe.TargetPath_" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="!(loc.LaunchApp)" />
     <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
 
     <UI>
-      <Publish Dialog = "ExitDialog" Control = "Finish" Order = "1" Event = "DoAction" Value = "StartAppOnExit">
-        WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed
-      </Publish>
+      <Publish Dialog="ExitDialog" Control="Finish" Order="1" Event="DoAction" Value="StartAppOnExit" Condition="WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed" />
     </UI>
 
 
-  </Product>
+  </Package>
 
 	<Fragment>
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="$(var.PlatformProgramFilesFolder)" Name="PFiles">
+      <StandardDirectory Id="ProgramFiles6432Folder">
         <Directory Id="COMPANYFOLDER" Name="$(var.Manufacturer)">
           <Directory Id="APPLICATIONFOLDER" Name="$(var.ProductName)">
             <Directory Id="RESOURCESFR" Name="fr" />
@@ -108,185 +107,180 @@
             <Merge Id="LLAMSM" Language="1033" DiskId="1" SourceFile="$(var.LLAMSMPath)" />
           </Directory>
         </Directory>
-			</Directory>
+			</StandardDirectory>
 
-      <Directory Id="ProgramMenuFolder" Name="Programs">
+      <StandardDirectory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)">
-          <Component Id="ProgramMenuDir" Guid="*" Win64="$(var.Win64)">
-            <Shortcut Id="ProgramMenuDirShortcut" Name="$(var.ProductName)" Description="$(var.ProductName)"
-                    Target="[APPLICATIONFOLDER]KeyManager.exe" WorkingDirectory="APPLICATIONFOLDER"/>
-            <RemoveFolder Id="ProgramMenuDir" On="uninstall"/>
-            <RegistryValue Root="HKCU" Key="Software\$(var.Manufacturer)\$(var.ProductName)"
-                           Type="integer" Value="1" Name="startmenu_installed" KeyPath="yes" />
+          <Component Id="ProgramMenuDir">
+            <Shortcut Id="ProgramMenuDirShortcut" Name="$(var.ProductName)" Description="$(var.ProductName)" Target="[APPLICATIONFOLDER]KeyManager.exe" WorkingDirectory="APPLICATIONFOLDER" />
+            <RemoveFolder Id="ProgramMenuDir" On="uninstall" />
+            <RegistryValue Root="HKCU" Key="Software\$(var.Manufacturer)\$(var.ProductName)" Type="integer" Value="1" Name="startmenu_installed" KeyPath="yes" />
           </Component>
         </Directory>
-      </Directory>
+      </StandardDirectory>
 
-      <Directory Id="DesktopFolder" Name="Desktop">
-        <Component Id="ApplicationShortcutDesktop" Guid="*" Win64="$(var.Win64)">
-          <Shortcut Id="ApplicationDesktopShortcut" Name="$(var.ProductName)" Description="$(var.ProductName)"
-                    Target="[APPLICATIONFOLDER]KeyManager.exe" WorkingDirectory="APPLICATIONFOLDER"/>
-          <RemoveFolder Id="DesktopFolder" On="uninstall"/>
-          <RegistryValue Root="HKCU" Key="Software\$(var.Manufacturer)\$(var.ProductName)"
-                         Name="dekstop_installed" Type="integer" Value="1" KeyPath="yes"/>
+      <StandardDirectory Id="DesktopFolder">
+        <Component Id="ApplicationShortcutDesktop">
+          <Shortcut Id="ApplicationDesktopShortcut" Name="$(var.ProductName)" Description="$(var.ProductName)" Target="[APPLICATIONFOLDER]KeyManager.exe" WorkingDirectory="APPLICATIONFOLDER" />
+          <RemoveFolder Id="DesktopFolder" On="uninstall" />
+          <RegistryValue Root="HKCU" Key="Software\$(var.Manufacturer)\$(var.ProductName)" Name="dekstop_installed" Type="integer" Value="1" KeyPath="yes" />
         </Component>
-      </Directory>
-		</Directory>
-	</Fragment>
+      </StandardDirectory>
+		</Fragment>
 
   <Fragment>
     <ComponentGroup Id="KeyManagerComponents" Directory="APPLICATIONFOLDER">
-      <Component Id="InstallRegDir" Guid="$(var.CompInstallRegDir)" DiskId="1" Win64="$(var.Win64)">
-        <RegistryKey Id="RegInstallDir" Root="HKLM" Key="Software\$(var.Manufacturer)\$(var.ProductName)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" >
+      <Component Id="InstallRegDir" Guid="$(var.CompInstallRegDir)" DiskId="1">
+        <RegistryKey Id="RegInstallDir" Root="HKLM" Key="Software\$(var.Manufacturer)\$(var.ProductName)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
           <RegistryValue Name="InstallDir" Type="string" Value="[APPLICATIONFOLDER]" />
         </RegistryKey>
       </Component>
-      <Component Id="KeyManagerComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerComponent">
         <File Id="___var.KeyManager.TargetPath_" Source="$(var.KeyManager.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerExeComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerExeComponent">
         <File Id="___var.KeyManagerExe.TargetPath_" Source="$(var.KeyManager.TargetDir)\KeyManager.exe" />
       </Component>
-      <Component Id="KeyManagerDepsComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerDepsComponent">
         <File Id="___var.KeyManager.deps.TargetPath_" Source="$(var.KeyManager.TargetDir)\KeyManager.deps.json" />
       </Component>
-      <Component Id="KeyManagerRuntimeconfigComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerRuntimeconfigComponent">
         <File Id="___var.KeyManager.runtimeconfig.TargetPath_" Source="$(var.KeyManager.TargetDir)\KeyManager.runtimeconfig.json" />
       </Component>
-      <Component Id="KeyManagerLibraryComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerLibraryComponent">
         <File Id="___var.KeyManager.Library.TargetPath_" Source="$(var.KeyManager.Library.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerLibraryPluginComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerLibraryPluginComponent">
         <File Id="___var.KeyManager.Library.Plugin.TargetPath_" Source="$(var.KeyManager.Library.Plugin.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerLibraryPluginUIComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerLibraryPluginUIComponent">
         <File Id="___var.KeyManager.Library.Plugin.UI.TargetPath_" Source="$(var.KeyManager.Library.Plugin.UI.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerLibraryUIComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerLibraryUIComponent">
         <File Id="___var.KeyManager.Library.UI.TargetPath_" Source="$(var.KeyManager.Library.UI.TargetPath)" />
       </Component>
     </ComponentGroup>
 
     <ComponentGroup Id="FilePluginComponents" Directory="FILEPLUGIN">
-      <Component Id="KeyManagerLibraryKeyStoreFileComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerLibraryKeyStoreFileComponent">
         <File Id="___var.KeyManager.Library.KeyStore.File.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.File.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerLibraryKeyStoreFileUIComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerLibraryKeyStoreFileUIComponent">
         <File Id="___var.KeyManager.Library.KeyStore.File.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.File.UI.TargetPath)" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="HSM_PKCS11PluginComponents" Directory="HSM_PKCS11PLUGIN">
-      <Component Id="KeyManagerLibraryHSM_PKCS11Component" Win64="$(var.Win64)">
+      <Component Id="KeyManagerLibraryHSM_PKCS11Component">
         <File Id="___var.KeyManager.Library.KeyStore.HSM_PKCS11.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerLibraryHSM_PKCS11UIComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerLibraryHSM_PKCS11UIComponent">
         <File Id="___var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.TargetPath)" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="MemoryPluginComponents" Directory="MEMORYPLUGIN">
-      <Component Id="KeyManagerLibraryMemoryComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerLibraryMemoryComponent">
         <File Id="___var.KeyManager.Library.KeyStore.Memory.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.Memory.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerLibraryMemoryUIComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerLibraryMemoryUIComponent">
         <File Id="___var.KeyManager.Library.KeyStore.Memory.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.Memory.UI.TargetPath)" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="NXP_SAMPluginComponents" Directory="NXP_SAMPLUGIN">
-      <Component Id="KeyManagerLibraryNXP_SAMComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerLibraryNXP_SAMComponent">
         <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.TargetPath)" />
       </Component>
-      <Component Id="KeyManagerLibraryNXP_SAMUIComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerLibraryNXP_SAMUIComponent">
         <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetPath)" />
       </Component>
     </ComponentGroup>
 
     <ComponentGroup Id="KeyManagerResourcesFR" Directory="RESOURCESFR">
-      <Component Id="KeyManagerResourcesFRComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerResourcesFRComponent">
         <File Id="___var.KeyManager.ResourcesFR_" Source="$(var.KeyManager.TargetDir)\fr\KeyManager.resources.dll" />
       </Component>
-      <Component Id="KeyManagerLibraryUIResourcesFRComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerLibraryUIResourcesFRComponent">
         <File Id="___var.KeyManager.Library.UI.ResourcesFR_" Source="$(var.KeyManager.Library.UI.TargetDir)\fr\KeyManager.Library.UI.resources.dll" />
       </Component>
     </ComponentGroup>
 
     <ComponentGroup Id="FilePluginResourcesFR" Directory="FILEPLUGINFR">
-      <Component Id="KeyManagerLibraryKeyStoreFileUIResourcesFRComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerLibraryKeyStoreFileUIResourcesFRComponent">
         <File Id="___var.KeyManager.Library.KeyStore.File.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.File.UI.TargetDir)\fr\KeyManager.Library.KeyStore.File.UI.resources.dll" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="HSM_PKCS11PluginResourcesFR" Directory="HSM_PKCS11PLUGINFR">
-      <Component Id="KeyManagerLibraryKeyStoreHSM_PKCS11UIResourcesFRComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerLibraryKeyStoreHSM_PKCS11UIResourcesFRComponent">
         <File Id="___var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.TargetDir)\fr\KeyManager.Library.KeyStore.HSM_PKCS11.UI.resources.dll" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="NXP_SAMPluginResourcesFR" Directory="NXP_SAMPLUGINFR">
-      <Component Id="KeyManagerLibraryKeyStoreNXP_SAMUIResourcesFRComponent" Win64="$(var.Win64)">
+      <Component Id="KeyManagerLibraryKeyStoreNXP_SAMUIResourcesFRComponent">
         <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetDir)\fr\KeyManager.Library.KeyStore.NXP_SAM.UI.resources.dll" />
       </Component>
     </ComponentGroup>
 
     <ComponentGroup Id="DependenciesResourcesFR" Directory="RESOURCESFR">
-      <Component Id="WpfAppResourcesFRComponent" Win64="$(var.Win64)">
+      <Component Id="WpfAppResourcesFRComponent">
         <File Id="___var.WpfApp.ResourcesFR_" Source="$(var.KeyManager.TargetDir)\fr\WpfApp.resources.dll" />
       </Component>
     </ComponentGroup>
     
     <ComponentGroup Id="DependenciesComponents" Directory="APPLICATIONFOLDER">
-      <Component Id="BouncyCastleCryptographyComponent" Win64="$(var.Win64)">
+      <Component Id="BouncyCastleCryptographyComponent">
         <File Id="___var.BouncyCastle.Cryptography.dll_" Source="$(var.KeyManager.TargetDir)\BouncyCastle.Cryptography.dll" />
       </Component>
-      <Component Id="Crc32NETComponent" Win64="$(var.Win64)">
+      <Component Id="Crc32NETComponent">
         <File Id="___var.Crc32.NET.dll_" Source="$(var.KeyManager.TargetDir)\Crc32.NET.dll" />
       </Component>
-      <Component Id="log4netComponent" Win64="$(var.Win64)">
+      <Component Id="log4netComponent">
         <File Id="___var.log4net.dll_" Source="$(var.KeyManager.TargetDir)\log4net.dll" />
       </Component>
-      <Component Id="log4netconfigComponent" Win64="$(var.Win64)">
+      <Component Id="log4netconfigComponent">
         <File Id="___var.log4net.config_" Source="$(var.KeyManager.TargetDir)\log4net.config" />
       </Component>
-      <Component Id="MaterialDesignColorsComponent" Win64="$(var.Win64)">
+      <Component Id="MaterialDesignColorsComponent">
         <File Id="___var.MaterialDesignColors.dll_" Source="$(var.KeyManager.TargetDir)\MaterialDesignColors.dll" />
       </Component>
-      <Component Id="MaterialDesignThemesWpfComponent" Win64="$(var.Win64)">
+      <Component Id="MaterialDesignThemesWpfComponent">
         <File Id="___var.MaterialDesignThemes.Wpf.dll_" Source="$(var.KeyManager.TargetDir)\MaterialDesignThemes.Wpf.dll" />
       </Component>
-      <Component Id="MicrosoftXamlBehaviorsComponent" Win64="$(var.Win64)">
+      <Component Id="MicrosoftXamlBehaviorsComponent">
         <File Id="___var.Microsoft.Xaml.Behaviors.dll_" Source="$(var.KeyManager.TargetDir)\Microsoft.Xaml.Behaviors.dll" />
       </Component>
-      <Component Id="NewtonsoftJsonComponent" Win64="$(var.Win64)">
+      <Component Id="NewtonsoftJsonComponent">
         <File Id="___var.Newtonsoft.Json.dll_" Source="$(var.KeyManager.TargetDir)\Newtonsoft.Json.dll" />
       </Component>
-      <Component Id="QrCodeGeneratorComponent" Win64="$(var.Win64)">
+      <Component Id="QrCodeGeneratorComponent">
         <File Id="___var.QrCodeGenerator.dll_" Source="$(var.KeyManager.TargetDir)\QrCodeGenerator.dll" />
       </Component>
-      <Component Id="SecretSharingDotNetComponent" Win64="$(var.Win64)">
+      <Component Id="SecretSharingDotNetComponent">
         <File Id="___var.SecretSharingDotNet.dll_" Source="$(var.KeyManager.TargetDir)\SecretSharingDotNet.dll" />
       </Component>
-      <Component Id="SkiaSharpComponent" Win64="$(var.Win64)">
+      <Component Id="SkiaSharpComponent">
         <File Id="___var.SkiaSharp.dll_" Source="$(var.KeyManager.TargetDir)\SkiaSharp.dll" />
       </Component>
-      <Component Id="WpfAppComponent" Win64="$(var.Win64)">
+      <Component Id="WpfAppComponent">
         <File Id="___var.WpfApp.dll_" Source="$(var.KeyManager.TargetDir)\WpfApp.dll" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="NativeWinx64RuntimeComponents" Directory="RUNTIMEWINX64NATIVE">
-      <Component Id="libSkiaSharp_winx64Component" Win64="$(var.Win64)">
+      <Component Id="libSkiaSharp_winx64Component">
         <File Id="___var.libSkiaSharp_winx64.dll_" Source="$(var.KeyManager.TargetDir)\runtimes\win-x64\native\libSkiaSharp.dll" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="NativeWinx86RuntimeComponents" Directory="RUNTIMEWINX86NATIVE">
-      <Component Id="libSkiaSharp_winx86Component" Win64="$(var.Win64)">
+      <Component Id="libSkiaSharp_winx86Component">
         <File Id="___var.libSkiaSharp_winx86.dll_" Source="$(var.KeyManager.TargetDir)\runtimes\win-x86\native\libSkiaSharp.dll" />
       </Component>
     </ComponentGroup>
 
     <ComponentGroup Id="HSM_PKCS11PluginDependenciesComponents" Directory="HSM_PKCS11PLUGIN">
-      <Component Id="Pkcs11InteropComponent" Win64="$(var.Win64)">
+      <Component Id="Pkcs11InteropComponent">
         <File Id="___var.Pkcs11Interop.dll_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.TargetDir)\Pkcs11Interop.dll" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="NXP_SAMPluginDependenciesComponents" Directory="NXP_SAMPLUGIN">
-      <Component Id="LibLogicalAccessNetComponent" Win64="$(var.Win64)">
+      <Component Id="LibLogicalAccessNetComponent">
         <File Id="___var.LibLogicalAccessNet.dll_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.TargetDir)\LibLogicalAccessNet.dll" />
       </Component>
     </ComponentGroup>

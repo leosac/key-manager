@@ -1,0 +1,16 @@
+﻿<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="fr-FR">
+
+  <String Id="DowngradeError" Value="Une version plus récente de [ProductName] est déjà installée." />
+  <String Id="DotNetRequiredError" Value="[ProductName] nécessite Microsoft .NET 7 Desktop." />
+  <String Id="LaunchApp" Value="Démarrer [ProductName] à la fin de l'installation." />
+  <String Id="ProductDescr" Value="L'application [ProductName]" />
+  <String Id="Translations" Value="Traductions" />
+  <String Id="TranslationsDescr" Value="Traductions disponibles pour l'application" />
+  <String Id="FrenchTranslation" Value="Langue Française" />
+  <String Id="FrenchTranslationDescr" Value="Les ressources françaises pour l'application" />
+  <String Id="RFIDMiddleware" Value="LibLogicalAccess" />
+  <String Id="RFIDMiddlewareDescr" Value="Le middleware RFID/SmartCard" />
+  <String Id="StartMenuShortcut" Value="Raccourci dans le menu démarrer" />
+  <String Id="DesktopShortcut" Value="Raccourci sur le bureau" />
+
+</WixLocalization>
