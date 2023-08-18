@@ -2,7 +2,7 @@
 
   <String Id="DowngradeError" Value="Une version plus récente de [ProductName] est déjà installée." />
   <String Id="DotNetRequiredError" Value="[ProductName] nécessite Microsoft .NET 7 Desktop." />
-  <String Id="LaunchApp" Value="Démarrer [ProductName] à la fin de l'installation." />
+  <String Id="LaunchApp" Value="Démarrer l'application à la fin de l'installation." />
   <String Id="ProductDescr" Value="L'application [ProductName]" />
   <String Id="Translations" Value="Traductions" />
   <String Id="TranslationsDescr" Value="Traductions disponibles pour l'application" />
