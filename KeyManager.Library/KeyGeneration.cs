@@ -17,7 +17,7 @@ namespace Leosac.KeyManager.Library
 
         public static string FromPassword(string password, string salt, int keySize)
         {
-            var deriv = new Rfc2898DeriveBytes(password, Encoding.UTF8.GetBytes(salt));
+            var deriv = new Rfc2898DeriveBytes(password, Encoding.UTF8.GetBytes(salt), 10000, HashAlgorithmName.SHA256);
             var key = deriv.GetBytes(keySize);
             return Convert.ToHexString(key);
         }
