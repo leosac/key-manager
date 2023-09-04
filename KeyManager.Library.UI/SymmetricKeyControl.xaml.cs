@@ -30,6 +30,8 @@ namespace Leosac.KeyManager.Library.UI
         {
             InitializeComponent();
 
+            Key = new KeyManager.Library.Key();
+
             KeyChecksumAlgorithms.Add(new CRC32Checksum());
             KeyChecksumAlgorithms.Add(new KCV());
             KeyChecksumAlgorithms.Add(new Sha256Checksum());
@@ -43,7 +45,7 @@ namespace Leosac.KeyManager.Library.UI
         }
 
         public static readonly DependencyProperty KeyProperty = DependencyProperty.Register(nameof(Key), typeof(KeyManager.Library.Key), typeof(SymmetricKeyControl),
-            new FrameworkPropertyMetadata(new KeyManager.Library.Key()));
+            new FrameworkPropertyMetadata());
 
         public KeyManager.Library.KeyChecksum SelectedKeyChecksumAlgorithm
         {

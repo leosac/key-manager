@@ -23,6 +23,8 @@ namespace Leosac.KeyManager.Library.UI
         public KeyEntryIdControl()
         {
             InitializeComponent();
+
+            KeyEntryId = new KeyManager.Library.KeyStore.KeyEntryId();
         }
 
         public KeyManager.Library.KeyStore.KeyEntryId KeyEntryId
@@ -32,6 +34,6 @@ namespace Leosac.KeyManager.Library.UI
         }
 
         public static readonly DependencyProperty KeyEntryIdProperty = DependencyProperty.Register(nameof(KeyEntryId), typeof(KeyManager.Library.KeyStore.KeyEntryId), typeof(KeyEntryIdControl),
-            new FrameworkPropertyMetadata(new KeyManager.Library.KeyStore.KeyEntryId()));
+            new FrameworkPropertyMetadata());
     }
 }

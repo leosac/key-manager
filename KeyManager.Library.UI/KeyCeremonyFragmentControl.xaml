@@ -40,7 +40,7 @@
                             materialDesign:TextFieldAssist.HasClearButton="True"
                             materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
                             Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
-                            materialDesign:PasswordBoxAssist.Password="{Binding Path=FragmentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ElementName=userControl}" />
+                            materialDesign:PasswordBoxAssist.Password="{Binding Path=FragmentValue, Mode=TwoWay, ElementName=userControl}" />
                     </DockPanel>
                 </materialDesign:Flipper.BackContent>
             </materialDesign:Flipper>

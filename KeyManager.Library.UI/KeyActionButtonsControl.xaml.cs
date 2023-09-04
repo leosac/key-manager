@@ -27,6 +27,8 @@ namespace Leosac.KeyManager.Library.UI
         public KeyActionButtonsControl()
         {
             InitializeComponent();
+
+            Key = new KeyManager.Library.Key();
         }
 
         public KeyManager.Library.Key Key
@@ -36,7 +38,7 @@ namespace Leosac.KeyManager.Library.UI
         }
 
         public static readonly DependencyProperty KeyProperty = DependencyProperty.Register(nameof(Key), typeof(KeyManager.Library.Key), typeof(KeyActionButtonsControl),
-            new FrameworkPropertyMetadata(new KeyManager.Library.Key()));
+            new FrameworkPropertyMetadata());
 
         public bool ShowKeyLink
         {

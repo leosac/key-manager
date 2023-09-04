@@ -25,6 +25,8 @@ namespace Leosac.KeyManager.Library.UI
         public DivInputTestControl()
         {
             InitializeComponent();
+
+            DivInput = new ObservableCollection<DivInputFragment>();
         }
 
         public ObservableCollection<DivInputFragment> DivInput
@@ -34,7 +36,7 @@ namespace Leosac.KeyManager.Library.UI
         }
 
         public static readonly DependencyProperty DivInputProperty = DependencyProperty.Register(nameof(DivInput), typeof(ObservableCollection<DivInputFragment>), typeof(DivInputTestControl),
-            new FrameworkPropertyMetadata(new ObservableCollection<DivInputFragment>()));
+            new FrameworkPropertyMetadata());
 
         public string DivInputResult
         {
