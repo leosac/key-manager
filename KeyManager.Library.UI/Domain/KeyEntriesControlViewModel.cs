@@ -415,6 +415,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 return true;
             }
 
+            if (obj is SelectableKeyEntryId s)
+            {
+                obj = s.KeyEntryId;
+            }
+
             if (obj is KeyEntryId item)
             {
                 var terms = _searchTerms.ToLower();
