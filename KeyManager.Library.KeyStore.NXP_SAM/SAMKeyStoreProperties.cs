@@ -1,10 +1,4 @@
 ﻿using LibLogicalAccess.Card;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 {
@@ -75,6 +69,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             get => _forceCardType;
             set => SetProperty(ref _forceCardType, value);
         }
+
+        public override int? SecretMaxLength => 32;
 
         public override bool Equals(object? obj)
         {

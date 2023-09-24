@@ -18,6 +18,9 @@ namespace Leosac.KeyManager.Library.KeyStore
             set => SetProperty(ref _secret, value);
         }
 
+        [JsonIgnore]
+        public virtual int? SecretMaxLength => null;
+
         private bool _storeSecret = false;
         public bool StoreSecret
         {

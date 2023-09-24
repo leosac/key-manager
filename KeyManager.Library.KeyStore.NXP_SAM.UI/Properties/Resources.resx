@@ -207,6 +207,9 @@
   <data name="GenerateSAMUnlockKey" xml:space="preserve">
     <value>Generate new SAM Unlock Key</value>
   </data>
+  <data name="GetSAMVersion" xml:space="preserve">
+    <value>Show SAM Version</value>
+  </data>
   <data name="KeepIV" xml:space="preserve">
     <value>Keep IV</value>
   </data>
@@ -273,6 +276,9 @@
   <data name="LockUnlock" xml:space="preserve">
     <value>Lock / Unlock</value>
   </data>
+  <data name="LockUnlockAction" xml:space="preserve">
+    <value>Action</value>
+  </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
   </data>
@@ -302,6 +308,9 @@
   </data>
   <data name="SAMAV1" xml:space="preserve">
     <value>SAM AV1</value>
+  </data>
+  <data name="SAMLockUnlock" xml:space="preserve">
+    <value>Lock/Unlock</value>
   </data>
   <data name="SAMVersions" xml:space="preserve">
     <value>SAM Versions</value>

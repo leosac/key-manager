@@ -331,6 +331,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show SAM Version.
+        /// </summary>
+        public static string GetSAMVersion {
+            get {
+                return ResourceManager.GetString("GetSAMVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Keep IV.
         /// </summary>
         public static string KeepIV {
@@ -529,6 +538,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Action.
+        /// </summary>
+        public static string LockUnlockAction {
+            get {
+                return ResourceManager.GetString("LockUnlockAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
         public static string OK {
@@ -615,6 +633,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         public static string SAMAV1 {
             get {
                 return ResourceManager.GetString("SAMAV1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lock/Unlock.
+        /// </summary>
+        public static string SAMLockUnlock {
+            get {
+                return ResourceManager.GetString("SAMLockUnlock", resourceCulture);
             }
         }
         

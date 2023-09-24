@@ -43,8 +43,10 @@
                                         <PasswordBox materialDesign:HintAssist.HelperText="{x:Static properties:Resources.SecretHelper}"
                                                      materialDesign:HintAssist.Hint="{x:Static properties:Resources.Secret}"
                                                      materialDesign:TextFieldAssist.HasClearButton="True" Margin="5"
+                                                     materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
                                                      Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
                                                      materialDesign:PasswordBoxAssist.Password="{Binding Properties.Secret}"
+                                                     MaxLength="{Binding Properties.SecretMaxLength, Mode=OneWay}"
                                                      Visibility="{Binding Properties.StoreSecret, Converter={StaticResource ReverseBoolToVisibleConverter}}"/>
                                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                             <Button Margin="0,8,8,0" CommandParameter="{Binding}" Content="{x:Static properties:Resources.OK}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}">
