@@ -148,7 +148,16 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             });
 
-                _keClass = KeyEntryClass.Symmetric;
+            ToggleSelectionCommand = new LeosacAppCommand(
+                parameter =>
+                {
+                    if (Identifiers.Count > 0)
+                    {
+                        ToggleAllSelection(!Identifiers[0].Selected);
+                    }
+                });
+
+            _keClass = KeyEntryClass.Symmetric;
             _identifiersView = CollectionViewSource.GetDefaultView(Identifiers);
             _identifiersView.Filter = KeyEntryIdentifiersFilter;
         }
@@ -379,6 +388,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
         }
 
         public LeosacAppCommand ShowSelectionChangedCommand { get; }
+
+        public LeosacAppCommand ToggleSelectionCommand { get; }
 
         private void ToggleAllSelection(bool selected)
         {

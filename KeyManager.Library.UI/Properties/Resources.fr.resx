@@ -441,6 +441,9 @@
   <data name="SelectedFolder" xml:space="preserve">
     <value>Dossier sélectionné :</value>
   </data>
+  <data name="Selection" xml:space="preserve">
+    <value>Selection</value>
+  </data>
   <data name="SelectTargetFolder" xml:space="preserve">
     <value>Sélectionnez le dossier cible</value>
   </data>
@@ -449,6 +452,9 @@
   </data>
   <data name="Test" xml:space="preserve">
     <value>Tester</value>
+  </data>
+  <data name="ToggleSelectAll" xml:space="preserve">
+    <value>Tout sélectionner/déselectionner</value>
   </data>
   <data name="ToggleSelection" xml:space="preserve">
     <value>Afficher / Cacher les boîtes de sélection des clés</value>

@@ -1033,6 +1033,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Selection.
+        /// </summary>
+        public static string Selection {
+            get {
+                return ResourceManager.GetString("Selection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Target Folder.
         /// </summary>
         public static string SelectTargetFolder {
@@ -1056,6 +1065,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string Test {
             get {
                 return ResourceManager.GetString("Test", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select/Unselect all.
+        /// </summary>
+        public static string ToggleSelectAll {
+            get {
+                return ResourceManager.GetString("ToggleSelectAll", resourceCulture);
             }
         }
         
