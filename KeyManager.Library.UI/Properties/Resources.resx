@@ -219,6 +219,9 @@
   <data name="ImportKeyEntryCryptogram" xml:space="preserve">
     <value>Import the key entry cryptogram</value>
   </data>
+  <data name="ImportNow" xml:space="preserve">
+    <value>Import Now</value>
+  </data>
   <data name="KCV" xml:space="preserve">
     <value>KCV</value>
   </data>

@@ -13,13 +13,21 @@ namespace Leosac.KeyManager.Library.UI.Domain
             RunLinkCommand = new LeosacAppCommand(
                 parameter =>
                 {
+                    AllowImport = false;
                     RunLink();
                 });
+
+            RunLinkForImportCommand = new LeosacAppCommand(
+                parameter =>
+                {
+                    AllowImport = true;
+                    RunLink();
+                });
+
             _class = KeyEntryClass.Symmetric;
         }
 
         private Link? _link;
-
         public Link? Link
 
         {
@@ -28,7 +36,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
         }
 
         private KeyEntryClass _class;
-
         public KeyEntryClass Class
 
         {
@@ -37,7 +44,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
         }
 
         private string? _linkResult;
-
         public string? LinkResult
         {
             get => _linkResult;
@@ -45,7 +51,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
         }
 
         private string? _linkError;
-
         public string? LinkError
         {
             get => _linkError;
@@ -53,14 +58,23 @@ namespace Leosac.KeyManager.Library.UI.Domain
         }
 
         private string? _divInputResult;
-
         public string? DivInputResult
         {
             get => _divInputResult;
             set => SetProperty(ref _divInputResult, value);
         }
 
+        private bool _allowImport;
+
+        public bool AllowImport
+        {
+            get => _allowImport;
+            set => SetProperty(ref _allowImport, value);
+        }
+
         public LeosacAppCommand RunLinkCommand { get; }
+
+        public LeosacAppCommand RunLinkForImportCommand { get; }
 
         public abstract void RunLinkImpl(KeyStore.KeyStore ks);
 

@@ -16,6 +16,7 @@
     <UserControl.Resources>
         <s:Boolean x:Key="True">True</s:Boolean>
         <s:Boolean x:Key="False">False</s:Boolean>
+        <materialDesign:BooleanToVisibilityConverter x:Key="BoolToVisibleConverter" />
         <domain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
         <domain:KeyStoreFavoriteConverter x:Key="KeyStoreFavoriteConverter" />
     </UserControl.Resources>
@@ -23,16 +24,26 @@
         <materialDesign:DrawerHost.BottomDrawerContent>
             <StackPanel Orientation="Vertical">
                 <PasswordBox Margin="15"
-                             Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
-                             materialDesign:PasswordBoxAssist.Password="{Binding LinkResult}" />
+                             materialDesign:PasswordBoxAssist.Password="{Binding LinkResult}"
+                             IsEnabled="False"
+                             Visibility="{Binding AllowImport, Converter={StaticResource BoolToVisibleConverter}}" />
                 <WrapPanel Visibility="{Binding LinkError, Converter={StaticResource NullableToVisibilityConverter}}">
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="{x:Static properties:Resources.LinkError}" />
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding LinkError}" />
                 </WrapPanel>
                 <local:DivInputTestControl DivInput="{Binding Link.DivInput}" DivInputResult="{Binding DivInputResult}" />
                 <StackPanel Margin="15" HorizontalAlignment="Center" Orientation="Horizontal">
-                    <Button Margin="5" VerticalAlignment="Center" Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}" CommandParameter="{x:Static Dock.Bottom}" Content="IMPORT NOW" Style="{StaticResource MaterialDesignFlatLightButton}" IsEnabled="{Binding LinkResult, Converter={StaticResource NullToBooleanConverter}}" />
-                    <Button Margin="5" VerticalAlignment="Center" Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}" CommandParameter="{x:Static Dock.Bottom}" Content="CLOSE" Style="{StaticResource MaterialDesignFlatButton}" />
+                    <Button Margin="5" VerticalAlignment="Center"
+                            Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"
+                            CommandParameter="{x:Static Dock.Bottom}"
+                            Content="IMPORT NOW"
+                            Style="{StaticResource MaterialDesignFlatLightButton}" 
+                            Visibility="{Binding AllowImport, Converter={StaticResource BoolToVisibleConverter}}" IsEnabled="{Binding LinkResult, Converter={StaticResource NullToBooleanConverter}}" />
+                    <Button Margin="5" VerticalAlignment="Center"
+                            Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"
+                            CommandParameter="{x:Static Dock.Bottom}"
+                            Content="CLOSE"
+                            Style="{StaticResource MaterialDesignFlatButton}" />
                 </StackPanel>
             </StackPanel>
         </materialDesign:DrawerHost.BottomDrawerContent>
@@ -40,7 +51,22 @@
             <TextBlock DockPanel.Dock="Top" Text="{x:Static properties:Resources.KeyLink}" FontSize="18" Margin="5" />
             <TextBlock DockPanel.Dock="Top" Text="{x:Static properties:Resources.KeyLinkHelper}" Margin="5" />
             <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,20,5,5">
-                <Button Width="100" Content="{x:Static properties:Resources.Test}" Style="{StaticResource MaterialDesignRaisedLightButton}" CommandParameter="{x:Static Dock.Bottom}" Margin="5">
+                <materialDesign:Badged
+                    Badge="{materialDesign:PackIcon Kind=Alert}"
+                    BadgeColorZoneMode="SecondaryMid"
+                    Margin="6">
+                    <Button Width="120" Content="{x:Static properties:Resources.ImportNow}"
+                            Style="{StaticResource MaterialDesignOutlinedLightButton}"
+                            CommandParameter="{x:Static Dock.Bottom}">
+                        <Button.Command>
+                            <wpfappdomain:CommandGroup>
+                                <wpfappdomain:CommandReference Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}" />
+                                <wpfappdomain:CommandReference Command="{Binding RunLinkForImportCommand}"/>
+                            </wpfappdomain:CommandGroup>
+                        </Button.Command>
+                    </Button>
+                </materialDesign:Badged>
+                <Button Width="100" Content="{x:Static properties:Resources.Test}" Style="{StaticResource MaterialDesignRaisedLightButton}" CommandParameter="{x:Static Dock.Bottom}" Margin="6">
                     <Button.Command>
                         <wpfappdomain:CommandGroup>
                             <wpfappdomain:CommandReference Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}" />
@@ -48,7 +74,7 @@
                         </wpfappdomain:CommandGroup>
                     </Button.Command>
                 </Button>
-                <Button Width="100" IsDefault="True" Content="{x:Static properties:Resources.Close}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding Link}" Margin="5" />
+                <Button Width="100" IsDefault="True" Content="{x:Static properties:Resources.Close}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" CommandParameter="{Binding Link}" Margin="6" />
             </WrapPanel>
             <Grid>
                 <Grid.RowDefinitions>

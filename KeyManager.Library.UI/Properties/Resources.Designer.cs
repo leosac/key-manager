@@ -367,6 +367,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Import Now.
+        /// </summary>
+        public static string ImportNow {
+            get {
+                return ResourceManager.GetString("ImportNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to KCV.
         /// </summary>
         public static string KCV {
