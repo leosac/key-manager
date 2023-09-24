@@ -384,7 +384,11 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     {
                         infoav2.ExtSET |= (byte)samkey.SAMProperties.SAMKeyEntryType;
 
-                        Array.Copy(samkey.SAMProperties.DESFireAID, infoav2.desfireAid, 3);
+                        if (samkey.SAMProperties.DESFireAID != null && samkey.SAMProperties.DESFireAID.Length == 3)
+                        {
+                            // Array.Copy(samkey.SAMProperties.DESFireAID, infoav2.desfireAid, 3);
+                            infoav2.desfireAid = samkey.SAMProperties.DESFireAID;
+                        }
                         infoav2.desfirekeyno = samkey.SAMProperties.DESFireKeyNum;
 
                         infoav2.kuc = samkey.SAMProperties.KeyUsageCounter ?? 0xff;
