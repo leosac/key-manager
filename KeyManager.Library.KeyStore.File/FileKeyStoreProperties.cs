@@ -23,6 +23,8 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             set => SetProperty(ref _fullpath, value);
         }
 
+        public override int? SecretMaxLength => 32;
+
         public override bool Equals(object? obj)
         {
             return this.Equals(obj as FileKeyStoreProperties);

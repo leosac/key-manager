@@ -1,7 +1,7 @@
 ﻿using Leosac.KeyManager.Library.Plugin;
 using Newtonsoft.Json;
 
-namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI
+namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 {
     public class PKCSC11KeyStoreFactory : KeyStoreFactory
     {
