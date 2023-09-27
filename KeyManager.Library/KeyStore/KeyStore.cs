@@ -41,7 +41,7 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         public bool CreateIfMissing { get; set; } = false;
 
-        public bool CheckKeyEntryExists(KeyEntry keyEntry)
+        public Task<bool> CheckKeyEntryExists(KeyEntry keyEntry)
         {
             return CheckKeyEntryExists(keyEntry.Identifier, keyEntry.KClass);
         }
@@ -49,12 +49,12 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <summary>
         /// Open the key store.
         /// </summary>
-        public abstract void Open();
+        public abstract Task Open();
 
         /// <summary>
         /// Close the key store.
         /// </summary>
-        public abstract void Close();
+        public abstract Task Close();
 
         /// <summary>
         /// Check if a key entry exists.
@@ -62,20 +62,20 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="identifier">The key entry identifier</param>
         /// <param name="keClass">The key entry class</param>
         /// <returns></returns>
-        public abstract bool CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass);
+        public abstract Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass);
 
         /// <summary>
         /// Get all key entry identifiers.
         /// </summary>
         /// <param name="keClass">The key entry class (optional, null means all)</param>
         /// <returns>List of key entry identifiers</returns>
-        public abstract IList<KeyEntryId> GetAll(KeyEntryClass? keClass = null);
+        public abstract Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass = null);
 
         /// <summary>
         /// Create a new key entry.
         /// </summary>
         /// <param name="keyEntry">The key entry details</param>
-        public abstract void Create(IChangeKeyEntry keyEntry);
+        public abstract Task Create(IChangeKeyEntry keyEntry);
 
         /// <summary>
         /// Get a key entry.
@@ -83,14 +83,14 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="identifier">The key entry identifier</param>
         /// <param name="keClass">The key entry class</param>
         /// <returns>The key entry</returns>
-        public abstract KeyEntry? Get(KeyEntryId identifier, KeyEntryClass keClass);
+        public abstract Task<KeyEntry?> Get(KeyEntryId identifier, KeyEntryClass keClass);
 
         /// <summary>
         /// Update an existing key entry.
         /// </summary>
         /// <param name="keyEntry">The key entry details</param>
         /// <param name="ignoreIfMissing">Ignore if the targeted key entry is missing, throw otherwise.</param>
-        public abstract void Update(IChangeKeyEntry keyEntry, bool ignoreIfMissing = false);
+        public abstract Task Update(IChangeKeyEntry keyEntry, bool ignoreIfMissing = false);
 
         /// <summary>
         /// Delete an existing key entry.
@@ -98,29 +98,29 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="identifier">The key entry identifier</param>
         /// <param name="keClass">The key entry class</param>
         /// <param name="ignoreIfMissing">Ignore if the targeted key entry is missing, throw otherwise.</param>
-        public abstract void Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false);
+        public abstract Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false);
 
         /// <summary>
         /// Move up a key entry on the list, if reordering is supported.
         /// </summary>
         /// <param name="identifier">The key entry identifier</param>
         /// <param name="keClass">The key entry class</param>
-        public abstract void MoveUp(KeyEntryId identifier, KeyEntryClass keClass);
+        public abstract Task MoveUp(KeyEntryId identifier, KeyEntryClass keClass);
 
         /// <summary>
         /// Move down a key entry on the list, if reordering is supported.
         /// </summary>
         /// <param name="identifier">The key entry identifier</param>
         /// <param name="keClass">The key entry class</param>
-        public abstract void MoveDown(KeyEntryId identifier, KeyEntryClass keClass);
+        public abstract Task MoveDown(KeyEntryId identifier, KeyEntryClass keClass);
 
         /// <summary>
         /// Store a key entry change.
         /// </summary>
         /// <param name="change">The key entry details.</param>
-        public virtual void Store(IChangeKeyEntry change)
+        public virtual Task Store(IChangeKeyEntry change)
         {
-            Store(new List<IChangeKeyEntry>
+            return Store(new List<IChangeKeyEntry>
             {
                 change
             });
@@ -130,24 +130,24 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// Store a list of key entry changes.
         /// </summary>
         /// <param name="changes">The key entries details.</param>
-        public abstract void Store(IList<IChangeKeyEntry> changes);
+        public abstract Task Store(IList<IChangeKeyEntry> changes);
 
-        public virtual void Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
+        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
         {
             var classes = SupportedClasses;
             foreach (var keClass in classes)
             {
-                Publish(store, getFavoriteKeyStore, keClass, wrappingKeyId, wrappingContainerSelector, initCallback);
+                await Publish(store, getFavoriteKeyStore, keClass, wrappingKeyId, wrappingContainerSelector, initCallback);
             }
         }
 
-        public virtual void Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryClass keClass, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
+        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryClass keClass, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
         {
-            var ids = GetAll(keClass);
-            Publish(store, getFavoriteKeyStore, ids, keClass, wrappingKeyId, wrappingContainerSelector, initCallback);
+            var ids = await GetAll(keClass);
+            await Publish(store, getFavoriteKeyStore, ids, keClass, wrappingKeyId, wrappingContainerSelector, initCallback);
         }
 
-        public virtual void Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, IEnumerable<KeyEntryId> ids, KeyEntryClass keClass, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
+        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, IEnumerable<KeyEntryId> ids, KeyEntryClass keClass, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
         {
             var changes = new List<IChangeKeyEntry>();
             if (initCallback != null)
@@ -156,7 +156,7 @@ namespace Leosac.KeyManager.Library.KeyStore
             }
             foreach (var id in ids)
             {
-                var entry = Get(id, keClass);
+                var entry = await Get(id, keClass);
                 if (entry != null)
                 {
                     if (entry.Link != null && entry.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(entry.Link.KeyStoreFavorite))
@@ -170,14 +170,14 @@ namespace Leosac.KeyManager.Library.KeyStore
                         var ks = getFavoriteKeyStore(entry.Link.KeyStoreFavorite);
                         if (ks != null)
                         {
-                            ks.Open();
+                            await ks.Open();
                             var divContext = new DivInput.DivInputContext()
                             {
                                 KeyStore = ks,
                                 KeyEntry = entry
                             };
-                            cryptogram.Value = ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier, keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKeyId, entry.Link.WrappingKeySelector);
-                            ks.Close();
+                            cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier, keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKeyId, entry.Link.WrappingKeySelector);
+                            await ks.Close();
                         }
                     }
                     else
@@ -191,7 +191,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                                     var ks = getFavoriteKeyStore(kv.Key.Link.KeyStoreFavorite);
                                     if (ks != null)
                                     {
-                                        ks.Open();
+                                        await ks.Open();
                                         var divContext = new DivInput.DivInputContext()
                                         {
                                             KeyStore = ks,
@@ -199,7 +199,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                                             KeyContainer = kv
                                         };
                                         kv.Key.SetAggregatedValue(ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier, keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
-                                        ks.Close();
+                                        await ks.Close();
                                     }
                                 }
                             }
@@ -209,9 +209,9 @@ namespace Leosac.KeyManager.Library.KeyStore
                 }
             }
 
-            store.Open();
-            store.Store(changes);
-            store.Close();
+            await store.Open();
+            await store.Store(changes);
+            await store.Close();
         }
 
         private string? ComputeDivInput(DivInputContext divContext, IList<DivInputFragment> divInput)
@@ -245,10 +245,10 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="keClass">The key entry class</param>
         /// <param name="keyContainerSelector">The key container selector</param>
         /// <returns></returns>
-        public Key? GetKey(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? keyContainerSelector = null)
+        public async Task<Key?> GetKey(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? keyContainerSelector = null)
         {
             log.Info(String.Format("Getting key with Key Entry Identifier `{0}` and Container Selector `{1}`...", keyIdentifier, keyContainerSelector));
-            var keyEntry = Get(keyIdentifier, keClass);
+            var keyEntry = await Get(keyIdentifier, keClass);
             if (keyEntry != null)
             {
                 if (keyEntry.Variant != null)
@@ -290,7 +290,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="wrappingKeyId">The wrapping key identifier for cryptogram computation (optional)</param>
         /// <param name="wrappingContainerSelector">The wrapping key container selector for cryptogram computation (optional)</param>
         /// <returns>The change key entry cryptogram</returns>
-        public abstract string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null);
+        public abstract Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null);
 
         /// <summary>
         /// Resolve a key link.
@@ -300,7 +300,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="containerSelector">The key container selector (optional)</param>
         /// <param name="divInput">The key div input (optional)</param>
         /// <returns>The key value</returns>
-        public abstract string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null);
+        public abstract Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null);
 
         public event EventHandler<KeyEntry>? KeyEntryRetrieved;
 

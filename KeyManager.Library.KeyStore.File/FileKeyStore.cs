@@ -49,7 +49,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             get => new KeyEntryClass[] { KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric };
         }
 
-        public override void Open()
+        public override Task Open()
         {
             log.Info(String.Format("Opening the key store `{0}`...", GetFileProperties().Fullpath));
             if (!System.IO.Directory.Exists(GetFileProperties().Fullpath))
@@ -63,12 +63,14 @@ namespace Leosac.KeyManager.Library.KeyStore.File
                 }
             }
             log.Info("Key store opened.");
+            return Task.CompletedTask;
         }
 
-        public override void Close()
+        public override Task Close()
         {
             log.Info(String.Format("Closing the key store `{0}`...", GetFileProperties().Fullpath));
             log.Info("Key Store closed.");
+            return Task.CompletedTask;
         }
 
         protected string GetKeyEntryFile(KeyEntryId identifier, KeyEntryClass keClass)
@@ -76,15 +78,15 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             return System.IO.Path.Combine(GetFileProperties().Fullpath, identifier.Id + "." + keClass + LeosacKeyFileExtension);
         }
 
-        public override bool CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
+        public override Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
         {
-            return System.IO.File.Exists(GetKeyEntryFile(identifier, keClass));
+            return Task.FromResult(System.IO.File.Exists(GetKeyEntryFile(identifier, keClass)));
         }
 
-        public override void Create(IChangeKeyEntry change)
+        public override async Task Create(IChangeKeyEntry change)
         {
             log.Info(String.Format("Creating key entry `{0}`...", change.Identifier));
-            if (CheckKeyEntryExists(change.Identifier, change.KClass))
+            if (await CheckKeyEntryExists(change.Identifier, change.KClass))
             {
                 log.Error(String.Format("A key entry with the same identifier `{0}` already exists.", change.Identifier));
                 throw new KeyStoreException("A key entry with the same identifier already exists.");
@@ -98,7 +100,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
                 {
                     aes.Key = GetWrappingKey();
                     var data = aes.EncryptCbc(Encoding.UTF8.GetBytes(serialized), new byte[16], System.Security.Cryptography.PaddingMode.PKCS7);
-                    System.IO.File.WriteAllBytes(kefile, data);
+                    await System.IO.File.WriteAllBytesAsync(kefile, data);
                 }
             }
             else if (change is KeyEntryCryptogram cryptogram)
@@ -111,10 +113,10 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             log.Info(String.Format("Key entry `{0}` created.", change.Identifier));
         }
 
-        public override void Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
+        public override async Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
         {
             log.Info(String.Format("Deleting key entry `{0}`...", identifier));
-            var exists = CheckKeyEntryExists(identifier, keClass);
+            var exists = await CheckKeyEntryExists(identifier, keClass);
             if (!exists && !ignoreIfMissing)
             {
                 log.Error(String.Format("The key entry `{0}` doesn't exist.", identifier));
@@ -128,16 +130,16 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             }
         }
 
-        public override KeyEntry? Get(KeyEntryId identifier, KeyEntryClass keClass)
+        public override async Task<KeyEntry?> Get(KeyEntryId identifier, KeyEntryClass keClass)
         {
             log.Info(String.Format("Getting key entry `{0}`...", identifier));
-            if (!CheckKeyEntryExists(identifier, keClass))
+            if (!await CheckKeyEntryExists(identifier, keClass))
             {
                 log.Error(String.Format("The key entry `{0}` doesn't exist.", identifier));
                 throw new KeyStoreException("The key entry doesn't exist.");
             }
 
-            var encdata = System.IO.File.ReadAllBytes(GetKeyEntryFile(identifier, keClass));
+            var encdata = await System.IO.File.ReadAllBytesAsync(GetKeyEntryFile(identifier, keClass));
             using (var aes = System.Security.Cryptography.Aes.Create())
             {
                 aes.Key = GetWrappingKey();
@@ -169,10 +171,10 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             return key;
         }
 
-        public override IList<KeyEntryId> GetAll(KeyEntryClass? keClass = null)
+        public override Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass = null)
         {
             log.Info(String.Format("Getting all key entries (class: `{0}`)...", keClass));
-            var keyEntries = new List<KeyEntryId>();
+            IList<KeyEntryId> keyEntries = new List<KeyEntryId>();
             var filter = "*";
             if (keClass != null)
             {
@@ -186,50 +188,50 @@ namespace Leosac.KeyManager.Library.KeyStore.File
                 keyEntries.Add(new KeyEntryId { Id = identifier });
             }
             log.Info(String.Format("{0} key entries returned.", keyEntries.Count));
-            return keyEntries;
+            return Task.FromResult(keyEntries);
         }
 
-        public override void MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
+        public override Task MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
         {
             throw new NotImplementedException();
         }
 
-        public override void MoveUp(KeyEntryId identifier, KeyEntryClass keClass)
+        public override Task MoveUp(KeyEntryId identifier, KeyEntryClass keClass)
         {
             throw new NotImplementedException();
         }
 
-        public override void Store(IList<IChangeKeyEntry> changes)
+        public override async Task Store(IList<IChangeKeyEntry> changes)
         {
             log.Info(String.Format("Storing `{0}` key entries...", changes.Count));
             foreach (var change in changes)
             {
-                Update(change, true);
+                await Update(change, true);
             }
             log.Info("Key Entries storing completed.");
         }
 
-        public override void Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
+        public override async Task Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
         {
             log.Info(String.Format("Updating key entry `{0}`...", change.Identifier));
-            Delete(change.Identifier, change.KClass, ignoreIfMissing);
-            Create(change);
+            await Delete(change.Identifier, change.KClass, ignoreIfMissing);
+            await Create(change);
             OnKeyEntryUpdated(change);
             log.Info(String.Format("Key entry `{0}` updated.", change.Identifier));
         }
 
-        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingKeyContainerSelector = null)
+        public override async Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingKeyContainerSelector = null)
         {
             string? result = null;
             log.Info(String.Format("Resolving key entry link with Key Entry Identifier `{0}`, Div Input `{1}`...", keyIdentifier, divInput));
 
-            var keyEntry = Get(keyIdentifier, keClass);
+            var keyEntry = await Get(keyIdentifier, keClass);
             if (keyEntry != null)
             {
                 log.Info("Key entry link resolved.");
                 if (wrappingKeyId != null)
                 {
-                    var wrappingKey = GetKey(wrappingKeyId, KeyEntryClass.Symmetric, wrappingKeyContainerSelector);
+                    var wrappingKey = await GetKey(wrappingKeyId, KeyEntryClass.Symmetric, wrappingKeyContainerSelector);
                     if (wrappingKey != null)
                     {
                         // TODO: do something here to encipher the key value?
@@ -255,18 +257,18 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             return result;
         }
 
-        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput = null)
+        public override async Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput = null)
         {
             string? result = null;
             log.Info(String.Format("Resolving key link with Key Entry Identifier `{0}`, Container Selector `{1}`, Div Input `{2}`...", keyIdentifier, containerSelector, divInput));
 
-            if (!CheckKeyEntryExists(keyIdentifier, keClass))
+            if (!await CheckKeyEntryExists(keyIdentifier, keClass))
             {
                 log.Error(String.Format("The key entry `{0}` do not exists.", keyIdentifier));
                 throw new KeyStoreException("The key entry do not exists.");
             }
 
-            var key = GetKey(keyIdentifier, keClass, containerSelector);
+            var key = await GetKey(keyIdentifier, keClass, containerSelector);
             if (key != null)
             {
                 log.Info("Key link resolved.");

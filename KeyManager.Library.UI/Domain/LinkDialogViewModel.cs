@@ -10,18 +10,18 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public LinkDialogViewModel()
         {
-            RunLinkCommand = new LeosacAppCommand(
+            RunLinkCommand = new LeosacAppAsyncCommand<object>(
                 parameter =>
                 {
                     AllowImport = false;
-                    RunLink();
+                    return RunLink();
                 });
 
-            RunLinkForImportCommand = new LeosacAppCommand(
+            RunLinkForImportCommand = new LeosacAppAsyncCommand<object>(
                 parameter =>
                 {
                     AllowImport = true;
-                    RunLink();
+                    return RunLink();
                 });
 
             _class = KeyEntryClass.Symmetric;
@@ -72,13 +72,13 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _allowImport, value);
         }
 
-        public LeosacAppCommand RunLinkCommand { get; }
+        public LeosacAppAsyncCommand<object> RunLinkCommand { get; }
 
-        public LeosacAppCommand RunLinkForImportCommand { get; }
+        public LeosacAppAsyncCommand<object> RunLinkForImportCommand { get; }
 
-        public abstract void RunLinkImpl(KeyStore.KeyStore ks);
+        public abstract Task RunLinkImpl(KeyStore.KeyStore ks);
 
-        public void RunLink()
+        public async Task RunLink()
         {
             log.Info(String.Format("Running the link manually..."));
             LinkError = null;
@@ -92,9 +92,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     {
                         try
                         {
-                            ks.Open();
-                            RunLinkImpl(ks);
-                            ks.Close();
+                            await ks.Open();
+                            await RunLinkImpl(ks);
+                            await ks.Close();
 
                             log.Info(String.Format("Link execution completed."));
                         }

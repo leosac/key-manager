@@ -30,18 +30,17 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 CreateKeyEntry(dialog);
             });
 
-            EditKeyEntryCommand = new LeosacAppCommand(
-                parameter =>
+            EditKeyEntryCommand = new LeosacAppAsyncCommand<SelectableKeyEntryId>(
+                async identifier =>
             {
-                var identifier = parameter as SelectableKeyEntryId;
                 try
                 {
-                    if (identifier != null)
+                    if (KeyStore != null && identifier != null)
                     {
                         var model = new KeyEntryDialogViewModel()
                         {
                             KClass = _keClass,
-                            KeyEntry = KeyStore?.Get(identifier.KeyEntryId, _keClass),
+                            KeyEntry = await KeyStore.Get(identifier.KeyEntryId, _keClass),
                             CanChangeFactory = false
                         };
                         var factory = KeyEntryUIFactory.GetFactoryFromPropertyType(model.KeyEntry!.Properties?.GetType());
@@ -68,7 +67,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                             DataContext = model
                         };
 
-                        UpdateKeyEntry(dialog);
+                        await UpdateKeyEntry(dialog);
                     }
                 }
                 catch (KeyStoreException ex)
@@ -81,61 +80,57 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             });
 
-            MoveUpKeyEntryCommand = new LeosacAppCommand(
-                parameter =>
+            MoveUpKeyEntryCommand = new LeosacAppAsyncCommand<SelectableKeyEntryId>(
+                async keyEntryId =>
             {
-                var keyEntryIdentifier = parameter as SelectableKeyEntryId;
-                if (keyEntryIdentifier != null)
+                if (keyEntryId != null)
                 {
-                    MoveUpKeyEntry(keyEntryIdentifier);
+                    await MoveUpKeyEntry(keyEntryId);
                 }
             });
 
-            MoveDownKeyEntryCommand = new LeosacAppCommand(
-                parameter =>
+            MoveDownKeyEntryCommand = new LeosacAppAsyncCommand<SelectableKeyEntryId>(
+                async keyEntryId =>
             {
-                var keyEntryIdentifier = parameter as SelectableKeyEntryId;
-                if (keyEntryIdentifier != null)
+                if (keyEntryId != null)
                 {
-                    MoveDownKeyEntry(keyEntryIdentifier);
+                    await MoveDownKeyEntry(keyEntryId);
                 }
             });
 
-            DeleteKeyEntryCommand = new LeosacAppCommand(
-                parameter =>
+            DeleteKeyEntryCommand = new LeosacAppAsyncCommand<SelectableKeyEntryId>(
+                async keyEntryId =>
             {
-                var keyEntryIdentifier = parameter as SelectableKeyEntryId;
-                if (keyEntryIdentifier != null)
+                if (keyEntryId != null)
                 {
-                    DeleteKeyEntry(keyEntryIdentifier);
+                    await DeleteKeyEntry(keyEntryId);
                 }
             });
 
-            ImportCryptogramCommand = new LeosacAppCommand(
-                parameter =>
+            ImportCryptogramCommand = new LeosacAppAsyncCommand<SelectableKeyEntryId>(
+                async keyEntryId =>
             {
-                var keyEntryId = parameter as KeyEntryId;
                 var model = new ImportCryptogramDialogViewModel()
                 {
-                    CanChangeIdentifier = keyEntryId == null || !keyEntryId.IsConfigured()
+                    CanChangeIdentifier = keyEntryId == null || !keyEntryId.KeyEntryId.IsConfigured()
                 };
                 if (keyEntryId != null)
                 {
-                    model.Cryptogram.Identifier = keyEntryId;
+                    model.Cryptogram.Identifier = keyEntryId.KeyEntryId;
                 }
                 var dialog = new ImportCryptogramDialog()
                 {
                     DataContext = model,
                 };
-                ImportCryptogram(dialog);
+                await ImportCryptogram(dialog);
             });
 
-            WizardCommand = new LeosacAppCommand(
-                parameter =>
+            WizardCommand = new LeosacAppAsyncCommand<WizardFactory>(
+                async factory =>
             {
-                if (parameter is WizardFactory factory) 
+                if (factory != null)
                 {
-                    RunWizard(factory);
+                    await RunWizard(factory);
                 }
             });
 
@@ -210,11 +205,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
             var ret = await DialogHelper.ForceShow(dialog, "RootDialog");
             if (ret != null && dialog.DataContext is KeyEntryDialogViewModel model)
             {
-                if (model.KeyEntry != null)
+                if (KeyStore != null && model.KeyEntry != null)
                 {
                     try
                     {
-                        KeyStore?.Create(model.KeyEntry);
+                        await KeyStore.Create(model.KeyEntry);
                         Identifiers.Add(new SelectableKeyEntryId() {
                             Selected = false,
                             KeyEntryId = model.KeyEntry.Identifier
@@ -235,41 +230,44 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public LeosacAppCommand EditKeyEntryCommand { get; }
+        public LeosacAppAsyncCommand<SelectableKeyEntryId> EditKeyEntryCommand { get; }
 
-        private async void UpdateKeyEntry(KeyEntryDialog dialog)
+        private async Task UpdateKeyEntry(KeyEntryDialog dialog)
         {
             try
             {
                 object? ret = await DialogHelper.ForceShow(dialog, "RootDialog");
                 if (ret != null && dialog.DataContext is KeyEntryDialogViewModel model)
                 {
-                    if (model.KeyEntry != null)
+                    if (KeyStore != null && model.KeyEntry != null)
                     {
-                        KeyStore?.Update(model.KeyEntry);
+                        await KeyStore.Update(model.KeyEntry);
                     }
                 }
             }
             catch (KeyStoreException ex)
             {
                 SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
-                UpdateKeyEntry(dialog);
+                await UpdateKeyEntry(dialog);
             }
             catch (Exception ex)
             {
                 log.Error("Updating the Key Entry failed unexpected.", ex);
                 SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
-                UpdateKeyEntry(dialog);
+                await UpdateKeyEntry(dialog);
             }
         }
 
-        public LeosacAppCommand DeleteKeyEntryCommand { get; }
+        public LeosacAppAsyncCommand<SelectableKeyEntryId> DeleteKeyEntryCommand { get; }
 
-        private void DeleteKeyEntry(SelectableKeyEntryId identifier)
+        private async Task DeleteKeyEntry(SelectableKeyEntryId identifier)
         {
             try
             {
-                KeyStore?.Delete(identifier.KeyEntryId, _keClass);
+                if (KeyStore != null)
+                {
+                    await KeyStore.Delete(identifier.KeyEntryId, _keClass);
+                }
                 Identifiers.Remove(identifier);
             }
             catch (KeyStoreException ex)
@@ -283,13 +281,16 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public LeosacAppCommand MoveUpKeyEntryCommand { get; }
+        public LeosacAppAsyncCommand<SelectableKeyEntryId> MoveUpKeyEntryCommand { get; }
 
-        private void MoveUpKeyEntry(SelectableKeyEntryId identifier)
+        private async Task MoveUpKeyEntry(SelectableKeyEntryId identifier)
         {
             try
             {
-                KeyStore?.MoveUp(identifier.KeyEntryId, _keClass);
+                if (KeyStore != null)
+                {
+                    await KeyStore.MoveUp(identifier.KeyEntryId, _keClass);
+                }
                 var oldIndex = Identifiers.IndexOf(identifier);
                 if (oldIndex > 0)
                 {
@@ -307,13 +308,16 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public LeosacAppCommand MoveDownKeyEntryCommand { get; }
+        public LeosacAppAsyncCommand<SelectableKeyEntryId> MoveDownKeyEntryCommand { get; }
 
-        private void MoveDownKeyEntry(SelectableKeyEntryId identifier)
+        private async Task MoveDownKeyEntry(SelectableKeyEntryId identifier)
         {
             try
             {
-                KeyStore?.MoveDown(identifier.KeyEntryId, _keClass);
+                if (KeyStore != null)
+                {
+                    await KeyStore.MoveDown(identifier.KeyEntryId, _keClass);
+                }
                 var oldIndex = Identifiers.IndexOf(identifier);
                 if (oldIndex != -1 && oldIndex < Identifiers.Count - 1)
                 {
@@ -331,37 +335,37 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public LeosacAppCommand ImportCryptogramCommand { get; }
+        public LeosacAppAsyncCommand<SelectableKeyEntryId> ImportCryptogramCommand { get; }
 
-        private async void ImportCryptogram(ImportCryptogramDialog dialog)
+        private async Task ImportCryptogram(ImportCryptogramDialog dialog)
         {
             try
             {
                 object? ret = await DialogHelper.ForceShow(dialog, "RootDialog");
                 if (ret != null && dialog.DataContext is ImportCryptogramDialogViewModel model)
                 {
-                    if (!string.IsNullOrEmpty(model.Cryptogram.Value))
+                    if (KeyStore != null && !string.IsNullOrEmpty(model.Cryptogram.Value))
                     {
-                        KeyStore?.Update(model.Cryptogram);
+                        await KeyStore.Update(model.Cryptogram);
                     }
                 }
             }
             catch (KeyStoreException ex)
             {
                 SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
-                ImportCryptogram(dialog);
+                await ImportCryptogram(dialog);
             }
             catch (Exception ex)
             {
                 log.Error("Importing the Key Entry Cryptogram failed unexpected.", ex);
                 SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
-                ImportCryptogram(dialog);
+                await ImportCryptogram(dialog);
             }
         }
 
-        public LeosacAppCommand WizardCommand { get; }
+        public LeosacAppAsyncCommand<WizardFactory> WizardCommand { get; }
 
-        private void RunWizard(WizardFactory factory)
+        private async Task RunWizard(WizardFactory factory)
         {
             var w = factory.CreateWizardWindow();
             if (w.ShowDialog() == true)
@@ -373,9 +377,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     {
                         foreach (var entry in entries)
                         {
-                            KeyStore.Update(entry, true);
+                            await KeyStore.Update(entry, true);
                         }
-                        RefreshKeyEntries();
+                        await RefreshKeyEntries();
                         SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "Wizard completed, key entries updated.");
                     }
                 }
@@ -399,12 +403,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public void RefreshKeyEntries()
+        public async Task RefreshKeyEntries()
         {
             Identifiers.Clear();
             if (KeyStore != null)
             {
-                foreach (var id in KeyStore.GetAll(_keClass))
+                foreach (var id in await KeyStore.GetAll(_keClass))
                 {
                     Identifiers.Add(new SelectableKeyEntryId() {
                         Selected = false,

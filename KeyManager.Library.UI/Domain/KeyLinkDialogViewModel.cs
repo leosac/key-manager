@@ -19,11 +19,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
             get => Link as KeyLink;
         }
 
-        public override void RunLinkImpl(KeyStore.KeyStore ks)
+        public override async Task RunLinkImpl(KeyStore.KeyStore ks)
         {
             if (KeyLink != null)
             {
-                LinkResult = ks.ResolveKeyLink(KeyLink.KeyIdentifier, Class, KeyLink.ContainerSelector, DivInputResult);
+                LinkResult = await ks.ResolveKeyLink(KeyLink.KeyIdentifier, Class, KeyLink.ContainerSelector, DivInputResult);
             }
         }
     }

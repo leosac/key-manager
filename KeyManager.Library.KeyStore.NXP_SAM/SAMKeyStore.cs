@@ -43,7 +43,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             get => new KeyEntryClass[] { KeyEntryClass.Symmetric };
         }
 
-        public override void Open()
+        public override Task Open()
         {
             log.Info("Opening the key store...");
             var lla = LibLogicalAccess.LibraryManager.getInstance();
@@ -125,9 +125,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 throw new KeyStoreException("No SAM has been detected on the reader.");
             }
             log.Info("Key Store opened.");
+            return Task.CompletedTask;
         }
 
-        public override void Close()
+        public override Task Close()
         {
             log.Info("Closing the key store...");
             if (ReaderUnit != null)
@@ -152,21 +153,22 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
             _unlocked = false;
             log.Info("Key Store closed.");
+            return Task.CompletedTask;
         }
 
-        public override bool CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
+        public override Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
         {
             if (identifier.Id == null)
-                return false;
+                return Task.FromResult(false);
 
             uint entry;
             if (uint.TryParse(identifier.Id, out entry))
             {
                 if (keClass == KeyEntryClass.Symmetric)
-                    return (entry < SAM_AV2_MAX_SYMMETRIC_ENTRIES);
+                    return Task.FromResult(entry < SAM_AV2_MAX_SYMMETRIC_ENTRIES);
             }
 
-            return false;
+            return Task.FromResult(false);
         }
 
         public bool CheckKeyUsageCounterExists(byte identifier)
@@ -174,38 +176,38 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             return (identifier < SAM_AV2_MAX_USAGE_COUNTERS);
         }
 
-        public override void Create(IChangeKeyEntry change)
+        public override Task Create(IChangeKeyEntry change)
         {
             log.Info(String.Format("Creating key entry `{0}`...", change.Identifier));
             log.Error("A SAM key entry cannot be created, only updated.");
             throw new KeyStoreException("A SAM key entry cannot be created, only updated.");
         }
 
-        public override void Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
+        public override Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
         {
             log.Info(String.Format("Deleting key entry `{0}`...", identifier));
             log.Error("A SAM key entry cannot be deleted, only updated.");
             throw new KeyStoreException("A SAM key entry cannot be deleted, only updated.");
         }
 
-        public override void MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
+        public override Task MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
         {
             log.Info(String.Format("Moving Down key entry `{0}`...", identifier));
             log.Error("A SAM key entry cannot be reordered.");
             throw new KeyStoreException("A SAM key entry cannot be reordered.");
         }
 
-        public override void MoveUp(KeyEntryId identifier, KeyEntryClass keClass)
+        public override Task MoveUp(KeyEntryId identifier, KeyEntryClass keClass)
         {
             log.Info(String.Format("Moving Up key entry `{0}`...", identifier));
             log.Error("A SAM key entry cannot be reordered.");
             throw new KeyStoreException("A SAM key entry cannot be reordered.");
         }
 
-        public override KeyEntry? Get(KeyEntryId identifier, KeyEntryClass keClass)
+        public override async Task<KeyEntry?> Get(KeyEntryId identifier, KeyEntryClass keClass)
         {
             log.Info(String.Format("Getting key entry `{0}`...", identifier));
-            if (!CheckKeyEntryExists(identifier, keClass))
+            if (!await CheckKeyEntryExists(identifier, keClass))
             {
                 log.Error(String.Format("The key entry `{0}` do not exists.", identifier));
                 throw new KeyStoreException("The key entry do not exists.");
@@ -308,10 +310,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             return keyEntry;
         }
 
-        public override IList<KeyEntryId> GetAll(KeyEntryClass? keClass = null)
+        public override Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass = null)
         {
             log.Info(String.Format("Getting all key entries (class: `{0}`)...", keClass));
-            var entries = new List<KeyEntryId>();
+            IList<KeyEntryId> entries = new List<KeyEntryId>();
             if (keClass == null || keClass == KeyEntryClass.Symmetric)
             {
                 for (uint i = 0; i < SAM_AV2_MAX_SYMMETRIC_ENTRIES; ++i)
@@ -320,10 +322,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 }
             }
             log.Info(String.Format("{0} key entries returned.", entries.Count));
-            return entries;
+            return Task.FromResult(entries);
         }
 
-        public override void Store(IList<IChangeKeyEntry> changes)
+        public override async Task Store(IList<IChangeKeyEntry> changes)
         {
             log.Info(String.Format("Storing `{0}` key entries...", changes.Count));
 
@@ -332,7 +334,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             {
                 if (GetSAMProperties().AutoSwitchToAV2)
                 {
-                    SwitchSAMToAV2(av1cmd);
+                    await SwitchSAMToAV2(av1cmd);
                     cmd = Chip?.getCommands();
                     if (cmd is SAMAV1ISO7816Commands)
                     {
@@ -349,13 +351,13 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
             foreach (var change in changes)
             {
-                Update(change);
+                await Update(change);
             }
 
             log.Info("Key Entries storing completed.");
         }
 
-        public override void Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
+        public override Task Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
         {
             log.Info(String.Format("Updating key entry `{0}`...", change.Identifier));
 
@@ -473,13 +475,14 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
             OnKeyEntryUpdated(change);
             log.Info(String.Format("Key entry `{0}` updated.", change.Identifier));
+            return Task.CompletedTask;
         }
 
-        public void SwitchSAMToAV2(SAMAV1ISO7816Commands av1cmd)
+        public async Task SwitchSAMToAV2(SAMAV1ISO7816Commands av1cmd)
         {
             SwitchSAMToAV2(av1cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyType, GetSAMProperties().AuthenticateKeyVersion, Properties?.Secret);
-            Close();
-            Open();
+            await Close();
+            await Open();
         }
 
         public static void SwitchSAMToAV2(SAMAV1ISO7816Commands av1cmd, byte keyno, DESFireKeyType keyType, byte keyVersion, string? keyValue)
@@ -653,13 +656,13 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             log.Info(String.Format("Key usage counter `{0}` updated.", counter.Identifier));
         }
 
-        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null)
+        public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null)
         {
             // Will be supported with SAM AV3
             throw new NotSupportedException();
         }
 
-        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null)
+        public override async Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null)
         {
             byte[] div;
             log.Info(String.Format("Resolving key link with Key Entry Identifier `{0}`, Key Version `{1}`, Div Input `{2}`...", keyIdentifier, containerSelector, divInput));
@@ -668,7 +671,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             else
                 div = new byte[0];
 
-            if (!CheckKeyEntryExists(keyIdentifier, keClass))
+            if (!await CheckKeyEntryExists(keyIdentifier, keClass))
             {
                 log.Error(String.Format("The key entry `{0}` doesn't exist.", keyIdentifier));
                 throw new KeyStoreException("The key entry doesn't exist.");

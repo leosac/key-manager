@@ -41,8 +41,8 @@ namespace Leosac.KeyManager
                 {
                     model.SelectedIndex = 1;
                 });
-            var KeyStoreCommand = new LeosacAppCommand(
-                parameter =>
+            var KeyStoreCommand = new LeosacAppAsyncCommand<object>(
+                async parameter =>
                 {
                     if (parameter != null)
                     {
@@ -74,7 +74,7 @@ namespace Leosac.KeyManager
                                         editModel.CloseKeyStore(false);
                                         editModel.KeyStore = ks;
                                         editModel.Favorite = fav;
-                                        editModel.OpenKeyStore();
+                                        await editModel.OpenKeyStore();
 
                                         var additionalControls = factory.CreateKeyStoreAdditionalControls();
                                         foreach (var addition in additionalControls)

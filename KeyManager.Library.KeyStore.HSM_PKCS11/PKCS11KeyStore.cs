@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,18 +38,18 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             get => new KeyEntryClass[] { KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric };
         }
 
-        public override bool CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
+        public override Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
         {
             IObjectHandle? handle;
             return CheckKeyEntryExists(identifier, keClass, out handle);
         }
 
-        public bool CheckKeyEntryExists(KeyEntryId identifier, out IObjectHandle? handle)
+        public Task<bool> CheckKeyEntryExists(KeyEntryId identifier, out IObjectHandle? handle)
         {
             return CheckKeyEntryExists(identifier, null, out handle);
         }
 
-        public bool CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass? keClass, out IObjectHandle? handle)
+        public Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass? keClass, out IObjectHandle? handle)
         {
             if (_session == null)
                 throw new KeyStoreException("No valid session.");
@@ -56,7 +57,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             if (identifier.Handle != null && identifier.Handle is IObjectHandle h)
             {
                 handle = h;
-                return true;
+                return Task.FromResult(true);
             }
 
             var attributes = new List<IObjectAttribute>();
@@ -93,10 +94,10 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 
             var allObjects = objects.Union(_session.FindAllObjects(attributes));
             handle = allObjects.FirstOrDefault();
-            return (handle != null);
+            return Task.FromResult(handle != null);
         }
 
-        public override void Close()
+        public override Task Close()
         {
             log.Info("Closing the key store...");
             if (_session != null)
@@ -114,10 +115,10 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                 _library = null;
             }
             log.Info("Key Store closed.");
+            return Task.CompletedTask;
         }
 
-        public override void 
-            Create(IChangeKeyEntry change)
+        public override async Task Create(IChangeKeyEntry change)
         {
             log.Info(String.Format("Creating key entry `{0}`...", change.Identifier));
 
@@ -149,7 +150,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                 }
 
                 IObjectHandle? wrapHandle;
-                if (!CheckKeyEntryExists(cryptogram.WrappingKeyId, out wrapHandle))
+                if (!await CheckKeyEntryExists(cryptogram.WrappingKeyId, out wrapHandle))
                 {
                     log.Error(String.Format("The key entry `{0}` doesn't exist.", cryptogram.WrappingKeyId));
                     throw new KeyStoreException("The key entry doesn't exist.");
@@ -215,11 +216,11 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return attributes;
         }
 
-        public override void Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
+        public override async Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
         {
             log.Info(String.Format("Deleting key entry `{0}`...", identifier));
             IObjectHandle? handle;
-            var exists = CheckKeyEntryExists(identifier, keClass, out handle);
+            var exists = await CheckKeyEntryExists(identifier, keClass, out handle);
             if (!exists && !ignoreIfMissing)
             {
                 log.Error(String.Format("The key entry `{0}` doesn't exist.", identifier));
@@ -233,11 +234,11 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             }
         }
 
-        public override KeyEntry? Get(KeyEntryId identifier, KeyEntryClass keClass)
+        public override async Task<KeyEntry?> Get(KeyEntryId identifier, KeyEntryClass keClass)
         {
             log.Info(String.Format("Getting key entry `{0}`...", identifier));
             IObjectHandle? handle;
-            if (!CheckKeyEntryExists(identifier, keClass, out handle))
+            if (!await CheckKeyEntryExists(identifier, keClass, out handle))
             {
                 log.Error(String.Format("The key entry `{0}` doesn't exist.", identifier));
                 throw new KeyStoreException("The key entry doesn't exist.");
@@ -297,10 +298,10 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return keyEntry;
         }
 
-        public override IList<KeyEntryId> GetAll(KeyEntryClass? keClass = null)
+        public override Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass = null)
         {
             log.Info(String.Format("Getting all key entries (class: `{0}`)...", keClass));
-            var entries = new List<KeyEntryId>();
+            IList<KeyEntryId> entries = new List<KeyEntryId>();
 
             if (_session == null)
                 throw new KeyStoreException("No valid session.");
@@ -360,7 +361,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             }
 
             log.Info(String.Format("{0} key entries returned.", entries.Count));
-            return entries;
+            return Task.FromResult(entries);
         }
 
         public PKCS11KeyStoreProperties GetPKCS11Properties()
@@ -371,17 +372,17 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return p;
         }
 
-        public override void MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
+        public override Task MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
         {
             throw new NotImplementedException();
         }
 
-        public override void MoveUp(KeyEntryId identifier, KeyEntryClass keClass)
+        public override Task MoveUp(KeyEntryId identifier, KeyEntryClass keClass)
         {
             throw new NotImplementedException();
         }
 
-        public override void Open()
+        public override Task Open()
         {
             log.Info("Opening the key store...");
             var factories = new Pkcs11InteropFactories();
@@ -438,9 +439,10 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             _session.Login(GetPKCS11Properties().User, GetPKCS11Properties().GetUserPINBytes());
 
             log.Info("Key Store opened.");
+            return Task.CompletedTask;
         }
 
-        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null)
+        public override async Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null)
         {
             log.Info(String.Format("Resolving key entry link with Key Entry Identifier `{0}` and Wrapping Key Entry Identifier...", keyIdentifier, wrappingKeyId));
             if (wrappingKeyId == null)
@@ -455,13 +457,13 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             }
 
             IObjectHandle? handle;
-            if (!CheckKeyEntryExists(keyIdentifier, keClass, out handle))
+            if (!await CheckKeyEntryExists(keyIdentifier, keClass, out handle))
             {
                 log.Error(String.Format("The key entry `{0}` doesn't exist.", keyIdentifier));
                 throw new KeyStoreException("The key entry doesn't exist.");
             }
             IObjectHandle? wrapHandle;
-            if (!CheckKeyEntryExists(wrappingKeyId, out wrapHandle))
+            if (!await CheckKeyEntryExists(wrappingKeyId, out wrapHandle))
             {
                 log.Error(String.Format("The key entry `{0}` doesn't exist.", wrappingKeyId));
                 throw new KeyStoreException("The key entry doesn't exist.");
@@ -511,7 +513,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return _session.Factories.MechanismFactory.Create(ckm);
         }
 
-        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null)
+        public override async Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null)
         {
             log.Info(String.Format("Resolving key link with Key Entry Identifier `{0}`...", keyIdentifier));
             if (!string.IsNullOrEmpty(divInput))
@@ -521,7 +523,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             }
 
             IObjectHandle? handle;
-            if (!CheckKeyEntryExists(keyIdentifier, keClass, out handle))
+            if (!await CheckKeyEntryExists(keyIdentifier, keClass, out handle))
             {
                 log.Error(String.Format("The key entry `{0}` doesn't exist.", keyIdentifier));
                 throw new KeyStoreException("The key entry doesn't exist.");
@@ -535,31 +537,31 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return Convert.ToHexString(attributes[0].GetValueAsByteArray());
         }
 
-        public override void Store(IList<IChangeKeyEntry> changes)
+        public override async Task Store(IList<IChangeKeyEntry> changes)
         {
             log.Info(String.Format("Storing `{0}` key entries...", changes.Count));
 
             foreach (var change in changes)
             {
-                if (CheckKeyEntryExists(change.Identifier, change.KClass))
+                if (await CheckKeyEntryExists(change.Identifier, change.KClass))
                 {
-                    Update(change);
+                    await Update(change);
                 }
                 else
                 {
-                    Create(change);
+                    await Create(change);
                 }
             }
 
             log.Info("Key Entries storing completed.");
         }
 
-        public override void Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
+        public override async Task Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
         {
             log.Info(String.Format("Updating key entry `{0}`...", change.Identifier));
 
             IObjectHandle? handle;
-            if (!CheckKeyEntryExists(change.Identifier, change.KClass, out handle))
+            if (!await CheckKeyEntryExists(change.Identifier, change.KClass, out handle))
             {
                 log.Error(String.Format("The key entry `{0}` doesn't exist.", change.Identifier));
                 throw new KeyStoreException("The key entry doesn't exist.");

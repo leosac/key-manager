@@ -13,7 +13,7 @@ namespace Leosac.KeyManager.Domain
 
         }
 
-        public LeosacAppCommand? KeyStoreCommand { get; set; }
+        public LeosacAppAsyncCommand<object>? KeyStoreCommand { get; set; }
 
         public LeosacAppCommand? FavoritesCommand { get; set; }
     }

@@ -17,6 +17,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             _samAuthKeyId = 0;
             _samAuthKeyType = SAMKeyType.SAM_KEY_AES;
 
+            _samUnlockKey = new KeyVersion() { Name = "Key" };
+            _samUnlockKeyId = 1;
+            _samUnlockAction = LibLogicalAccess.Card.SAMLockUnlock.Unlock;
+
             KeyTypes = new ObservableCollection<SAMKeyType>(Enum.GetValues<SAMKeyType>());
             UnlockActions = new ObservableCollection<SAMLockUnlock>(Enum.GetValues<SAMLockUnlock>());
 

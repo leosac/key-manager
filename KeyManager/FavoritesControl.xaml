@@ -59,7 +59,7 @@
                                                 <Button.Command>
                                                     <wpfappdomain:CommandGroup>
                                                         <wpfappdomain:CommandReference Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
-                                                        <wpfappdomain:CommandReference Command="{Binding DataContext.KeyStoreCommand, ElementName=userControl}"/>
+                                                        <wpfappdomain:CommandReference Command="{Binding DataContext.KeyStoreCommand, ElementName=userControl}" />
                                                     </wpfappdomain:CommandGroup>
                                                 </Button.Command>
                                             </Button>

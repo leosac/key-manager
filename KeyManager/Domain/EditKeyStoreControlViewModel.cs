@@ -94,11 +94,11 @@ namespace Leosac.KeyManager.Domain
                 HomeCommand?.Execute(null);
         }
 
-        public void OpenKeyStore()
+        public async Task OpenKeyStore()
         {
             if (KeyStore != null)
             {
-                KeyStore.Open();
+                await KeyStore.Open();
                 var classes = KeyStore.SupportedClasses;
                 foreach (var kclass in classes)
                 {
@@ -112,12 +112,12 @@ namespace Leosac.KeyManager.Domain
                             DataContext = model
                         }
                     });
-                    model.RefreshKeyEntries();
+                    await model.RefreshKeyEntries();
                 }
             }
         }
 
-        public async void EditFavorite()
+        public async Task EditFavorite()
         {
             if (Favorite != null)
             {
@@ -160,7 +160,7 @@ namespace Leosac.KeyManager.Domain
             }
         }
 
-        public async void Publish()
+        public async Task Publish()
         {
             if (KeyStore != null)
             {
@@ -215,7 +215,7 @@ namespace Leosac.KeyManager.Domain
                                     if (keModel.ShowSelection)
                                     {
                                         var entries = keModel.Identifiers.Where(k => k.Selected).Select(k => k.KeyEntryId);
-                                        KeyStore.Publish(deststore,
+                                        await KeyStore.Publish(deststore,
                                             getFavoriteKeyStore,
                                             entries,
                                             keModel.KeyEntryClass,
@@ -226,7 +226,7 @@ namespace Leosac.KeyManager.Domain
                                     }
                                     else
                                     {
-                                        KeyStore.Publish(deststore,
+                                        await KeyStore.Publish(deststore,
                                             getFavoriteKeyStore,
                                             keModel.KeyEntryClass,
                                             model.WrappingKeyId,

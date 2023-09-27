@@ -28,74 +28,69 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
             get => new KeyEntryClass[] { KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric };
         }
 
-        public override void Open()
+        public override Task Open()
         {
-
+            return Task.CompletedTask;
         }
 
-        public override void Close()
+        public override Task Close()
         {
-
+            return Task.CompletedTask;
         }
 
-        public override bool CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
+        public override Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
         {
             KeyEntry? keyEntry;
             return CheckKeyEntryExists(identifier, keClass, out keyEntry);
         }
 
-        protected bool CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass, out KeyEntry? keyEntry)
+        protected Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass, out KeyEntry? keyEntry)
         {
             keyEntry = _keyEntries.Where(k => k.Identifier == identifier && k.KClass == keClass).SingleOrDefault();
-            return (keyEntry != null);
+            return Task.FromResult(keyEntry != null);
         }
 
-        public override void Create(IChangeKeyEntry change)
+        public override async Task Create(IChangeKeyEntry change)
         {
-            lock (_keyEntries)
+            if (change is KeyEntry keyEntry)
             {
-                if (change is KeyEntry keyEntry)
-                {
-                    if (CheckKeyEntryExists(keyEntry))
-                        throw new KeyStoreException("A key entry with the same identifier already exists.");
+                if (await CheckKeyEntryExists(keyEntry))
+                    throw new KeyStoreException("A key entry with the same identifier already exists.");
 
-                    _keyEntries.Add(keyEntry);
-                }
-                else
-                    throw new KeyStoreException("Unsupported `change` parameter.");
+                _keyEntries.Add(keyEntry);
+            }
+            else
+                throw new KeyStoreException("Unsupported `change` parameter.");
+        }
+
+        public override async Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
+        {
+            KeyEntry? keyEntry;
+            if (!await CheckKeyEntryExists(identifier, keClass, out keyEntry) && !ignoreIfMissing)
+                throw new KeyStoreException("The key entry do not exists.");
+            if (keyEntry != null)
+            {
+                _keyEntries.Remove(keyEntry);
             }
         }
 
-        public override void Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
+        public override async Task<KeyEntry?> Get(KeyEntryId identifier, KeyEntryClass keClass)
         {
             KeyEntry? keyEntry;
-            lock (_keyEntries)
-            {
-                if (!CheckKeyEntryExists(identifier, keClass, out keyEntry) && !ignoreIfMissing)
-                    throw new KeyStoreException("The key entry do not exists.");
-                if (keyEntry != null)
-                {
-                    _keyEntries.Remove(keyEntry);
-                }
-            }
-        }
-
-        public override KeyEntry? Get(KeyEntryId identifier, KeyEntryClass keClass)
-        {
-            KeyEntry? keyEntry;
-            if (!CheckKeyEntryExists(identifier, keClass, out keyEntry))
+            if (!await CheckKeyEntryExists(identifier, keClass, out keyEntry))
                 throw new KeyStoreException("The key entry do not exists.");
             return keyEntry;
         }
 
-        public override IList<KeyEntryId> GetAll(KeyEntryClass? keClass = null)
+        public override Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass = null)
         {
-            return _keyEntries.Where(k => keClass == null || k.KClass == keClass).Select(k => k.Identifier).ToList();
+            IList<KeyEntryId> list =  _keyEntries.Where(k => keClass == null || k.KClass == keClass).Select(k => k.Identifier).ToList();
+            return Task.FromResult(list);
         }
 
-        public override void MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
+        public override async Task MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
         {
-            var ke = Get(identifier, keClass);
+            var ke = await Get(identifier, keClass);
             if (ke != null)
             {
                 var oldindex = _keyEntries.IndexOf(ke);
@@ -107,9 +102,9 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
             }
         }
 
-        public override void MoveUp(KeyEntryId identifier, KeyEntryClass keClass)
+        public override async Task MoveUp(KeyEntryId identifier, KeyEntryClass keClass)
         {
-            var ke = Get(identifier, keClass);
+            var ke = await Get(identifier, keClass);
             if (ke != null)
             {
                 var oldindex = _keyEntries.IndexOf(ke);
@@ -121,33 +116,27 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
             }
         }
 
-        public override void Store(IList<IChangeKeyEntry> changes)
+        public override async Task Store(IList<IChangeKeyEntry> changes)
         {
-            lock (_keyEntries)
+            foreach (var change in changes)
             {
-                foreach (var change in changes)
-                {
-                    Update(change, true);
-                }
+                await Update(change, true);
             }
         }
 
-        public override void Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
+        public override async Task Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
         {
-            lock (_keyEntries)
-            {
-                Delete(change.Identifier, change.KClass, ignoreIfMissing);
-                Create(change);
-                OnKeyEntryUpdated(change);
-            }
+            await Delete(change.Identifier, change.KClass, ignoreIfMissing);
+            await Create(change);
+            OnKeyEntryUpdated(change);
         }
 
-        public override string? ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null)
+        public override Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null)
         {
             throw new NotSupportedException();
         }
 
-        public override string? ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null)
+        public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null)
         {
             throw new NotSupportedException();
         }

@@ -48,7 +48,10 @@ namespace Leosac.KeyManager
                     if (store != null)
                     {
                         store.CreateIfMissing = true;
-                        homeModel.KeyStoreCommand?.Execute(store);
+                        if (homeModel.KeyStoreCommand != null)
+                        {
+                            await homeModel.KeyStoreCommand.ExecuteAsync(store);
+                        }
                     }
                 }
             }
@@ -68,7 +71,10 @@ namespace Leosac.KeyManager
                 if (homeModel != null)
                 {
                     var store = model.CreateKeyStore();
-                    homeModel.KeyStoreCommand?.Execute(store);
+                    if (homeModel.KeyStoreCommand != null)
+                    {
+                        await homeModel.KeyStoreCommand.ExecuteAsync(store);
+                    }
                 }
             }
         }

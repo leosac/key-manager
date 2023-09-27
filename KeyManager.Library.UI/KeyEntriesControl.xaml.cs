@@ -34,16 +34,19 @@ namespace Leosac.KeyManager.Library.UI
 
         private void KeyEntryDeletion_OnDialogClosed(object sender, DialogClosedEventArgs e)
         {
-            if (e.Parameter is SelectableKeyEntryId identifier)
+            if (KeyEntriesDataContext?.DeleteKeyEntryCommand != null)
             {
-                KeyEntriesDataContext?.DeleteKeyEntryCommand?.Execute(identifier);
-            }
-            else if (e.Parameter is IList<SelectableKeyEntryId> identifiers)
-            {
-                var ids = identifiers.Where(id => id.Selected).ToList();
-                foreach (var id in ids)
+                if (e.Parameter is SelectableKeyEntryId identifier)
                 {
-                    KeyEntriesDataContext?.DeleteKeyEntryCommand?.Execute(id);
+                    KeyEntriesDataContext.DeleteKeyEntryCommand.ExecuteAsync(identifier);
+                }
+                else if (e.Parameter is IList<SelectableKeyEntryId> identifiers)
+                {
+                    var ids = identifiers.Where(id => id.Selected).ToList();
+                    foreach (var id in ids)
+                    {
+                        KeyEntriesDataContext.DeleteKeyEntryCommand.ExecuteAsync(id);
+                    }
                 }
             }
         }

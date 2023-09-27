@@ -77,6 +77,6 @@ namespace Leosac.KeyManager.Domain
         public LeosacAppAsyncCommand<object>? CreateFavoriteCommand { get; set; }
         public LeosacAppCommand? RemoveFavoriteCommand { get; set; }
         public LeosacAppAsyncCommand<Favorite> EditFavoriteCommand { get; }
-        public LeosacAppCommand? KeyStoreCommand { get; set; }
+        public LeosacAppAsyncCommand<object>? KeyStoreCommand { get; set; }
     }
 }
