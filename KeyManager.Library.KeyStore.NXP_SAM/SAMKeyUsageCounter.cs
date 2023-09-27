@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 {
-    public class SAMKeyUsageCounter : KMObject
+    public class SAMKeyUsageCounter : ObservableValidator
     {
         public SAMKeyUsageCounter()
         {

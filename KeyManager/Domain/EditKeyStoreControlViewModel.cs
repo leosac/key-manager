@@ -12,10 +12,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Collections.Generic;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Leosac.KeyManager.Domain
 {
-    public class EditKeyStoreControlViewModel : KMObject
+    public class EditKeyStoreControlViewModel : ObservableValidator
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
         public EditKeyStoreControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
@@ -24,8 +26,8 @@ namespace Leosac.KeyManager.Domain
             _snackbarMessageQueue = snackbarMessageQueue;
             Tabs = new ObservableCollection<TabItem>();
             _keModels = new List<KeyEntriesControlViewModel>();
-            SaveFavoriteCommand = new LeosacAppCommand(
-                parameter =>
+            SaveFavoriteCommand = new RelayCommand(
+                () =>
                 {
                     var favorites = Favorites.GetSingletonInstance();
                     if (favorites != null)
@@ -78,9 +80,9 @@ namespace Leosac.KeyManager.Domain
 
         public ObservableCollection<TabItem> Tabs { get; set; }
 
-        public LeosacAppCommand? HomeCommand { get; set; }
+        public RelayCommand? HomeCommand { get; set; }
 
-        public LeosacAppCommand SaveFavoriteCommand { get; }
+        public RelayCommand SaveFavoriteCommand { get; }
 
         public void CloseKeyStore(bool navigate = true)
         {

@@ -1,12 +1,12 @@
-﻿using Leosac.KeyManager.Library.KeyStore;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin;
-using Leosac.WpfApp.Domain;
-using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public class KeyEntryDialogViewModel : KMObject
+    public class KeyEntryDialogViewModel : ObservableValidator
     {
         public KeyEntryDialogViewModel()
         {
@@ -20,8 +20,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
             Variants = new ObservableCollection<KeyEntryVariant>();
 
-            OpenLinkCommand = new LeosacAppAsyncCommand<object>(async
-                parameter =>
+            OpenLinkCommand = new AsyncRelayCommand(async
+                () =>
                 {
                     if (KeyEntry != null)
                     {
@@ -38,8 +38,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
                         await DialogHelper.ForceShow(dialog, "KeyEntryDialog");
                     }
                 });
-            BeforeSubmitCommand = new LeosacAppCommand(
-                parameter =>
+            BeforeSubmitCommand = new RelayCommand(
+                () =>
                 {
 
                 }, CanSubmit);
@@ -118,13 +118,13 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        private bool CanSubmit(object? parameter)
+        private bool CanSubmit()
         {
             return !HasErrors;
         }
 
-        public LeosacAppAsyncCommand<object> OpenLinkCommand { get; }
+        public AsyncRelayCommand OpenLinkCommand { get; }
 
-        public LeosacAppCommand BeforeSubmitCommand { get; }
+        public RelayCommand BeforeSubmitCommand { get; }
     }
 }

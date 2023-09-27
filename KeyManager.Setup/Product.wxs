@@ -229,6 +229,9 @@
       <Component Id="BouncyCastleCryptographyComponent">
         <File Id="___var.BouncyCastle.Cryptography.dll_" Source="$(var.KeyManager.TargetDir)\BouncyCastle.Cryptography.dll" />
       </Component>
+      <Component Id="CommunityToolkitMvvmComponent">
+        <File Id="___var.CommunityToolkit.Mvvm.dll_" Source="$(var.KeyManager.TargetDir)\CommunityToolkit.Mvvm.dll" />
+      </Component>
       <Component Id="Crc32NETComponent">
         <File Id="___var.Crc32.NET.dll_" Source="$(var.KeyManager.TargetDir)\Crc32.NET.dll" />
       </Component>

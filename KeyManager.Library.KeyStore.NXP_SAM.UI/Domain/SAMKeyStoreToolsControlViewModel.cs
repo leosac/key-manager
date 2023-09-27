@@ -4,6 +4,7 @@ using Leosac.WpfApp;
 using LibLogicalAccess.Card;
 using LibLogicalAccess.Reader;
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
 {
@@ -24,32 +25,32 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             KeyTypes = new ObservableCollection<SAMKeyType>(Enum.GetValues<SAMKeyType>());
             UnlockActions = new ObservableCollection<SAMLockUnlock>(Enum.GetValues<SAMLockUnlock>());
 
-            SAMAuthCommand = new LeosacAppCommand(
-                parameter =>
+            SAMAuthCommand = new RelayCommand(
+                () =>
                 {
                     SAMAuthenticate();
                 });
 
-            SAMSwitchAV2Command = new LeosacAppCommand(
-                parameter =>
+            SAMSwitchAV2Command = new RelayCommand(
+                () =>
                 {
                     SAMSwitchAV2();
                 });
 
-            SAMLockUnlockCommand = new LeosacAppCommand(
-                parameter =>
+            SAMLockUnlockCommand = new RelayCommand(
+                () =>
                 {
                     SAMLockUnlock();
                 });
 
-            SAMGetVersionCommand = new LeosacAppCommand(
-                parameter =>
+            SAMGetVersionCommand = new RelayCommand(
+                () =>
                 {
                     SAMGetVersion();
                 });
 
-            SAMActivateMifareSAMCommand = new LeosacAppCommand(
-                parameter =>
+            SAMActivateMifareSAMCommand = new RelayCommand(
+                () =>
                 {
                     SAMActivateMifareSAM();
                 });
@@ -101,15 +102,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
 
         public ObservableCollection<SAMLockUnlock> UnlockActions { get; set; }
 
-        public LeosacAppCommand SAMAuthCommand { get; }
+        public RelayCommand SAMAuthCommand { get; }
 
-        public LeosacAppCommand SAMSwitchAV2Command { get; }
+        public RelayCommand SAMSwitchAV2Command { get; }
 
-        public LeosacAppCommand SAMLockUnlockCommand { get; }
+        public RelayCommand SAMLockUnlockCommand { get; }
 
-        public LeosacAppCommand SAMGetVersionCommand { get; }
+        public RelayCommand SAMGetVersionCommand { get; }
 
-        public LeosacAppCommand SAMActivateMifareSAMCommand { get; }
+        public RelayCommand SAMActivateMifareSAMCommand { get; }
 
         private void SAMGetVersion()
         {

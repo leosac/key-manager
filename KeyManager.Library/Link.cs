@@ -1,10 +1,11 @@
-﻿using Leosac.KeyManager.Library.DivInput;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Leosac.KeyManager.Library.DivInput;
 using Leosac.KeyManager.Library.KeyStore;
 using System.Collections.ObjectModel;
 
 namespace Leosac.KeyManager.Library
 {
-    public class Link : KMObject
+    public class Link : ObservableValidator
     {
         public Link()
         {

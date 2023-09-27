@@ -1,8 +1,9 @@
-﻿using Leosac.KeyManager.Library.KeyStore;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Leosac.KeyManager.Library.KeyStore;
 
 namespace Leosac.KeyManager.Library
 {
-    public class Favorite : KMObject, IEquatable<Favorite>
+    public class Favorite : ObservableValidator, IEquatable<Favorite>
     {
         public Favorite()
         {

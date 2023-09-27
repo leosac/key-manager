@@ -1,9 +1,10 @@
-﻿using Leosac.KeyManager.Library.Plugin;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Leosac.KeyManager.Library.Plugin;
 using System.Collections.ObjectModel;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public class KeyStoreSelectorDialogViewModel : KMObject
+    public class KeyStoreSelectorDialogViewModel : ObservableValidator
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 

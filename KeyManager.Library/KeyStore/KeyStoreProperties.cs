@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Newtonsoft.Json;
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
     /// <summary>
     /// The base class for a Key Store Properties implementation.
     /// </summary>
-    public abstract class KeyStoreProperties : KMObject
+    public abstract class KeyStoreProperties : ObservableValidator
     {
         private string? _secret;
         /// <summary>

@@ -1,10 +1,11 @@
-﻿using Leosac.KeyManager.Library.Plugin.UI.Domain;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using Leosac.WpfApp.Domain;
 using MaterialDesignThemes.Wpf;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public abstract class KeyStoreAdditionalControlViewModel : KMObject
+    public abstract class KeyStoreAdditionalControlViewModel : ObservableValidator
     {
         private KeyStore.KeyStore? _keyStore;
 

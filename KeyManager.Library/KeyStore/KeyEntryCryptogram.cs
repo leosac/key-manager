@@ -1,6 +1,8 @@
-﻿namespace Leosac.KeyManager.Library.KeyStore
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace Leosac.KeyManager.Library.KeyStore
 {
-    public class KeyEntryCryptogram : KMObject, IChangeKeyEntry
+    public class KeyEntryCryptogram : ObservableValidator, IChangeKeyEntry
     {
         public KeyEntryCryptogram()
         {

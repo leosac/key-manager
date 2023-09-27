@@ -1,4 +1,5 @@
-﻿using Leosac.KeyManager.Library.UI.Domain;
+﻿using CommunityToolkit.Mvvm.Input;
+using Leosac.KeyManager.Library.UI.Domain;
 using Leosac.WpfApp;
 using Leosac.WpfApp.Domain;
 using MaterialDesignThemes.Wpf;
@@ -18,10 +19,9 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             {
                 CounterIdentifiers.Add(i);
             }
-            EditKeyUsageCounterCommand = new LeosacAppCommand(
-                parameter =>
+            EditKeyUsageCounterCommand = new RelayCommand<byte?>(
+                identifier =>
                 {
-                    var identifier = parameter as byte?;
                     if (identifier != null)
                     {
                         try
@@ -57,7 +57,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
 
         public ObservableCollection<byte> CounterIdentifiers { get; set; }
 
-        public LeosacAppCommand EditKeyUsageCounterCommand { get; set; }
+        public RelayCommand<byte?> EditKeyUsageCounterCommand { get; set; }
 
         private async void UpdateKeyCounter(SAMKeyUsageCounterDialog dialog)
         {

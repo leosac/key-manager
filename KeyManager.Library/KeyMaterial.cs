@@ -1,9 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 
 namespace Leosac.KeyManager.Library
 {
-    public class KeyMaterial : KMObject
+    public class KeyMaterial : ObservableValidator
     {
         public const string PRIVATE_KEY = "Private Key";
         public const string PUBLIC_KEY = "Public Key";

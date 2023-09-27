@@ -1,4 +1,5 @@
-﻿using Leosac.KeyManager.Domain;
+﻿using CommunityToolkit.Mvvm.Input;
+using Leosac.KeyManager.Domain;
 using Leosac.KeyManager.Library;
 using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin;
@@ -31,17 +32,17 @@ namespace Leosac.KeyManager
 
         public override void InitializeMainWindow(MainWindowViewModel model)
         {
-            var HomeCommand = new LeosacAppCommand(
-                _ =>
+            var HomeCommand = new RelayCommand(
+                () =>
                 {
                     model.SelectedIndex = 0;
                 });
-            var FavoritesCommand = new LeosacAppCommand(
-                _ =>
+            var FavoritesCommand = new RelayCommand(
+                () =>
                 {
                     model.SelectedIndex = 1;
                 });
-            var KeyStoreCommand = new LeosacAppAsyncCommand<object>(
+            var KeyStoreCommand = new AsyncRelayCommand<object>(
                 async parameter =>
                 {
                     if (parameter != null)

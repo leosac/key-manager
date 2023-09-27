@@ -7,10 +7,12 @@ using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public class KeyEntriesControlViewModel : KMObject
+    public class KeyEntriesControlViewModel : ObservableValidator
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
         public KeyEntriesControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
@@ -19,8 +21,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
             Identifiers = new ObservableCollection<SelectableKeyEntryId>();
             WizardFactories = new ObservableCollection<WizardFactory>(WizardFactory.RegisteredFactories);
 
-            CreateKeyEntryCommand = new LeosacAppCommand(
-                parameter =>
+            CreateKeyEntryCommand = new RelayCommand(
+                () =>
             {
                 var model = new KeyEntryDialogViewModel() { KClass = _keClass };
                 var dialog = new KeyEntryDialog()
@@ -30,7 +32,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 CreateKeyEntry(dialog);
             });
 
-            EditKeyEntryCommand = new LeosacAppAsyncCommand<SelectableKeyEntryId>(
+            EditKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
                 async identifier =>
             {
                 try
@@ -80,7 +82,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             });
 
-            MoveUpKeyEntryCommand = new LeosacAppAsyncCommand<SelectableKeyEntryId>(
+            MoveUpKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
                 async keyEntryId =>
             {
                 if (keyEntryId != null)
@@ -89,7 +91,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             });
 
-            MoveDownKeyEntryCommand = new LeosacAppAsyncCommand<SelectableKeyEntryId>(
+            MoveDownKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
                 async keyEntryId =>
             {
                 if (keyEntryId != null)
@@ -98,7 +100,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             });
 
-            DeleteKeyEntryCommand = new LeosacAppAsyncCommand<SelectableKeyEntryId>(
+            DeleteKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
                 async keyEntryId =>
             {
                 if (keyEntryId != null)
@@ -107,7 +109,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             });
 
-            ImportCryptogramCommand = new LeosacAppAsyncCommand<SelectableKeyEntryId>(
+            ImportCryptogramCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
                 async keyEntryId =>
             {
                 var model = new ImportCryptogramDialogViewModel()
@@ -125,7 +127,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 await ImportCryptogram(dialog);
             });
 
-            WizardCommand = new LeosacAppAsyncCommand<WizardFactory>(
+            WizardCommand = new AsyncRelayCommand<WizardFactory>(
                 async factory =>
             {
                 if (factory != null)
@@ -134,8 +136,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             });
 
-            ShowSelectionChangedCommand = new LeosacAppCommand(
-                parameter =>
+            ShowSelectionChangedCommand = new RelayCommand(
+                () =>
             {
                 if (!ShowSelection)
                 {
@@ -143,8 +145,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             });
 
-            ToggleSelectionCommand = new LeosacAppCommand(
-                parameter =>
+            ToggleSelectionCommand = new RelayCommand(
+                () =>
                 {
                     if (Identifiers.Count > 0)
                     {
@@ -198,7 +200,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _showSelection, value);
         }
 
-        public LeosacAppCommand CreateKeyEntryCommand { get; }
+        public RelayCommand CreateKeyEntryCommand { get; }
 
         private async void CreateKeyEntry(KeyEntryDialog dialog)
         {
@@ -230,7 +232,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public LeosacAppAsyncCommand<SelectableKeyEntryId> EditKeyEntryCommand { get; }
+        public AsyncRelayCommand<SelectableKeyEntryId> EditKeyEntryCommand { get; }
 
         private async Task UpdateKeyEntry(KeyEntryDialog dialog)
         {
@@ -258,7 +260,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public LeosacAppAsyncCommand<SelectableKeyEntryId> DeleteKeyEntryCommand { get; }
+        public AsyncRelayCommand<SelectableKeyEntryId> DeleteKeyEntryCommand { get; }
 
         private async Task DeleteKeyEntry(SelectableKeyEntryId identifier)
         {
@@ -281,7 +283,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public LeosacAppAsyncCommand<SelectableKeyEntryId> MoveUpKeyEntryCommand { get; }
+        public AsyncRelayCommand<SelectableKeyEntryId> MoveUpKeyEntryCommand { get; }
 
         private async Task MoveUpKeyEntry(SelectableKeyEntryId identifier)
         {
@@ -308,7 +310,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public LeosacAppAsyncCommand<SelectableKeyEntryId> MoveDownKeyEntryCommand { get; }
+        public AsyncRelayCommand<SelectableKeyEntryId> MoveDownKeyEntryCommand { get; }
 
         private async Task MoveDownKeyEntry(SelectableKeyEntryId identifier)
         {
@@ -335,7 +337,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public LeosacAppAsyncCommand<SelectableKeyEntryId> ImportCryptogramCommand { get; }
+        public AsyncRelayCommand<SelectableKeyEntryId> ImportCryptogramCommand { get; }
 
         private async Task ImportCryptogram(ImportCryptogramDialog dialog)
         {
@@ -363,7 +365,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public LeosacAppAsyncCommand<WizardFactory> WizardCommand { get; }
+        public AsyncRelayCommand<WizardFactory> WizardCommand { get; }
 
         private async Task RunWizard(WizardFactory factory)
         {
@@ -391,9 +393,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        public LeosacAppCommand ShowSelectionChangedCommand { get; }
+        public RelayCommand ShowSelectionChangedCommand { get; }
 
-        public LeosacAppCommand ToggleSelectionCommand { get; }
+        public RelayCommand ToggleSelectionCommand { get; }
 
         private void ToggleAllSelection(bool selected)
         {

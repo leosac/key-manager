@@ -1,8 +1,9 @@
-﻿using Leosac.KeyManager.Library.Plugin.UI.Domain;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Leosac.KeyManager.Library.Plugin.UI.Domain;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Wizard.Domain
 {
-    public class SAMAccessControlWizardWindowViewModel : KMObject
+    public class SAMAccessControlWizardWindowViewModel : ObservableValidator
     {
         public SAMAccessControlWizardWindowViewModel()
         {

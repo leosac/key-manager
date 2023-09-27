@@ -1,24 +1,24 @@
-﻿using Leosac.KeyManager.Library.KeyStore;
-using Leosac.KeyManager.Library.Plugin.UI.Domain;
-using Leosac.WpfApp.Domain;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Leosac.KeyManager.Library.KeyStore;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public abstract class LinkDialogViewModel : KMObject
+    public abstract class LinkDialogViewModel : ObservableValidator
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         public LinkDialogViewModel()
         {
-            RunLinkCommand = new LeosacAppAsyncCommand<object>(
-                parameter =>
+            RunLinkCommand = new AsyncRelayCommand(
+                () =>
                 {
                     AllowImport = false;
                     return RunLink();
                 });
 
-            RunLinkForImportCommand = new LeosacAppAsyncCommand<object>(
-                parameter =>
+            RunLinkForImportCommand = new AsyncRelayCommand(
+                () =>
                 {
                     AllowImport = true;
                     return RunLink();
@@ -72,9 +72,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _allowImport, value);
         }
 
-        public LeosacAppAsyncCommand<object> RunLinkCommand { get; }
+        public AsyncRelayCommand RunLinkCommand { get; }
 
-        public LeosacAppAsyncCommand<object> RunLinkForImportCommand { get; }
+        public AsyncRelayCommand RunLinkForImportCommand { get; }
 
         public abstract Task RunLinkImpl(KeyStore.KeyStore ks);
 

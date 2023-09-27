@@ -1,6 +1,8 @@
-﻿namespace Leosac.KeyManager.Library
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace Leosac.KeyManager.Library
 {
-    public class KeyContainer : KMObject
+    public class KeyContainer : ObservableValidator
     {
         public KeyContainer(string? name = null, Key? key = null)
         {

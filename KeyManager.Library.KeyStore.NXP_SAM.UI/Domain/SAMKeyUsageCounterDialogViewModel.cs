@@ -1,8 +1,8 @@
-﻿using Leosac.KeyManager.Library.Plugin.UI.Domain;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
 {
-    public class SAMKeyUsageCounterDialogViewModel : KMObject
+    public class SAMKeyUsageCounterDialogViewModel : ObservableValidator
     {
         public SAMKeyUsageCounterDialogViewModel()
         {

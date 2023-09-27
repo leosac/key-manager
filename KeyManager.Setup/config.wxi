@@ -1,7 +1,7 @@
 ﻿<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
     <?define Manufacturer = "Leosac" ?>
     <?define ProductName = "Leosac Key Manager" ?>
-	  <?define Version = "1.7.0.0" ?>
+	  <?define Version = "1.8.0.0" ?>
     <?define AboutURL = "https://www.leosac.com" ?>
     <?define SupportURL = "https://www.leosac.com" ?>
     <?define UpdatesURL = "https://www.leosac.com" ?>

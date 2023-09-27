@@ -2,10 +2,11 @@
 using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Leosac.KeyManager.Library
 {
-    public class PropertyErrors : NotifyPropertyBase, INotifyDataErrorInfo
+    public class PropertyErrors : ObservableObject, INotifyDataErrorInfo
     {
         private static readonly IReadOnlyList<object> EmptyErrors = new object[0];
         private readonly Action<DataErrorsChangedEventArgs> ownerOnErrorsChanged;

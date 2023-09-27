@@ -1,8 +1,9 @@
-﻿using Leosac.KeyManager.Library.KeyStore;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Leosac.KeyManager.Library.KeyStore;
 
 namespace Leosac.KeyManager.Library.Plugin.UI.Domain
 {
-    public abstract class KeyStorePropertiesControlViewModel : KMObject
+    public abstract class KeyStorePropertiesControlViewModel : ObservableValidator
     {
         protected KeyStoreProperties? _properties;
 

@@ -1,6 +1,8 @@
-﻿namespace Leosac.KeyManager.Library.KeyStore
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace Leosac.KeyManager.Library.KeyStore
 {
-    public abstract class KeyEntry : KMObject, IKeyEntry
+    public abstract class KeyEntry : ObservableValidator, IKeyEntry
     {
         public KeyEntry()
         {

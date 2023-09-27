@@ -1,4 +1,6 @@
-﻿using Leosac.KeyManager.Library;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Leosac.KeyManager.Library;
 using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
@@ -8,20 +10,20 @@ using System;
 
 namespace Leosac.KeyManager.Domain
 {
-    public class FavoritesControlViewModel : KMObject
+    public class FavoritesControlViewModel : ObservableValidator
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         public FavoritesControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
             _favorites = Favorites.GetSingletonInstance();
-            RefreshFavoritesCommand = new LeosacAppCommand(
-                parameter =>
+            RefreshFavoritesCommand = new RelayCommand(
+                () =>
                 {
                     RefreshFavorites();
                 });
-            CreateFavoriteCommand = new LeosacAppAsyncCommand<object>(async
-                parameter =>
+            CreateFavoriteCommand = new AsyncRelayCommand(
+                async () =>
                 {
                     var model = new KeyStoreSelectorDialogViewModel() { Message = "Save a new Favorite Key Store" };
                     var dialog = new KeyStoreSelectorDialog
@@ -39,17 +41,14 @@ namespace Leosac.KeyManager.Domain
                         }
                     }
                 });
-            RemoveFavoriteCommand = new LeosacAppCommand(
-                parameter =>
+            RemoveFavoriteCommand = new RelayCommand<Favorite>(
+                fav =>
                 {
-                    if (parameter is Favorite favorite)
-                    {
-                        Favorites?.KeyStores.Remove(favorite);
-                        Favorites?.SaveToFile();
-                        log.Info(String.Format("Favorite `{0}` removed.", favorite.Name));
-                    }
+                    Favorites?.KeyStores.Remove(fav);
+                    Favorites?.SaveToFile();
+                    log.Info(String.Format("Favorite `{0}` removed.", fav.Name));
                 });
-            EditFavoriteCommand = new LeosacAppAsyncCommand<Favorite>(
+            EditFavoriteCommand = new AsyncRelayCommand<Favorite>(
                 async fav =>
                 {
                     if (Favorites != null && fav != null)
@@ -73,10 +72,10 @@ namespace Leosac.KeyManager.Domain
             Favorites = Favorites.GetSingletonInstance(true);
         }
 
-        public LeosacAppCommand? RefreshFavoritesCommand { get; set; }
-        public LeosacAppAsyncCommand<object>? CreateFavoriteCommand { get; set; }
-        public LeosacAppCommand? RemoveFavoriteCommand { get; set; }
-        public LeosacAppAsyncCommand<Favorite> EditFavoriteCommand { get; }
-        public LeosacAppAsyncCommand<object>? KeyStoreCommand { get; set; }
+        public RelayCommand? RefreshFavoritesCommand { get; set; }
+        public AsyncRelayCommand? CreateFavoriteCommand { get; set; }
+        public RelayCommand<Favorite>? RemoveFavoriteCommand { get; set; }
+        public AsyncRelayCommand<Favorite>? EditFavoriteCommand { get; }
+        public AsyncRelayCommand<object>? KeyStoreCommand { get; set; }
     }
 }

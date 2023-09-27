@@ -1,8 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
-    public class KeyEntryVariant : KMObject
+    public class KeyEntryVariant : ObservableValidator
     {
         public KeyEntryVariant()
         {

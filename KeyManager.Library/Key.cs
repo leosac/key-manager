@@ -1,9 +1,10 @@
-﻿using Leosac.KeyManager.Library.Policy;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Leosac.KeyManager.Library.Policy;
 using System.Collections.ObjectModel;
 
 namespace Leosac.KeyManager.Library
 {
-    public class Key : KMObject
+    public class Key : ObservableValidator
     {
         public Key() : this(null, 0, 1)
         {

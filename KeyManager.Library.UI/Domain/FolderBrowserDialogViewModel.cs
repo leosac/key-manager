@@ -1,19 +1,21 @@
-﻿using Leosac.KeyManager.Library.Plugin.UI.Domain;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using Leosac.WpfApp.Domain;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public class FolderBrowserDialogViewModel : KMObject
+    public class FolderBrowserDialogViewModel : ObservableValidator
     {
         public FolderBrowserDialogViewModel()
         {
             Drives = new ObservableCollection<DriveInfo>(DriveInfo.GetDrives());
             Directories = new ObservableCollection<DirectoryInfo>();
 
-            GoToParentCommand = new LeosacAppCommand(
-                parameter =>
+            GoToParentCommand = new RelayCommand(
+                () =>
                 {
                     if (SelectedDirectory?.Parent != null)
                     {
@@ -22,10 +24,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             );
 
-            CreateFolderCommand = new LeosacAppCommand(
-                parameter =>
+            CreateFolderCommand = new RelayCommand<string>(
+                newFolder =>
                 {
-                    if (SelectedDirectory != null && parameter is string newFolder)
+                    if (SelectedDirectory != null && !string.IsNullOrEmpty(newFolder))
                     {
                         var newFolderFullpath = Path.Combine(SelectedDirectory.FullName, newFolder);
                         SelectedDirectory = Directory.CreateDirectory(newFolderFullpath);
@@ -127,8 +129,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
             noDirUpdate = false;
         }
 
-        public LeosacAppCommand GoToParentCommand { get; }
+        public RelayCommand GoToParentCommand { get; }
 
-        public LeosacAppCommand CreateFolderCommand { get; }
+        public RelayCommand<string> CreateFolderCommand { get; }
     }
 }

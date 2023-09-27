@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Newtonsoft.Json;
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
-    public class KeyEntryId : KMObject, IEquatable<KeyEntryId>
+    public class KeyEntryId : ObservableValidator, IEquatable<KeyEntryId>
     {
         public KeyEntryId()
         {

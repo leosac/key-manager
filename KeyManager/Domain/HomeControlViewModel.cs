@@ -1,20 +1,18 @@
-﻿using Leosac.KeyManager.Library;
-using Leosac.KeyManager.Library.Plugin.UI.Domain;
-using Leosac.KeyManager.Library.UI.Domain;
-using Leosac.WpfApp.Domain;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using MaterialDesignThemes.Wpf;
 
 namespace Leosac.KeyManager.Domain
 {
-    public class HomeControlViewModel : KMObject
+    public class HomeControlViewModel : ObservableValidator
     {
         public HomeControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
 
         }
 
-        public LeosacAppAsyncCommand<object>? KeyStoreCommand { get; set; }
+        public AsyncRelayCommand<object>? KeyStoreCommand { get; set; }
 
-        public LeosacAppCommand? FavoritesCommand { get; set; }
+        public RelayCommand? FavoritesCommand { get; set; }
     }
 }

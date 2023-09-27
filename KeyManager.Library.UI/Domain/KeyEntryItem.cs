@@ -1,10 +1,11 @@
 ﻿using System.Windows;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Leosac.KeyManager.Library.Plugin;
 using Leosac.KeyManager.Library.Plugin.UI.Domain;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
-    public class KeyEntryItem : KMObject
+    public class KeyEntryItem : ObservableValidator
     {
         private readonly KeyEntryUIFactory _factory;
 
