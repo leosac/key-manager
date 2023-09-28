@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin;
+using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 
 namespace Leosac.KeyManager.Library.UI.Domain
@@ -41,7 +42,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             BeforeSubmitCommand = new RelayCommand(
                 () =>
                 {
-
+                    DialogHost.CloseDialogCommand.Execute(null, null);
                 }, CanSubmit);
         }
 

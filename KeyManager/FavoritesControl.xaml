@@ -55,14 +55,7 @@
                                                      MaxLength="{Binding Properties.SecretMaxLength, Mode=OneWay}"
                                                      Visibility="{Binding Properties.StoreSecret, Converter={StaticResource ReverseBoolToVisibleConverter}}"/>
                                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                                            <Button Margin="0,8,8,0" CommandParameter="{Binding}" Content="{x:Static properties:Resources.OK}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}">
-                                                <Button.Command>
-                                                    <wpfappdomain:CommandGroup>
-                                                        <wpfappdomain:CommandReference Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
-                                                        <wpfappdomain:CommandReference Command="{Binding DataContext.KeyStoreCommand, ElementName=userControl}" />
-                                                    </wpfappdomain:CommandGroup>
-                                                </Button.Command>
-                                            </Button>
+                                            <Button Margin="0,8,8,0" CommandParameter="{Binding}" Command="{Binding DataContext.OpenFavoriteCommand, ElementName=userControl}" Content="{x:Static properties:Resources.OK}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}" />
                                             <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />
                                         </StackPanel>
                                     </StackPanel>
@@ -81,15 +74,7 @@
                                         <TextBlock Text="{x:Static properties:Resources.DeleteFavoriteConfirmation}" />
 
                                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                                            <Button Margin="0,8,8,0" CommandParameter="{Binding}" Content="{x:Static properties:Resources.Confirm}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}">
-                                                <Button.Command>
-                                                    <wpfappdomain:CommandGroup>
-                                                        <wpfappdomain:CommandReference Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
-                                                        <wpfappdomain:CommandReference Command="{Binding DataContext.RemoveFavoriteCommand, ElementName=userControl}"/>
-                                                    </wpfappdomain:CommandGroup>
-                                                </Button.Command>
-                                            </Button>
-
+                                            <Button Margin="0,8,8,0" CommandParameter="{Binding}" Command="{Binding DataContext.RemoveFavoriteCommand, ElementName=userControl}" Content="{x:Static properties:Resources.Confirm}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}" />
                                             <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />
                                         </StackPanel>
                                     </StackPanel>

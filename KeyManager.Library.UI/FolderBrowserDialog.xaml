@@ -60,15 +60,8 @@
                                                  materialDesign:HintAssist.Hint="{x:Static properties:Resources.NewFolderName}"
                                                  Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="8">
-                                            <Button Margin="3" CommandParameter="{Binding NewFolderName}" Content="{x:Static properties:Resources.OK}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}">
-                                                <Button.Command>
-                                                    <wpfappdomain:CommandGroup>
-                                                        <wpfappdomain:CommandReference Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
-                                                        <wpfappdomain:CommandReference Command="{Binding CreateFolderCommand}"/>
-                                                    </wpfappdomain:CommandGroup>
-                                                </Button.Command>
-                                        </Button>
-                                            <Button Margin="3" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />
+                                        <Button Margin="3" CommandParameter="{Binding NewFolderName}" Content="{x:Static properties:Resources.OK}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding CreateFolderCommand}" />
+                                        <Button Margin="3" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />
                                         </StackPanel>
                                     </StackPanel>
                                 </materialDesign:DialogHost.DialogContent>

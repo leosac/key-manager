@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using Leosac.WpfApp.Domain;
+using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 using System.IO;
 
@@ -27,6 +28,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             CreateFolderCommand = new RelayCommand<string>(
                 newFolder =>
                 {
+                    DialogHost.CloseDialogCommand.Execute(null, null);
                     if (SelectedDirectory != null && !string.IsNullOrEmpty(newFolder))
                     {
                         var newFolderFullpath = Path.Combine(SelectedDirectory.FullName, newFolder);

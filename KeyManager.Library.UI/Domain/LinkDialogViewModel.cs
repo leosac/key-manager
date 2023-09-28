@@ -13,6 +13,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             RunLinkCommand = new AsyncRelayCommand(
                 () =>
                 {
+                    MaterialDesignThemes.Wpf.DrawerHost.OpenDrawerCommand.Execute(null, null);
                     AllowImport = false;
                     return RunLink();
                 });
@@ -20,6 +21,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             RunLinkForImportCommand = new AsyncRelayCommand(
                 () =>
                 {
+                    MaterialDesignThemes.Wpf.DrawerHost.OpenDrawerCommand.Execute(null, null);
                     AllowImport = true;
                     return RunLink();
                 });

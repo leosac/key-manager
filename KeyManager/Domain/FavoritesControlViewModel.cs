@@ -22,6 +22,15 @@ namespace Leosac.KeyManager.Domain
                 {
                     RefreshFavorites();
                 });
+            OpenFavoriteCommand = new AsyncRelayCommand<Favorite>(
+                async fav =>
+                {
+                    DialogHost.CloseDialogCommand.Execute(null, null);
+                    if (KeyStoreCommand != null)
+                    {
+                        await KeyStoreCommand.ExecuteAsync(fav);
+                    }
+                });
             CreateFavoriteCommand = new AsyncRelayCommand(
                 async () =>
                 {
@@ -44,9 +53,14 @@ namespace Leosac.KeyManager.Domain
             RemoveFavoriteCommand = new RelayCommand<Favorite>(
                 fav =>
                 {
-                    Favorites?.KeyStores.Remove(fav);
-                    Favorites?.SaveToFile();
-                    log.Info(String.Format("Favorite `{0}` removed.", fav.Name));
+                    if (fav != null)
+                    {
+                        DialogHost.CloseDialogCommand.Execute(null, null);
+
+                        Favorites?.KeyStores.Remove(fav);
+                        Favorites?.SaveToFile();
+                        log.Info(String.Format("Favorite `{0}` removed.", fav.Name));
+                    }
                 });
             EditFavoriteCommand = new AsyncRelayCommand<Favorite>(
                 async fav =>
@@ -76,6 +90,8 @@ namespace Leosac.KeyManager.Domain
         public AsyncRelayCommand? CreateFavoriteCommand { get; set; }
         public RelayCommand<Favorite>? RemoveFavoriteCommand { get; set; }
         public AsyncRelayCommand<Favorite>? EditFavoriteCommand { get; }
-        public AsyncRelayCommand<object>? KeyStoreCommand { get; set; }
+        public AsyncRelayCommand<Favorite>? OpenFavoriteCommand { get; }
+
+        public AsyncRelayCommand<object>? KeyStoreCommand { private get; set; }
     }
 }

@@ -28,6 +28,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Wizard
                 {
                     var masterke = CreateKeyEntry("0", "SAM Master Key");
                     masterke.SAMProperties!.LockUnlock = true;
+                    masterke.SAMProperties.AuthenticateHost = false;
                     entries.Add(masterke);
                 }
                 if (model.ChangeSAMUnlockKey)

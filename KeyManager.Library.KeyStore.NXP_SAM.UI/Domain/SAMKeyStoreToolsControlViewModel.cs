@@ -246,12 +246,12 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 }
                 else if (cmd is SAMAV2ISO7816Commands samav2cmd)
                 {
-                    samav2cmd.lockUnlock(key,SAMUnlockAction, SAMUnlockKeyId, SAMUnlockKeyId, SAMUnlockKey.Version);
+                    samav2cmd.lockUnlock(key, SAMUnlockAction, SAMUnlockKeyId, SAMUnlockKeyId, SAMUnlockKey.Version);
                 }
             }
             catch (Exception ex)
             {
-                log.Error("Activate Mifare SAM failed.", ex);
+                log.Error("Lock/Unlock SAM failed.", ex);
                 if (SnackbarMessageQueue != null)
                     SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
             }
