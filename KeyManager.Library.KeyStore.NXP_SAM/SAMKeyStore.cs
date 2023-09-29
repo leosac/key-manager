@@ -559,7 +559,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         public void ActivateMifareSAM(SAMAV2ISO7816Commands av2cmd, byte keyno, DESFireKeyType keyType, byte keyVersion, string? keyValue)
         {
             var key = CreateDESFireKey(keyType, keyVersion, keyValue);
-            av2cmd.lockUnlock(key, SAMLockUnlock.SwitchAV2Mode /* AV3 = Active Mifare SAM */, keyno, keyno, keyVersion);
+            av2cmd.lockUnlock(key, SAMLockUnlock.SwitchAV2Mode /* AV3 = Active Mifare SAM */, keyno, 0, 0);
             log.Info("Mifare SAM features activation completed.");
         }
 
@@ -570,7 +570,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             key.setKeyType(DESFireKeyType.DF_KEY_AES);
             key.setKeyVersion(keyVersion);
             key.fromString(keyValue ?? "");
-            av2cmd.lockUnlock(key, SAMLockUnlock.Unlock, keyEntry, 0x00, 0x00);
+            av2cmd.lockUnlock(key, SAMLockUnlock.Unlock, keyEntry, 0, 0);
             log.Info("SAM unlocked.");
         }
 

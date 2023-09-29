@@ -9,6 +9,8 @@ using System.ComponentModel;
 using System.Windows.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Windows.Threading;
+using System.Windows.Input;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
@@ -18,7 +20,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public KeyEntriesControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
             _snackbarMessageQueue = snackbarMessageQueue;
+            _identifierLock = new object();
             Identifiers = new ObservableCollection<SelectableKeyEntryId>();
+            BindingOperations.EnableCollectionSynchronization(Identifiers, _identifierLock);
             WizardFactories = new ObservableCollection<WizardFactory>(WizardFactory.RegisteredFactories);
 
             CreateKeyEntryCommand = new RelayCommand(
@@ -160,6 +164,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         }
 
         protected ISnackbarMessageQueue _snackbarMessageQueue;
+        private object _identifierLock;
         private KeyStore.KeyStore? _keyStore;
         private KeyEntryClass _keClass;
         private bool _showSelection;
@@ -407,16 +412,30 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public async Task RefreshKeyEntries()
         {
-            Identifiers.Clear();
+            lock (_identifierLock)
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                Identifiers.Clear();
+            }
             if (KeyStore != null)
             {
-                foreach (var id in await KeyStore.GetAll(_keClass))
+                var ids = await KeyStore.GetAll(_keClass);
+                foreach (var id in ids)
                 {
-                    Identifiers.Add(new SelectableKeyEntryId() {
-                        Selected = false,
-                        KeyEntryId = id
-                    });
+                    lock (_identifierLock)
+                    {
+                        Identifiers.Add(new SelectableKeyEntryId()
+                        {
+                            Selected = false,
+                            KeyEntryId = id
+                        });
+                    }
                 }
+            }
+
+            lock (_identifierLock)
+            {
+                Mouse.OverrideCursor = null;
             }
         }
 

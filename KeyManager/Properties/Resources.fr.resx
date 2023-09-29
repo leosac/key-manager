@@ -192,6 +192,9 @@
   <data name="RefreshFavorites" xml:space="preserve">
     <value>Actualiser les favoris</value>
   </data>
+  <data name="RefreshKeyEntries" xml:space="preserve">
+    <value>Actualiser les enregistrements de clés</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Enregistrer</value>
   </data>

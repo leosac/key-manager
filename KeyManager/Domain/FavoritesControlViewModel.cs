@@ -7,6 +7,7 @@ using Leosac.KeyManager.Library.UI.Domain;
 using Leosac.WpfApp.Domain;
 using MaterialDesignThemes.Wpf;
 using System;
+using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Domain
 {
@@ -16,7 +17,6 @@ namespace Leosac.KeyManager.Domain
 
         public FavoritesControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
-            _favorites = Favorites.GetSingletonInstance();
             RefreshFavoritesCommand = new RelayCommand(
                 () =>
                 {
@@ -81,9 +81,24 @@ namespace Leosac.KeyManager.Domain
             set => SetProperty(ref _favorites, value);
         }
 
+        private bool _isLoadingFavorites;
+
+        public bool IsLoadingFavorites
+        {
+            get => _isLoadingFavorites;
+            set => SetProperty(ref _isLoadingFavorites, value);
+        }
+
         public void RefreshFavorites()
         {
+            IsLoadingFavorites = true;
             Favorites = Favorites.GetSingletonInstance(true);
+            Task.Run(async () =>
+            {
+                // Just to be sure the animation is visible long enough...
+                await Task.Delay(500);
+                IsLoadingFavorites = false;
+            });
         }
 
         public RelayCommand? RefreshFavoritesCommand { get; set; }

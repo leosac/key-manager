@@ -198,6 +198,9 @@
   <data name="RefreshFavorites" xml:space="preserve">
     <value>Refresh Favorites</value>
   </data>
+  <data name="RefreshKeyEntries" xml:space="preserve">
+    <value>Refresh key entries</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>

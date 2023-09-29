@@ -3,7 +3,6 @@ using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
-using Leosac.WpfApp.Domain;
 using Leosac.WpfApp;
 using MaterialDesignThemes.Wpf;
 using System;
@@ -14,6 +13,7 @@ using System.Windows.Controls;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Windows.Input;
 
 namespace Leosac.KeyManager.Domain
 {
@@ -26,6 +26,7 @@ namespace Leosac.KeyManager.Domain
             _snackbarMessageQueue = snackbarMessageQueue;
             Tabs = new ObservableCollection<TabItem>();
             _keModels = new List<KeyEntriesControlViewModel>();
+            RefreshKeyEntriesCommand = new AsyncRelayCommand(() => RefreshKeyEntries(500));
             SaveFavoriteCommand = new RelayCommand(
                 () =>
                 {
@@ -79,9 +80,18 @@ namespace Leosac.KeyManager.Domain
             set => SetProperty(ref _progressMaximum, value);
         }
 
+        private bool _isLoadingKeyEntries;
+        public bool IsLoadingKeyEntries
+        {
+            get => _isLoadingKeyEntries;
+            set => SetProperty(ref _isLoadingKeyEntries, value);
+        }
+
         public ObservableCollection<TabItem> Tabs { get; set; }
 
         public RelayCommand? HomeCommand { get; set; }
+
+        public AsyncRelayCommand RefreshKeyEntriesCommand { get; }
 
         public RelayCommand SaveFavoriteCommand { get; }
 
@@ -101,6 +111,7 @@ namespace Leosac.KeyManager.Domain
         {
             if (KeyStore != null)
             {
+                Mouse.OverrideCursor = Cursors.Wait;
                 await KeyStore.Open();
                 var classes = KeyStore.SupportedClasses;
                 foreach (var kclass in classes)
@@ -109,15 +120,30 @@ namespace Leosac.KeyManager.Domain
                     _keModels.Add(model);
                     Tabs.Add(new TabItem()
                     {
-                        Header = String.Format("{0} Key Entries", kclass.ToString()),
+                        Header = string.Format("{0} Key Entries", kclass.ToString()),
                         Content = new KeyEntriesControl()
                         {
                             DataContext = model
                         }
                     });
-                    await model.RefreshKeyEntries();
                 }
+                Mouse.OverrideCursor = null;
+                await RefreshKeyEntries();
             }
+        }
+
+        public async Task RefreshKeyEntries(int delay = 0)
+        {
+            IsLoadingKeyEntries = true;
+            if (delay > 0)
+            {
+                await Task.Delay(delay);
+            }
+            foreach (var model in _keModels)
+            {
+                await model.RefreshKeyEntries();
+            }
+            IsLoadingKeyEntries = false;
         }
 
         public async Task EditFavorite()

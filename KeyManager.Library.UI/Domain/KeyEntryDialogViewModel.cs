@@ -42,7 +42,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             BeforeSubmitCommand = new RelayCommand(
                 () =>
                 {
-                    DialogHost.CloseDialogCommand.Execute(null, null);
+                    DialogHost.CloseDialogCommand.Execute(KeyEntry, null);
                 }, CanSubmit);
         }
 

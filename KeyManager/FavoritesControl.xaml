@@ -14,6 +14,7 @@
              xmlns:wpfappdomain="clr-namespace:Leosac.WpfApp.Domain;assembly=WpfApp"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance domain:FavoritesControlViewModel}"
+             Loaded="userControl_Loaded"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <materialDesign:BooleanToVisibilityConverter x:Key="ReverseBoolToVisibleConverter" TrueValue="Collapsed" FalseValue="Visible" />
@@ -26,10 +27,17 @@
     <DockPanel LastChildFill="True">
         <DockPanel DockPanel.Dock="Top" Margin="15,5,15,5">
             <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                <Button Style="{StaticResource MaterialDesignFloatingActionButton}" Command="{Binding RefreshFavoritesCommand}" ToolTip="{x:Static properties:Resources.RefreshFavorites}" Margin="5">
+                <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
+                        Command="{Binding RefreshFavoritesCommand}"
+                        materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                        materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsLoadingFavorites}"
+                        materialDesign:ButtonProgressAssist.Value="-1"
+                        ToolTip="{x:Static properties:Resources.RefreshFavorites}" Margin="5">
                     <materialDesign:PackIcon Kind="Reload" Height="24" Width="24" Cursor="Hand" />
                 </Button>
-                <Button Style="{StaticResource MaterialDesignFloatingActionButton}" Command="{Binding CreateFavoriteCommand}"  ToolTip="{x:Static properties:Resources.NewFavorite}" Margin="5">
+                <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
+                        Command="{Binding CreateFavoriteCommand}"
+                        ToolTip="{x:Static properties:Resources.NewFavorite}" Margin="5">
                     <materialDesign:PackIcon Kind="StarAdd" Height="24" Width="24" Cursor="Hand" />
                 </Button>
             </WrapPanel>

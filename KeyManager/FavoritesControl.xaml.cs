@@ -29,5 +29,10 @@ namespace Leosac.KeyManager
         {
             InitializeComponent();
         }
+
+        private void userControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            (DataContext as FavoritesControlViewModel)?.RefreshFavorites();
+        }
     }
 }

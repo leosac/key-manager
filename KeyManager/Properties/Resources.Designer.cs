@@ -304,6 +304,15 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh key entries.
+        /// </summary>
+        public static string RefreshKeyEntries {
+            get {
+                return ResourceManager.GetString("RefreshKeyEntries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string Save {
