@@ -103,6 +103,22 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     if (String.Compare(genericType, "SAM") >= 0)
                     {
                         Chip = chip;
+
+                        var cmd = chip.getCommands();
+                        LibLogicalAccess.Card.SAMVersion? version = null;
+                        if (cmd is SAMAV2ISO7816Commands av1cmd)
+                        {
+                            version = av1cmd.getVersion();
+                        }
+                        else if (cmd is SAMAV2ISO7816Commands av2cmd)
+                        {
+                            version = av2cmd.getVersion();
+                        }
+
+                        if (version != null)
+                        {
+                            log.Info(string.Format("SAM Version {0}.{1}, UID: {2}", version.software.majorversion, version.software.minorversion, Convert.ToHexString(version.manufacture.uniqueserialnumber)));
+                        }
                     }
                     else
                     {

@@ -122,16 +122,28 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 var chip = (KeyStore as SAMKeyStore)?.Chip;
                 var cmd = chip?.getCommands();
                 var ctype = chip?.getCardType();
+                var rctype = string.Empty;
 
                 LibLogicalAccess.Card.SAMVersion? version = null;
                 if (cmd is SAMAV1ISO7816Commands samav1cmd)
+                {
                     version = samav1cmd.getVersion();
+                    rctype = samav1cmd.getSAMTypeFromSAM();
+                }
                 else if (cmd is SAMAV2ISO7816Commands samav2cmd)
+                {
                     version = samav2cmd.getVersion();
+                    rctype = samav2cmd.getSAMTypeFromSAM();
+                }
 
                 var msg = string.Format("Card Type: {0}", ctype);
+                if (!string.IsNullOrEmpty(rctype))
+                {
+                    msg += Environment.NewLine + string.Format("Real Card Type: {0}", rctype);
+                }
                 if (version != null)
                 {
+                    msg += Environment.NewLine + string.Format("UID: {0}", Convert.ToHexString(version.manufacture.uniqueserialnumber));
                     msg += Environment.NewLine + string.Format("Software Version: {0}.{1}", version.software.majorversion, version.software.minorversion);
                     msg += Environment.NewLine + string.Format("Hardware Version: {0}.{1}", version.hardware.majorversion, version.hardware.minorversion);
                 }
