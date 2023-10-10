@@ -1,11 +1,6 @@
 ﻿using Net.Pkcs11Interop.Common;
 using Net.Pkcs11Interop.HighLevelAPI;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 {
@@ -59,14 +54,25 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
         public KeyEntryVariant CreateVariantFromCKK(CKK ckk)
         {
             var algo = ckk.ToString().Remove(0, 4);
-            var variant = new KeyEntryVariant() { Name = algo };
-            var tags = new string[]
+            return CreateVariantFromAlgo(algo, GetKeySize(ckk));
+        }
+
+        private uint GetKeySize(CKK ckk)
+        {
+            uint size = 0;
+            if (ckk == CKK.CKK_DES)
             {
-                    algo,
-                    KClass.ToString()
-            };
-            variant.KeyContainers.Add(new KeyContainer("Key", new Key(tags, KeyHelper.GetBlockSize(tags))));
-            return variant;
+                size = 8;
+            }
+            else if (ckk == CKK.CKK_DES2 || ckk == CKK.CKK_AES)
+            {
+                size = 16;
+            }
+            else if (ckk == CKK.CKK_DES3)
+            {
+                size = 24;
+            }
+            return size;
         }
 
         public static KeyEntryClass GetKeyEntryClassFromCKK(CKK ckk)

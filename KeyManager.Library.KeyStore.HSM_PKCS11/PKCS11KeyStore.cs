@@ -1,14 +1,6 @@
 ﻿using Net.Pkcs11Interop.Common;
 using Net.Pkcs11Interop.HighLevelAPI;
-using Newtonsoft.Json;
-using Org.BouncyCastle.Asn1.Cms;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 {
