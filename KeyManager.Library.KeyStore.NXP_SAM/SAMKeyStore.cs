@@ -349,7 +349,9 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 }
             }
 
-            foreach (var change in changes)
+            // We sort the changes to update change key reference last
+            var ochanges = changes.Order(new SAMKeyEntryComparer(GetSAMProperties()));
+            foreach (var change in ochanges)
             {
                 await Update(change);
             }
