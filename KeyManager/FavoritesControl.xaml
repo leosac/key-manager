@@ -59,7 +59,7 @@
                                                      materialDesign:TextFieldAssist.HasClearButton="True" Margin="5"
                                                      materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
                                                      Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
-                                                     materialDesign:PasswordBoxAssist.Password="{Binding Properties.Secret}"
+                                                     materialDesign:PasswordBoxAssist.Password="{Binding Properties.Secret, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                      MaxLength="{Binding Properties.SecretMaxLength, Mode=OneWay}"
                                                      Visibility="{Binding Properties.StoreSecret, Converter={StaticResource ReverseBoolToVisibleConverter}}"/>
                                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">

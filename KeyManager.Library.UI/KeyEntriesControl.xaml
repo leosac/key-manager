@@ -20,6 +20,7 @@
             </ResourceDictionary.MergedDictionaries>
             <s:Boolean x:Key="True">True</s:Boolean>
             <s:Boolean x:Key="False">False</s:Boolean>
+            <materialDesign:NullableToVisibilityConverter x:Key="NullableToVisibilityConverter" />
             <materialDesign:BooleanToVisibilityConverter x:Key="BoolToVisibleConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
@@ -157,9 +158,13 @@
                                             </StackPanel>
                                         </materialDesign:PopupBox>
                                     </WrapPanel>
-                                    <TextBox Text="{Binding Path=KeyEntryId.Id, Mode=OneWay}" IsReadOnly="True" Margin="10"
-                                                       materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"
-                                                       materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifier}"/>
+                                    <DockPanel>
+                                        <materialDesign:Chip DockPanel.Dock="Right" Content="{Binding Path=KeyEntryId.Label, Mode=OneWay}" Margin="10"
+                                                 Visibility="{Binding Path=KeyEntryId.Label, Converter={StaticResource NullableToVisibilityConverter}}" />
+                                        <TextBox Text="{Binding Path=KeyEntryId.Id, Mode=OneWay}" IsReadOnly="True" Margin="10"
+                                                 materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"
+                                                 materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifier}"/>
+                                    </DockPanel>
                                 </DockPanel>
                             </Grid>
                         </Border>

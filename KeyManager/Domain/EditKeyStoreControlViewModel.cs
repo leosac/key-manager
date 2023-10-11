@@ -145,9 +145,16 @@ namespace Leosac.KeyManager.Domain
             {
                 await Task.Delay(delay);
             }
-            foreach (var model in _keModels)
+            try
             {
-                await model.RefreshKeyEntries();
+                foreach (var model in _keModels)
+                {
+                    await model.RefreshKeyEntries();
+                }
+            }
+            catch(Exception ex)
+            {
+                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
             }
             IsLoadingKeyEntries = false;
         }

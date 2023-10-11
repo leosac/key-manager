@@ -8,6 +8,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
 {
     public class LCPKeyStore : KeyStore
     {
+        const string PLACEHOLDER = "Key Store Placeholder";
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         private IAuthenticationAPI? _authAPI;
@@ -142,11 +143,11 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
                         }
                         else
                         {
-                            kc.Key.Link.KeyStoreFavorite = key.KeyStore;
+                            kc.Key.Link.KeyStoreFavorite = key.KeyStore ?? PLACEHOLDER;
                             kc.Key.Link.KeyIdentifier.Id = key.KeyStoreReference;
                         }
                     }
-                    ke.LCPProperties!.Scope = key.Scope.ToString();
+                    ke.LCPProperties!.Scope = key.Scope;
                     ke.LCPProperties.ScopeDiversifier = key.ScopeDiversifier;
                     log.Info(string.Format("Key entry `{0}` retrieved.", identifier));
                 }
@@ -162,12 +163,13 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             CheckAuthentication();
             var entries = new List<KeyEntryId>();
 
-            var keyIds = await _keyAPI!.GetAllIds();
-            foreach (var id in keyIds)
+            var keys = await _keyAPI!.GetAll();
+            foreach (var k in keys)
             {
                 entries.Add(new KeyEntryId()
                 {
-                    Id = id.ToString()
+                    Id = k.Id.ToString(),
+                    Label = k.Name
                 });
             }
 
@@ -203,20 +205,22 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
         {
             log.Info("Opening the key store...");
 
+            var p = GetLCPProperties();
+            var apiRoot = string.Format("{0}/api", p.ServerAddress);
+            _authAPI = RestService.For<IAuthenticationAPI>(apiRoot);
+            var authr = await _authAPI.Authenticate(new AuthenticateWithUserPwdRequest
+            {
+                UserName = p.Username,
+                Password = p.Secret
+            });
+            _authToken = authr.TokenValue;
+
             var refitSettings = new RefitSettings(new SystemTextJsonContentSerializer(LCPSerializationHelper.CreateSerializerOptions()))
             {
                 AuthorizationHeaderValueGetter = (request, cancel) =>
                     Task.FromResult(_authToken ?? string.Empty)
             };
-
-            _authAPI = RestService.For<IAuthenticationAPI>(GetLCPProperties().ServerAddress);
-            var authr = await _authAPI.Authenticate(new AuthenticateWithUserPwdRequest
-            {
-                UserName = GetLCPProperties().Username,
-                Password = GetLCPProperties().Secret
-            });
-            _authToken = authr.TokenValue;
-            _keyAPI = RestService.For<ICredentialKeyAPI>(string.Format("{0}/CredentialKey", GetLCPProperties().ServerAddress), refitSettings);
+            _keyAPI = RestService.For<ICredentialKeyAPI>(string.Format("{0}/CredentialKey", apiRoot), refitSettings);
 
             log.Info("Key Store opened.");
         }
@@ -289,7 +293,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             key.Value = (rawkey != null) ? Convert.ToHexString(rawkey) : null;
             if (!string.IsNullOrEmpty(kc.Key.Link?.KeyStoreFavorite))
             {
-                key.KeyStore = kc.Key.Link.KeyStoreFavorite;
+                key.KeyStore = kc.Key.Link.KeyStoreFavorite != PLACEHOLDER ? kc.Key.Link.KeyStoreFavorite : null;
                 key.KeyStoreReference = kc.Key.Link.KeyIdentifier?.Id;
                 key.KeyStoreType = "sam"; // TODO: get the referenced key store type here
             }
@@ -304,9 +308,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             }
             if (properties != null)
             {
-                var scope = CredentialKeyScope.Template;
-                Enum.TryParse(properties.Scope, out scope);
-                key.Scope = scope;
+                key.Scope = properties.Scope;
                 key.ScopeDiversifier = properties.ScopeDiversifier;
             }
             return key;

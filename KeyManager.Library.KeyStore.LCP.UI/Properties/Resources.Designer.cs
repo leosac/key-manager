@@ -79,6 +79,24 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scope.
+        /// </summary>
+        public static string Scope {
+            get {
+                return ResourceManager.GetString("Scope", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scope Diversifier.
+        /// </summary>
+        public static string ScopeDiversifier {
+            get {
+                return ResourceManager.GetString("ScopeDiversifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Server.
         /// </summary>
         public static string ServerAddress {
