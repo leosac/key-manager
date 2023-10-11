@@ -132,4 +132,7 @@
   <data name="EncryptionKeyHelper" xml:space="preserve">
     <value>Clé de chiffrement maitre pour le stockage des clés sur le disque</value>
   </data>
+  <data name="StoreSecret" xml:space="preserve">
+    <value>Enregistrer</value>
+  </data>
 </root>

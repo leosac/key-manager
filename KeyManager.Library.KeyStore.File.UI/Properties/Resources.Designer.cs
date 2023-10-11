@@ -104,5 +104,14 @@ namespace Leosac.KeyManager.Library.KeyStore.File.UI.Properties {
                 return ResourceManager.GetString("EncryptionKeyHelper", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string StoreSecret {
+            get {
+                return ResourceManager.GetString("StoreSecret", resourceCulture);
+            }
+        }
     }
 }

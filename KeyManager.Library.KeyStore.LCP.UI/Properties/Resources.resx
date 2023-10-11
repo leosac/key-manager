@@ -129,6 +129,9 @@
   <data name="ServerAddressHelper" xml:space="preserve">
     <value>Server address</value>
   </data>
+  <data name="StoreSecret" xml:space="preserve">
+    <value>Save</value>
+  </data>
   <data name="Username" xml:space="preserve">
     <value>Username</value>
   </data>

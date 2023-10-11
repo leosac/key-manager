@@ -7,6 +7,11 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP.UI
 {
     public class LCPKeyStoreUIFactory : KeyStoreUIFactory
     {
+        public LCPKeyStoreUIFactory()
+        {
+            targetFactory = new LCPKeyStoreFactory();
+        }
+
         public override string Name => "Leosac Credential Provisioning Server";
 
         public override Type GetPropertiesType()

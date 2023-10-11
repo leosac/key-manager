@@ -112,22 +112,28 @@ namespace Leosac.KeyManager.Domain
             if (KeyStore != null)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
-                await KeyStore.Open();
-                var classes = KeyStore.SupportedClasses;
-                foreach (var kclass in classes)
+                try
                 {
-                    var model = new KeyEntriesControlViewModel(_snackbarMessageQueue) { KeyEntryClass = kclass, KeyStore = KeyStore };
-                    _keModels.Add(model);
-                    Tabs.Add(new TabItem()
+                    await KeyStore.Open();
+                    var classes = KeyStore.SupportedClasses;
+                    foreach (var kclass in classes)
                     {
-                        Header = string.Format("{0} Key Entries", kclass.ToString()),
-                        Content = new KeyEntriesControl()
+                        var model = new KeyEntriesControlViewModel(_snackbarMessageQueue) { KeyEntryClass = kclass, KeyStore = KeyStore };
+                        _keModels.Add(model);
+                        Tabs.Add(new TabItem()
                         {
-                            DataContext = model
-                        }
-                    });
+                            Header = string.Format("{0} Key Entries", kclass.ToString()),
+                            Content = new KeyEntriesControl()
+                            {
+                                DataContext = model
+                            }
+                        });
+                    }
                 }
-                Mouse.OverrideCursor = null;
+                finally
+                {
+                    Mouse.OverrideCursor = null;
+                }
                 await RefreshKeyEntries();
             }
         }

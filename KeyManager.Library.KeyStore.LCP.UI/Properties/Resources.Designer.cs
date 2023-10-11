@@ -97,6 +97,15 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string StoreSecret {
+            get {
+                return ResourceManager.GetString("StoreSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Username.
         /// </summary>
         public static string Username {

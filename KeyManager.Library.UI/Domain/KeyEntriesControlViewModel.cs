@@ -417,25 +417,31 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 Mouse.OverrideCursor = Cursors.Wait;
                 Identifiers.Clear();
             }
-            if (KeyStore != null)
+
+            try
             {
-                var ids = await KeyStore.GetAll(_keClass);
-                foreach (var id in ids)
+                if (KeyStore != null)
                 {
-                    lock (_identifierLock)
+                    var ids = await KeyStore.GetAll(_keClass);
+                    foreach (var id in ids)
                     {
-                        Identifiers.Add(new SelectableKeyEntryId()
+                        lock (_identifierLock)
                         {
-                            Selected = false,
-                            KeyEntryId = id
-                        });
+                            Identifiers.Add(new SelectableKeyEntryId()
+                            {
+                                Selected = false,
+                                KeyEntryId = id
+                            });
+                        }
                     }
                 }
             }
-
-            lock (_identifierLock)
+            finally
             {
-                Mouse.OverrideCursor = null;
+                lock (_identifierLock)
+                {
+                    Mouse.OverrideCursor = null;
+                }
             }
         }
 

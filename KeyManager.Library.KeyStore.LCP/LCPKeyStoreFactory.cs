@@ -14,7 +14,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
 
         public override Type GetPropertiesType()
         {
-            return typeof(LCPKeyStoreFactory);
+            return typeof(LCPKeyStoreProperties);
         }
 
         public override KeyStoreProperties CreateKeyStoreProperties()

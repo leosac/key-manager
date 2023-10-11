@@ -132,4 +132,7 @@
   <data name="EncryptionKeyHelper" xml:space="preserve">
     <value>Master Encryption Key for key storage on disk</value>
   </data>
+  <data name="StoreSecret" xml:space="preserve">
+    <value>Save</value>
+  </data>
 </root>
