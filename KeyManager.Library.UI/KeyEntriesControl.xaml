@@ -86,7 +86,9 @@
                                     <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
                                             Command="{Binding ToggleSelectionCommand}"
                                             ToolTip="{x:Static properties:Resources.ToggleSelectAll}" Margin="5">
-                                        <materialDesign:PackIcon Kind="CheckAll" Height="24" Width="24" Cursor="Hand" />
+                                        <materialDesign:Badged BadgeColorZoneMode="PrimaryDark" Badge="{Binding Identifiers.Count}">
+                                            <materialDesign:PackIcon Kind="CheckAll" Height="24" Width="24" Cursor="Hand" />
+                                        </materialDesign:Badged>
                                     </Button>
                                     <Button x:Name="btnDeleteKeyEntry" Style="{StaticResource MaterialDesignFloatingActionButton}"
                                             Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
