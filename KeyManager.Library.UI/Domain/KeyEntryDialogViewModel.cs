@@ -11,6 +11,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
     {
         public KeyEntryDialogViewModel()
         {
+            _submitButtonText = Leosac.KeyManager.Library.UI.Properties.Resources.OK;
             KeyEntryFactories = new ObservableCollection<KeyEntryItem>();
             foreach (var factory in KeyEntryUIFactory.RegisteredFactories)
             {
@@ -48,6 +49,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         private bool _canChangeFactory = true;
         private bool _autoCreate = true;
+        private string _submitButtonText;
         private KeyEntryClass _kClass = KeyEntryClass.Symmetric;
         private KeyEntry? _keyEntry;
         private KeyEntryItem? _selectedFactoryItem;
@@ -99,6 +101,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             get => _autoCreate;
             set => SetProperty(ref _autoCreate, value);
+        }
+
+        public string SubmitButtonText
+        {
+            get => _submitButtonText;
+            set => SetProperty(ref _submitButtonText, value);
         }
 
         public void RefreshVariants()
