@@ -8,8 +8,9 @@ Leosac Key Manager is a standalone application to generate, manage and re-deploy
 ## Key Store
 
  * Local Key Store
- * NXP SAM AV2 Key Store
+ * NXP SAM AV2 / AV3 Key Store
  * HSM PKCS#11 Key Store
+ * Leosac Credential Provisioning Server Key Store
 
 ## Key Generation
 
