@@ -11,12 +11,14 @@
 			<ComponentGroupRef Id="KeyManagerComponents" />
       <ComponentGroupRef Id="FilePluginComponents" />
       <ComponentGroupRef Id="HSM_PKCS11PluginComponents" />
+      <ComponentGroupRef Id="LCPPluginComponents" />
       <ComponentGroupRef Id="MemoryPluginComponents" />
       <ComponentGroupRef Id="NXP_SAMPluginComponents" />
       <ComponentGroupRef Id="NativeWinx64RuntimeComponents" />
       <ComponentGroupRef Id="NativeWinx86RuntimeComponents" />
       <ComponentGroupRef Id="DependenciesComponents" />
       <ComponentGroupRef Id="HSM_PKCS11PluginDependenciesComponents" />
+      <ComponentGroupRef Id="LCPPluginDependenciesComponents" />
       <ComponentGroupRef Id="NXP_SAMPluginDependenciesComponents" />
 		</Feature>
     <Feature Id="LibLogicalAccessFeature" Title="!(loc.RFIDMiddleware)" Description="!(loc.RFIDMiddlewareDescr)" Level="1" AllowAbsent="no">
@@ -28,6 +30,7 @@
         <ComponentGroupRef Id="DependenciesResourcesFR" />
         <ComponentGroupRef Id="FilePluginResourcesFR" />
         <ComponentGroupRef Id="HSM_PKCS11PluginResourcesFR" />
+        <ComponentGroupRef Id="LCPPluginResourcesFR" />
         <ComponentGroupRef Id="NXP_SAMPluginResourcesFR" />
       </Feature>
     </Feature>
@@ -94,6 +97,9 @@
               </Directory>
               <Directory Id="NXP_SAMPLUGIN" Name="NXP_SAM">
                 <Directory Id="NXP_SAMPLUGINFR" Name="fr" />
+              </Directory>
+              <Directory Id="LCPPLUGIN" Name="LCP">
+                <Directory Id="LCPPLUGINFR" Name="fr" />
               </Directory>
             </Directory>
             <Directory Id="APPRUNTIMES" Name="runtimes">
@@ -177,6 +183,14 @@
         <File Id="___var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.TargetPath)" />
       </Component>
     </ComponentGroup>
+    <ComponentGroup Id="LCPPluginComponents" Directory="LCPPLUGIN">
+      <Component Id="KeyManagerLibraryLCPComponent">
+        <File Id="___var.KeyManager.Library.KeyStore.LCP.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.LCP.TargetPath)" />
+      </Component>
+      <Component Id="KeyManagerLibraryLCPUIComponent">
+        <File Id="___var.KeyManager.Library.KeyStore.LCP.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.LCP.UI.TargetPath)" />
+      </Component>
+    </ComponentGroup>
     <ComponentGroup Id="MemoryPluginComponents" Directory="MEMORYPLUGIN">
       <Component Id="KeyManagerLibraryMemoryComponent">
         <File Id="___var.KeyManager.Library.KeyStore.Memory.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.Memory.TargetPath)" />
@@ -211,6 +225,11 @@
     <ComponentGroup Id="HSM_PKCS11PluginResourcesFR" Directory="HSM_PKCS11PLUGINFR">
       <Component Id="KeyManagerLibraryKeyStoreHSM_PKCS11UIResourcesFRComponent">
         <File Id="___var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.UI.TargetDir)\fr\KeyManager.Library.KeyStore.HSM_PKCS11.UI.resources.dll" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="LCPPluginResourcesFR" Directory="LCPPLUGINFR">
+      <Component Id="KeyManagerLibraryKeyStoreLCPUIResourcesFRComponent">
+        <File Id="___var.KeyManager.Library.KeyStore.LCP.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.LCP.UI.TargetDir)\fr\KeyManager.Library.KeyStore.LCP.UI.resources.dll" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="NXP_SAMPluginResourcesFR" Directory="NXP_SAMPLUGINFR">
@@ -280,6 +299,44 @@
     <ComponentGroup Id="HSM_PKCS11PluginDependenciesComponents" Directory="HSM_PKCS11PLUGIN">
       <Component Id="Pkcs11InteropComponent">
         <File Id="___var.Pkcs11Interop.dll_" Source="$(var.KeyManager.Library.KeyStore.HSM_PKCS11.TargetDir)\Pkcs11Interop.dll" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="LCPPluginDependenciesComponents" Directory="LCPPLUGIN">
+      <Component Id="CredentialProvisioningAPIComponent">
+        <File Id="___var.CredentialProvisioning.API.dll_" Source="$(var.KeyManager.Library.KeyStore.LCP.TargetDir)\CredentialProvisioning.API.dll" />
+      </Component>
+      <Component Id="CredentialProvisioningCoreComponent">
+        <File Id="___var.CredentialProvisioning.Core.dll_" Source="$(var.KeyManager.Library.KeyStore.LCP.TargetDir)\CredentialProvisioning.Core.dll" />
+      </Component>
+      <Component Id="CredentialProvisioningServerContractsComponent">
+        <File Id="___var.CredentialProvisioning.Server.Contracts.dll_" Source="$(var.KeyManager.Library.KeyStore.LCP.TargetDir)\CredentialProvisioning.Server.Contracts.dll" />
+      </Component>
+      <Component Id="MicrosoftExtensionsDependencyInjectionAbstractionsComponent">
+        <File Id="___var.Microsoft.Extensions.DependencyInjection.Abstractions.dll_" Source="$(var.KeyManager.Library.KeyStore.LCP.TargetDir)\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+      </Component>
+      <Component Id="MicrosoftExtensionsDependencyInjectionComponent">
+        <File Id="___var.Microsoft.Extensions.DependencyInjection.dll_" Source="$(var.KeyManager.Library.KeyStore.LCP.TargetDir)\Microsoft.Extensions.DependencyInjection.dll" />
+      </Component>
+      <Component Id="MicrosoftExtensionsHttpComponent">
+        <File Id="___var.Microsoft.Extensions.Http.dll_" Source="$(var.KeyManager.Library.KeyStore.LCP.TargetDir)\Microsoft.Extensions.Http.dll" />
+      </Component>
+      <Component Id="MicrosoftExtensionsLoggingAbstractionsComponent">
+        <File Id="___var.Microsoft.Extensions.Logging.Abstractions.dll_" Source="$(var.KeyManager.Library.KeyStore.LCP.TargetDir)\Microsoft.Extensions.Logging.Abstractions.dll" />
+      </Component>
+      <Component Id="MicrosoftExtensionsLoggingComponent">
+        <File Id="___var.Microsoft.Extensions.Logging.dll_" Source="$(var.KeyManager.Library.KeyStore.LCP.TargetDir)\Microsoft.Extensions.Logging.dll" />
+      </Component>
+      <Component Id="MicrosoftExtensionsOptionsComponent">
+        <File Id="___var.Microsoft.Extensions.Options.dll_" Source="$(var.KeyManager.Library.KeyStore.LCP.TargetDir)\Microsoft.Extensions.Options.dll" />
+      </Component>
+      <Component Id="MicrosoftExtensionsPrimitivesComponent">
+        <File Id="___var.Microsoft.Extensions.Primitives.dll_" Source="$(var.KeyManager.Library.KeyStore.LCP.TargetDir)\Microsoft.Extensions.Primitives.dll" />
+      </Component>
+      <Component Id="RefitComponent">
+        <File Id="___var.Refit.dll_" Source="$(var.KeyManager.Library.KeyStore.LCP.TargetDir)\Refit.dll" />
+      </Component>
+      <Component Id="RefitHttpClientFactoryComponent">
+        <File Id="___var.Refit.HttpClientFactory.dll_" Source="$(var.KeyManager.Library.KeyStore.LCP.TargetDir)\Refit.HttpClientFactory.dll" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="NXP_SAMPluginDependenciesComponents" Directory="NXP_SAMPLUGIN">
