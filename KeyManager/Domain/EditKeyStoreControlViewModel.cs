@@ -32,10 +32,7 @@ namespace Leosac.KeyManager.Domain
                 {
                     Flipper.FlipCommand.Execute(null, null);
                     var favorites = Favorites.GetSingletonInstance();
-                    if (favorites != null)
-                    {
-                        favorites.SaveToFile();
-                    }
+                    favorites?.SaveToFile();
                 });
         }
 
@@ -256,7 +253,7 @@ namespace Leosac.KeyManager.Domain
                                 {
                                     if (keModel.ShowSelection)
                                     {
-                                        var entries = keModel.Identifiers.Where(k => k.Selected).Select(k => k.KeyEntryId);
+                                        var entries = keModel.Identifiers.Where(k => k.Selected && k.KeyEntryId != null).Select(k => k.KeyEntryId!);
                                         await KeyStore.Publish(deststore,
                                             getFavoriteKeyStore,
                                             entries,

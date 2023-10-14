@@ -7,17 +7,17 @@ Leosac Key Manager is a standalone application to generate, manage and re-deploy
 
 ## Key Store
 
- * Local Key Store
- * NXP SAM AV2 / AV3 Key Store
- * HSM PKCS#11 Key Store
- * Leosac Credential Provisioning Server Key Store
+* Local Key Store
+* NXP SAM AV2 / AV3 Key Store
+* HSM PKCS#11 Key Store
+* Leosac Credential Provisioning Server Key Store
 
 ## Key Generation
 
- * Random
- * Password
- * Mnemonics (BIP-39)
- * Key Ceremony (Concat, Xor and Shamir Secret Sharing)
+* Random
+* Password
+* Mnemonics (BIP-39)
+* Key Ceremony (Concat, Xor and Shamir Secret Sharing)
  
 ## Out of scope
 It is not a key store / vault / server but a software to manage them.

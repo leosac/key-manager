@@ -32,7 +32,7 @@ namespace Leosac.KeyManager
             InitializeComponent();
         }
 
-        private void btnCloseKeyStore_Click(object sender, RoutedEventArgs e)
+        private void BtnCloseKeyStore_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is EditKeyStoreControlViewModel model)
             {
@@ -40,7 +40,7 @@ namespace Leosac.KeyManager
             }
         }
 
-        private void btnToggleFavorite_Checked(object sender, RoutedEventArgs e)
+        private void BtnToggleFavorite_Checked(object sender, RoutedEventArgs e)
         {
             if (DataContext is EditKeyStoreControlViewModel model)
             {
@@ -52,7 +52,7 @@ namespace Leosac.KeyManager
             }
         }
 
-        private void btnToggleFavorite_Unchecked(object sender, RoutedEventArgs e)
+        private void BtnToggleFavorite_Unchecked(object sender, RoutedEventArgs e)
         {
             if (DataContext is EditKeyStoreControlViewModel model)
             {
@@ -69,22 +69,22 @@ namespace Leosac.KeyManager
             }
         }
 
-        private void btnEdit_Click(object sender, RoutedEventArgs e)
+        private async void BtnEdit_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is EditKeyStoreControlViewModel model)
             {
-                model.EditFavorite();
+                await model.EditFavorite();
             }
         }
 
-        private void btnPublish_Click(object sender, RoutedEventArgs e)
+        private async void BtnPublish_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is EditKeyStoreControlViewModel model)
             {
                 var plan = MaintenancePlan.GetSingletonInstance();
                 if (!string.IsNullOrEmpty(plan.LicenseKey))
                 {
-                    model.Publish();
+                    await model.Publish();
                 }
                 else
                 {

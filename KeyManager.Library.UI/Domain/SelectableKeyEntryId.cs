@@ -12,8 +12,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _selected, value);
         }
 
-        private KeyEntryId _keyEntryId;
-        public KeyEntryId KeyEntryId
+        private KeyEntryId? _keyEntryId;
+        public KeyEntryId? KeyEntryId
         {
             get => _keyEntryId;
             set => SetProperty(ref _keyEntryId, value);

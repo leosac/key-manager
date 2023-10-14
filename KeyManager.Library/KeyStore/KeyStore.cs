@@ -150,10 +150,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, IEnumerable<KeyEntryId> ids, KeyEntryClass keClass, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
         {
             var changes = new List<IChangeKeyEntry>();
-            if (initCallback != null)
-            {
-                initCallback(this, keClass, ids.Count());
-            }
+            initCallback?.Invoke(this, keClass, ids.Count());
             foreach (var id in ids)
             {
                 var entry = await Get(id, keClass);
@@ -161,11 +158,13 @@ namespace Leosac.KeyManager.Library.KeyStore
                 {
                     if (entry.Link != null && entry.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(entry.Link.KeyStoreFavorite))
                     {
-                        var cryptogram = new KeyEntryCryptogram();
-                        cryptogram.Identifier = id;
-                        // TODO: we may want to have multiple wrapping keys later on
-                        cryptogram.WrappingKeyId = wrappingKeyId;
-                        cryptogram.WrappingContainerSelector = wrappingContainerSelector;
+                        var cryptogram = new KeyEntryCryptogram
+                        {
+                            Identifier = id,
+                            // TODO: we may want to have multiple wrapping keys later on
+                            WrappingKeyId = wrappingKeyId,
+                            WrappingContainerSelector = wrappingContainerSelector
+                        };
 
                         var ks = getFavoriteKeyStore(entry.Link.KeyStoreFavorite);
                         if (ks != null)
@@ -214,9 +213,9 @@ namespace Leosac.KeyManager.Library.KeyStore
             await store.Close();
         }
 
-        private string? ComputeDivInput(DivInputContext divContext, IList<DivInputFragment> divInput)
+        private static string? ComputeDivInput(DivInputContext divContext, IList<DivInputFragment> divInput)
         {
-            if (divInput != null && divInput.Count > 0)
+            if (divContext != null && divInput != null && divInput.Count > 0)
                 throw new NotImplementedException();
 
             return null;
@@ -224,18 +223,12 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         protected void OnKeyEntryRetrieved(KeyEntry keyEntry)
         {
-            if (KeyEntryRetrieved != null)
-            {
-                KeyEntryRetrieved(this, keyEntry);
-            }
+            KeyEntryRetrieved?.Invoke(this, keyEntry);
         }
 
         protected void OnKeyEntryUpdated(IChangeKeyEntry keyEntry)
         {
-            if (KeyEntryUpdated != null)
-            {
-                KeyEntryUpdated(this, keyEntry);
-            }
+            KeyEntryUpdated?.Invoke(this, keyEntry);
         }
 
         /// <summary>

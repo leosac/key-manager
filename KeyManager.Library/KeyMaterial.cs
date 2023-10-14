@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace Leosac.KeyManager.Library
 {
-    public class KeyMaterial : ObservableValidator
+    public partial class KeyMaterial : ObservableValidator
     {
         public const string PRIVATE_KEY = "Private Key";
         public const string PUBLIC_KEY = "Public Key";
@@ -16,14 +16,11 @@ namespace Leosac.KeyManager.Library
         }
 
         [JsonIgnore]
-        public EventHandler<string>? BeforeValueChanged;
+        public EventHandler<string>? BeforeValueChanged { get; set; }
 
         protected void OnBeforeValueChange(string value)
         {
-            if (BeforeValueChanged != null)
-            {
-                BeforeValueChanged(this, value);
-            }
+            BeforeValueChanged?.Invoke(this, value);
         }
 
         private string _value;
@@ -61,7 +58,7 @@ namespace Leosac.KeyManager.Library
                     case KeyValueFormat.HexStringWithSpace:
                         if (typeof(T) != typeof(string))
                             throw new InvalidCastException();
-                        v = Regex.Replace(value, ".{2}", "$0 ") as T;
+                        v = HexStringRegex().Replace(value, "$0 ") as T;
                         break;
                     case KeyValueFormat.Binary:
                     default:
@@ -91,17 +88,19 @@ namespace Leosac.KeyManager.Library
                 case KeyValueFormat.HexStringWithSpace:
                     {
                         var v = value as string;
-                        Value = v != null ? v : "";
+                        Value = v ?? string.Empty;
                     }
                     break;
                 case KeyValueFormat.Binary:
                 default:
                     {
-                        var v = value as byte[];
-                        Value = v != null ? Convert.ToHexString(v) : "";
+                        Value = value is byte[] v ? Convert.ToHexString(v) : string.Empty;
                     }
                     break;
             }
         }
+
+        [GeneratedRegex(".{2}")]
+        private static partial Regex HexStringRegex();
     }
 }

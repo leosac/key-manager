@@ -29,7 +29,9 @@
                         return int.Parse(kx.Identifier.Id ?? "0") - int.Parse(ky.Identifier.Id ?? "0");
                     }
                     catch
-                    { }
+                    {
+                        return 0;
+                    }
                 }
 
                 return 1;

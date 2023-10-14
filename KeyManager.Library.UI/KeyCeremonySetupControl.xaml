@@ -24,6 +24,6 @@
                   SelectedItem="{Binding SelectedCeremonyType, ElementName=userControl}"
                   materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyCeremonyTypeHelper}"
                   materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyCeremonyType}" />
-        <Button x:Name="btnCeremony" Grid.Row="3" Content="{x:Static properties:Resources.StartKeyCeremony}" Width="230" Margin="10" Click="btnCeremony_Click" />
+        <Button x:Name="btnCeremony" Grid.Row="3" Content="{x:Static properties:Resources.StartKeyCeremony}" Width="230" Margin="10" Click="BtnCeremony_Click" />
     </Grid>
 </UserControl>

@@ -14,7 +14,7 @@ namespace Leosac.KeyManager.Library
 
         public override byte[] ComputeKCV(Key key, byte[]? iv = null)
         {
-            var result = new byte[0];
+            byte[] result;
             var data = new byte[KeyHelper.GetBlockSize(key.Tags)];
             var paddediv = new byte[KeyHelper.GetBlockSize(key.Tags)];
             if (key.Tags.Contains("AES"))
@@ -31,9 +31,7 @@ namespace Leosac.KeyManager.Library
             }
             using (var ms = new MemoryStream())
             {
-                var crypto = KeyHelper.GetSymmetricAlgorithm(key, CipherMode.CBC, true);
-                if (crypto == null)
-                    throw new Exception("Unsupported key for KCV calcul.");
+                var crypto = KeyHelper.GetSymmetricAlgorithm(key, CipherMode.CBC, true) ?? throw new Exception("Unsupported key for KCV calcul.");
                 var parameters = new ParametersWithIV(new KeyParameter(key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary)), paddediv);
                 crypto.Init(true, parameters);
                 result = crypto.DoFinal(data);

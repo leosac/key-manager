@@ -41,7 +41,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 try
                 {
-                    if (KeyStore != null && identifier != null)
+                    if (KeyStore != null && identifier?.KeyEntryId != null)
                     {
                         var model = new KeyEntryDialogViewModel()
                         {
@@ -119,9 +119,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 var model = new ImportCryptogramDialogViewModel()
                 {
-                    CanChangeIdentifier = keyEntryId == null || !keyEntryId.KeyEntryId.IsConfigured()
+                    CanChangeIdentifier = keyEntryId?.KeyEntryId == null || !keyEntryId.KeyEntryId.IsConfigured()
                 };
-                if (keyEntryId != null)
+                if (keyEntryId?.KeyEntryId != null)
                 {
                     model.Cryptogram.Identifier = keyEntryId.KeyEntryId;
                 }
@@ -165,7 +165,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         }
 
         protected ISnackbarMessageQueue _snackbarMessageQueue;
-        private object _identifierLock;
+        private readonly object _identifierLock;
         private KeyStore.KeyStore? _keyStore;
         private KeyEntryClass _keClass;
         private bool _showSelection;
@@ -272,7 +272,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             try
             {
-                if (KeyStore != null)
+                if (KeyStore != null && identifier.KeyEntryId != null)
                 {
                     await KeyStore.Delete(identifier.KeyEntryId, _keClass);
                 }
@@ -295,7 +295,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             try
             {
-                if (KeyStore != null)
+                if (KeyStore != null && identifier.KeyEntryId != null)
                 {
                     await KeyStore.MoveUp(identifier.KeyEntryId, _keClass);
                 }
@@ -322,7 +322,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             try
             {
-                if (KeyStore != null)
+                if (KeyStore != null && identifier.KeyEntryId != null)
                 {
                     await KeyStore.MoveDown(identifier.KeyEntryId, _keClass);
                 }
@@ -458,7 +458,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 return true;
             }
 
-            if (obj is SelectableKeyEntryId s)
+            if (obj is SelectableKeyEntryId s && s.KeyEntryId != null)
             {
                 obj = s.KeyEntryId;
             }

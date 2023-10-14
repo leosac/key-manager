@@ -118,11 +118,13 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
                 var key = await _keyAPI!.Get(Guid.Parse(identifier.Id));
                 if (key != null)
                 {
-                    ke = new LCPKeyEntry();
-                    ke.Identifier = new KeyEntryId()
+                    ke = new LCPKeyEntry
                     {
-                        Id = key.Id.ToString(),
-                        Label = key.Name
+                        Identifier = new KeyEntryId
+                        {
+                            Id = key.Id.ToString(),
+                            Label = key.Name
+                        }
                     };
                     ke.Variant = ke.CreateVariantFromKeyType(key.KeyType);
                     if (ke.Variant != null && ke.Variant.KeyContainers.Count > 0)
@@ -186,9 +188,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
         public LCPKeyStoreProperties GetLCPProperties()
         {
             var p = Properties as LCPKeyStoreProperties;
-            if (p == null)
-                throw new KeyStoreException("Missing LCP key store properties.");
-            return p;
+            return p ?? throw new KeyStoreException("Missing LCP key store properties.");
         }
 
         public override Task MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
@@ -211,7 +211,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             var authr = await _authAPI.Authenticate(new AuthenticateWithUserPwdRequest
             {
                 UserName = p.Username,
-                Password = p.Secret
+                Password = p.Secret ?? string.Empty
             });
             _authToken = authr.TokenValue;
 
@@ -282,16 +282,19 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             log.Info(string.Format("Key entry `{0}` updated.", change.Identifier));
         }
 
-        private CredentialKey CreateCredentialKey(KeyEntryId identifier, KeyContainer kc, LCPKeyEntryProperties? properties)
+        private static CredentialKey CreateCredentialKey(KeyEntryId identifier, KeyContainer? kc, LCPKeyEntryProperties? properties)
         {
             var key = new CredentialKey();
             if (!string.IsNullOrEmpty(identifier.Id))
             {
                 key.Id = Guid.Parse(identifier.Id);
             }
-            var rawkey = kc.Key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary);
-            key.Value = (rawkey != null) ? Convert.ToHexString(rawkey) : null;
-            if (!string.IsNullOrEmpty(kc.Key.Link?.KeyStoreFavorite))
+            if (kc != null)
+            {
+                var rawkey = kc.Key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary);
+                key.Value = (rawkey != null) ? Convert.ToHexString(rawkey) : null;
+            }
+            if (!string.IsNullOrEmpty(kc?.Key.Link?.KeyStoreFavorite))
             {
                 key.KeyStore = kc.Key.Link.KeyStoreFavorite != PLACEHOLDER ? kc.Key.Link.KeyStoreFavorite : null;
                 key.KeyStoreReference = kc.Key.Link.KeyIdentifier?.Id;

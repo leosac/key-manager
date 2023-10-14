@@ -1,22 +1,10 @@
 ﻿using Leosac.KeyManager.Library.UI.Domain;
 using SecretSharingDotNet.Cryptography;
 using SecretSharingDotNet.Math;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Leosac.KeyManager.Library.UI
 {
@@ -60,7 +48,7 @@ namespace Leosac.KeyManager.Library.UI
 
         public static readonly DependencyProperty KeyValueProperty = DependencyProperty.Register(nameof(KeyValue), typeof(string), typeof(KeyCeremonySetupControl));
 
-        private void btnCeremony_Click(object sender, RoutedEventArgs e)
+        private void BtnCeremony_Click(object sender, RoutedEventArgs e)
         {
             var model = new KeyCeremonyDialogViewModel()
             {
@@ -76,7 +64,7 @@ namespace Leosac.KeyManager.Library.UI
             }
         }
 
-        private string ComputeKeyCeremony(KeyCeremonyType ceremonyType, string[] fragments)
+        private static string ComputeKeyCeremony(KeyCeremonyType ceremonyType, string[] fragments)
         {
             string keystr = string.Empty;
             switch (ceremonyType)
@@ -106,6 +94,7 @@ namespace Leosac.KeyManager.Library.UI
                     break;
 
                 case KeyCeremonyType.ShamirSecretSharing:
+                default:
                     {
                         var gcd = new ExtendedEuclideanAlgorithm<BigInteger>();
                         var combine = new ShamirsSecretSharing<BigInteger>(gcd);
