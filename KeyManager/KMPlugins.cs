@@ -19,7 +19,7 @@ namespace Leosac.KeyManager
             paths.AddRange(Directory.GetDirectories(root));
         }
 
-        private static List<string> paths;
+        private static readonly List<string> paths;
 
         public static void Load()
         {
@@ -64,8 +64,7 @@ namespace Leosac.KeyManager
         {
             if (type != null && typeof(T).IsAssignableFrom(type))
             {
-                var result = Activator.CreateInstance(type) as T;
-                if (result != null)
+                if (Activator.CreateInstance(type) is T result)
                 {
                     KMFactory<T>.Register(result);
                 }

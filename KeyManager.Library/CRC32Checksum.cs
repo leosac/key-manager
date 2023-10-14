@@ -6,11 +6,9 @@ namespace Leosac.KeyManager.Library
     {
         public override string Name => "CRC32";
 
-        public override byte[] ComputeKCV(Key key, byte[]? iv = null)
+        public override byte[] ComputeKCV(Key key, byte[]? iv)
         {
-            var rawkey = key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary);
-            if (rawkey == null)
-                throw new Exception("Key value is null");
+            var rawkey = key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary) ?? throw new Exception("Key value is null");
 
             // Use the IV as a Salt
             byte[] data;

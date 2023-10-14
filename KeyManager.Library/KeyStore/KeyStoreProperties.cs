@@ -22,7 +22,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         [JsonIgnore]
         public virtual int? SecretMaxLength => null;
 
-        private bool _storeSecret = false;
+        private bool _storeSecret;
         public bool StoreSecret
         {
             get => _storeSecret;

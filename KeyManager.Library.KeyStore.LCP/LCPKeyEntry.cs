@@ -4,7 +4,12 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
 {
     public class LCPKeyEntry : KeyEntry
     {
-        public LCPKeyEntry(KeyEntryClass kclass = KeyEntryClass.Symmetric)
+        public LCPKeyEntry() : this(KeyEntryClass.Symmetric)
+        {
+
+        }
+
+        public LCPKeyEntry(KeyEntryClass kclass)
         {
             Properties = new LCPKeyEntryProperties();
             _kclass = kclass;
@@ -28,29 +33,29 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             if (classFilter == null || classFilter == KeyEntryClass.Symmetric)
             {
                 var desvar = new KeyEntryVariant { Name = "DES" };
-                desvar.KeyContainers.Add(new KeyVersion("Key", 0,new Key(new string[] { "DES", KeyEntryClass.Symmetric.ToString() }, 16)));
+                desvar.KeyContainers.Add(new KeyVersion("Key", 0, new Key(new[] { "DES", KeyEntryClass.Symmetric.ToString() }, 16)));
                 variants.Add(desvar);
                 var tk3desvar = new KeyEntryVariant { Name = "TK3DES" };
-                tk3desvar.KeyContainers.Add(new KeyVersion("Key", 0, new Key(new string[] { "DES", KeyEntryClass.Symmetric.ToString() }, 24)));
+                tk3desvar.KeyContainers.Add(new KeyVersion("Key", 0, new Key(new[] { "DES", KeyEntryClass.Symmetric.ToString() }, 24)));
                 variants.Add(tk3desvar);
                 var aes128var = new KeyEntryVariant { Name = "AES128" };
-                aes128var.KeyContainers.Add(new KeyVersion("Key", 0,new Key(new string[] { "AES", KeyEntryClass.Symmetric.ToString() }, 16)));
+                aes128var.KeyContainers.Add(new KeyVersion("Key", 0,new Key(new[] { "AES", KeyEntryClass.Symmetric.ToString() }, 16)));
                 variants.Add(aes128var);
                 var aes256var = new KeyEntryVariant { Name = "AES256" };
-                aes256var.KeyContainers.Add(new KeyVersion("Key", 0,new Key(new string[] { "AES", KeyEntryClass.Symmetric.ToString() }, 32)));
+                aes256var.KeyContainers.Add(new KeyVersion("Key", 0,new Key(new[] { "AES", KeyEntryClass.Symmetric.ToString() }, 32)));
                 variants.Add(aes256var);
                 var hmacvar = new KeyEntryVariant { Name = "HMAC" };
-                hmacvar.KeyContainers.Add(new KeyVersion("Key", 0, new Key(new string[] { "HMAC", KeyEntryClass.Symmetric.ToString() })));
+                hmacvar.KeyContainers.Add(new KeyVersion("Key", 0, new Key(new[] { "HMAC", KeyEntryClass.Symmetric.ToString() })));
                 variants.Add(hmacvar);
             }
 
             if (classFilter == null || classFilter == KeyEntryClass.Asymmetric)
             {
                 var rsapubvar = new KeyEntryVariant { Name = "RSA Public Key" };
-                rsapubvar.KeyContainers.Add(new KeyVersion("Key", 0, new Key(new string[] { "RSA", KeyEntryClass.Asymmetric.ToString(), KeyEntryClass.PublicKey.ToString() })));
+                rsapubvar.KeyContainers.Add(new KeyVersion("Key", 0, new Key(new[] { "RSA", KeyEntryClass.Asymmetric.ToString(), KeyEntryClass.PublicKey.ToString() })));
                 variants.Add(rsapubvar);
                 var rsaprivar = new KeyEntryVariant { Name = "RSA Private Key" };
-                rsaprivar.KeyContainers.Add(new KeyVersion("Key", 0, new Key(new string[] { "RSA", KeyEntryClass.Asymmetric.ToString(), KeyEntryClass.PrivateKey.ToString() })));
+                rsaprivar.KeyContainers.Add(new KeyVersion("Key", 0, new Key(new[] { "RSA", KeyEntryClass.Asymmetric.ToString(), KeyEntryClass.PrivateKey.ToString() })));
                 variants.Add(rsaprivar);
             }
 

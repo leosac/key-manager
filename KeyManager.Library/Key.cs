@@ -22,11 +22,13 @@ namespace Leosac.KeyManager.Library
                     Materials.Add(new KeyMaterial());
                 }
             }
-            Tags = new ObservableCollection<string>(tags ?? new string[0]);
+            Tags = new ObservableCollection<string>(tags ?? Array.Empty<string>());
             _keySize = keySize;
             Policies = new ObservableCollection<IKeyPolicy>();
             if (keySize > 0)
+            {
                 Policies.Add(new KeyLengthPolicy(keySize));
+            }
             _link = new KeyLink();
         }
 
@@ -108,7 +110,7 @@ namespace Leosac.KeyManager.Library
 
         public T? GetAggregatedValue<T>(KeyValueFormat format = KeyValueFormat.HexString) where T : class
         {
-            T? ret = default(T);
+            T? ret = default;
             foreach (var m in Materials)
             {
                 var v = m.GetFormattedValue<T>(format);
@@ -131,17 +133,20 @@ namespace Leosac.KeyManager.Library
             return ret;
         }
 
-        public void SetAggregatedValue(object? value, KeyValueFormat format = KeyValueFormat.HexString)
+        public void SetAggregatedValue(object? value)
         {
-            if (value == null)
-                value = string.Empty;
+            SetAggregatedValue(value, KeyValueFormat.HexString);
+        }
+
+        public void SetAggregatedValue(object? value, KeyValueFormat format)
+        {
+            value ??= string.Empty;
 
             switch(format)
             {
                 case KeyValueFormat.HexString:
                     {
-                        var v = value as string;
-                        if (v != null)
+                        if (value is string v)
                         {
                             var values = v.Split(Environment.NewLine);
                             if (Materials.Count >= values.Length)

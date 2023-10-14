@@ -1,7 +1,6 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin;
 using Leosac.KeyManager.Library.Plugin.UI;
-using Leosac.WpfApp.Domain;
 using Leosac.WpfApp;
 using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
@@ -9,7 +8,6 @@ using System.ComponentModel;
 using System.Windows.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Windows.Threading;
 using System.Windows.Input;
 
 namespace Leosac.KeyManager.Library.UI.Domain
@@ -25,15 +23,15 @@ namespace Leosac.KeyManager.Library.UI.Domain
             BindingOperations.EnableCollectionSynchronization(Identifiers, _identifierLock);
             WizardFactories = new ObservableCollection<WizardFactory>(WizardFactory.RegisteredFactories);
 
-            CreateKeyEntryCommand = new RelayCommand(
-                () =>
+            CreateKeyEntryCommand = new AsyncRelayCommand(
+                async () =>
             {
                 var model = new KeyEntryDialogViewModel() { KClass = _keClass };
                 var dialog = new KeyEntryDialog()
                 {
                     DataContext = model
                 };
-                CreateKeyEntry(dialog);
+                await CreateKeyEntry(dialog);
             });
 
             EditKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
@@ -206,9 +204,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _showSelection, value);
         }
 
-        public RelayCommand CreateKeyEntryCommand { get; }
+        public AsyncRelayCommand CreateKeyEntryCommand { get; }
 
-        private async void CreateKeyEntry(KeyEntryDialog dialog)
+        private async Task CreateKeyEntry(KeyEntryDialog dialog)
         {
             var ret = await DialogHelper.ForceShow(dialog, "RootDialog");
             if (ret != null && dialog.DataContext is KeyEntryDialogViewModel model)
@@ -226,13 +224,13 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     catch (KeyStoreException ex)
                     {
                         SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
-                        CreateKeyEntry(dialog);
+                        await CreateKeyEntry(dialog);
                     }
                     catch (Exception ex)
                     {
                         log.Error("Creating the Key Entry failed unexpected.", ex);
                         SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
-                        CreateKeyEntry(dialog);
+                        await CreateKeyEntry(dialog);
                     }
                 }
             }

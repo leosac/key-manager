@@ -27,7 +27,9 @@
         {
             int length = (context.CurrentDivInput?.Length).GetValueOrDefault(0);
             if (PadByte <= length)
+            {
                 return string.Empty;
+            }
 
             var b = new byte[PadByte - length];
             for (int i = 0; i < b.Length; ++i)

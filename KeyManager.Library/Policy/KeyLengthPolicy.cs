@@ -20,10 +20,14 @@
             if (!string.IsNullOrEmpty(value))
             {
                 if (value.Length % 2 != 0)
+                {
                     throw new KeyPolicyException("Key is not correctly formated to be parsed to a byte array.");
+                }
 
                 if (value.Length / 2 != ByteLength)
+                {
                     throw new KeyPolicyException("Wrong key length.");
+                }
             }
         }
 

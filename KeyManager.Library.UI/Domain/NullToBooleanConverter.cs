@@ -10,7 +10,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 {
     public class NullToBooleanConverter : IValueConverter
     {
-        protected bool NullToBoolean(object parameter)
+        protected static bool NullToBoolean(object parameter)
         {
             if (parameter != null)
             {
@@ -27,12 +27,16 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             var b = NullToBoolean(parameter);
             if (value == null)
+            {
                 return b;
+            }
 
             if (value is string s)
             {
                 if (string.IsNullOrEmpty(s))
+                {
                     return b;
+                }
             }
 
             return !b;

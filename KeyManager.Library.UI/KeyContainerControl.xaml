@@ -8,13 +8,13 @@
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="500"
-             x:Name="keyControl" DataContextChanged="keyControl_DataContextChanged">
+             x:Name="keyControl" DataContextChanged="KeyControl_DataContextChanged">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
         <ContentControl x:Name="containerExtContent" Grid.Row="0" DataContext="{Binding DataContext, Mode=OneWay, ElementName=keyControl}" />
-        <ContentControl x:Name="keyContent" Grid.Row="1" DataContext="{Binding DataContext.Key, Mode=OneWay, ElementName=keyControl}" DataContextChanged="keyContent_DataContextChanged" HorizontalContentAlignment="Stretch" />
+        <ContentControl x:Name="keyContent" Grid.Row="1" DataContext="{Binding DataContext.Key, Mode=OneWay, ElementName=keyControl}" DataContextChanged="KeyContent_DataContextChanged" HorizontalContentAlignment="Stretch" />
     </Grid>
 </UserControl>

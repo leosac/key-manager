@@ -54,7 +54,7 @@ namespace Leosac.KeyManager.Library.UI
             {
                 Fragments = new ObservableCollection<string>(new string[Fragments])
             };
-            var dialog = new KeyCeremonyDialog()
+            var dialog = new KeyCeremonyDialog
             {
                 DataContext = model
             };

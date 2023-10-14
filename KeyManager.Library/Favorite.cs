@@ -3,7 +3,7 @@ using Leosac.KeyManager.Library.KeyStore;
 
 namespace Leosac.KeyManager.Library
 {
-    public class Favorite : ObservableValidator, IEquatable<Favorite>
+    public sealed class Favorite : ObservableValidator, IEquatable<Favorite>
     {
         public Favorite()
         {
@@ -42,13 +42,19 @@ namespace Leosac.KeyManager.Library
         public bool Equals(Favorite? p)
         {
             if (p is null)
+            {
                 return false;
+            }
 
             if (Object.ReferenceEquals(this, p))
+            {
                 return true;
+            }
 
             if (this.GetType() != p.GetType())
+            {
                 return false;
+            }
 
             return (Name == p.Name) && (Properties!.Equals(p.Properties));
         }

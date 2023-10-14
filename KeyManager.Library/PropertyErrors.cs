@@ -8,10 +8,10 @@ namespace Leosac.KeyManager.Library
 {
     public class PropertyErrors : ObservableObject, INotifyDataErrorInfo
     {
-        private static readonly IReadOnlyList<object> EmptyErrors = new object[0];
+        private static readonly IReadOnlyList<object> EmptyErrors = Array.Empty<object>();
         private readonly Action<DataErrorsChangedEventArgs> ownerOnErrorsChanged;
         private readonly Type? type;
-        private readonly ConcurrentDictionary<string, List<object>> propertyErrors = new ConcurrentDictionary<string, List<object>>();
+        private readonly ConcurrentDictionary<string, List<object>> propertyErrors = new();
 
         public PropertyErrors(INotifyDataErrorInfo owner, Action<DataErrorsChangedEventArgs> ownerOnErrorsChanged)
         {
@@ -21,16 +21,17 @@ namespace Leosac.KeyManager.Library
 
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
-        public bool HasErrors => this.propertyErrors.Count > 0;
+        public bool HasErrors => !propertyErrors.IsEmpty;
 
         public IEnumerable GetErrors(string? propertyName)
         {
             if (propertyName == null)
+            {
                 throw new ArgumentNullException(nameof(propertyName));
+            }
 
             Debug.Assert(this.type?.GetProperty(propertyName) != null, $"The type {this.type.Name} does not have a property named {propertyName}");
-            List<object>? errors;
-            return this.propertyErrors.TryGetValue(propertyName, out errors)
+            return this.propertyErrors.TryGetValue(propertyName, out List<object>? errors)
                 ? errors
                 : EmptyErrors;
         }
@@ -49,8 +50,7 @@ namespace Leosac.KeyManager.Library
         public void Remove(string propertyName, Predicate<object> filter)
         {
             Debug.Assert(this.type?.GetProperty(propertyName) != null, $"The type {this.type.Name} does not have a property named {propertyName}");
-            List<object>? errors;
-            if (this.propertyErrors.TryGetValue(propertyName, out errors))
+            if (this.propertyErrors.TryGetValue(propertyName, out List<object>? errors))
             {
                 errors.RemoveAll(filter);
                 if (errors.Count == 0)
@@ -63,8 +63,7 @@ namespace Leosac.KeyManager.Library
         public void Clear(string propertyName)
         {
             Debug.Assert(this.type?.GetProperty(propertyName) != null, $"The type {this.type.Name} does not have a property named {propertyName}");
-            List<object>? temp;
-            if (this.propertyErrors.TryRemove(propertyName, out temp))
+            if (this.propertyErrors.TryRemove(propertyName, out _))
             {
                 this.OnErrorsChanged(new DataErrorsChangedEventArgs(propertyName));
             }

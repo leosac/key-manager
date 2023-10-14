@@ -38,10 +38,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
             );
         }
 
-        private bool noDirUpdate = false;
+        private bool noDirUpdate;
         private DirectoryInfo? _selectedDirectory;
         private string? _ioError;
-        private bool _hasError = false;
+        private bool _hasError;
         private string? _newFolderName;
 
         private DriveInfo? _selectedDrive;

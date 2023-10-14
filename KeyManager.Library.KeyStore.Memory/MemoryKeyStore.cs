@@ -60,7 +60,7 @@
             }
         }
 
-        public override async Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
+        public override async Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing)
         {
             if (!await CheckKeyEntryExists(identifier, keClass, out KeyEntry? keyEntry) && !ignoreIfMissing)
             {
@@ -123,7 +123,7 @@
             }
         }
 
-        public override async Task Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
+        public override async Task Update(IChangeKeyEntry change, bool ignoreIfMissing)
         {
             await Delete(change.Identifier, change.KClass, ignoreIfMissing);
             await Create(change);

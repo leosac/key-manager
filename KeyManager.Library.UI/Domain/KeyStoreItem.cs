@@ -9,11 +9,16 @@ namespace Leosac.KeyManager.Library.UI.Domain
     {
         private readonly KeyStoreUIFactory _factory;
 
-        private KeyStorePropertiesControlViewModel? _dataContext;
+        private readonly KeyStorePropertiesControlViewModel? _dataContext;
 
         private object? _content;
 
-        public KeyStoreItem(KeyStoreUIFactory factory, KeyStorePropertiesControlViewModel? dataContext = null)
+        public KeyStoreItem(KeyStoreUIFactory factory) : this(factory, null)
+        {
+
+        }
+
+        public KeyStoreItem(KeyStoreUIFactory factory, KeyStorePropertiesControlViewModel? dataContext)
         {
             _factory = factory;
             _dataContext = dataContext ?? factory.CreateKeyStorePropertiesControlViewModel();

@@ -8,11 +8,6 @@ using Leosac.KeyManager.Library.UI.Domain;
 using Leosac.WpfApp;
 using Leosac.WpfApp.Domain;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace Leosac.KeyManager
@@ -21,7 +16,7 @@ namespace Leosac.KeyManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
-        public KMLeosacAppInfo() : base()
+        public KMLeosacAppInfo()
         {
             ApplicationName = "Key Manager";
             ApplicationTitle = "Leosac Key Manager";
@@ -68,8 +63,7 @@ namespace Leosac.KeyManager
                                 try
                                 {
                                     model.SelectedIndex = 2;
-                                    var editModel = model.SelectedItem?.DataContext as EditKeyStoreControlViewModel;
-                                    if (editModel != null)
+                                    if (model.SelectedItem?.DataContext is EditKeyStoreControlViewModel editModel)
                                     {
                                         // Ensure everything is back to original state
                                         editModel.CloseKeyStore(false);
@@ -85,7 +79,7 @@ namespace Leosac.KeyManager
                                                 additionalModel.KeyStore = ks;
                                                 additionalModel.SnackbarMessageQueue = model.SnackbarMessageQueue;
                                             }
-                                            editModel.Tabs.Add(new TabItem() { Header = addition.Key, Content = addition.Value });
+                                            editModel.Tabs.Add(new TabItem { Header = addition.Key, Content = addition.Value });
                                         }
                                     }
                                 }

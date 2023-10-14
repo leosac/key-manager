@@ -74,8 +74,8 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         protected KeyEntryVariant CreateVariantFromAlgo(string algo, uint keySize)
         {
-            var variant = new KeyEntryVariant() { Name = algo };
-            var tags = new string[]
+            var variant = new KeyEntryVariant { Name = algo };
+            var tags = new[]
             {
                     algo,
                     KClass.ToString()

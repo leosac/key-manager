@@ -89,7 +89,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             log.Info(string.Format("Key entry `{0}` created.", change.Identifier));
         }
 
-        public override async Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
+        public override async Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing)
         {
             log.Info(string.Format("Deleting key entry `{0}`...", identifier));
             var exists = await CheckKeyEntryExists(identifier, keClass);
@@ -158,7 +158,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             return ke;
         }
 
-        public override async Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass = null)
+        public override async Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass)
         {
             log.Info(string.Format("Getting all key entries (class: `{0}`)...", keClass));
 
@@ -225,12 +225,12 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             log.Info("Key Store opened.");
         }
 
-        public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null)
+        public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector)
         {
             throw new NotSupportedException();
         }
 
-        public override Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null)
+        public override Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput)
         {
             throw new NotSupportedException();
         }
@@ -254,7 +254,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             log.Info("Key Entries storing completed.");
         }
 
-        public override async Task Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
+        public override async Task Update(IChangeKeyEntry change, bool ignoreIfMissing)
         {
             log.Info(string.Format("Updating key entry `{0}`...", change.Identifier));
 

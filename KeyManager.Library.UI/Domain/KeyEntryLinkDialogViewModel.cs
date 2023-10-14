@@ -9,7 +9,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 {
     public class KeyEntryLinkDialogViewModel : LinkDialogViewModel
     {
-        public KeyEntryLinkDialogViewModel() : base()
+        public KeyEntryLinkDialogViewModel()
         {
             
         }

@@ -17,7 +17,7 @@ namespace Leosac.KeyManager
         public App()
         {
             KMPlugins.Load();
-            Favorites.SingletonCreated += (sender, e) => {
+            Favorites.SingletonCreated += (sender, _) => {
                 // We recreate the Key Store Properties instances on the appropriate AssemblyLoadContext.
                 // This is kind of a hack, it would be cleaner to handle proper context instanciation on Newtonsoft.Json deserialization directly but it's not really made for it.
                 // Another way would be to separate Favorites config into individual config files loaded by the key store factories running already on the correct context.

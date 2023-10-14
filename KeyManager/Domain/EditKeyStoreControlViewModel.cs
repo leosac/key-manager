@@ -135,7 +135,9 @@ namespace Leosac.KeyManager.Domain
             }
         }
 
-        public async Task RefreshKeyEntries(int delay = 0)
+        public Task RefreshKeyEntries() => RefreshKeyEntries(0);
+
+        public async Task RefreshKeyEntries(int delay)
         {
             IsLoadingKeyEntries = true;
             if (delay > 0)
@@ -172,7 +174,7 @@ namespace Leosac.KeyManager.Domain
                 if (favorites != null)
                 {
                     int favindex = favorites.KeyStores.IndexOf(fav);
-                    var model = new KeyStoreSelectorDialogViewModel()
+                    var model = new KeyStoreSelectorDialogViewModel
                     {
                         Message = "Edit the Key Store Favorite"
                     };
@@ -224,8 +226,8 @@ namespace Leosac.KeyManager.Domain
 
                                 var deststore = factory.CreateKeyStore();
                                 deststore.Properties = prop;
-                                deststore.KeyEntryRetrieved += (sender, e) => { ProgressValue++; };
-                                deststore.KeyEntryUpdated += (sender, e) => { ProgressValue++; };
+                                deststore.KeyEntryRetrieved += (sender, e) => ProgressValue++;
+                                deststore.KeyEntryUpdated += (sender, e) => ProgressValue++;
                                 var initCallback = new Action<KeyStore, KeyEntryClass, int>((store, keClass, nbentries) =>
                                 {
                                     ProgressMaximum = nbentries * 2;

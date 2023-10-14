@@ -9,11 +9,16 @@ namespace Leosac.KeyManager.Library.UI.Domain
     {
         private readonly KeyEntryUIFactory _factory;
 
-        private KeyEntryPropertiesControlViewModel? _dataContext;
+        private readonly KeyEntryPropertiesControlViewModel? _dataContext;
 
         private object? _content;
 
-        public KeyEntryItem(KeyEntryUIFactory factory, KeyEntryPropertiesControlViewModel? dataContext = null)
+        public KeyEntryItem(KeyEntryUIFactory factory) : this(factory, null)
+        {
+
+        }
+
+        public KeyEntryItem(KeyEntryUIFactory factory, KeyEntryPropertiesControlViewModel? dataContext)
         {
             _factory = factory;
             _dataContext = dataContext ?? factory.CreateKeyEntryPropertiesControlViewModel();

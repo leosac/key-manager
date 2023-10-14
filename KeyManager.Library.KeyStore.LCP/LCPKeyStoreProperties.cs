@@ -33,10 +33,14 @@
                 return false;
 
             if (Object.ReferenceEquals(this, p))
+            {
                 return true;
+            }
 
             if (this.GetType() != p.GetType())
+            {
                 return false;
+            }
 
             return (ServerAddress == p.ServerAddress && Username == p.Username);
         }

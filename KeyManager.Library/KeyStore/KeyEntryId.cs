@@ -51,13 +51,19 @@ namespace Leosac.KeyManager.Library.KeyStore
         public bool Equals(KeyEntryId? p)
         {
             if (p is null)
+            {
                 return false;
+            }
 
             if (Object.ReferenceEquals(this, p))
+            {
                 return true;
+            }
 
             if (this.GetType() != p.GetType())
+            {
                 return false;
+            }
 
             return (Id == p.Id && Label == p.Label);
         }
@@ -81,7 +87,7 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         public override string ToString()
         {
-            return String.Format("Key Entry Id (Identifier: `{0}`, Label: `{1}`)", Id, Label);
+            return string.Format("Key Entry Id (Identifier: `{0}`, Label: `{1}`)", Id, Label);
         }
     }
 }

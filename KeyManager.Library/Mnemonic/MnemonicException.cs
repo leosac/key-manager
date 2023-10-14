@@ -2,7 +2,7 @@
 {
     public class MnemonicException : Exception
     {
-        public MnemonicException() : base()
+        public MnemonicException()
         {
         }
 

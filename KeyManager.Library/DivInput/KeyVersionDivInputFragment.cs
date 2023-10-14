@@ -7,7 +7,9 @@ namespace Leosac.KeyManager.Library.DivInput
         public override string GetFragment(DivInputContext context)
         {
             if (context.KeyContainer is KeyVersion kv)
+            {
                 return kv.Version.ToString("X2");
+            }
             return string.Empty;
         }
     }

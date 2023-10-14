@@ -58,21 +58,21 @@ namespace Leosac.KeyManager.Library.UI
         public static readonly DependencyProperty KClassProperty = DependencyProperty.Register(nameof(KClass), typeof(KeyEntryClass), typeof(KeyActionButtonsControl),
             new FrameworkPropertyMetadata(KeyEntryClass.Symmetric));
 
-        private void btnCopy_Click(object sender, RoutedEventArgs e)
+        private void BtnCopy_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(Key?.GetAggregatedValue<string>());
         }
 
-        private async void btnKeyStoreLink_Click(object sender, RoutedEventArgs e)
+        private async void BtnKeyStoreLink_Click(object sender, RoutedEventArgs e)
         {
             if (Key != null)
             {
-                var model = new KeyLinkDialogViewModel()
+                var model = new KeyLinkDialogViewModel
                 {
                     Link = Key.Link,
                     Class = Key.Tags.Contains(nameof(KeyEntryClass.Asymmetric)) ? KeyEntryClass.Asymmetric : KeyEntryClass.Symmetric
                 };
-                var dialog = new KeyLinkDialog()
+                var dialog = new KeyLinkDialog
                 {
                     DataContext = model
                 };
@@ -81,10 +81,12 @@ namespace Leosac.KeyManager.Library.UI
             }
         }
 
-        private void btnImport_Click(object sender, RoutedEventArgs e)
+        private void BtnImport_Click(object sender, RoutedEventArgs e)
         {
-            var ofd = new OpenFileDialog();
-            ofd.CheckFileExists = true;
+            var ofd = new OpenFileDialog
+            {
+                CheckFileExists = true
+            };
             if (ofd.ShowDialog() == true)
             {
                 var key = System.IO.File.ReadAllBytes(ofd.FileName);
@@ -92,7 +94,7 @@ namespace Leosac.KeyManager.Library.UI
             }
         }
 
-        private void btnExport_Click(object sender, RoutedEventArgs e)
+        private void BtnExport_Click(object sender, RoutedEventArgs e)
         {
             var sfd = new SaveFileDialog();
             if (sfd.ShowDialog() == true)
@@ -101,13 +103,15 @@ namespace Leosac.KeyManager.Library.UI
             }
         }
 
-        private void btnPrint_Click(object sender, RoutedEventArgs e)
+        private void BtnPrint_Click(object sender, RoutedEventArgs e)
         {
-            PrintDialog printDialog = new PrintDialog();
+            var printDialog = new PrintDialog();
             if (Key != null && printDialog.ShowDialog() == true)
             {
-                var control = new KeyPrintControl();
-                control.Key = Key;
+                var control = new KeyPrintControl
+                {
+                    Key = Key
+                };
                 if (KClass == KeyEntryClass.Symmetric)
                 {
                     var kcv = new KCV();

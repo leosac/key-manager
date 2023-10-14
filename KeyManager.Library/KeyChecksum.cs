@@ -19,7 +19,7 @@
             return Convert.ToHexString(ComputeKCV(new Key(tags, key), ivb));
         }
 
-        public string ComputeKCV(Key key, string? iv = null)
+        public string ComputeKCV(Key key, string? iv)
         {
             byte[]? ivb = null;
             if (!string.IsNullOrEmpty(iv))
@@ -29,6 +29,6 @@
             return Convert.ToHexString(ComputeKCV(key, ivb));
         }
 
-        public abstract byte[] ComputeKCV(Key key, byte[]? iv = null);
+        public abstract byte[] ComputeKCV(Key key, byte[]? iv);
     }
 }

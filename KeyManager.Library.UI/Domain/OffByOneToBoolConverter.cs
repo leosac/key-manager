@@ -7,8 +7,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values == null || values.Length != 2 || !(values[0] is int value1) || !(values[1] is int value2))
+            if (values == null || values.Length != 2 || values[0] is not int value1 || values[1] is not int value2)
+            {
                 return Binding.DoNothing;
+            }
 
             return Math.Abs(value1 - value2) == 1;
         }

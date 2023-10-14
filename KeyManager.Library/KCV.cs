@@ -12,7 +12,7 @@ namespace Leosac.KeyManager.Library
     {
         public override string Name => "KCV";
 
-        public override byte[] ComputeKCV(Key key, byte[]? iv = null)
+        public override byte[] ComputeKCV(Key key, byte[]? iv)
         {
             byte[] result;
             var data = new byte[KeyHelper.GetBlockSize(key.Tags)];

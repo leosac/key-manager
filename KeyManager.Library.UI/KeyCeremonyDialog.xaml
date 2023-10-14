@@ -25,7 +25,7 @@
     <DockPanel LastChildFill="True">
         <ProgressBar DockPanel.Dock="Top" Height="10" Value="{Binding SelectedIndex, ElementName=transition}" Maximum="{Binding Items.Count, ElementName=transition}" />
         <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,5">
-            <Button x:Name="btnOk" Width="100" IsDefault="True" Content="{x:Static properties:Resources.Finish}" CommandParameter="{StaticResource True}" Click="btnOk_Click">
+            <Button x:Name="btnOk" Width="100" IsDefault="True" Content="{x:Static properties:Resources.Finish}" CommandParameter="{StaticResource True}" Click="BtnOk_Click">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignRaisedDarkButton}">
                         <Setter Property="IsEnabled" Value="False"/>
@@ -43,7 +43,7 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Button x:Name="btnCancel" Width="100" IsCancel="True" Content="{x:Static properties:Resources.Cancel}" Margin="15,0,0,0" Click="btnCancel_Click"/>
+            <Button x:Name="btnCancel" Width="100" IsCancel="True" Content="{x:Static properties:Resources.Cancel}" Margin="15,0,0,0" Click="BtnCancel_Click"/>
         </WrapPanel>
         <materialDesign:Transitioner x:Name="transition" AutoApplyTransitionOrigins="True" SelectedIndex="0">
             <materialDesign:Transitioner.InputBindings>

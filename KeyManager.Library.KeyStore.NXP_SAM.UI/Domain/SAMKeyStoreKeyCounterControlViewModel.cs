@@ -25,12 +25,12 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                     {
                         try
                         {
-                            var model = new SAMKeyUsageCounterDialogViewModel()
+                            var model = new SAMKeyUsageCounterDialogViewModel
                             {
                                 Counter = (KeyStore as SAMKeyStore)!.GetCounter(identifier.Value)
                             };
 
-                            var dialog = new SAMKeyUsageCounterDialog()
+                            var dialog = new SAMKeyUsageCounterDialog
                             {
                                 DataContext = model
                             };
