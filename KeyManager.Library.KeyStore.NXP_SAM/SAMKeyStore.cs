@@ -164,7 +164,9 @@
         public override Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
         {
             if (identifier.Id == null)
+            {
                 return Task.FromResult(false);
+            }
 
             if (uint.TryParse(identifier.Id, out uint entry))
             {
@@ -423,16 +425,25 @@
                         foreach (var keyversion in samkey.Variant.KeyContainers)
                         {
                             if (string.IsNullOrEmpty(keyversion.Key.GetAggregatedValue<string>()))
+                            {
                                 keys.Add(new LibLogicalAccess.ByteVector(new byte[keyversion.Key.KeySize]));
+                            }
                             else
+                            {
                                 keys.Add(new LibLogicalAccess.ByteVector(keyversion.Key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary)));
+                            }
                         }
 
                         infoav2.vera = keyVersions[0].Version;
                         if (keyVersions.Length >= 2)
+                        {
                             infoav2.verb = keyVersions[1].Version;
+                        }
+
                         if (keyVersions.Length >= 3)
+                        {
                             infoav2.verc = keyVersions[2].Version;
+                        }
 
                         if (keyVersions[0].Key.Tags.Contains("AES"))
                         {
@@ -489,7 +500,7 @@
             }
 
             OnKeyEntryUpdated(change);
-            log.Info(String.Format("Key entry `{0}` updated.", change.Identifier));
+            log.Info(string.Format("Key entry `{0}` updated.", change.Identifier));
             return Task.CompletedTask;
         }
 
@@ -678,9 +689,13 @@
             byte[] div;
             log.Info(string.Format("Resolving key link with Key Entry Identifier `{0}`, Key Version `{1}`, Div Input `{2}`...", keyIdentifier, containerSelector, divInput));
             if (!string.IsNullOrEmpty(divInput))
+            {
                 div = Convert.FromHexString(divInput);
+            }
             else
+            {
                 div = Array.Empty<byte>();
+            }
 
             if (!await CheckKeyEntryExists(keyIdentifier, keClass))
             {

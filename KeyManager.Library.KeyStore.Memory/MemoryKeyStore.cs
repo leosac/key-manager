@@ -81,7 +81,7 @@
             return keyEntry;
         }
 
-        public override Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass = null)
+        public override Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass)
         {
             IList<KeyEntryId> list =  _keyEntries.Where(k => keClass == null || k.KClass == keClass).Select(k => k.Identifier).ToList();
             return Task.FromResult(list);

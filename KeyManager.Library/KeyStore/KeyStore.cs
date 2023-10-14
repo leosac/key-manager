@@ -39,7 +39,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// </summary>
         public KeyStoreProperties? Properties { get; set; }
 
-        public bool CreateIfMissing { get; set; } = false;
+        public bool CreateIfMissing { get; set; }
 
         public Task<bool> CheckKeyEntryExists(KeyEntry keyEntry)
         {
@@ -160,7 +160,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="changes">The key entries details.</param>
         public abstract Task Store(IList<IChangeKeyEntry> changes);
 
-        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
+        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
             var classes = SupportedClasses;
             foreach (var keClass in classes)
@@ -219,7 +219,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                                     if (ks != null)
                                     {
                                         await ks.Open();
-                                        var divContext = new DivInput.DivInputContext()
+                                        var divContext = new DivInput.DivInputContext
                                         {
                                             KeyStore = ks,
                                             KeyEntry = entry,

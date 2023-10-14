@@ -26,8 +26,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
             CreateKeyEntryCommand = new AsyncRelayCommand(
                 async () =>
             {
-                var model = new KeyEntryDialogViewModel() { KClass = _keClass };
-                var dialog = new KeyEntryDialog()
+                var model = new KeyEntryDialogViewModel { KClass = _keClass };
+                var dialog = new KeyEntryDialog
                 {
                     DataContext = model
                 };
@@ -41,7 +41,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 {
                     if (KeyStore != null && identifier?.KeyEntryId != null)
                     {
-                        var model = new KeyEntryDialogViewModel()
+                        var model = new KeyEntryDialogViewModel
                         {
                             KClass = _keClass,
                             KeyEntry = await KeyStore.Get(identifier.KeyEntryId, _keClass),
@@ -115,7 +115,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             ImportCryptogramCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
                 async keyEntryId =>
             {
-                var model = new ImportCryptogramDialogViewModel()
+                var model = new ImportCryptogramDialogViewModel
                 {
                     CanChangeIdentifier = keyEntryId?.KeyEntryId == null || !keyEntryId.KeyEntryId.IsConfigured()
                 };
@@ -123,7 +123,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 {
                     model.Cryptogram.Identifier = keyEntryId.KeyEntryId;
                 }
-                var dialog = new ImportCryptogramDialog()
+                var dialog = new ImportCryptogramDialog
                 {
                     DataContext = model,
                 };
@@ -216,7 +216,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     try
                     {
                         await KeyStore.Create(model.KeyEntry);
-                        Identifiers.Add(new SelectableKeyEntryId() {
+                        Identifiers.Add(new SelectableKeyEntryId {
                             Selected = false,
                             KeyEntryId = model.KeyEntry.Identifier
                         });
@@ -426,7 +426,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     {
                         lock (_identifierLock)
                         {
-                            Identifiers.Add(new SelectableKeyEntryId()
+                            Identifiers.Add(new SelectableKeyEntryId
                             {
                                 Selected = false,
                                 KeyEntryId = id
@@ -463,12 +463,16 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
             if (obj is KeyEntryId item)
             {
-                var terms = _searchTerms.ToLower();
-                if (item.Id != null && item.Id.ToLower().Contains(terms))
+                var terms = _searchTerms.ToLowerInvariant();
+                if (item.Id != null && item.Id.ToLowerInvariant().Contains(terms))
+                {
                     return true;
+                }
 
-                if (item.Label != null && item.Label.ToLower().Contains(terms))
+                if (item.Label != null && item.Label.ToLowerInvariant().Contains(terms))
+                {
                     return true;
+                }
             }
 
             return false;

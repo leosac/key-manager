@@ -11,7 +11,17 @@ namespace Leosac.KeyManager.Library
 
         }
 
-        public Key(IEnumerable<string>? tags, uint keySize = 0, uint nbMaterials = 1)
+        public Key(IEnumerable<string>? tags) : this(tags, 0, 1)
+        {
+
+        }
+
+        public Key(IEnumerable<string>? tags, uint keySize) : this(tags, keySize, 1)
+        {
+
+        }
+
+        public Key(IEnumerable<string>? tags, uint keySize, uint nbMaterials)
         {
             Materials = new ObservableCollection<KeyMaterial>();
             Materials.CollectionChanged += Materials_CollectionChanged;
@@ -61,10 +71,7 @@ namespace Leosac.KeyManager.Library
                 {
                     if (item is KeyMaterial k)
                     {
-                        k.BeforeValueChanged += (sender, e) =>
-                        {
-                            ValidatePolicies(e);
-                        };
+                        k.BeforeValueChanged += (_, e) => ValidatePolicies(e);
                     }
                 }
             }
@@ -108,7 +115,12 @@ namespace Leosac.KeyManager.Library
             }
         }
 
-        public T? GetAggregatedValue<T>(KeyValueFormat format = KeyValueFormat.HexString) where T : class
+        public T? GetAggregatedValue<T>() where T : class
+        {
+            return GetAggregatedValue<T>(KeyValueFormat.HexString);
+        }
+
+        public T? GetAggregatedValue<T>(KeyValueFormat format) where T : class
         {
             T? ret = default;
             foreach (var m in Materials)
@@ -162,7 +174,10 @@ namespace Leosac.KeyManager.Library
                 case KeyValueFormat.Binary:
                 default:
                     if (Materials.Count > 0)
+                    {
                         Materials[0].SetFormattedValue(value, format);
+                    }
+
                     break;
             }
         }

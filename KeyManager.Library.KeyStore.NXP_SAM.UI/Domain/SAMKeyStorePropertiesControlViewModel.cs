@@ -21,7 +21,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             });
         }
 
-        private LibLogicalAccess.LibraryManager _lla;
+        private readonly LibLogicalAccess.LibraryManager _lla;
 
         public SAMKeyStoreProperties? SAMProperties
         {

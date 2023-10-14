@@ -65,10 +65,7 @@ namespace Leosac.KeyManager.Library
         {
             if (lhs is null)
             {
-                if (rhs is null)
-                    return true;
-
-                return false;
+                return rhs is null;
             }
 
             return lhs.Equals(rhs);

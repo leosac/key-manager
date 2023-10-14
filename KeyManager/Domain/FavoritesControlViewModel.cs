@@ -1,10 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Leosac.KeyManager.Library;
-using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
-using Leosac.WpfApp.Domain;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Threading.Tasks;
@@ -17,6 +15,7 @@ namespace Leosac.KeyManager.Domain
 
         public FavoritesControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
+            _snackbarMessageQueue = snackbarMessageQueue;
             RefreshFavoritesCommand = new RelayCommand(
                 () =>
                 {
@@ -34,7 +33,7 @@ namespace Leosac.KeyManager.Domain
             CreateFavoriteCommand = new AsyncRelayCommand(
                 async () =>
                 {
-                    var model = new KeyStoreSelectorDialogViewModel() { Message = "Save a new Favorite Key Store" };
+                    var model = new KeyStoreSelectorDialogViewModel { Message = "Save a new Favorite Key Store" };
                     var dialog = new KeyStoreSelectorDialog
                     {
                         DataContext = model
@@ -72,6 +71,8 @@ namespace Leosac.KeyManager.Domain
                     }
                 });
         }
+
+        protected ISnackbarMessageQueue _snackbarMessageQueue;
 
         private Favorites? _favorites;
 

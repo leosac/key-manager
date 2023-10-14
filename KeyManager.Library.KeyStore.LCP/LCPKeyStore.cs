@@ -15,11 +15,6 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
         private ICredentialKeyAPI? _keyAPI;
         private string? _authToken;
 
-        public LCPKeyStore()
-        {
-
-        }
-
         public override string Name => "LCP";
 
         public override bool CanCreateKeyEntries => true;
@@ -168,7 +163,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             var keys = await _keyAPI!.GetAll();
             foreach (var k in keys)
             {
-                entries.Add(new KeyEntryId()
+                entries.Add(new KeyEntryId
                 {
                     Id = k.Id.ToString(),
                     Label = k.Name
@@ -182,7 +177,9 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
         private void CheckAuthentication()
         {
             if (_authAPI == null || _keyAPI == null || string.IsNullOrEmpty(_authToken))
+            {
                 throw new Exception("Please open the key store first to perform authentication.");
+            }
         }
 
         public LCPKeyStoreProperties GetLCPProperties()
@@ -277,7 +274,9 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
                 }
             }
             else
+            {
                 throw new NotImplementedException();
+            }
 
             log.Info(string.Format("Key entry `{0}` updated.", change.Identifier));
         }

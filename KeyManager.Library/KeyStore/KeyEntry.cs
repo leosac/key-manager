@@ -4,7 +4,7 @@ namespace Leosac.KeyManager.Library.KeyStore
 {
     public abstract class KeyEntry : ObservableValidator, IKeyEntry
     {
-        public KeyEntry()
+        protected KeyEntry()
         {
             _identifier = new KeyEntryId();
         }
@@ -50,7 +50,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         public void SetVariant(string name)
         {
             var variants = GetAllVariants();
-            Variant = variants.Where(v => v.Name.ToLower() == name.ToLower()).FirstOrDefault();
+            Variant = variants.Where(v => v.Name.ToLowerInvariant() == name.ToLowerInvariant()).FirstOrDefault();
         }
 
         protected KeyEntryClass GetKeyEntryClassFromFirstKeyVariant()

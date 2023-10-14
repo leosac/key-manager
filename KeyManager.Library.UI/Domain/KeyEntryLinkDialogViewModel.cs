@@ -4,11 +4,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
 {
     public class KeyEntryLinkDialogViewModel : LinkDialogViewModel
     {
-        public KeyEntryLinkDialogViewModel()
-        {
-            
-        }
-
         public KeyEntryLink? KeyEntryLink
         {
             get => Link as KeyEntryLink;

@@ -30,7 +30,9 @@
         public bool Equals(LCPKeyStoreProperties? p)
         {
             if (p is null)
+            {
                 return false;
+            }
 
             if (Object.ReferenceEquals(this, p))
             {
@@ -51,10 +53,7 @@
         {
             if (lhs is null)
             {
-                if (rhs is null)
-                    return true;
-
-                return false;
+                return rhs is null;
             }
 
             return lhs.Equals(rhs);

@@ -4,10 +4,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 {
     public class SAMKeyStoreProperties : KeyStoreProperties, IEquatable<SAMKeyStoreProperties>
     {
-        public SAMKeyStoreProperties() : base()
+        public SAMKeyStoreProperties()
         {
             _readerProvider = "PCSC";
-            _readerUnit = String.Empty;
+            _readerUnit = string.Empty;
             _autoSwitchToAV2 = true;
             _authenticateKeyEntryIdentifier = 0;
             _authenticateKeyType = DESFireKeyType.DF_KEY_AES;
@@ -80,13 +80,19 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         public bool Equals(SAMKeyStoreProperties? p)
         {
             if (p is null)
+            {
                 return false;
+            }
 
             if (Object.ReferenceEquals(this, p))
+            {
                 return true;
+            }
 
             if (this.GetType() != p.GetType())
+            {
                 return false;
+            }
 
             return (ReaderProvider == p.ReaderProvider) && (ReaderUnit == p.ReaderUnit) && (AutoSwitchToAV2 == p.AutoSwitchToAV2) &&
                 (AuthenticateKeyEntryIdentifier == p.AuthenticateKeyEntryIdentifier) && (_authenticateKeyVersion == p._authenticateKeyVersion) &&
@@ -99,10 +105,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         {
             if (lhs is null)
             {
-                if (rhs is null)
-                    return true;
-
-                return false;
+                return rhs is null;
             }
 
             return lhs.Equals(rhs);

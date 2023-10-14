@@ -106,7 +106,6 @@ namespace Leosac.KeyManager.Library
                         Value = v ?? string.Empty;
                     }
                     break;
-                case KeyValueFormat.Binary:
                 default:
                     {
                         Value = value is byte[] v ? Convert.ToHexString(v) : string.Empty;

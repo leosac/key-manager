@@ -8,7 +8,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
-        public LinkDialogViewModel()
+        protected LinkDialogViewModel()
         {
             RunLinkCommand = new AsyncRelayCommand(
                 () =>

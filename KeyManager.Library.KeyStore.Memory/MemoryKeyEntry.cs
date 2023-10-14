@@ -44,7 +44,7 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
             if (classFilter == null || classFilter == KeyEntryClass.Asymmetric)
             {
                 var rsavar = new KeyEntryVariant { Name = "RSA" };
-                rsavar.KeyContainers.Add(new KeyContainer("Key", new Key(new[] { "RSA", KeyEntryClass.Asymmetric.ToString() }, 0, new KeyMaterial[]
+                rsavar.KeyContainers.Add(new KeyContainer("Key", new Key(new[] { "RSA", KeyEntryClass.Asymmetric.ToString() }, 0, new[]
                 {
                     new KeyMaterial("", KeyMaterial.PRIVATE_KEY),
                     new KeyMaterial("", KeyMaterial.PUBLIC_KEY)

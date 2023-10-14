@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace Leosac.KeyManager
 {
-    public class KMPlugins
+    public static class KMPlugins
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 

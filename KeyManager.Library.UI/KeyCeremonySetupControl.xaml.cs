@@ -50,7 +50,7 @@ namespace Leosac.KeyManager.Library.UI
 
         private void BtnCeremony_Click(object sender, RoutedEventArgs e)
         {
-            var model = new KeyCeremonyDialogViewModel()
+            var model = new KeyCeremonyDialogViewModel
             {
                 Fragments = new ObservableCollection<string>(new string[Fragments])
             };
@@ -93,7 +93,6 @@ namespace Leosac.KeyManager.Library.UI
                     }
                     break;
 
-                case KeyCeremonyType.ShamirSecretSharing:
                 default:
                     {
                         var gcd = new ExtendedEuclideanAlgorithm<BigInteger>();

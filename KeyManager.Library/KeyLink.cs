@@ -2,11 +2,6 @@
 {
     public class KeyLink : Link
     {
-        public KeyLink() : base()
-        {
-            
-        }
-
         private string? _containerSelector;
 
         public string? ContainerSelector

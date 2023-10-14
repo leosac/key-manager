@@ -92,7 +92,12 @@ namespace Leosac.KeyManager.Domain
 
         public RelayCommand SaveFavoriteCommand { get; }
 
-        public void CloseKeyStore(bool navigate = true)
+        public void CloseKeyStore()
+        {
+            CloseKeyStore(true);
+        }
+
+        public void CloseKeyStore(bool navigate)
         {
             KeyStore?.Close();
             KeyStore = null;
@@ -101,7 +106,9 @@ namespace Leosac.KeyManager.Domain
             Favorite = null;
 
             if (navigate)
+            {
                 HomeCommand?.Execute(null);
+            }
         }
 
         public async Task OpenKeyStore()
@@ -117,10 +124,10 @@ namespace Leosac.KeyManager.Domain
                     {
                         var model = new KeyEntriesControlViewModel(_snackbarMessageQueue) { KeyEntryClass = kclass, KeyStore = KeyStore };
                         _keModels.Add(model);
-                        Tabs.Add(new TabItem()
+                        Tabs.Add(new TabItem
                         {
                             Header = string.Format("{0} Key Entries", kclass.ToString()),
-                            Content = new KeyEntriesControl()
+                            Content = new KeyEntriesControl
                             {
                                 DataContext = model
                             }
@@ -228,7 +235,7 @@ namespace Leosac.KeyManager.Domain
                                 deststore.Properties = prop;
                                 deststore.KeyEntryRetrieved += (sender, e) => ProgressValue++;
                                 deststore.KeyEntryUpdated += (sender, e) => ProgressValue++;
-                                var initCallback = new Action<KeyStore, KeyEntryClass, int>((store, keClass, nbentries) =>
+                                var initCallback = new Action<KeyStore, KeyEntryClass, int>((_, _, nbentries) =>
                                 {
                                     ProgressMaximum = nbentries * 2;
                                 });
@@ -237,14 +244,14 @@ namespace Leosac.KeyManager.Domain
                                     if (!string.IsNullOrEmpty(favoriteName))
                                     {
                                         var favorites = Favorites.GetSingletonInstance();
-                                        var fav = favorites.KeyStores.Where(ks => ks.Name.ToLower() == favoriteName.ToLower()).SingleOrDefault();
+                                        var fav = favorites.KeyStores.Where(ks => ks.Name.ToLowerInvariant() == favoriteName.ToLowerInvariant()).SingleOrDefault();
                                         if (fav != null)
                                         {
                                             return fav.CreateKeyStore();
                                         }
                                         else
                                         {
-                                            log.Error(String.Format("Cannot found the favorite Key Store `{0}`.", favoriteName));
+                                            log.Error(string.Format("Cannot found the favorite Key Store `{0}`.", favoriteName));
                                             throw new KeyStoreException("Cannot found the favorite Key Store.");
                                         }
                                     }

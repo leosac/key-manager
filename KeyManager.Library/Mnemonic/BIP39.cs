@@ -50,7 +50,9 @@ namespace Leosac.KeyManager.Library.Mnemonic
 
             var newChecksum = DeriveChecksumBits(entropyBytes);
             if (newChecksum != checksumBits)
+            {
                 throw new MnemonicException("Invalid mnemonic checksum");
+            }
 
             return Convert.ToHexString(entropyBytes);
         }
@@ -146,7 +148,12 @@ namespace Leosac.KeyManager.Library.Mnemonic
             return deriv.GetBytes(keySize);
         }
 
-        public string MnemonicToSeedHex(string mnemonic, string password, int keySize = 64)
+        public string MnemonicToSeedHex(string mnemonic, string password)
+        {
+            return MnemonicToSeedHex(mnemonic, password, 64);
+        }
+
+        public string MnemonicToSeedHex(string mnemonic, string password, int keySize)
         {
             var key = MnemonicToSeed(mnemonic, password, keySize);
             return Convert.ToHexString(key);

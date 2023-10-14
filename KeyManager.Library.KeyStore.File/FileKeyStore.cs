@@ -169,7 +169,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             return key;
         }
 
-        public override Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass = null)
+        public override Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass)
         {
             log.Info(string.Format("Getting all key entries (class: `{0}`)...", keClass));
             IList<KeyEntryId> keyEntries = new List<KeyEntryId>();

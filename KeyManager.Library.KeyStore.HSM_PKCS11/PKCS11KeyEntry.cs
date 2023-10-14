@@ -6,7 +6,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 {
     public abstract class PKCS11KeyEntry : KeyEntry
     {
-        public PKCS11KeyEntry()
+        protected PKCS11KeyEntry()
         {
             Identifier.Id = Guid.NewGuid().ToString("N");
         }
@@ -78,7 +78,9 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
         public static KeyEntryClass GetKeyEntryClassFromCKK(CKK ckk)
         {
             if (ckk == CKK.CKK_DSA || ckk == CKK.CKK_ECDSA || ckk == CKK.CKK_RSA)
+            {
                 return KeyEntryClass.Asymmetric;
+            }
 
             return KeyEntryClass.Symmetric;
         }
