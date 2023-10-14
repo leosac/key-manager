@@ -6,7 +6,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
 {
     public class FileKeyStore : KeyStore
     {
-        public const string LeosacKeyFileExtension = ".leok";
+        public static string LeosacKeyFileExtension => ".leok";
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
@@ -49,7 +49,9 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             if (!System.IO.Directory.Exists(GetFileProperties().Fullpath))
             {
                 if (CreateIfMissing)
+                {
                     System.IO.Directory.CreateDirectory(GetFileProperties().Fullpath);
+                }
                 else
                 {
                     log.Error(string.Format("Cannot open the key sore `{0}`.", GetFileProperties().Fullpath));
@@ -100,12 +102,14 @@ namespace Leosac.KeyManager.Library.KeyStore.File
                 System.IO.File.WriteAllText(kefile, cryptogram.Value);
             }
             else
+            {
                 throw new KeyStoreException("Unsupported `change` parameter.");
+            }
 
             log.Info(string.Format("Key entry `{0}` created.", change.Identifier));
         }
 
-        public override async Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
+        public override async Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing)
         {
             log.Info(string.Format("Deleting key entry `{0}`...", identifier));
             var exists = await CheckKeyEntryExists(identifier, keClass);
@@ -158,7 +162,9 @@ namespace Leosac.KeyManager.Library.KeyStore.File
 
             var key = Convert.FromHexString(Properties.Secret);
             if (key.Length != 16 && key.Length != 32)
+            {
                 throw new KeyStoreException("Wrong wrapping key length.");
+            }
 
             return key;
         }
@@ -170,7 +176,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             var filter = "*";
             if (keClass != null)
             {
-                filter += "." + keClass.ToString()!.ToLower();
+                filter += "." + keClass.ToString()!.ToLowerInvariant();
             }
             filter += LeosacKeyFileExtension;
             var files = System.IO.Directory.GetFiles(GetFileProperties().Fullpath, filter);
@@ -203,7 +209,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             log.Info("Key Entries storing completed.");
         }
 
-        public override async Task Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
+        public override async Task Update(IChangeKeyEntry change, bool ignoreIfMissing)
         {
             log.Info(string.Format("Updating key entry `{0}`...", change.Identifier));
             await Delete(change.Identifier, change.KClass, ignoreIfMissing);
@@ -212,7 +218,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             log.Info(string.Format("Key entry `{0}` updated.", change.Identifier));
         }
 
-        public override async Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingKeyContainerSelector = null)
+        public override async Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, KeyEntryId? wrappingKeyId, string? wrappingKeyContainerSelector)
         {
             string? result = null;
             log.Info(string.Format("Resolving key entry link with Key Entry Identifier `{0}`, Div Input `{1}`...", keyIdentifier, divInput));
@@ -249,7 +255,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             return result;
         }
 
-        public override async Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput = null)
+        public override async Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput)
         {
             string? result = null;
             log.Info(string.Format("Resolving key link with Key Entry Identifier `{0}`, Container Selector `{1}`, Div Input `{2}`...", keyIdentifier, containerSelector, divInput));

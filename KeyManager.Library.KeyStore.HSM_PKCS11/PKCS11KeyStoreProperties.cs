@@ -46,7 +46,9 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
         public byte[]? GetUserPINBytes()
         {
             if (Secret == null)
+            {
                 return null;
+            }
 
             return UTF8Encoding.UTF8.GetBytes(Secret);
         }
@@ -59,13 +61,19 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
         public bool Equals(PKCS11KeyStoreProperties? p)
         {
             if (p is null)
+            {
                 return false;
+            }
 
             if (Object.ReferenceEquals(this, p))
+            {
                 return true;
+            }
 
             if (this.GetType() != p.GetType())
+            {
                 return false;
+            }
 
             return (LibraryPath == p.LibraryPath && SlotFilterType == p.SlotFilterType && SlotFilter == p.SlotFilter && User == p.User);
         }
@@ -76,10 +84,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
         {
             if (lhs is null)
             {
-                if (rhs is null)
-                    return true;
-
-                return false;
+                return (rhs is null);
             }
 
             return lhs.Equals(rhs);

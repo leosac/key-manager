@@ -9,11 +9,13 @@ namespace Leosac.KeyManager.Library.UI.Domain
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null || !(value is Key key))
+            if (value == null || value is not Key key)
+            {
                 return Binding.DoNothing;
+            }
 
             var checksum = new Sha256Checksum();
-            string uri = String.Format("https://leak.leosac.com/key/{0}", checksum.ComputeKCV(key, "53656375726974792046726565646f6d"));
+            string uri = string.Format("https://leak.leosac.com/key/{0}", checksum.ComputeKCV(key, "53656375726974792046726565646f6d"));
             if (targetType == typeof(ImageSource))
             {
                 var qr = QrCode.EncodeText(uri, QrCode.Ecc.Medium);

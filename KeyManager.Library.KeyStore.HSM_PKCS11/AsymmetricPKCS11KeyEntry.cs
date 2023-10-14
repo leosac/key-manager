@@ -5,13 +5,18 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 {
     public class AsymmetricPKCS11KeyEntry : PKCS11KeyEntry
     {
-        public AsymmetricPKCS11KeyEntry(KeyEntryClass kclass = KeyEntryClass.Asymmetric) : base()
+        public AsymmetricPKCS11KeyEntry() : this(KeyEntryClass.Asymmetric)
+        {
+
+        }
+
+        public AsymmetricPKCS11KeyEntry(KeyEntryClass kclass)
         {
             Properties = new AsymmetricPKCS11KeyEntryProperties();
             _kclass = kclass;
         }
 
-        KeyEntryClass _kclass;
+        private readonly KeyEntryClass _kclass;
 
         public override KeyEntryClass KClass => _kclass;
 
@@ -27,16 +32,23 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 
             foreach (var attribute in attributes)
             {
-                if (attribute.Type == (ulong)CKA.CKA_ENCRYPT)
-                    PKCS11Properties!.Encrypt = attribute.GetValueAsBool();
-                else if (attribute.Type == (ulong)CKA.CKA_DECRYPT)
-                    PKCS11Properties!.Decrypt = attribute.GetValueAsBool();
-                else if (attribute.Type == (ulong)CKA.CKA_DERIVE)
-                    PKCS11Properties!.Derive = attribute.GetValueAsBool();
-                else if (attribute.Type == (ulong)CKA.CKA_EXTRACTABLE)
-                    PKCS11Properties!.Extractable = attribute.GetValueAsBool();
-                else
-                    throw new KeyStoreException("Unexpected attribute.");
+                switch (attribute.Type)
+                {
+                    case (ulong)CKA.CKA_ENCRYPT:
+                        PKCS11Properties!.Encrypt = attribute.GetValueAsBool();
+                        break;
+                    case (ulong)CKA.CKA_DECRYPT:
+                        PKCS11Properties!.Decrypt = attribute.GetValueAsBool();
+                        break;
+                    case (ulong)CKA.CKA_DERIVE:
+                        PKCS11Properties!.Derive = attribute.GetValueAsBool();
+                        break;
+                    case (ulong)CKA.CKA_EXTRACTABLE:
+                        PKCS11Properties!.Extractable = attribute.GetValueAsBool();
+                        break;
+                    default:
+                        throw new KeyStoreException("Unexpected attribute.");
+                }
             }
         }
     }

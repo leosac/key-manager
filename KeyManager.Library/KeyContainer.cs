@@ -4,7 +4,17 @@ namespace Leosac.KeyManager.Library
 {
     public class KeyContainer : ObservableValidator
     {
-        public KeyContainer(string? name = null, Key? key = null)
+        public KeyContainer() : this(null, null)
+        {
+
+        }
+
+        public KeyContainer(string? name) : this(name, null)
+        {
+
+        }
+
+        public KeyContainer(string? name, Key? key)
         {
             _name = name ?? "Key Container";
             _key = key ?? new Key();

@@ -1,18 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-namespace Leosac.KeyManager.Library.KeyStore.File
+﻿namespace Leosac.KeyManager.Library.KeyStore.File
 {
     public class FileKeyStoreProperties : KeyStoreProperties, IEquatable<FileKeyStoreProperties>
     {
-        public FileKeyStoreProperties() : base()
+        public FileKeyStoreProperties()
         {
-            _fullpath = String.Empty;
+            _fullpath = string.Empty;
         }
 
         private string _fullpath;
@@ -33,13 +25,19 @@ namespace Leosac.KeyManager.Library.KeyStore.File
         public bool Equals(FileKeyStoreProperties? p)
         {
             if (p is null)
+            {
                 return false;
+            }
 
             if (Object.ReferenceEquals(this, p))
+            {
                 return true;
+            }
 
             if (this.GetType() != p.GetType())
+            {
                 return false;
+            }
 
             return (Fullpath == p.Fullpath);
         }
@@ -50,10 +48,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
         {
             if (lhs is null)
             {
-                if (rhs is null)
-                    return true;
-
-                return false;
+                return rhs is null;
             }
 
             return lhs.Equals(rhs);

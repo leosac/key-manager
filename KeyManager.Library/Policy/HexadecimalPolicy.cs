@@ -13,7 +13,9 @@
         public void Validate(string? value)
         {
             if (!string.IsNullOrEmpty(value))
+            {
                 Convert.FromHexString(value);
+            }
         }
     }
 }

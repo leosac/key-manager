@@ -67,9 +67,18 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <summary>
         /// Get all key entry identifiers.
         /// </summary>
+        /// <returns>List of key entry identifiers</returns>
+        public Task<IList<KeyEntryId>> GetAll()
+        {
+            return GetAll(null);
+        }
+
+        /// <summary>
+        /// Get all key entry identifiers.
+        /// </summary>
         /// <param name="keClass">The key entry class (optional, null means all)</param>
         /// <returns>List of key entry identifiers</returns>
-        public abstract Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass = null);
+        public abstract Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass);
 
         /// <summary>
         /// Create a new key entry.
@@ -160,13 +169,13 @@ namespace Leosac.KeyManager.Library.KeyStore
             }
         }
 
-        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryClass keClass, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
+        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryClass keClass, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
             var ids = await GetAll(keClass);
             await Publish(store, getFavoriteKeyStore, ids, keClass, wrappingKeyId, wrappingContainerSelector, initCallback);
         }
 
-        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, IEnumerable<KeyEntryId> ids, KeyEntryClass keClass, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null, Action<KeyStore, KeyEntryClass, int>? initCallback = null)
+        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, IEnumerable<KeyEntryId> ids, KeyEntryClass keClass, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
             var changes = new List<IChangeKeyEntry>();
             initCallback?.Invoke(this, keClass, ids.Count());
@@ -189,7 +198,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                         if (ks != null)
                         {
                             await ks.Open();
-                            var divContext = new DivInput.DivInputContext()
+                            var divContext = new DivInput.DivInputContext
                             {
                                 KeyStore = ks,
                                 KeyEntry = entry
@@ -235,7 +244,9 @@ namespace Leosac.KeyManager.Library.KeyStore
         private static string? ComputeDivInput(DivInputContext divContext, IList<DivInputFragment> divInput)
         {
             if (divContext != null && divInput != null && divInput.Count > 0)
+            {
                 throw new NotImplementedException();
+            }
 
             return null;
         }
@@ -277,9 +288,13 @@ namespace Leosac.KeyManager.Library.KeyStore
                 {
                     KeyContainer? kv;
                     if (!string.IsNullOrEmpty(keyContainerSelector))
+                    {
                         kv = keyEntry.Variant.KeyContainers.OfType<KeyVersion>().Where(kv => kv.Version.ToString() == keyContainerSelector).FirstOrDefault();
+                    }
                     else
+                    {
                         kv = keyEntry.Variant.KeyContainers[0];
+                    }
 
                     if (kv != null)
                     {

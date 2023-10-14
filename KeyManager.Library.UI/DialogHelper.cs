@@ -1,14 +1,9 @@
 ﻿using MaterialDesignThemes.Wpf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace Leosac.KeyManager.Library.UI
 {
-    public class DialogHelper
+    public static class DialogHelper
     {
         public static async Task<object?> ForceShow(UserControl dialog, string dialogIdentifier)
         {

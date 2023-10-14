@@ -10,9 +10,20 @@
 
         public int Compare(IChangeKeyEntry? x, IChangeKeyEntry? y)
         {
-            if (x == null && y == null) return 0;
-            if (x == null) return -1;
-            if (y == null) return 1;
+            if (x == null && y == null)
+            {
+                return 0;
+            }
+
+            if (x == null)
+            {
+                return -1;
+            }
+
+            if (y == null)
+            {
+                return 1;
+            }
 
             if (x is SAMSymmetricKeyEntry kx)
             {

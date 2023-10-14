@@ -1,21 +1,7 @@
 ﻿using Leosac.KeyManager.Library.UI.Domain;
-using MaterialDesignThemes.Wpf;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Leosac.KeyManager.Library.UI
 {
@@ -28,11 +14,7 @@ namespace Leosac.KeyManager.Library.UI
         {
             InitializeComponent();
 
-            if (DesignerProperties.GetIsInDesignMode(this))
-                Favorites = new Favorites(); 
-            else
-                Favorites = Favorites.GetSingletonInstance();
-
+            Favorites = DesignerProperties.GetIsInDesignMode(this) ? new Favorites() : Favorites.GetSingletonInstance();
         }
 
         public Favorites Favorites
@@ -51,9 +33,9 @@ namespace Leosac.KeyManager.Library.UI
 
         public static readonly DependencyProperty SelectedKeyStoreFavoriteProperty = DependencyProperty.Register(nameof(SelectedKeyStoreFavorite), typeof(Favorite), typeof(FavoriteKeyStoreSelectionControl));
 
-        private async void btnNew_Click(object sender, RoutedEventArgs e)
+        private async void BtnNew_Click(object sender, RoutedEventArgs e)
         {
-            var model = new KeyStoreSelectorDialogViewModel() { Message = "Save a new Favorite Key Store" };
+            var model = new KeyStoreSelectorDialogViewModel { Message = "Save a new Favorite Key Store" };
             var dialog = new KeyStoreSelectorDialog
             {
                 DataContext = model

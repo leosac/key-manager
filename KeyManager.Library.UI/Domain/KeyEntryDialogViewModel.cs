@@ -27,12 +27,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 {
                     if (KeyEntry != null)
                     {
-                        var model = new KeyEntryLinkDialogViewModel()
+                        var model = new KeyEntryLinkDialogViewModel
                         {
                             Link = KeyEntry.Link,
                             Class = KeyEntry.KClass
                         };
-                        var dialog = new KeyEntryLinkDialog()
+                        var dialog = new KeyEntryLinkDialog
                         {
                             DataContext = model
                         };

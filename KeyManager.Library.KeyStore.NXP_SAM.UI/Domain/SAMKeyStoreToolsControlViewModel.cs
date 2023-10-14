@@ -216,8 +216,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             catch (Exception ex)
             {
                 log.Error("SAM Switch to AV2 failed.", ex);
-                if (SnackbarMessageQueue != null)
-                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
+                SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
             }
         }
 

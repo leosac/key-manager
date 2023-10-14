@@ -9,7 +9,7 @@ namespace Leosac.KeyManager.Library.Mnemonic
     /// Mnemonic calculation.
     /// Based on https://github.com/elucidsoft/dotnetstandard-bip39 (Apache License 2.0)
     /// </summary>
-    public class BIP39
+    public partial class BIP39
     {
         public string MnemonicToEntropy(string mnemonic, WordlistLang lang)
         {
@@ -34,11 +34,11 @@ namespace Leosac.KeyManager.Library.Mnemonic
 
             // split the binary string into ENT/CS
             var dividerIndex = (int)Math.Floor((double)bits.Length / 33) * 32;
-            var entropyBits = bits.Substring(0, dividerIndex);
-            var checksumBits = bits.Substring(dividerIndex);
+            var entropyBits = bits[..dividerIndex];
+            var checksumBits = bits[dividerIndex..];
 
             // calculate the checksum and compare
-            var entropyBytesMatch = Regex.Matches(entropyBits, "(.{1,8})")
+            var entropyBytesMatch = BitsRegex().Matches(entropyBits)
                 .OfType<Match>()
                 .Select(m => m.Groups[0].Value)
                 .ToArray();
@@ -71,7 +71,7 @@ namespace Leosac.KeyManager.Library.Mnemonic
 
             var bits = entropyBits + checksumBits;
 
-            var chunks = Regex.Matches(bits, "(.{1,11})")
+            var chunks = ChunksRegex().Matches(bits)
                 .OfType<Match>()
                 .Select(m => m.Groups[0].Value)
                 .ToArray();
@@ -88,29 +88,38 @@ namespace Leosac.KeyManager.Library.Mnemonic
         public string GenerateMnemonic(int strength, WordlistLang wordListType)
         {
             if (strength % 32 != 0)
-                throw new MnemonicException("Invalid Entropy");
-            using (var random = RandomNumberGenerator.Create())
             {
-                byte[] buffer = new byte[strength / 8];
-                random.GetBytes(buffer);
-                var entropyHex = Convert.ToHexString(buffer);
-                return EntropyToMnemonic(entropyHex, wordListType);
+                throw new MnemonicException("Invalid Entropy");
             }
+
+            using var random = RandomNumberGenerator.Create();
+            byte[] buffer = new byte[strength / 8];
+            random.GetBytes(buffer);
+            var entropyHex = Convert.ToHexString(buffer);
+            return EntropyToMnemonic(entropyHex, wordListType);
         }
 
         private void CheckValidEntropy(byte[] entropyBytes)
         {
             if (entropyBytes == null)
+            {
                 throw new ArgumentNullException(nameof(entropyBytes));
+            }
 
             if (entropyBytes.Length < 16)
+            {
                 throw new MnemonicException("Invalid Entropy (Length < 16)");
+            }
 
             if (entropyBytes.Length > 32)
+            {
                 throw new MnemonicException("Invalid Entropy (Length > 32)");
+            }
 
             if (entropyBytes.Length % 4 != 0)
+            {
                 throw new MnemonicException("Invalid Entropy(Length % 4 != 0");
+            }
         }
 
         private string Salt(string password)
@@ -118,10 +127,17 @@ namespace Leosac.KeyManager.Library.Mnemonic
             return "mnemonic" + (!string.IsNullOrEmpty(password) ? password : "");
         }
 
-        private byte[] MnemonicToSeed(string mnemonic, string password, int keySize = 64)
+        private byte[] MnemonicToSeed(string mnemonic, string password)
+        {
+            return MnemonicToSeed(mnemonic, password, 64);
+        }
+
+        private byte[] MnemonicToSeed(string mnemonic, string password, int keySize)
         {
             if (mnemonic == null)
+            {
                 throw new ArgumentNullException(nameof(mnemonic));
+            }
 
             var mnemonicBytes = Encoding.UTF8.GetBytes(mnemonic.Normalize(NormalizationForm.FormKD));
             var saltBytes = Encoding.UTF8.GetBytes(Salt(password.Normalize(NormalizationForm.FormKD)));
@@ -140,13 +156,9 @@ namespace Leosac.KeyManager.Library.Mnemonic
         {
             var ent = checksum.Length * 8;
             var cs = ent / 32;
-
-            using (var sha = SHA256.Create())
-            {
-                var hash = sha.ComputeHash(checksum);
-                string result = BytesToBinary(hash);
-                return result.Substring(0, cs);
-            }
+            var hash = SHA256.HashData(checksum);
+            string result = BytesToBinary(hash);
+            return result[..cs];
         }
 
         private string BytesToBinary(byte[] hash)
@@ -174,5 +186,10 @@ namespace Leosac.KeyManager.Library.Mnemonic
 
             return words.ToArray();
         }
+
+        [GeneratedRegex("(.{1,8})")]
+        private static partial Regex BitsRegex();
+        [GeneratedRegex("(.{1,11})")]
+        private static partial Regex ChunksRegex();
     }
 }

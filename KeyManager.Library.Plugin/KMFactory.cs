@@ -22,7 +22,9 @@
         public static T? GetFactoryFromPropertyType(Type? type)
         {
             if (type == null)
-                return default(T);
+            {
+                return default;
+            }
 
             lock (RegisteredFactories)
             {

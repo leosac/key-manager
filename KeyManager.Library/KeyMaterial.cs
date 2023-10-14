@@ -6,12 +6,22 @@ namespace Leosac.KeyManager.Library
 {
     public partial class KeyMaterial : ObservableValidator
     {
-        public const string PRIVATE_KEY = "Private Key";
-        public const string PUBLIC_KEY = "Public Key";
+        public static string PRIVATE_KEY => "Private Key";
+        public static string PUBLIC_KEY => "Public Key";
 
-        public KeyMaterial(string value = "", string? name = null)
+        public KeyMaterial() : this(string.Empty, null)
         {
-            _value = value;
+
+        }
+
+        public KeyMaterial(string value) : this(value, null)
+        {
+
+        }
+
+        public KeyMaterial(string value, string? name)
+        {
+            _value = value ?? string.Empty;
             _name = name;
         }
 
@@ -52,18 +62,23 @@ namespace Leosac.KeyManager.Library
                 {
                     case KeyValueFormat.HexString:
                         if (typeof(T) != typeof(string))
+                        {
                             throw new InvalidCastException();
+                        }
                         v = value as T;
                         break;
                     case KeyValueFormat.HexStringWithSpace:
                         if (typeof(T) != typeof(string))
+                        {
                             throw new InvalidCastException();
+                        }
                         v = HexStringRegex().Replace(value, "$0 ") as T;
                         break;
-                    case KeyValueFormat.Binary:
                     default:
                         if (typeof(T) != typeof(byte[]))
+                        {
                             throw new InvalidCastException();
+                        }
                         v = Convert.FromHexString(value) as T;
                         break;
                 }

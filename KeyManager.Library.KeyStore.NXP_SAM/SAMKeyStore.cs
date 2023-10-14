@@ -2,17 +2,12 @@
 {
     public class SAMKeyStore : KeyStore
     {
-        public const uint SAM_AV2_MAX_SYMMETRIC_ENTRIES = 128;
-        public const byte SAM_AV2_MAX_USAGE_COUNTERS = 16;
+        public static uint SAM_AV2_MAX_SYMMETRIC_ENTRIES => 128;
+        public static byte SAM_AV2_MAX_USAGE_COUNTERS => 16;
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
-        public SAMKeyStore()
-        {
-            
-        }
-
-        private bool _unlocked = false;
+        private bool _unlocked;
 
         public LibLogicalAccess.ReaderProvider? ReaderProvider { get; private set; }
         public LibLogicalAccess.ReaderUnit? ReaderUnit { get; private set; }
@@ -174,7 +169,9 @@
             if (uint.TryParse(identifier.Id, out uint entry))
             {
                 if (keClass == KeyEntryClass.Symmetric)
+                {
                     return Task.FromResult(entry < SAM_AV2_MAX_SYMMETRIC_ENTRIES);
+                }
             }
 
             return Task.FromResult(false);
@@ -192,7 +189,7 @@
             throw new KeyStoreException("A SAM key entry cannot be created, only updated.");
         }
 
-        public override Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
+        public override Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing)
         {
             log.Info(string.Format("Deleting key entry `{0}`...", identifier));
             log.Error("A SAM key entry cannot be deleted, only updated.");
@@ -290,7 +287,9 @@
                     }
                 }
                 else
+                {
                     throw new NotImplementedException();
+                }
             }
             else if (cmd is LibLogicalAccess.Reader.SAMAV1ISO7816Commands)
             {
@@ -325,7 +324,7 @@
             return keyEntry;
         }
 
-        public override Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass = null)
+        public override Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass)
         {
             log.Info(string.Format("Getting all key entries (class: `{0}`)...", keClass));
             IList<KeyEntryId> entries = new List<KeyEntryId>();
@@ -374,7 +373,7 @@
             log.Info("Key Entries storing completed.");
         }
 
-        public override Task Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
+        public override Task Update(IChangeKeyEntry change, bool ignoreIfMissing)
         {
             log.Info(string.Format("Updating key entry `{0}`...", change.Identifier));
 
@@ -405,7 +404,6 @@
 
                         if (samkey.SAMProperties.DESFireAID != null && samkey.SAMProperties.DESFireAID.Length == 3)
                         {
-                            // Array.Copy(samkey.SAMProperties.DESFireAID, infoav2.desfireAid, 3);
                             infoav2.desfireAid = samkey.SAMProperties.DESFireAID;
                         }
                         infoav2.desfirekeyno = samkey.SAMProperties.DESFireKeyNum;
@@ -669,13 +667,13 @@
             log.Info(string.Format("Key usage counter `{0}` updated.", counter.Identifier));
         }
 
-        public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null)
+        public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector)
         {
             // Will be supported with SAM AV3
             throw new NotSupportedException();
         }
 
-        public override async Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null)
+        public override async Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput)
         {
             byte[] div;
             log.Info(string.Format("Resolving key link with Key Entry Identifier `{0}`, Key Version `{1}`, Div Input `{2}`...", keyIdentifier, containerSelector, divInput));

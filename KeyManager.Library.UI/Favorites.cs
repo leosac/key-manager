@@ -15,7 +15,12 @@ namespace Leosac.KeyManager.Library.UI
             SingletonCreated?.Invoke(_singleton, new EventArgs());
         }
 
-        public static Favorites GetSingletonInstance(bool forceRecreate = false)
+        public static Favorites GetSingletonInstance()
+        {
+            return GetSingletonInstance(false);
+        }
+
+        public static Favorites GetSingletonInstance(bool forceRecreate)
         {
             lock (_objlock)
             {
@@ -31,7 +36,12 @@ namespace Leosac.KeyManager.Library.UI
 
         public ObservableCollection<Favorite> KeyStores { get; set; } = new ObservableCollection<Favorite>();
 
-        public Favorite CreateFromKeyStore(KeyStore.KeyStore store, bool save = true)
+        public Favorite CreateFromKeyStore(KeyStore.KeyStore store)
+        {
+            return CreateFromKeyStore(store, true);
+        }
+
+        public Favorite CreateFromKeyStore(KeyStore.KeyStore store, bool save)
         {
             var favorite = new Favorite
             {

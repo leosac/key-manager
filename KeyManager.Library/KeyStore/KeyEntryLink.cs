@@ -2,7 +2,7 @@
 {
     public class KeyEntryLink : Link
     {
-        public KeyEntryLink() : base()
+        public KeyEntryLink()
         {
             _wrappingKeySelector = "0";
             _wrappingKeyId = new KeyEntryId(string.Empty);
