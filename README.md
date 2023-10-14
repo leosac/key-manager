@@ -1,21 +1,21 @@
 # Leosac Key Manager ![Logo](KeyManager/images/leosac_key.png)
 
- - Stable branch: master [![Build Status](https://github.com/leosac/key-manager/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/leosac/key-manager/actions/workflows/build.yml)
- - Development branch: develop [![Build Status](https://github.com/leosac/key-manager/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/leosac/key-manager/actions/workflows/build.yml)
+-   Stable branch: master [![Build Status](https://github.com/leosac/key-manager/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/leosac/key-manager/actions/workflows/build.yml)
+-   Development branch: develop [![Build Status](https://github.com/leosac/key-manager/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/leosac/key-manager/actions/workflows/build.yml)
 
 Leosac Key Manager is a standalone application to generate, manage and re-deploy key entries on several kind of Key Store.
 
 ## Key Store
- - Local Key Store
- - NXP SAM AV2 / AV3 Key Store
- - HSM PKCS#11 Key Store
- - Leosac Credential Provisioning Server Key Store
+-   Local Key Store
+-   NXP SAM AV2 / AV3 Key Store
+-   HSM PKCS#11 Key Store
+-   Leosac Credential Provisioning Server Key Store
 
 ## Key Generation
- - Random
- - Password
- - Mnemonics (BIP-39)
- - Key Ceremony (Concat, Xor and Shamir Secret Sharing)
+-   Random
+-   Password
+-   Mnemonics (BIP-39)
+-   Key Ceremony (Concat, Xor and Shamir Secret Sharing)
  
 ## Out of scope
 It is not a key store / vault / server but a software to manage them.
