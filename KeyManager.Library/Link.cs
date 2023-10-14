@@ -10,7 +10,7 @@ namespace Leosac.KeyManager.Library
         public Link()
         {
             DivInput = new ObservableCollection<DivInputFragment>();
-            _keyIdentifier = new KeyEntryId();
+            _keyIdentifier = new KeyEntryId(string.Empty);
         }
 
         private string? _keyStoreFavorite;

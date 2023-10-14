@@ -10,6 +10,11 @@ namespace Leosac.KeyManager.Library.KeyStore
             _id = Guid.NewGuid().ToString();
         }
 
+        public KeyEntryId(string? id)
+        {
+            _id = id;
+        }
+
         private string? _id;
         private string? _label;
         private object? _handle;

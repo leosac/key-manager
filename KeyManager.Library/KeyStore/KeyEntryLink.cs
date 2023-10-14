@@ -5,7 +5,7 @@
         public KeyEntryLink() : base()
         {
             _wrappingKeySelector = "0";
-            _wrappingKeyId = new KeyEntryId();
+            _wrappingKeyId = new KeyEntryId(string.Empty);
         }
 
         private KeyEntryId _wrappingKeyId;
