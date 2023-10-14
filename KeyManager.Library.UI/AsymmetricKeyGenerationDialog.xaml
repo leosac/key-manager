@@ -36,7 +36,7 @@
             <TabControl TabStripPlacement="Left" Margin="5,15,5,5">
                 <TabItem Header="{x:Static properties:Resources.Random}">
                     <Grid>
-                        <Button x:Name="btnRandom" Content="{x:Static properties:Resources.GenerateRandom}" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnRandom_Click"/>
+                        <Button x:Name="btnRandom" Content="{x:Static properties:Resources.GenerateRandom}" HorizontalAlignment="Center" VerticalAlignment="Center" Click="BtnRandom_Click"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="{x:Static properties:Resources.Seed}">
@@ -48,7 +48,7 @@
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Text="{x:Static properties:Resources.CreateFromSeed}" Margin="10"/>
                         <local:SymmetricKeyControl Grid.Row="1" Key="{Binding Path=SeedKey, Mode=TwoWay, ElementName=userControl}" ShowKeyLink="False" />
-                        <Button x:Name="btnCreateFromSeed" Grid.Row="2" Content="{x:Static properties:Resources.Create}" Width="150" Click="btnCreateFromSeed_Click" Margin="10" />
+                        <Button x:Name="btnCreateFromSeed" Grid.Row="2" Content="{x:Static properties:Resources.Create}" Width="150" Click="BtnCreateFromSeed_Click" Margin="10" />
                     </Grid>
                 </TabItem>
                 <TabItem Header="{x:Static properties:Resources.KeyCeremony}">

@@ -75,23 +75,23 @@ namespace Leosac.KeyManager.Library.UI
 
         public static readonly DependencyProperty SelectedWordIndexProperty = DependencyProperty.Register(nameof(SelectedWordIndex), typeof(int), typeof(SymmetricKeyGenerationDialog));
 
-        private void btnRandom_Click(object sender, RoutedEventArgs e)
+        private void BtnRandom_Click(object sender, RoutedEventArgs e)
         {
             KeyValue = KeyGeneration.Random(KeySize > 0 ? KeySize : 16);
         }
 
-        private void btnPassword_Click(object sender, RoutedEventArgs e)
+        private void BtnPassword_Click(object sender, RoutedEventArgs e)
         {
             KeyValue = KeyGeneration.FromPassword(tbxPassword.Password, tbxSalt.Text, KeySize);
         }
 
-        private void btnImportMnemonic_Click(object sender, RoutedEventArgs e)
+        private void BtnImportMnemonic_Click(object sender, RoutedEventArgs e)
         {
             var bip39 = new Mnemonic.BIP39();
             KeyValue = bip39.MnemonicToSeedHex(String.Join(" ", MnemonicWords), tbxMnemonicPassphrase.Password, KeySize);
         }
 
-        private void btnGenerateMnemonic_Click(object sender, RoutedEventArgs e)
+        private void BtnGenerateMnemonic_Click(object sender, RoutedEventArgs e)
         {
             var bip39 = new Mnemonic.BIP39();
             MnemonicWords.Clear();
@@ -102,7 +102,7 @@ namespace Leosac.KeyManager.Library.UI
             }
         }
 
-        private void tbxNewWord_TextChanged(object sender, TextChangedEventArgs e)
+        private void TbxNewWord_TextChanged(object sender, TextChangedEventArgs e)
         {
             var words = tbxNewWord.Text.Split(' ');
             if (words.Length > 1)
@@ -136,7 +136,7 @@ namespace Leosac.KeyManager.Library.UI
             }
         }
 
-        private void tbxNewWord_KeyDown(object sender, KeyEventArgs e)
+        private void TbxNewWord_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
@@ -146,7 +146,7 @@ namespace Leosac.KeyManager.Library.UI
             }
         }
 
-        private void btnCopyMnemonic_Click(object sender, RoutedEventArgs e)
+        private void BtnCopyMnemonic_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(String.Join(" ", MnemonicWords));
         }

@@ -18,7 +18,7 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
             get => GetKeyEntryClassFromFirstKeyVariant();
         }
 
-        public override IList<KeyEntryVariant> GetAllVariants(KeyEntryClass? classFilter = null)
+        public override IList<KeyEntryVariant> GetAllVariants(KeyEntryClass? classFilter)
         {
             var variants = new List<KeyEntryVariant>();
 

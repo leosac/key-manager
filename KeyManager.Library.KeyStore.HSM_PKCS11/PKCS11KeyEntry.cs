@@ -17,7 +17,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             get { return Properties as PKCS11KeyEntryProperties; }
         }
 
-        public override IList<KeyEntryVariant> GetAllVariants(KeyEntryClass? classFilter = null)
+        public override IList<KeyEntryVariant> GetAllVariants(KeyEntryClass? classFilter)
         {
             var variants = new List<KeyEntryVariant>();
 
@@ -41,7 +41,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return variants;
         }
 
-        public IEnumerable<CKK> GetAsymmetricCKKs()
+        public static IEnumerable<CKK> GetAsymmetricCKKs()
         {
             return new CKK[]
             {
@@ -57,7 +57,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return CreateVariantFromAlgo(algo, GetKeySize(ckk));
         }
 
-        private uint GetKeySize(CKK ckk)
+        private static uint GetKeySize(CKK ckk)
         {
             uint size = 0;
             if (ckk == CKK.CKK_DES)
@@ -96,7 +96,10 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                 var tags = entry.Variant.KeyContainers[0].Key.Tags;
                 if (tags.Count > 0)
                 {
-                    Enum.TryParse<CKK>("CKK_" + tags[0], out ckk);
+                    if (!Enum.TryParse("CKK_" + tags[0], out ckk))
+                    {
+                        ckk = CKK.CKK_GENERIC_SECRET;
+                    }
                 }
             }
 

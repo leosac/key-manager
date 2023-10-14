@@ -60,14 +60,14 @@ namespace Leosac.KeyManager.Library.UI
         public static readonly DependencyProperty SeedKeyProperty = DependencyProperty.Register(nameof(KeyValue), typeof(Key), typeof(AsymmetricKeyGenerationDialog),
             new PropertyMetadata(new Key()));
 
-        private void btnRandom_Click(object sender, RoutedEventArgs e)
+        private void BtnRandom_Click(object sender, RoutedEventArgs e)
         {
-            
+            throw new NotImplementedException();
         }
 
-        private void btnCreateFromSeed_Click(object sender, RoutedEventArgs e)
+        private void BtnCreateFromSeed_Click(object sender, RoutedEventArgs e)
         {
-            
+            throw new NotImplementedException();
         }
     }
 }

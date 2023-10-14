@@ -40,7 +40,12 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         public abstract KeyEntryClass KClass { get; }
 
-        public abstract IList<KeyEntryVariant> GetAllVariants(KeyEntryClass? classFilter = null);
+        public abstract IList<KeyEntryVariant> GetAllVariants(KeyEntryClass? classFilter);
+
+        public IList<KeyEntryVariant> GetAllVariants()
+        {
+            return GetAllVariants(null);
+        }
 
         public void SetVariant(string name)
         {

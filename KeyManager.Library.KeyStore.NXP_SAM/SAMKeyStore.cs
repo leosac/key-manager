@@ -1,8 +1,4 @@
-﻿using LibLogicalAccess.Reader;
-using LibLogicalAccess;
-using LibLogicalAccess.Card;
-
-namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
+﻿namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 {
     public class SAMKeyStore : KeyStore
     {
@@ -25,9 +21,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         public SAMKeyStoreProperties GetSAMProperties()
         {
             var p = Properties as SAMKeyStoreProperties;
-            if (p == null)
-                throw new KeyStoreException("Missing SAM key store properties.");
-            return p;
+            return p ?? throw new KeyStoreException("Missing SAM key store properties.");
         }
 
         public override string Name => "NXP SAM AV2";
@@ -55,7 +49,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             ReaderProvider = lla.getReaderProvider(providerName);
             if (ReaderProvider == null)
             {
-                log.Error(String.Format("Cannot initialize the Reader Provider `{0}`.", providerName));
+                log.Error(string.Format("Cannot initialize the Reader Provider `{0}`.", providerName));
                 throw new KeyStoreException("Cannot initialize the Reader Provider.");
             }
 
@@ -100,17 +94,17 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 {
                     var chip = ReaderUnit.getSingleChip();
                     var genericType = chip.getGenericCardType();
-                    if (String.Compare(genericType, "SAM") >= 0)
+                    if (string.Compare(genericType, "SAM") >= 0)
                     {
                         Chip = chip;
 
                         var cmd = chip.getCommands();
                         LibLogicalAccess.Card.SAMVersion? version = null;
-                        if (cmd is SAMAV2ISO7816Commands av1cmd)
+                        if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av1cmd)
                         {
                             version = av1cmd.getVersion();
                         }
-                        else if (cmd is SAMAV2ISO7816Commands av2cmd)
+                        else if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
                         {
                             version = av2cmd.getVersion();
                         }
@@ -123,7 +117,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     else
                     {
                         Close();
-                        log.Error(String.Format("The card detected `{0}` is not a SAM.", genericType));
+                        log.Error(string.Format("The card detected `{0}` is not a SAM.", genericType));
                         throw new KeyStoreException("The card detected is not a SAM.");
                     }
                 }
@@ -177,8 +171,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             if (identifier.Id == null)
                 return Task.FromResult(false);
 
-            uint entry;
-            if (uint.TryParse(identifier.Id, out entry))
+            if (uint.TryParse(identifier.Id, out uint entry))
             {
                 if (keClass == KeyEntryClass.Symmetric)
                     return Task.FromResult(entry < SAM_AV2_MAX_SYMMETRIC_ENTRIES);
@@ -187,45 +180,45 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             return Task.FromResult(false);
         }
 
-        public bool CheckKeyUsageCounterExists(byte identifier)
+        public static bool CheckKeyUsageCounterExists(byte identifier)
         {
             return (identifier < SAM_AV2_MAX_USAGE_COUNTERS);
         }
 
         public override Task Create(IChangeKeyEntry change)
         {
-            log.Info(String.Format("Creating key entry `{0}`...", change.Identifier));
+            log.Info(string.Format("Creating key entry `{0}`...", change.Identifier));
             log.Error("A SAM key entry cannot be created, only updated.");
             throw new KeyStoreException("A SAM key entry cannot be created, only updated.");
         }
 
         public override Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
         {
-            log.Info(String.Format("Deleting key entry `{0}`...", identifier));
+            log.Info(string.Format("Deleting key entry `{0}`...", identifier));
             log.Error("A SAM key entry cannot be deleted, only updated.");
             throw new KeyStoreException("A SAM key entry cannot be deleted, only updated.");
         }
 
         public override Task MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
         {
-            log.Info(String.Format("Moving Down key entry `{0}`...", identifier));
+            log.Info(string.Format("Moving Down key entry `{0}`...", identifier));
             log.Error("A SAM key entry cannot be reordered.");
             throw new KeyStoreException("A SAM key entry cannot be reordered.");
         }
 
         public override Task MoveUp(KeyEntryId identifier, KeyEntryClass keClass)
         {
-            log.Info(String.Format("Moving Up key entry `{0}`...", identifier));
+            log.Info(string.Format("Moving Up key entry `{0}`...", identifier));
             log.Error("A SAM key entry cannot be reordered.");
             throw new KeyStoreException("A SAM key entry cannot be reordered.");
         }
 
         public override async Task<KeyEntry?> Get(KeyEntryId identifier, KeyEntryClass keClass)
         {
-            log.Info(String.Format("Getting key entry `{0}`...", identifier));
+            log.Info(string.Format("Getting key entry `{0}`...", identifier));
             if (!await CheckKeyEntryExists(identifier, keClass))
             {
-                log.Error(String.Format("The key entry `{0}` do not exists.", identifier));
+                log.Error(string.Format("The key entry `{0}` do not exists.", identifier));
                 throw new KeyStoreException("The key entry do not exists.");
             }
 
@@ -280,7 +273,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                         var keyVersions = keyEntry.Variant.KeyContainers.OfType<KeyVersion>().ToArray();
                         if (keysdata.Count < 2 || keysdata.Count != keyVersions.Length)
                         {
-                            log.Error(String.Format("Unexpected number of keys ({0}) on the SAM Key Entry.", keysdata.Count));
+                            log.Error(string.Format("Unexpected number of keys ({0}) on the SAM Key Entry.", keysdata.Count));
                             throw new KeyStoreException("Unexpected number of keys on the SAM Key Entry.");
                         }
 
@@ -310,25 +303,31 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 throw new KeyStoreException("Unexpected Command associated with the SAM chip.");
             }
 
-            log.Info(String.Format("Key entry `{0}` retrieved.", identifier));
+            log.Info(string.Format("Key entry `{0}` retrieved.", identifier));
             return keyEntry;
         }
 
-        private SAMSymmetricKeyEntry CreateKeyEntryFromKeyType(SAMKeyType keyType)
+        private static SAMSymmetricKeyEntry CreateKeyEntryFromKeyType(LibLogicalAccess.Card.SAMKeyType keyType)
         {
             var keyEntry = new SAMSymmetricKeyEntry();
-            if (keyType == SAMKeyType.SAM_KEY_DES)
+            if (keyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_DES)
+            {
                 keyEntry.SetVariant("DES");
-            else if (keyType == SAMKeyType.SAM_KEY_AES)
+            }
+            else if (keyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES)
+            {
                 keyEntry.SetVariant("AES128");
+            }
             else
+            {
                 keyEntry.SetVariant("TK3DES");
+            }
             return keyEntry;
         }
 
         public override Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass = null)
         {
-            log.Info(String.Format("Getting all key entries (class: `{0}`)...", keClass));
+            log.Info(string.Format("Getting all key entries (class: `{0}`)...", keClass));
             IList<KeyEntryId> entries = new List<KeyEntryId>();
             if (keClass == null || keClass == KeyEntryClass.Symmetric)
             {
@@ -337,22 +336,22 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     entries.Add(new KeyEntryId { Id = i.ToString() });
                 }
             }
-            log.Info(String.Format("{0} key entries returned.", entries.Count));
+            log.Info(string.Format("{0} key entries returned.", entries.Count));
             return Task.FromResult(entries);
         }
 
         public override async Task Store(IList<IChangeKeyEntry> changes)
         {
-            log.Info(String.Format("Storing `{0}` key entries...", changes.Count));
+            log.Info(string.Format("Storing `{0}` key entries...", changes.Count));
 
             var cmd = Chip?.getCommands();
-            if (cmd is SAMAV1ISO7816Commands av1cmd)
+            if (cmd is LibLogicalAccess.Reader.SAMAV1ISO7816Commands av1cmd)
             {
                 if (GetSAMProperties().AutoSwitchToAV2)
                 {
                     await SwitchSAMToAV2(av1cmd);
                     cmd = Chip?.getCommands();
-                    if (cmd is SAMAV1ISO7816Commands)
+                    if (cmd is LibLogicalAccess.Reader.SAMAV1ISO7816Commands)
                     {
                         log.Error("The SAM didn't switched properly to AV2 mode.");
                         throw new KeyStoreException("The SAM didn't switched properly to AV2 mode.");
@@ -377,15 +376,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
         public override Task Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
         {
-            log.Info(String.Format("Updating key entry `{0}`...", change.Identifier));
+            log.Info(string.Format("Updating key entry `{0}`...", change.Identifier));
 
             if (change is SAMSymmetricKeyEntry samkey)
             {
                 var cmd = Chip?.getCommands();
-                if (cmd is SAMAV2ISO7816Commands av2cmd)
+                if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
                 {
-                    var key = new DESFireKey();
-                    key.setKeyType(DESFireKeyType.DF_KEY_AES);
+                    var key = new LibLogicalAccess.Card.DESFireKey();
+                    key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
                     key.setKeyVersion(GetSAMProperties().AuthenticateKeyVersion);
                     if (!string.IsNullOrEmpty(Properties?.Secret))
                     {
@@ -396,9 +395,9 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                         key.fromString("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
                     }
 
-                    var natkey = new AV2SAMKeyEntry();
+                    var natkey = new LibLogicalAccess.Card.AV2SAMKeyEntry();
 
-                    var infoav2 = new KeyEntryAV2Information();
+                    var infoav2 = new LibLogicalAccess.Card.KeyEntryAV2Information();
 
                     if (samkey.SAMProperties != null)
                     {
@@ -422,13 +421,13 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     if (samkey.Variant != null)
                     {
                         var keyVersions = samkey.Variant.KeyContainers.OfType<KeyVersion>().ToArray();
-                        var keys = new UCharCollectionCollection(keyVersions.Length);
+                        var keys = new LibLogicalAccess.UCharCollectionCollection(keyVersions.Length);
                         foreach (var keyversion in samkey.Variant.KeyContainers)
                         {
                             if (string.IsNullOrEmpty(keyversion.Key.GetAggregatedValue<string>()))
-                                keys.Add(new ByteVector(new byte[keyversion.Key.KeySize]));
+                                keys.Add(new LibLogicalAccess.ByteVector(new byte[keyversion.Key.KeySize]));
                             else
-                                keys.Add(new ByteVector(keyversion.Key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary)));
+                                keys.Add(new LibLogicalAccess.ByteVector(keyversion.Key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary)));
                         }
 
                         infoav2.vera = keyVersions[0].Version;
@@ -439,17 +438,17 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
                         if (keyVersions[0].Key.Tags.Contains("AES"))
                         {
-                            natkey.setKeysData(keys, SAMKeyType.SAM_KEY_AES);
+                            natkey.setKeysData(keys, LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES);
                         }
                         else
                         {
                             if (keyVersions[0].Key.KeySize == 16)
                             {
-                                natkey.setKeysData(keys, SAMKeyType.SAM_KEY_DES);
+                                natkey.setKeysData(keys, LibLogicalAccess.Card.SAMKeyType.SAM_KEY_DES);
                             }
                             else
                             {
-                                natkey.setKeysData(keys, SAMKeyType.SAM_KEY_3K3DES);
+                                natkey.setKeysData(keys, LibLogicalAccess.Card.SAMKeyType.SAM_KEY_3K3DES);
                             }
                         }
                     }
@@ -457,20 +456,20 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
                     if (samkey.SAMProperties != null)
                     {
-                        var set = new SETAV2();
-
-                        set.dumpsessionkey = Convert.ToByte(samkey.SAMProperties.EnableDumpSessionKey);
-                        set.allowcrypto = Convert.ToByte(samkey.SAMProperties.CryptoBasedOnSecretKey);
-                        set.disabledecryption = Convert.ToByte(samkey.SAMProperties.DisableDecryptData);
-                        set.disableencryption = Convert.ToByte(samkey.SAMProperties.DisableEncryptData);
-                        set.disablegeneratemac = Convert.ToByte(samkey.SAMProperties.DisableGenerateMACFromPICC);
-                        set.disablekeyentry = Convert.ToByte(samkey.SAMProperties.DisableKeyEntry);
-                        set.disableverifymac = Convert.ToByte(samkey.SAMProperties.DisableVerifyMACFromPICC);
-                        set.disablewritekeytopicc = Convert.ToByte(samkey.SAMProperties.DisableChangeKeyPICC);
-                        set.lockkey = Convert.ToByte(samkey.SAMProperties.LockUnlock);
-                        set.keepIV = Convert.ToByte(samkey.SAMProperties.KeepIV);
-                        set.authkey = Convert.ToByte(samkey.SAMProperties.AuthenticateHost);
-
+                        var set = new LibLogicalAccess.Card.SETAV2
+                        {
+                            dumpsessionkey = Convert.ToByte(samkey.SAMProperties.EnableDumpSessionKey),
+                            allowcrypto = Convert.ToByte(samkey.SAMProperties.CryptoBasedOnSecretKey),
+                            disabledecryption = Convert.ToByte(samkey.SAMProperties.DisableDecryptData),
+                            disableencryption = Convert.ToByte(samkey.SAMProperties.DisableEncryptData),
+                            disablegeneratemac = Convert.ToByte(samkey.SAMProperties.DisableGenerateMACFromPICC),
+                            disablekeyentry = Convert.ToByte(samkey.SAMProperties.DisableKeyEntry),
+                            disableverifymac = Convert.ToByte(samkey.SAMProperties.DisableVerifyMACFromPICC),
+                            disablewritekeytopicc = Convert.ToByte(samkey.SAMProperties.DisableChangeKeyPICC),
+                            lockkey = Convert.ToByte(samkey.SAMProperties.LockUnlock),
+                            keepIV = Convert.ToByte(samkey.SAMProperties.KeepIV),
+                            authkey = Convert.ToByte(samkey.SAMProperties.AuthenticateHost)
+                        };
                         natkey.setSET(set);
                     }
                     natkey.setSETKeyTypeFromKeyType();
@@ -496,45 +495,39 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             return Task.CompletedTask;
         }
 
-        public async Task SwitchSAMToAV2(SAMAV1ISO7816Commands av1cmd)
+        public async Task SwitchSAMToAV2(LibLogicalAccess.Reader.SAMAV1ISO7816Commands av1cmd)
         {
             SwitchSAMToAV2(av1cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyType, GetSAMProperties().AuthenticateKeyVersion, Properties?.Secret);
             await Close();
             await Open();
         }
 
-        public static void SwitchSAMToAV2(SAMAV1ISO7816Commands av1cmd, byte keyno, DESFireKeyType keyType, byte keyVersion, string? keyValue)
+        public static void SwitchSAMToAV2(LibLogicalAccess.Reader.SAMAV1ISO7816Commands av1cmd, byte keyno, LibLogicalAccess.Card.DESFireKeyType keyType, byte keyVersion, string? keyValue)
         {
             log.Info("Switching the SAM to AV2 mode...");
             var keyav1entry = av1cmd.getKeyEntry(keyno);
             if (string.IsNullOrEmpty(keyValue))
             {
                 keyValue = "00000000000000000000000000000000";
-                switch (keyav1entry.getKeyType())
+                keyType = keyav1entry.getKeyType() switch
                 {
-                    case SAMKeyType.SAM_KEY_3K3DES:
-                        keyType = DESFireKeyType.DF_KEY_3K3DES;
-                        break;
-                    case SAMKeyType.SAM_KEY_AES:
-                        keyType = DESFireKeyType.DF_KEY_AES;
-                        break;
-                    default:
-                        keyType = DESFireKeyType.DF_KEY_DES;
-                        break;
-                }
+                    LibLogicalAccess.Card.SAMKeyType.SAM_KEY_3K3DES => LibLogicalAccess.Card.DESFireKeyType.DF_KEY_3K3DES,
+                    LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES => LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES,
+                    _ => LibLogicalAccess.Card.DESFireKeyType.DF_KEY_DES,
+                };
             }
             var key = CreateDESFireKey(keyType, keyVersion, keyValue);
-            if (keyType != DESFireKeyType.DF_KEY_AES)
+            if (keyType != LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES)
             {
                 var kb = KeyMaterial.GetFormattedValue<byte[]>(keyValue, KeyValueFormat.Binary);
-                var keys = new UCharCollectionCollection(3)
+                var keys = new LibLogicalAccess.UCharCollectionCollection(3)
                 {
-                    new ByteVector(kb),
-                    new ByteVector(kb),
-                    new ByteVector(kb)
+                    new LibLogicalAccess.ByteVector(kb),
+                    new LibLogicalAccess.ByteVector(kb),
+                    new LibLogicalAccess.ByteVector(kb)
                 };
 
-                keyav1entry.setKeysData(keys, SAMKeyType.SAM_KEY_AES);
+                keyav1entry.setKeysData(keys, LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES);
                 var keyInfo = keyav1entry.getKeyEntryInformation();
                 keyInfo.vera = keyVersion;
                 keyInfo.verb = keyVersion;
@@ -547,17 +540,17 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 av1cmd.authenticateHost(key, keyno);
                 av1cmd.changeKeyEntry(keyno, keyav1entry, key);
 
-                key.setKeyType(DESFireKeyType.DF_KEY_AES);
+                key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
             }
 
             av1cmd.authenticateHost(key, keyno);
-            av1cmd.lockUnlock(key, SAMLockUnlock.SwitchAV2Mode, keyno, 0, 0);
+            av1cmd.lockUnlock(key, LibLogicalAccess.Card.SAMLockUnlock.SwitchAV2Mode, keyno, 0, 0);
             log.Info("SAM switched to AV2 mode.");
         }
 
-        public static DESFireKey CreateDESFireKey(DESFireKeyType keyType, byte keyVersion, string? keyValue)
+        public static LibLogicalAccess.Card.DESFireKey CreateDESFireKey(LibLogicalAccess.Card.DESFireKeyType keyType, byte keyVersion, string? keyValue)
         {
-            var key = new DESFireKey();
+            var key = new LibLogicalAccess.Card.DESFireKey();
             key.setKeyVersion(keyVersion);
             key.setKeyType(keyType);
             if (!string.IsNullOrEmpty(keyValue))
@@ -567,28 +560,28 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             return key;
         }
 
-        public void ActivateMifareSAM(SAMAV2ISO7816Commands av2cmd)
+        public void ActivateMifareSAM(LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
         {
             ActivateMifareSAM(av2cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyType, GetSAMProperties().AuthenticateKeyVersion, Properties?.Secret);
             Close();
             Open();
         }
 
-        public void ActivateMifareSAM(SAMAV2ISO7816Commands av2cmd, byte keyno, DESFireKeyType keyType, byte keyVersion, string? keyValue)
+        public static void ActivateMifareSAM(LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd, byte keyno, LibLogicalAccess.Card.DESFireKeyType keyType, byte keyVersion, string? keyValue)
         {
             var key = CreateDESFireKey(keyType, keyVersion, keyValue);
-            av2cmd.lockUnlock(key, SAMLockUnlock.SwitchAV2Mode /* AV3 = Active Mifare SAM */, keyno, 0, 0);
+            av2cmd.lockUnlock(key, LibLogicalAccess.Card.SAMLockUnlock.SwitchAV2Mode /* AV3 = Active Mifare SAM */, keyno, 0, 0);
             log.Info("Mifare SAM features activation completed.");
         }
 
-        public static void UnlockSAM(SAMAV2ISO7816Commands av2cmd, byte keyEntry, byte keyVersion, string? keyValue)
+        public static void UnlockSAM(LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd, byte keyEntry, byte keyVersion, string? keyValue)
         {
             log.Info("Unlocking SAM...");
-            var key = new DESFireKey();
-            key.setKeyType(DESFireKeyType.DF_KEY_AES);
+            var key = new LibLogicalAccess.Card.DESFireKey();
+            key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
             key.setKeyVersion(keyVersion);
             key.fromString(keyValue ?? "");
-            av2cmd.lockUnlock(key, SAMLockUnlock.Unlock, keyEntry, 0, 0);
+            av2cmd.lockUnlock(key, LibLogicalAccess.Card.SAMLockUnlock.Unlock, keyEntry, 0, 0);
             log.Info("SAM unlocked.");
         }
 
@@ -608,8 +601,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 throw new KeyStoreException("No Command associated with the SAM chip.");
             }
 
-            var counter = new SAMKeyUsageCounter();
-            counter.Identifier = identifier;
+            var counter = new SAMKeyUsageCounter
+            {
+                Identifier = identifier
+            };
             if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
             {
                 var kucEntry = av2cmd.getKUCEntry(identifier);
@@ -630,18 +625,18 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 throw new KeyStoreException("Unexpected Command associated with the SAM chip.");
             }
 
-            log.Info(String.Format("Key usage counter `{0}` retrieved.", identifier));
+            log.Info(string.Format("Key usage counter `{0}` retrieved.", identifier));
             return counter;
         }
         public void UpdateCounter(SAMKeyUsageCounter counter)
         {
-            log.Info(String.Format("Updating key usage counter `{0}`...", counter.Identifier));
+            log.Info(string.Format("Updating key usage counter `{0}`...", counter.Identifier));
 
             var cmd = Chip?.getCommands();
-            if (cmd is SAMAV2ISO7816Commands av2cmd)
+            if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
             {
-                var key = new DESFireKey();
-                key.setKeyType(DESFireKeyType.DF_KEY_AES);
+                var key = new LibLogicalAccess.Card.DESFireKey();
+                key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
                 key.setKeyVersion(GetSAMProperties().AuthenticateKeyVersion);
                 if (!string.IsNullOrEmpty(Properties?.Secret))
                 {
@@ -652,7 +647,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     key.fromString("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
                 }
 
-                var kucEntry = new SAMKucEntry();
+                var kucEntry = new LibLogicalAccess.Card.SAMKucEntry();
                 var entry = kucEntry.getKucEntryStruct();
 
                 entry.keynockuc = counter.ChangeKeyRefId;
@@ -671,7 +666,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 throw new KeyStoreException("Inserted SAM is not in AV2 mode, AV1 support has been deprecated, please check to option to auto switch to AV2 or manually perform a Switch.");
             }
 
-            log.Info(String.Format("Key usage counter `{0}` updated.", counter.Identifier));
+            log.Info(string.Format("Key usage counter `{0}` updated.", counter.Identifier));
         }
 
         public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null)
@@ -683,22 +678,22 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         public override async Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null)
         {
             byte[] div;
-            log.Info(String.Format("Resolving key link with Key Entry Identifier `{0}`, Key Version `{1}`, Div Input `{2}`...", keyIdentifier, containerSelector, divInput));
+            log.Info(string.Format("Resolving key link with Key Entry Identifier `{0}`, Key Version `{1}`, Div Input `{2}`...", keyIdentifier, containerSelector, divInput));
             if (!string.IsNullOrEmpty(divInput))
                 div = Convert.FromHexString(divInput);
             else
-                div = new byte[0];
+                div = Array.Empty<byte>();
 
             if (!await CheckKeyEntryExists(keyIdentifier, keClass))
             {
-                log.Error(String.Format("The key entry `{0}` doesn't exist.", keyIdentifier));
+                log.Error(string.Format("The key entry `{0}` doesn't exist.", keyIdentifier));
                 throw new KeyStoreException("The key entry doesn't exist.");
             }
 
             byte entry = byte.Parse(keyIdentifier.Id!);
 
             var cmd = Chip?.getCommands();
-            if (cmd is SAMAV2ISO7816Commands av2cmd)
+            if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
             {
                 if (!string.IsNullOrEmpty(GetSAMProperties().Secret) && !_unlocked)
                 {
@@ -706,10 +701,11 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     _unlocked = true;
                 }
 
-                byte keyVersion = 0;
-                if (!byte.TryParse(containerSelector, out keyVersion))
+                if (!byte.TryParse(containerSelector, out byte keyVersion))
+                {
                     log.Warn("Cannot parse the container selector as a key version, falling back to version 0.");
-                var keyVector = av2cmd.dumpSecretKey(entry, keyVersion, new ByteVector(div));
+                }
+                var keyVector = av2cmd.dumpSecretKey(entry, keyVersion, new LibLogicalAccess.ByteVector(div));
                 log.Info("Key link completed.");
                 return Convert.ToHexString(keyVector.ToArray());
             }

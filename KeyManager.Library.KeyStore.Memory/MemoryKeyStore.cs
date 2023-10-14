@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Leosac.KeyManager.Library.KeyStore.Memory
+﻿namespace Leosac.KeyManager.Library.KeyStore.Memory
 {
     public class MemoryKeyStore : KeyStore
     {
-        IList<KeyEntry> _keyEntries;
+        private readonly IList<KeyEntry> _keyEntries;
 
         public MemoryKeyStore()
         {
@@ -40,8 +34,7 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
 
         public override Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
         {
-            KeyEntry? keyEntry;
-            return CheckKeyEntryExists(identifier, keClass, out keyEntry);
+            return CheckKeyEntryExists(identifier, keClass, out _);
         }
 
         protected Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass, out KeyEntry? keyEntry)
@@ -55,19 +48,24 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
             if (change is KeyEntry keyEntry)
             {
                 if (await CheckKeyEntryExists(keyEntry))
+                {
                     throw new KeyStoreException("A key entry with the same identifier already exists.");
+                }
 
                 _keyEntries.Add(keyEntry);
             }
             else
+            {
                 throw new KeyStoreException("Unsupported `change` parameter.");
+            }
         }
 
         public override async Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false)
         {
-            KeyEntry? keyEntry;
-            if (!await CheckKeyEntryExists(identifier, keClass, out keyEntry) && !ignoreIfMissing)
+            if (!await CheckKeyEntryExists(identifier, keClass, out KeyEntry? keyEntry) && !ignoreIfMissing)
+            {
                 throw new KeyStoreException("The key entry do not exists.");
+            }
             if (keyEntry != null)
             {
                 _keyEntries.Remove(keyEntry);
@@ -76,9 +74,10 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
 
         public override async Task<KeyEntry?> Get(KeyEntryId identifier, KeyEntryClass keClass)
         {
-            KeyEntry? keyEntry;
-            if (!await CheckKeyEntryExists(identifier, keClass, out keyEntry))
+            if (!await CheckKeyEntryExists(identifier, keClass, out KeyEntry? keyEntry))
+            {
                 throw new KeyStoreException("The key entry do not exists.");
+            }
             return keyEntry;
         }
 
@@ -131,12 +130,12 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
             OnKeyEntryUpdated(change);
         }
 
-        public override Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null)
+        public override Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput)
         {
             throw new NotSupportedException();
         }
 
-        public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null)
+        public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector)
         {
             throw new NotSupportedException();
         }

@@ -30,9 +30,9 @@ namespace Leosac.KeyManager
             InitializeComponent();
         }
 
-        private async void createKeyStore_MouseDown(object sender, MouseButtonEventArgs e)
+        private async void CreateKeyStore_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var model = new KeyStoreSelectorDialogViewModel() { Message = Properties.Resources.CreateKeyStore };
+            var model = new KeyStoreSelectorDialogViewModel { Message = Properties.Resources.CreateKeyStore };
             var dialog = new KeyStoreSelectorDialog
             {
                 DataContext = model
@@ -41,8 +41,7 @@ namespace Leosac.KeyManager
             object? ret = await DialogHost.Show(dialog, "RootDialog");
             if (ret != null)
             {
-                var homeModel = DataContext as HomeControlViewModel;
-                if (homeModel != null)
+                if (DataContext is HomeControlViewModel homeModel)
                 {
                     var store = model.CreateKeyStore();
                     if (store != null)
@@ -57,9 +56,9 @@ namespace Leosac.KeyManager
             }
         }
 
-        private async void openKeyStore_MouseDown(object sender, MouseButtonEventArgs e)
+        private async void OpenKeyStore_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var model = new KeyStoreSelectorDialogViewModel() { Message = Properties.Resources.OpenKeyStore };
+            var model = new KeyStoreSelectorDialogViewModel { Message = Properties.Resources.OpenKeyStore };
             var dialog = new KeyStoreSelectorDialog
             {
                 DataContext = model
@@ -67,8 +66,7 @@ namespace Leosac.KeyManager
             object? ret = await DialogHost.Show(dialog, "RootDialog");
             if (ret != null)
             {
-                var homeModel = DataContext as HomeControlViewModel;
-                if (homeModel != null)
+                if (DataContext is HomeControlViewModel homeModel)
                 {
                     var store = model.CreateKeyStore();
                     if (homeModel.KeyStoreCommand != null)
@@ -79,10 +77,9 @@ namespace Leosac.KeyManager
             }
         }
 
-        private void favoritesKeyStore_MouseDown(object sender, MouseButtonEventArgs e)
+        private void FavoritesKeyStore_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var homeModel = DataContext as HomeControlViewModel;
-            if (homeModel != null)
+            if (DataContext is HomeControlViewModel homeModel)
             {
                 homeModel.FavoritesCommand?.Execute(null);
             }

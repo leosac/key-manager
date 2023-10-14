@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Leosac.KeyManager.Library.UI.Domain;
 using Leosac.WpfApp;
-using Leosac.WpfApp.Domain;
 using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 
@@ -19,8 +18,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             {
                 CounterIdentifiers.Add(i);
             }
-            EditKeyUsageCounterCommand = new RelayCommand<byte?>(
-                identifier =>
+            EditKeyUsageCounterCommand = new AsyncRelayCommand<byte?>(
+                async identifier =>
                 {
                     if (identifier != null)
                     {
@@ -36,12 +35,11 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                                 DataContext = model
                             };
 
-                            UpdateKeyCounter(dialog);
+                            await UpdateKeyCounter(dialog);
                         }
                         catch (KeyStoreException ex)
                         {
-                            if (SnackbarMessageQueue != null)
-                                SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex, "Key Store Error");
+                            SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex, "Key Store Error");
                         }
                     }
                 });
@@ -57,9 +55,9 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
 
         public ObservableCollection<byte> CounterIdentifiers { get; set; }
 
-        public RelayCommand<byte?> EditKeyUsageCounterCommand { get; set; }
+        public AsyncRelayCommand<byte?> EditKeyUsageCounterCommand { get; set; }
 
-        private async void UpdateKeyCounter(SAMKeyUsageCounterDialog dialog)
+        private async Task UpdateKeyCounter(SAMKeyUsageCounterDialog dialog)
         {
             object? ret = await DialogHost.Show(dialog, "KeyCounterDialog");
             try
@@ -74,16 +72,14 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             }
             catch (KeyStoreException ex)
             {
-                if (SnackbarMessageQueue != null)
-                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex, "Key Store Error");
-                UpdateKeyCounter(dialog);
+                SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex, "Key Store Error");
+                await UpdateKeyCounter(dialog);
             }
             catch (Exception ex)
             {
                 log.Error("Updating the Key Usage Counter failed unexpected.", ex);
-                if (SnackbarMessageQueue != null)
-                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
-                UpdateKeyCounter(dialog);
+                SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
+                await UpdateKeyCounter(dialog);
             }
         }
     }

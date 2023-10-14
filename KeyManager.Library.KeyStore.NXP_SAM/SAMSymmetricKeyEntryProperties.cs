@@ -10,40 +10,40 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
     {
         public SAMKeyEntryType SAMKeyEntryType { get; set; } = SAMKeyEntryType.Host;
 
-        public bool EnableDumpSessionKey { get; set; } = false;
+        public bool EnableDumpSessionKey { get; set; }
 
-        public bool CryptoBasedOnSecretKey { get; set; } = false;
+        public bool CryptoBasedOnSecretKey { get; set; }
 
-        public bool KeepIV { get; set; } = false;
+        public bool KeepIV { get; set; }
 
-        public bool LockUnlock { get; set; } = false;
+        public bool LockUnlock { get; set; }
 
         public bool AuthenticateHost { get; set; } = true;
 
-        public bool DisableChangeKeyPICC { get; set; } = false;
+        public bool DisableChangeKeyPICC { get; set; }
 
-        public bool DisableDecryptData { get; set; } = false;
+        public bool DisableDecryptData { get; set; }
 
-        public bool DisableEncryptData { get; set; } = false;
+        public bool DisableEncryptData { get; set; }
 
-        public bool DisableVerifyMACFromPICC { get; set; } = false;
+        public bool DisableVerifyMACFromPICC { get; set; }
 
-        public bool DisableGenerateMACFromPICC { get; set; } = false;
+        public bool DisableGenerateMACFromPICC { get; set; }
 
-        public bool DisableKeyEntry { get; set; } = false;
+        public bool DisableKeyEntry { get; set; }
 
-        public bool AllowDumpSecretKey { get; set; } = false;
+        public bool AllowDumpSecretKey { get; set; }
 
-        public bool AllowDumpSecretKeyWithDiv { get; set; } = false;
+        public bool AllowDumpSecretKeyWithDiv { get; set; }
 
         public byte[] DESFireAID { get; set; } = new byte[3];
 
-        public byte DESFireKeyNum { get; set; } = 0;
+        public byte DESFireKeyNum { get; set; }
 
         public byte? KeyUsageCounter { get; set; } = null;
 
-        public byte ChangeKeyRefId { get; set; } = 0;
+        public byte ChangeKeyRefId { get; set; }
 
-        public byte ChangeKeyRefVersion { get; set; } = 0;
+        public byte ChangeKeyRefVersion { get; set; }
     }
 }

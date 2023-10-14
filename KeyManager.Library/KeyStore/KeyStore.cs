@@ -90,7 +90,16 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// </summary>
         /// <param name="keyEntry">The key entry details</param>
         /// <param name="ignoreIfMissing">Ignore if the targeted key entry is missing, throw otherwise.</param>
-        public abstract Task Update(IChangeKeyEntry keyEntry, bool ignoreIfMissing = false);
+        public abstract Task Update(IChangeKeyEntry keyEntry, bool ignoreIfMissing);
+
+        /// <summary>
+        /// Update an existing key entry.
+        /// </summary>
+        /// <param name="keyEntry">The key entry details</param>
+        public Task Update(IChangeKeyEntry keyEntry)
+        {
+            return Update(keyEntry, false);
+        }
 
         /// <summary>
         /// Delete an existing key entry.
@@ -98,7 +107,17 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="identifier">The key entry identifier</param>
         /// <param name="keClass">The key entry class</param>
         /// <param name="ignoreIfMissing">Ignore if the targeted key entry is missing, throw otherwise.</param>
-        public abstract Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing = false);
+        public abstract Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing);
+
+        /// <summary>
+        /// Delete an existing key entry.
+        /// </summary>
+        /// <param name="identifier">The key entry identifier</param>
+        /// <param name="keClass">The key entry class</param>
+        public Task Delete(KeyEntryId identifier, KeyEntryClass keClass)
+        {
+            return Delete(identifier, keClass, false);
+        }
 
         /// <summary>
         /// Move up a key entry on the list, if reordering is supported.
@@ -236,9 +255,19 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// </summary>
         /// <param name="keyIdentifier">The key entry identifier</param>
         /// <param name="keClass">The key entry class</param>
+        public Task<Key?> GetKey(KeyEntryId keyIdentifier, KeyEntryClass keClass)
+        {
+            return GetKey(keyIdentifier, keClass, null);
+        }
+
+        /// <summary>
+        /// Get a key from a key entry.
+        /// </summary>
+        /// <param name="keyIdentifier">The key entry identifier</param>
+        /// <param name="keClass">The key entry class</param>
         /// <param name="keyContainerSelector">The key container selector</param>
         /// <returns></returns>
-        public async Task<Key?> GetKey(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? keyContainerSelector = null)
+        public async Task<Key?> GetKey(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? keyContainerSelector)
         {
             log.Info(String.Format("Getting key with Key Entry Identifier `{0}` and Container Selector `{1}`...", keyIdentifier, keyContainerSelector));
             var keyEntry = await Get(keyIdentifier, keClass);
@@ -283,7 +312,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="wrappingKeyId">The wrapping key identifier for cryptogram computation (optional)</param>
         /// <param name="wrappingContainerSelector">The wrapping key container selector for cryptogram computation (optional)</param>
         /// <returns>The change key entry cryptogram</returns>
-        public abstract Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput = null, KeyEntryId? wrappingKeyId = null, string? wrappingContainerSelector = null);
+        public abstract Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector);
 
         /// <summary>
         /// Resolve a key link.
@@ -293,7 +322,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="containerSelector">The key container selector (optional)</param>
         /// <param name="divInput">The key div input (optional)</param>
         /// <returns>The key value</returns>
-        public abstract Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector = null, string? divInput = null);
+        public abstract Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput);
 
         public event EventHandler<KeyEntry>? KeyEntryRetrieved;
 

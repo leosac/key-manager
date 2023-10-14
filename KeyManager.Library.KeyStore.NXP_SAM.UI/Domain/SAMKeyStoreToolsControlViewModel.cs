@@ -12,11 +12,11 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
 
         public SAMKeyStoreToolsControlViewModel()
         {
-            _samAuthKey = new KeyVersion() { Name = "Key" };
+            _samAuthKey = new KeyVersion { Name = "Key" };
             _samAuthKeyId = 0;
             _samAuthKeyType = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES;
 
-            _samUnlockKey = new KeyVersion() { Name = "Key", Key = new Key(null, 16, "") };
+            _samUnlockKey = new KeyVersion { Name = "Key", Key = new Key(null, 16, "") };
             _samUnlockKeyId = 1;
             _samUnlockAction = LibLogicalAccess.Card.SAMLockUnlock.Unlock;
 
@@ -148,14 +148,12 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                     msg += Environment.NewLine + string.Format("Hardware Version: {0}.{1}", version.hardware.majorversion, version.hardware.minorversion);
                 }
 
-                if (SnackbarMessageQueue != null)
-                    SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, msg);
+                SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, msg);
             }
             catch (Exception ex)
             {
                 log.Error("SAM communication failed.", ex);
-                if (SnackbarMessageQueue != null)
-                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
+                SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
             }
         }
 
@@ -166,28 +164,36 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 var key = new LibLogicalAccess.Card.DESFireKey();
 
                 if (SAMAuthKeyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_DES)
+                {
                     key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_DES);
+                }
                 else if (SAMAuthKeyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES)
+                {
                     key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
+                }
                 else
+                {
                     key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_3K3DES);
+                }
 
                 key.fromString(SAMAuthKey.Key.GetAggregatedValue<string>(KeyValueFormat.HexStringWithSpace));
                 key.setKeyVersion(SAMAuthKey.Version);
                 var cmd = (KeyStore as SAMKeyStore)?.Chip?.getCommands();
                 if (cmd is SAMAV1ISO7816Commands samav1cmd)
+                {
                     samav1cmd.authenticateHost(key, SAMAuthKeyId);
+                }
                 else if (cmd is SAMAV2ISO7816Commands samav2cmd)
+                {
                     samav2cmd.authenticateHost(key, SAMAuthKeyId);
+                }
 
-                if (SnackbarMessageQueue != null)
-                    SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "SAM Authentication succeeded!");
+                SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "SAM Authentication succeeded!");
             }
             catch (Exception ex)
             {
                 log.Error("SAM Authentication failed.", ex);
-                if (SnackbarMessageQueue != null)
-                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
+                SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
             }
         }
 
@@ -200,13 +206,11 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 if (cmd is SAMAV1ISO7816Commands samav1cmd)
                 {
                     ks?.SwitchSAMToAV2(samav1cmd);
-                    if (SnackbarMessageQueue != null)
-                        SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "SAM Switch to AV2 succeeded!");
+                    SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "SAM Switch to AV2 succeeded!");
                 }
                 else if (cmd is SAMAV2ISO7816Commands samav2cmd)
                 {
-                    if (SnackbarMessageQueue != null)
-                        SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "SAM Switch to AV2 skipped, already in AV2 mode.");
+                    SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "SAM Switch to AV2 skipped, already in AV2 mode.");
                 }
             }
             catch (Exception ex)
@@ -225,21 +229,18 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 var cmd = ks?.Chip?.getCommands();
                 if (cmd is SAMAV1ISO7816Commands samav1cmd)
                 {
-                    if (SnackbarMessageQueue != null)
-                        SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "Activate Mifare SAM skipped, the SAM is in AV1 mode.");
+                    SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "Activate Mifare SAM skipped, the SAM is in AV1 mode.");
                 }   
                 else if (cmd is SAMAV2ISO7816Commands samav2cmd)
                 {
                     ks?.ActivateMifareSAM(samav2cmd);
-                    if (SnackbarMessageQueue != null)
-                        SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "Activate Mifare SAM completed.");
+                    SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "Activate Mifare SAM completed.");
                 }
             }
             catch (Exception ex)
             {
                 log.Error("Activate Mifare SAM failed.", ex);
-                if (SnackbarMessageQueue != null)
-                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
+                SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
             }
         }
 
@@ -263,15 +264,13 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 {
                     samav2cmd.lockUnlock(key, SAMUnlockAction, SAMUnlockKeyId, 0, 0);
                 }
-
-                if (SnackbarMessageQueue != null)
-                    SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "SAM Lock/Unlock completed.");
+                
+                SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "SAM Lock/Unlock completed.");
             }
             catch (Exception ex)
             {
                 log.Error("Lock/Unlock SAM failed.", ex);
-                if (SnackbarMessageQueue != null)
-                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
+                SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
             }
         }
     }
