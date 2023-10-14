@@ -72,8 +72,8 @@ namespace Leosac.KeyManager.Library.Tests
 
             var result = TestVector(Mnemonic.WordlistLang.English, "TREZOR", entropy, mnemonic);
 
-            Assert.AreEqual(result.entropy.ToLower(), entropy);
-            Assert.AreEqual(result.seedHex.ToLower(), seedHex);
+            Assert.AreEqual(result.entropy.ToLowerInvariant(), entropy);
+            Assert.AreEqual(result.seedHex.ToLowerInvariant(), seedHex);
             Assert.AreEqual(result.mnemonic, mnemonic);
         }
 

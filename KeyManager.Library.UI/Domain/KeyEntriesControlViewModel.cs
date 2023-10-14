@@ -67,7 +67,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                                 model.KeyEntry.Variant = variant;
                             }
                         }
-                        var dialog = new KeyEntryDialog()
+                        var dialog = new KeyEntryDialog
                         {
                             DataContext = model
                         };

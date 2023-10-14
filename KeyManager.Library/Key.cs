@@ -171,7 +171,6 @@ namespace Leosac.KeyManager.Library
                         }
                     }
                     break;
-                case KeyValueFormat.Binary:
                 default:
                     if (Materials.Count > 0)
                     {
