@@ -13,7 +13,7 @@
     <Title>Leosac Key Manager Core Library</Title>
     <Company>Leosac SAS</Company>
     <Product>Leosac Key Manager</Product>
-    <Authors>islog</Authors>
+    <Authors>leosac</Authors>
     <Description>Core Library for Leosac Key Manager development</Description>
     <Copyright>Copyright ©2023 Leosac SAS</Copyright>
     <PackageProjectUrl>https://github.com/leosac/key-manager</PackageProjectUrl>
