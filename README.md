@@ -1,7 +1,7 @@
 # Leosac Key Manager ![Logo](KeyManager/images/leosac_key.png)
 
--   Stable branch: master [![Build Status](https://github.com/leosac/key-manager/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/leosac/key-manager/actions/workflows/build.yml)
--   Development branch: develop [![Build Status](https://github.com/leosac/key-manager/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/leosac/key-manager/actions/workflows/build.yml)
+-   Stable branch: master [![Build Status](https://github.com/leosac/key-manager/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/leosac/key-manager/actions/workflows/build.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/8b799c8a9e6a4d4bb04b77eb638678ae?branch=master)](https://app.codacy.com/gh/leosac/key-manager/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+-   Development branch: develop [![Build Status](https://github.com/leosac/key-manager/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/leosac/key-manager/actions/workflows/build.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/8b799c8a9e6a4d4bb04b77eb638678ae?branch=develop)](https://app.codacy.com/gh/leosac/key-manager/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 Leosac Key Manager is a standalone application to generate, manage and re-deploy key entries on several kind of Key Store.
 
