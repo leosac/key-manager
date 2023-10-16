@@ -1,5 +1,6 @@
 # Leosac Key Manager ![Logo](KeyManager/images/leosac_key.png)
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/934dc2d5f969464b94d4d1c9d7a41374)](https://app.codacy.com/gh/leosac/key-manager?utm_source=github.com&utm_medium=referral&utm_content=leosac/key-manager&utm_campaign=Badge_Grade)
 -   Stable branch: master [![Build Status](https://github.com/leosac/key-manager/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/leosac/key-manager/actions/workflows/build.yml)
 -   Development branch: develop [![Build Status](https://github.com/leosac/key-manager/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/leosac/key-manager/actions/workflows/build.yml)
 
