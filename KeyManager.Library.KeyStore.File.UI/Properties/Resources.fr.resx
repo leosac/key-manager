@@ -132,6 +132,15 @@
   <data name="EncryptionKeyHelper" xml:space="preserve">
     <value>Clé de chiffrement maitre pour le stockage des clés sur le disque</value>
   </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="ImportExport" xml:space="preserve">
+    <value>Import / Export</value>
+  </data>
   <data name="StoreSecret" xml:space="preserve">
     <value>Enregistrer</value>
   </data>

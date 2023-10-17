@@ -31,7 +31,10 @@ namespace Leosac.KeyManager.Library.KeyStore.File.UI
 
         public override IDictionary<string, UserControl> CreateKeyStoreAdditionalControls()
         {
-            return new Dictionary<string, UserControl>();
+            return new Dictionary<string, UserControl>
+            {
+                { Properties.Resources.ImportExport, new FileKeyStoreImportExportControl() }
+            };
         }
     }
 }
