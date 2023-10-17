@@ -1,36 +1,37 @@
-﻿using Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain;
+﻿using Leosac.KeyManager.Library.KeyStore.NXP_SAM.ISLOG;
+using Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.ISLOG.Domain;
 using Leosac.KeyManager.Library.Plugin;
 using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using System.Windows.Controls;
 
-namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
+namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.ISLOG
 {
-    public class SAMKeyStoreUIFactory : KeyStoreUIFactory
+    public class ISLOGKeyStoreUIFactory : KeyStoreUIFactory
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
-        public SAMKeyStoreUIFactory()
+        public ISLOGKeyStoreUIFactory()
         {
-            targetFactory = new SAMKeyStoreFactory();
+            targetFactory = new ISLOGKeyStoreFactory();
         }
 
-        public override string Name => "NXP SAM AV2";
+        public override string Name => "ISLOG SAM Manager Template";
 
         public override Type GetPropertiesType()
         {
-            return typeof(SAMKeyStoreProperties);
+            return typeof(ISLOGKeyStoreProperties);
         }
 
         public override UserControl CreateKeyStorePropertiesControl()
         {
-            return new SAMKeyStorePropertiesControl();
+            return new ISLOGKeyStorePropertiesControl();
         }
 
         public override KeyStorePropertiesControlViewModel? CreateKeyStorePropertiesControlViewModel()
         {
             try
             {
-                return new SAMKeyStorePropertiesControlViewModel();
+                return new ISLOGKeyStorePropertiesControlViewModel();
             }
             catch (Exception ex)
             {
@@ -41,12 +42,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
 
         public override IDictionary<string, UserControl> CreateKeyStoreAdditionalControls()
         {
-            var controls = new Dictionary<string, UserControl>
-            {
-                { "Key Usage Counters", new SAMKeyStoreKeyCounterControl() },
-                { "Tools", new SAMKeyStoreToolsControl() }
-            };
-            return controls;
+            return new Dictionary<string, UserControl>();
         }
     }
 }

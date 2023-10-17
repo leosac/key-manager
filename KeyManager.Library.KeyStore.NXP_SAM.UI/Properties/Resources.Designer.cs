@@ -142,6 +142,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Browse.
+        /// </summary>
+        public static string Browse {
+            get {
+                return ResourceManager.GetString("Browse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {
@@ -336,6 +345,24 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         public static string GetSAMVersion {
             get {
                 return ResourceManager.GetString("GetSAMVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Template File.
+        /// </summary>
+        public static string ISLOGTemplateFile {
+            get {
+                return ResourceManager.GetString("ISLOGTemplateFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML Template File created with ISLOG SAM Manager.
+        /// </summary>
+        public static string ISLOGTemplateFileHelper {
+            get {
+                return ResourceManager.GetString("ISLOGTemplateFileHelper", resourceCulture);
             }
         }
         

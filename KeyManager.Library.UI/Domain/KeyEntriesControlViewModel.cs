@@ -46,6 +46,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                             KClass = _keClass,
                             KeyEntry = await KeyStore.Get(identifier.KeyEntryId, _keClass),
                             CanChangeFactory = false,
+                            AllowSubmit = KeyStore.CanUpdateKeyEntries,
                             SubmitButtonText = Properties.Resources.Update
                         };
                         var factory = KeyEntryUIFactory.GetFactoryFromPropertyType(model.KeyEntry!.Properties?.GetType());

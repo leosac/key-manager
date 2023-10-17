@@ -239,33 +239,7 @@
                     keyEntry = CreateKeyEntryFromKeyType(av2entry.getKeyType());
                     keyEntry.Identifier = identifier;
                     var infoav2 = av2entry.getKeyEntryInformation();
-                    if (keyEntry.SAMProperties != null)
-                    {
-                        keyEntry.SAMProperties.SAMKeyEntryType = (SAMKeyEntryType)(infoav2.ExtSET & 0x07);
-
-                        Array.Copy(infoav2.desfireAid, keyEntry.SAMProperties.DESFireAID, 3);
-                        keyEntry.SAMProperties.DESFireKeyNum = infoav2.desfirekeyno;
-
-                        keyEntry.SAMProperties.KeyUsageCounter = (infoav2.kuc != 0xff) ? infoav2.kuc : null;
-
-                        keyEntry.SAMProperties.ChangeKeyRefId = infoav2.cekno;
-                        keyEntry.SAMProperties.ChangeKeyRefVersion = infoav2.cekv;
-
-                        keyEntry.SAMProperties.EnableDumpSessionKey = Convert.ToBoolean(set.dumpsessionkey);
-                        keyEntry.SAMProperties.CryptoBasedOnSecretKey = Convert.ToBoolean(set.allowcrypto);
-                        keyEntry.SAMProperties.DisableDecryptData = Convert.ToBoolean(set.disabledecryption);
-                        keyEntry.SAMProperties.DisableEncryptData = Convert.ToBoolean(set.disableencryption);
-                        keyEntry.SAMProperties.DisableGenerateMACFromPICC = Convert.ToBoolean(set.disablegeneratemac);
-                        keyEntry.SAMProperties.DisableKeyEntry = Convert.ToBoolean(set.disablekeyentry);
-                        keyEntry.SAMProperties.DisableVerifyMACFromPICC = Convert.ToBoolean(set.disableverifymac);
-                        keyEntry.SAMProperties.DisableChangeKeyPICC = Convert.ToBoolean(set.disablewritekeytopicc);
-                        keyEntry.SAMProperties.LockUnlock = Convert.ToBoolean(set.lockkey);
-                        keyEntry.SAMProperties.KeepIV = Convert.ToBoolean(set.keepIV);
-                        keyEntry.SAMProperties.AuthenticateHost = Convert.ToBoolean(set.authkey);
-                        keyEntry.SAMProperties.AllowDumpSecretKey = Convert.ToBoolean(infoav2.ExtSET & 0x08);
-                        keyEntry.SAMProperties.AllowDumpSecretKeyWithDiv = Convert.ToBoolean(infoav2.ExtSET & 0x10);
-                    }
-
+                    ParseKeyEntryProperties(infoav2, set, keyEntry.SAMProperties);
                     if (keyEntry.Variant != null)
                     {
                         var keysdata = av2entry.getKeysData();
@@ -306,6 +280,36 @@
 
             log.Info(string.Format("Key entry `{0}` retrieved.", identifier));
             return keyEntry;
+        }
+
+        internal static void ParseKeyEntryProperties(LibLogicalAccess.Card.KeyEntryAV2Information infoav2, LibLogicalAccess.Card.SETAV2 set, SAMSymmetricKeyEntryProperties? properties)
+        {
+            if (properties != null)
+            {
+                properties.SAMKeyEntryType = (SAMKeyEntryType)(infoav2.ExtSET & 0x07);
+
+                Array.Copy(infoav2.desfireAid, properties.DESFireAID, 3);
+                properties.DESFireKeyNum = infoav2.desfirekeyno;
+
+                properties.KeyUsageCounter = (infoav2.kuc != 0xff) ? infoav2.kuc : null;
+
+                properties.ChangeKeyRefId = infoav2.cekno;
+                properties.ChangeKeyRefVersion = infoav2.cekv;
+
+                properties.EnableDumpSessionKey = Convert.ToBoolean(set.dumpsessionkey);
+                properties.CryptoBasedOnSecretKey = Convert.ToBoolean(set.allowcrypto);
+                properties.DisableDecryptData = Convert.ToBoolean(set.disabledecryption);
+                properties.DisableEncryptData = Convert.ToBoolean(set.disableencryption);
+                properties.DisableGenerateMACFromPICC = Convert.ToBoolean(set.disablegeneratemac);
+                properties.DisableKeyEntry = Convert.ToBoolean(set.disablekeyentry);
+                properties.DisableVerifyMACFromPICC = Convert.ToBoolean(set.disableverifymac);
+                properties.DisableChangeKeyPICC = Convert.ToBoolean(set.disablewritekeytopicc);
+                properties.LockUnlock = Convert.ToBoolean(set.lockkey);
+                properties.KeepIV = Convert.ToBoolean(set.keepIV);
+                properties.AuthenticateHost = Convert.ToBoolean(set.authkey);
+                properties.AllowDumpSecretKey = Convert.ToBoolean(infoav2.ExtSET & 0x08);
+                properties.AllowDumpSecretKeyWithDiv = Convert.ToBoolean(infoav2.ExtSET & 0x10);
+            }
         }
 
         private static SAMSymmetricKeyEntry CreateKeyEntryFromKeyType(LibLogicalAccess.Card.SAMKeyType keyType)

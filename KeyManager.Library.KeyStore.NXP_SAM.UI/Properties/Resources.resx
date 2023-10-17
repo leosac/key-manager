@@ -144,6 +144,9 @@
   <data name="AutoSwitchToAV2" xml:space="preserve">
     <value>Automatically switch the SAM to AV2 mode if required when performing updates</value>
   </data>
+  <data name="Browse" xml:space="preserve">
+    <value>Browse</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
@@ -209,6 +212,12 @@
   </data>
   <data name="GetSAMVersion" xml:space="preserve">
     <value>Show SAM Version</value>
+  </data>
+  <data name="ISLOGTemplateFile" xml:space="preserve">
+    <value>Template File</value>
+  </data>
+  <data name="ISLOGTemplateFileHelper" xml:space="preserve">
+    <value>XML Template File created with ISLOG SAM Manager</value>
   </data>
   <data name="KeepIV" xml:space="preserve">
     <value>Keep IV</value>

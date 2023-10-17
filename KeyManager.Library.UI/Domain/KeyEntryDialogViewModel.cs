@@ -48,6 +48,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         }
 
         private bool _canChangeFactory = true;
+        private bool _allowSubmit = true;
         private bool _autoCreate = true;
         private string _submitButtonText;
         private KeyEntryClass _kClass = KeyEntryClass.Symmetric;
@@ -97,6 +98,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _canChangeFactory, value);
         }
 
+        public bool AllowSubmit
+        {
+            get => _allowSubmit;
+            set => SetProperty(ref _allowSubmit, value);
+        }
+
         public bool AutoCreate
         {
             get => _autoCreate;
@@ -129,7 +136,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         private bool CanSubmit()
         {
-            return !HasErrors;
+            return AllowSubmit && !HasErrors;
         }
 
         public AsyncRelayCommand OpenLinkCommand { get; }

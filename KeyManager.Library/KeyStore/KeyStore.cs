@@ -15,14 +15,19 @@ namespace Leosac.KeyManager.Library.KeyStore
         public abstract string Name { get; }
 
         /// <summary>
-        /// True to allowed key entry creation, false otherwise.
+        /// True to allow key entry creation, false otherwise.
         /// </summary>
         public abstract bool CanCreateKeyEntries { get; }
 
         /// <summary>
-        /// True to allowed key entry deletion, false otherwise.
+        /// True to allow key entry deletion, false otherwise.
         /// </summary>
         public abstract bool CanDeleteKeyEntries { get; }
+
+        /// <summary>
+        /// True to allow key entry update, false otherwise.
+        /// </summary>
+        public virtual bool CanUpdateKeyEntries => true;
 
         /// <summary>
         /// True if key entries can be reordered, false otherwise.
