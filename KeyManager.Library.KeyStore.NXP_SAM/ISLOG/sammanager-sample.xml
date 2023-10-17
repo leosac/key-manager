@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<XMLSAMConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Keyentrys>
+    <item>
+      <key>
+        <int>1</int>
+      </key>
+      <valueType>SAMManager.KeyEntryUI, SAMManager</valueType>
+      <value>
+        <KeyEntryUI>
+          <KeyEntryUI SAM="AV2" KeyType="AES128" allowPush="False">
+            <KeyAuth KeyEntry="0" Version="0" UseKeyEntry="True" KeyType="DES" IsHiddenKey="False" keyText="00000000000000000000000000000000" IsNotKeyCeremony="True" HiddenKey="00000000000000000000000000000000" />
+            <KeyLockUnlock Enable="False" KeyEntry="0" Version="0" UseKeyEntry="True" KeyType="DES" IsHiddenKey="False" keyText="00000000000000000000000000000000" IsNotKeyCeremony="True" HiddenKey="00000000000000000000000000000000" />
+            <Hidden KeyA="False" KeyB="False" KeyC="False" />
+            <KeyCeremony KeyA="False" KeyB="False" KeyC="False" />
+            <Text KeyA="00000000000000000000000000000000" KeyB="00000000000000000000000000000000" KeyC="00000000000000000000000000000000" />
+            <KeyEntry>
+              <KeyEntryInformation cekno="0" cekv="0" UpdateMask="0" />
+              <DESFire desfireAid0="0" desfireAid1="0" desfireAid2="0" desfirekeyno="0" />
+              <KeyUsageCounter kuc="255" />
+              <SET set0="37" set1="0" />
+              <KeyVersion vera="0" verb="0" verc="0" />
+              <ExtSET bitmask="1" />
+              <Key keya="00000000000000000000000000000000" keyb="00000000000000000000000000000000" keyc="00000000000000000000000000000000" />
+            </KeyEntry>
+          </KeyEntryUI>
+        </KeyEntryUI>
+      </value>
+    </item>
+	<item>
+      <key>
+        <int>2</int>
+      </key>
+      <valueType>SAMManager.KeyEntryUI, SAMManager</valueType>
+      <value>
+        <KeyEntryUI>
+          <KeyEntryUI SAM="AV2" KeyType="AES128" allowPush="False">
+            <KeyAuth KeyEntry="0" Version="0" UseKeyEntry="True" KeyType="DES" IsHiddenKey="False" keyText="00000000000000000000000000000000" IsNotKeyCeremony="True" HiddenKey="00000000000000000000000000000000" />
+            <KeyLockUnlock Enable="False" KeyEntry="0" Version="0" UseKeyEntry="True" KeyType="DES" IsHiddenKey="False" keyText="00000000000000000000000000000000" IsNotKeyCeremony="True" HiddenKey="00000000000000000000000000000000" />
+            <Hidden KeyA="False" KeyB="False" KeyC="False" />
+            <KeyCeremony KeyA="False" KeyB="False" KeyC="False" />
+            <Text KeyA="00000000000000000000000000000000" KeyB="00000000000000000000000000000000" KeyC="00000000000000000000000000000000" />
+            <KeyEntry>
+              <KeyEntryInformation cekno="0" cekv="0" UpdateMask="0" />
+              <DESFire desfireAid0="0" desfireAid1="0" desfireAid2="0" desfirekeyno="0" />
+              <KeyUsageCounter kuc="255" />
+              <SET set0="37" set1="0" />
+              <KeyVersion vera="0" verb="0" verc="0" />
+              <ExtSET bitmask="1" />
+              <Key keya="00000000000000000000000000000000" keyb="00000000000000000000000000000000" keyc="00000000000000000000000000000000" />
+            </KeyEntry>
+          </KeyEntryUI>
+        </KeyEntryUI>
+      </value>
+    </item>
+  </Keyentrys>
+  <Kucentrys>
+    <item>
+      <key>
+        <int>0</int>
+      </key>
+      <valueType>SAMManager.KUCEntryUI, SAMManager</valueType>
+      <value>
+        <KUCEntryUI>
+          <KUCEntryUI UpdateMask="0" allowPush="False">
+            <KeyAuth KeyEntry="0" Version="0" />
+            <KeyLockUnlock Enable="False" KeyEntry="0" Version="0" UseKeyEntry="True" KeyType="DES" IsHiddenKey="False" keyText="00000000000000000000000000000000" IsNotKeyCeremony="True" HiddenKey="00000000000000000000000000000000" />
+            <KUCEntryInformation keynockuc="0" keyvckuc="0">
+              <curval curval0="0" curval1="0" curval2="0" curval3="0" />
+              <limit limit0="255" limit1="255" limit2="255" limit3="255" />
+            </KUCEntryInformation>
+          </KUCEntryUI>
+        </KUCEntryUI>
+      </value>
+    </item>
+  </Kucentrys>
+  <Samtype>AV2</Samtype>
+  <ReaderConfiguration>&lt;ReaderConfiguration&gt;&lt;ReaderProvider&gt;PCSC&lt;/ReaderProvider&gt;&lt;ReaderUnit type="PCSC"&gt;&lt;PCSCReaderUnitConfiguration&gt;&lt;SAMType&gt;SAM_NONE&lt;/SAMType&gt;&lt;SAMReaderName/&gt;&lt;SAMKey&gt;&lt;KeyNo&gt;0&lt;/KeyNo&gt;&lt;/SAMKey&gt;&lt;CheckSAMReaderIsAvailable&gt;true&lt;/CheckSAMReaderIsAvailable&gt;&lt;AutoConnectToSAMReader&gt;true&lt;/AutoConnectToSAMReader&gt;&lt;TransmissionProtocol&gt;3&lt;/TransmissionProtocol&gt;&lt;ShareMode&gt;2&lt;/ShareMode&gt;&lt;/PCSCReaderUnitConfiguration&gt;&lt;TransportType/&gt;&lt;Name/&gt;&lt;/ReaderUnit&gt;&lt;/ReaderConfiguration&gt;</ReaderConfiguration>
+  <ConfigurationName>SAM Config</ConfigurationName>
+</XMLSAMConfiguration>
