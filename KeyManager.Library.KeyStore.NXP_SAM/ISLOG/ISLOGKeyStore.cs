@@ -221,34 +221,6 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.ISLOG
             }
         }
 
-        public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override async Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput)
-        {
-            log.Info(string.Format("Resolving key link with Key Entry Identifier `{0}`...", keyIdentifier));
-            if (!string.IsNullOrEmpty(divInput))
-            {
-                log.Error("Div Input parameter is not supported.");
-                throw new KeyStoreException("Div Input parameter is not supported.");
-            }
-            if (!byte.TryParse(containerSelector, out byte keyVersion))
-            {
-                log.Warn("Cannot parse the container selector as a key version, falling back to version 0.");
-            }
-
-            var key = await GetKey(keyIdentifier, keClass, containerSelector);
-            if (key == null)
-            {
-                throw new KeyStoreException("The key doesn't exist.");
-            }
-
-            log.Info("Key link completed.");
-            return key.GetAggregatedValue<string>();
-        }
-
         public override Task Store(IList<IChangeKeyEntry> changes)
         {
             throw new NotImplementedException();

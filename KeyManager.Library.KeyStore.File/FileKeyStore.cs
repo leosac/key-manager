@@ -13,16 +13,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
         public FileKeyStore()
         {
             Properties = new FileKeyStoreProperties();
-            _jsonSettings = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Auto,
-                NullValueHandling = NullValueHandling.Ignore,
-                ObjectCreationHandling = ObjectCreationHandling.Replace,
-                Formatting = Formatting.Indented
-            };
         }
-
-        private readonly JsonSerializerSettings _jsonSettings;
 
         public FileKeyStoreProperties GetFileProperties()
         {
@@ -216,69 +207,6 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             await Create(change);
             OnKeyEntryUpdated(change);
             log.Info(string.Format("Key entry `{0}` updated.", change.Identifier));
-        }
-
-        public override async Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, KeyEntryId? wrappingKeyId, string? wrappingKeyContainerSelector)
-        {
-            string? result = null;
-            log.Info(string.Format("Resolving key entry link with Key Entry Identifier `{0}`, Div Input `{1}`...", keyIdentifier, divInput));
-
-            var keyEntry = await Get(keyIdentifier, keClass);
-            if (keyEntry != null)
-            {
-                log.Info("Key entry link resolved.");
-                if (wrappingKeyId != null)
-                {
-                    var wrappingKey = await GetKey(wrappingKeyId, KeyEntryClass.Symmetric, wrappingKeyContainerSelector);
-                    if (wrappingKey != null)
-                    {
-                        // TODO: do something here to encipher the key value?
-                        // The wrapping algorithm may be too close to the targeted Key Store
-                        throw new NotSupportedException();
-                    }
-                    else
-                    {
-                        log.Error("Cannot resolve the wrapping key.");
-                    }
-                }
-                else
-                {
-                    result = JsonConvert.SerializeObject(keyEntry, typeof(KeyEntry), _jsonSettings);
-                }
-            }
-            else
-            {
-                log.Error("Cannot resolve the key entry link.");
-            }
-
-            log.Info("Key entry link completed.");
-            return result;
-        }
-
-        public override async Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput)
-        {
-            string? result = null;
-            log.Info(string.Format("Resolving key link with Key Entry Identifier `{0}`, Container Selector `{1}`, Div Input `{2}`...", keyIdentifier, containerSelector, divInput));
-
-            if (!await CheckKeyEntryExists(keyIdentifier, keClass))
-            {
-                log.Error(string.Format("The key entry `{0}` do not exists.", keyIdentifier));
-                throw new KeyStoreException("The key entry do not exists.");
-            }
-
-            var key = await GetKey(keyIdentifier, keClass, containerSelector);
-            if (key != null)
-            {
-                log.Info("Key link resolved.");
-                result = key.GetAggregatedValue<string>();
-            }
-            else
-            {
-                log.Error("Cannot resolve the key link.");
-            }
-
-            log.Info("Key link completed.");
-            return result;
         }
     }
 }

@@ -129,15 +129,5 @@
             await Create(change);
             OnKeyEntryUpdated(change);
         }
-
-        public override Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector)
-        {
-            throw new NotSupportedException();
-        }
     }
 }

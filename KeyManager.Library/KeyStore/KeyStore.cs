@@ -1,4 +1,5 @@
 ﻿using Leosac.KeyManager.Library.DivInput;
+using Newtonsoft.Json;
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
@@ -8,6 +9,19 @@ namespace Leosac.KeyManager.Library.KeyStore
     public abstract class KeyStore
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
+
+        protected readonly JsonSerializerSettings _jsonSettings;
+
+        protected KeyStore()
+        {
+            _jsonSettings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                NullValueHandling = NullValueHandling.Ignore,
+                ObjectCreationHandling = ObjectCreationHandling.Replace,
+                Formatting = Formatting.Indented
+            };
+        }
 
         /// <summary>
         /// The key store name.
@@ -323,6 +337,18 @@ namespace Leosac.KeyManager.Library.KeyStore
             return null;
         }
 
+        public async Task<T?> GetKeyValue<T>(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? keyContainerSelector, string? divInput) where T : class
+        {
+            if (!string.IsNullOrEmpty(divInput))
+            {
+                log.Error("Div Input parameter is not yet supported.");
+                throw new KeyStoreException("Div Input parameter is not yet supported.");
+            }
+
+            var key = await GetKey(keyIdentifier, keClass, keyContainerSelector);
+            return key?.GetAggregatedValue<T>();
+        }
+
         /// <summary>
         /// Resolve a key entry link.
         /// </summary>
@@ -330,9 +356,44 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="keClass">The key entry class</param>
         /// <param name="divInput">The key div input (optional)</param>
         /// <param name="wrappingKeyId">The wrapping key identifier for cryptogram computation (optional)</param>
-        /// <param name="wrappingContainerSelector">The wrapping key container selector for cryptogram computation (optional)</param>
+        /// <param name="wrappingKeyContainerSelector">The wrapping key container selector for cryptogram computation (optional)</param>
         /// <returns>The change key entry cryptogram</returns>
-        public abstract Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector);
+        public virtual async Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, KeyEntryId? wrappingKeyId, string? wrappingKeyContainerSelector)
+        {
+            string? result = null;
+            log.Info(string.Format("Resolving key entry link with Key Entry Identifier `{0}`, Div Input `{1}`...", keyIdentifier, divInput));
+
+            var keyEntry = await Get(keyIdentifier, keClass);
+            if (keyEntry != null)
+            {
+                log.Info("Key entry link resolved.");
+                if (wrappingKeyId != null)
+                {
+                    var wrappingKey = await GetKey(wrappingKeyId, KeyEntryClass.Symmetric, wrappingKeyContainerSelector);
+                    if (wrappingKey != null)
+                    {
+                        // TODO: do something here to encipher the key value?
+                        // The wrapping algorithm may be too close to the targeted Key Store
+                        throw new NotSupportedException();
+                    }
+                    else
+                    {
+                        log.Error("Cannot resolve the wrapping key.");
+                    }
+                }
+                else
+                {
+                    result = JsonConvert.SerializeObject(keyEntry, typeof(KeyEntry), _jsonSettings);
+                }
+            }
+            else
+            {
+                log.Error("Cannot resolve the key entry link.");
+            }
+
+            log.Info("Key entry link completed.");
+            return result;
+        }
 
         /// <summary>
         /// Resolve a key link.
@@ -342,7 +403,28 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="containerSelector">The key container selector (optional)</param>
         /// <param name="divInput">The key div input (optional)</param>
         /// <returns>The key value</returns>
-        public abstract Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput);
+
+
+        public virtual async Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput)
+        {
+            string? result = null;
+            log.Info(string.Format("Resolving key link with Key Entry Identifier `{0}`, Container Selector `{1}`, Div Input `{2}`...", keyIdentifier, containerSelector, divInput));
+
+            if (!await CheckKeyEntryExists(keyIdentifier, keClass))
+            {
+                log.Error(string.Format("The key entry `{0}` do not exists.", keyIdentifier));
+                throw new KeyStoreException("The key entry do not exists.");
+            }
+
+            result = await GetKeyValue<string>(keyIdentifier, keClass, containerSelector, divInput);
+            if (string.IsNullOrEmpty(result))
+            {
+                log.Warn("Key link returned an empty value.");
+            }
+
+            log.Info("Key link completed.");
+            return result;
+        }
 
         public event EventHandler<KeyEntry>? KeyEntryRetrieved;
 

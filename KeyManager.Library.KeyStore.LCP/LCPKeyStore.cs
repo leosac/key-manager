@@ -222,16 +222,6 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             log.Info("Key Store opened.");
         }
 
-        public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput)
-        {
-            throw new NotSupportedException();
-        }
-
         public override async Task Store(IList<IChangeKeyEntry> changes)
         {
             log.Info(string.Format("Storing `{0}` key entries...", changes.Count));
