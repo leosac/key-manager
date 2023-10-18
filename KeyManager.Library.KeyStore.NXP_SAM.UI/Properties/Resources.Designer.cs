@@ -304,6 +304,24 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Encryption Key.
+        /// </summary>
+        public static string EncryptionKey {
+            get {
+                return ResourceManager.GetString("EncryptionKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Master Encryption Key for SAM Manager Template.
+        /// </summary>
+        public static string EncryptionKeyHelper {
+            get {
+                return ResourceManager.GetString("EncryptionKeyHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Force the SAM version.
         /// </summary>
         public static string ForceCardType {

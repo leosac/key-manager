@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Security.Cryptography;
+using System.Xml.Linq;
 using System.Xml.XPath;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.ISLOG
@@ -83,12 +84,25 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.ISLOG
             throw new NotImplementedException();
         }
 
-        public override Task Open()
+        public override async Task Open()
         {
             var fileName = GetISLOGProperties().TemplateFile;
             if (!string.IsNullOrEmpty(fileName) && System.IO.File.Exists(fileName))
             {
-                var xdoc = XDocument.Load(fileName);
+                Stream stream = System.IO.File.OpenRead(fileName);
+                if (!string.IsNullOrEmpty(Properties?.Secret))
+                {
+                    using var aes = Aes.Create();
+                    aes.Key = Convert.FromHexString(Properties.Secret);
+                    aes.IV = new byte[16];
+                    using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+                    using var cryptoStream = new CryptoStream(stream, decryptor, CryptoStreamMode.Read);
+                    var memstream = new MemoryStream();
+                    await cryptoStream.CopyToAsync(memstream);
+                    stream.Dispose();
+                    stream = memstream;
+                }
+                var xdoc = await XDocument.LoadAsync(stream, LoadOptions.None, new CancellationToken());
                 var entries = xdoc.XPathSelectElements("/XMLSAMConfiguration/Keyentrys/item");
                 foreach (var entry in entries)
                 {
@@ -203,9 +217,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.ISLOG
                         log.Error("Missing /key/int node for the key entry.");
                     }
                 }
+                stream.Dispose();
             }
-
-            return Task.CompletedTask;
         }
 
         public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector)
@@ -213,9 +226,27 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.ISLOG
             throw new NotImplementedException();
         }
 
-        public override Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput)
+        public override async Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput)
         {
-            throw new NotImplementedException();
+            log.Info(string.Format("Resolving key link with Key Entry Identifier `{0}`...", keyIdentifier));
+            if (!string.IsNullOrEmpty(divInput))
+            {
+                log.Error("Div Input parameter is not supported.");
+                throw new KeyStoreException("Div Input parameter is not supported.");
+            }
+            if (!byte.TryParse(containerSelector, out byte keyVersion))
+            {
+                log.Warn("Cannot parse the container selector as a key version, falling back to version 0.");
+            }
+
+            var key = await GetKey(keyIdentifier, keClass, containerSelector);
+            if (key == null)
+            {
+                throw new KeyStoreException("The key doesn't exist.");
+            }
+
+            log.Info("Key link completed.");
+            return key.GetAggregatedValue<string>();
         }
 
         public override Task Store(IList<IChangeKeyEntry> changes)

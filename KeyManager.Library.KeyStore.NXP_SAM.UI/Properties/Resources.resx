@@ -198,6 +198,12 @@
   <data name="EnableDumpSessionKey" xml:space="preserve">
     <value>Enable Dump SessionKey</value>
   </data>
+  <data name="EncryptionKey" xml:space="preserve">
+    <value>Encryption Key</value>
+  </data>
+  <data name="EncryptionKeyHelper" xml:space="preserve">
+    <value>Master Encryption Key for SAM Manager Template</value>
+  </data>
   <data name="ForceCardType" xml:space="preserve">
     <value>Force the SAM version</value>
   </data>

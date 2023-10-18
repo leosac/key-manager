@@ -198,6 +198,12 @@
   <data name="EnableDumpSessionKey" xml:space="preserve">
     <value>Activer le dump de la clé de session</value>
   </data>
+  <data name="EncryptionKey" xml:space="preserve">
+    <value>Clé de chiffrement</value>
+  </data>
+  <data name="EncryptionKeyHelper" xml:space="preserve">
+    <value>Clé de chiffrement maitre pour le modèle SAM Manager</value>
+  </data>
   <data name="ForceCardType" xml:space="preserve">
     <value>Forcer la version de SAM à utiliser</value>
   </data>
