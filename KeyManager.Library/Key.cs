@@ -51,7 +51,7 @@ namespace Leosac.KeyManager.Library
             Materials.Add(new KeyMaterial(value));
             if (keySize == 0)
             {
-                KeySize = (uint)Materials[0].GetFormattedValue<byte[]>(KeyValueFormat.Binary)!.Length;
+                KeySize = (uint)Materials[0].GetValueBinary()!.Length;
             }
         }
 
@@ -115,69 +115,94 @@ namespace Leosac.KeyManager.Library
             }
         }
 
-        public T? GetAggregatedValue<T>() where T : class
+        public string? GetAggregatedValueString()
         {
-            return GetAggregatedValue<T>(KeyValueFormat.HexString);
+            return GetAggregatedValueString(KeyValueStringFormat.HexString);
         }
 
-        public T? GetAggregatedValue<T>(KeyValueFormat format) where T : class
+        public string? GetAggregatedValueString(KeyValueStringFormat format)
         {
-            T? ret = default;
+            return GetAggregatedValueString(format, KeySize == 0 ? Environment.NewLine : null);
+        }
+
+        public string? GetAggregatedValueString(KeyValueStringFormat format, string? delimiter)
+        {
+            string? ret = null;
             foreach (var m in Materials)
             {
-                var v = m.GetFormattedValue<T>(format);
-                if (ret == default(T))
+                var v = m.GetValueString(format);
+                if (ret != null)
                 {
-                    ret = v;
+                    if (delimiter != null)
+                    {
+                        ret += delimiter;
+                    }
+                    if (v != null)
+                    {
+                        ret += v;
+                    }
                 }
                 else
                 {
-                    if (typeof(T) == typeof(byte[]))
-                    {
-                        ret = (ret as byte[])!.Concat((v as byte[])!) as T;
-                    }
-                    else if (typeof(T) == typeof(string))
-                    {
-                        ret = (ret.ToString() + Environment.NewLine + ret.ToString()) as T;
-                    }
+                    ret = v ?? string.Empty;
                 }
             }
             return ret;
         }
 
-        public void SetAggregatedValue(object? value)
+        public byte[]? GetAggregatedValueBinary()
         {
-            SetAggregatedValue(value, KeyValueFormat.HexString);
+            var data = new List<byte>();
+            foreach (var m in Materials)
+            {
+                var mdata = m.GetValueBinary();
+                if (mdata != null)
+                {
+                    data.AddRange(mdata);
+                }
+            }
+            return data.ToArray();
         }
 
-        public void SetAggregatedValue(object? value, KeyValueFormat format)
+        public void SetAggregatedValueString(string? value)
         {
-            value ??= string.Empty;
+            SetAggregatedValueString(value, KeyValueStringFormat.HexString);
+        }
 
-            switch(format)
+        public void SetAggregatedValueString(string? value, KeyValueStringFormat format)
+        {
+            if (KeySize == 0)
             {
-                case KeyValueFormat.HexString:
+                SetAggregatedValueString(value, format, Environment.NewLine);
+            }
+            else
+            {
+                var invariant = KeyMaterial.GetInvariantStringValue(value, format);
+                if (!string.IsNullOrEmpty(invariant))
+                {
+                    int length = (int)KeySize * 2;
+                    int i = 0;
+                    do
                     {
-                        if (value is string v)
-                        {
-                            var values = v.Split(Environment.NewLine);
-                            if (Materials.Count >= values.Length)
-                            {
-                                for (int i = 0; i < values.Length; ++i)
-                                {
-                                    Materials[i].SetFormattedValue(values[i], format);
-                                }
-                            }
-                        }
-                    }
-                    break;
-                default:
-                    if (Materials.Count > 0)
-                    {
-                        Materials[0].SetFormattedValue(value, format);
-                    }
+                        int pos = i * length;
+                        var sub = invariant.Substring(pos, (pos + length) < invariant.Length ? length : (invariant.Length - pos));
+                        Materials[i++].SetValueString(sub, KeyValueStringFormat.HexString);
+                    } while (i < Materials.Count && invariant.Length >= (i + 1) * KeySize * 2);
+                }
+            }
+        }
 
-                    break;
+        public void SetAggregatedValueString(string? value, KeyValueStringFormat format, string? separator)
+        {
+            var v = value ?? string.Empty;
+            var values = separator != null ? v.Split(separator) : new[] { v };
+
+            if (Materials.Count >= values.Length)
+            {
+                for (int i = 0; i < values.Length; ++i)
+                {
+                    Materials[i].SetValueString(values[i], format);
+                }
             }
         }
     }

@@ -1,8 +1,7 @@
 ﻿namespace Leosac.KeyManager.Library
 {
-    public enum KeyValueFormat
+    public enum KeyValueStringFormat
     {
-        Binary,
         HexString,
         HexStringWithSpace
     }

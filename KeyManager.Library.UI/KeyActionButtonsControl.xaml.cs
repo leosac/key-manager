@@ -60,7 +60,7 @@ namespace Leosac.KeyManager.Library.UI
 
         private void BtnCopy_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(Key?.GetAggregatedValue<string>());
+            Clipboard.SetText(Key?.GetAggregatedValueString());
         }
 
         private async void BtnKeyStoreLink_Click(object sender, RoutedEventArgs e)
@@ -90,7 +90,7 @@ namespace Leosac.KeyManager.Library.UI
             if (ofd.ShowDialog() == true)
             {
                 var key = System.IO.File.ReadAllBytes(ofd.FileName);
-                Key.SetAggregatedValue(Convert.ToHexString(key));
+                Key.SetAggregatedValueString(Convert.ToHexString(key));
             }
         }
 
@@ -99,7 +99,7 @@ namespace Leosac.KeyManager.Library.UI
             var sfd = new SaveFileDialog();
             if (sfd.ShowDialog() == true)
             {
-                System.IO.File.WriteAllBytes(sfd.FileName, Convert.FromHexString(Key.GetAggregatedValue<string>() ?? ""));
+                System.IO.File.WriteAllBytes(sfd.FileName, Convert.FromHexString(Key.GetAggregatedValueString() ?? ""));
             }
         }
 
@@ -115,7 +115,7 @@ namespace Leosac.KeyManager.Library.UI
                 if (KClass == KeyEntryClass.Symmetric)
                 {
                     var kcv = new KCV();
-                    control.KeyChecksum = kcv.ComputeKCV(Key.Tags, Key.GetAggregatedValue<string>() ?? "", null);
+                    control.KeyChecksum = kcv.ComputeKCV(Key.Tags, Key.GetAggregatedValueString() ?? "", null);
                 }
                 printDialog.PrintVisual(control, "Leosac Key Manager - Key Printing");
             }

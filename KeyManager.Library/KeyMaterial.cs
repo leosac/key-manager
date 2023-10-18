@@ -53,65 +53,50 @@ namespace Leosac.KeyManager.Library
             set { SetProperty(ref _name, value); }
         }
 
-        public static T? GetFormattedValue<T>(string? value, KeyValueFormat format) where T : class
+        public static string? GetValueString(string? value, KeyValueStringFormat format)
         {
-            T? v;
             if (value != null)
             {
-                switch (format)
+                if (format == KeyValueStringFormat.HexStringWithSpace)
                 {
-                    case KeyValueFormat.HexString:
-                        if (typeof(T) != typeof(string))
-                        {
-                            throw new InvalidCastException();
-                        }
-                        v = value as T;
-                        break;
-                    case KeyValueFormat.HexStringWithSpace:
-                        if (typeof(T) != typeof(string))
-                        {
-                            throw new InvalidCastException();
-                        }
-                        v = HexStringRegex().Replace(value, "$0 ") as T;
-                        break;
-                    default:
-                        if (typeof(T) != typeof(byte[]))
-                        {
-                            throw new InvalidCastException();
-                        }
-                        v = Convert.FromHexString(value) as T;
-                        break;
+                    return HexStringRegex().Replace(value, "$0 ").TrimEnd();
                 }
             }
-            else
-            {
-                v = null;
-            }
-            return v;
+            return value;
         }
 
-        public T? GetFormattedValue<T>(KeyValueFormat format) where T : class
+        public string? GetValueString(KeyValueStringFormat format)
         {
-            return GetFormattedValue<T>(Value, format);
+            return GetValueString(Value, format);
         }
 
-        public void SetFormattedValue(object value, KeyValueFormat format)
+        public void SetValueString(string? value, KeyValueStringFormat format)
         {
-            switch (format)
+            Value = GetInvariantStringValue(value, format);
+        }
+
+        public byte[]? GetValueBinary()
+        {
+            if (Value != null)
             {
-                case KeyValueFormat.HexString:
-                case KeyValueFormat.HexStringWithSpace:
-                    {
-                        var v = value as string;
-                        Value = v ?? string.Empty;
-                    }
-                    break;
-                default:
-                    {
-                        Value = value is byte[] v ? Convert.ToHexString(v) : string.Empty;
-                    }
-                    break;
+                return Convert.FromHexString(Value);
             }
+
+            return null;
+        }
+
+        public void SetValueBinary(byte[]? value)
+        {
+            Value = (value != null) ? Convert.ToHexString(value) : string.Empty;
+        }
+
+        public static string GetInvariantStringValue(string? value, KeyValueStringFormat format)
+        {
+            return format switch
+            {
+                KeyValueStringFormat.HexStringWithSpace => (value ?? string.Empty).Replace(" ", ""),
+                _ => value ?? string.Empty
+            };
         }
 
         [GeneratedRegex(".{2}")]

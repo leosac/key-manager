@@ -21,10 +21,7 @@ namespace Leosac.KeyManager.Library
             {
                 encryptionKey = MasterKey;
             }
-            using (var sha = SHA256.Create())
-            {
-                _encryptionKeyBytes = sha.ComputeHash(Encoding.UTF8.GetBytes(encryptionKey));
-            }
+            _encryptionKeyBytes = SHA256.HashData(Encoding.UTF8.GetBytes(encryptionKey));
         }
 
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
@@ -35,12 +32,10 @@ namespace Leosac.KeyManager.Library
                 writer.WriteNull();
                 return;
             }
-            using (var aes = Aes.Create())
-            {
-                aes.Key = _encryptionKeyBytes;
-                var data = aes.EncryptCbc(Encoding.UTF8.GetBytes(stringValue), new byte[16], System.Security.Cryptography.PaddingMode.PKCS7);
-                writer.WriteValue(Convert.ToBase64String(data));
-            }
+            using var aes = Aes.Create();
+            aes.Key = _encryptionKeyBytes;
+            var data = aes.EncryptCbc(Encoding.UTF8.GetBytes(stringValue), new byte[16], System.Security.Cryptography.PaddingMode.PKCS7);
+            writer.WriteValue(Convert.ToBase64String(data));
         }
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
@@ -54,12 +49,10 @@ namespace Leosac.KeyManager.Library
             try
             {
                 var buffer = Convert.FromBase64String(value);
-                using (var aes = Aes.Create())
-                {
-                    aes.Key = _encryptionKeyBytes;
-                    var data = aes.DecryptCbc(buffer, new byte[16], System.Security.Cryptography.PaddingMode.PKCS7);
-                    return Encoding.UTF8.GetString(data);
-                }
+                using var aes = Aes.Create();
+                aes.Key = _encryptionKeyBytes;
+                var data = aes.DecryptCbc(buffer, new byte[16], System.Security.Cryptography.PaddingMode.PKCS7);
+                return Encoding.UTF8.GetString(data);
             }
             catch
             {

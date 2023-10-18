@@ -250,14 +250,14 @@
                             throw new KeyStoreException("Unexpected number of keys on the SAM Key Entry.");
                         }
 
-                        keyVersions[0].Key.SetAggregatedValue(Convert.ToHexString(keysdata[0].ToArray()));
+                        keyVersions[0].Key.SetAggregatedValueString(Convert.ToHexString(keysdata[0].ToArray()));
                         keyVersions[0].Version = infoav2.vera;
-                        keyVersions[1].Key.SetAggregatedValue(Convert.ToHexString(keysdata[1].ToArray()));
+                        keyVersions[1].Key.SetAggregatedValueString(Convert.ToHexString(keysdata[1].ToArray()));
                         keyVersions[1].Version = infoav2.verb;
 
                         if (keyEntry.Variant.KeyContainers.Count >= 3)
                         {
-                            keyVersions[2].Key.SetAggregatedValue(Convert.ToHexString(keysdata[2].ToArray()));
+                            keyVersions[2].Key.SetAggregatedValueString(Convert.ToHexString(keysdata[2].ToArray()));
                             keyVersions[2].Version = infoav2.verc;
                         }
                     }
@@ -393,7 +393,7 @@
                     key.setKeyVersion(GetSAMProperties().AuthenticateKeyVersion);
                     if (!string.IsNullOrEmpty(Properties?.Secret))
                     {
-                        key.fromString(KeyMaterial.GetFormattedValue<string>(Properties.Secret, KeyValueFormat.HexStringWithSpace));
+                        key.fromString(KeyMaterial.GetValueString(Properties.Secret, KeyValueStringFormat.HexStringWithSpace));
                     }
                     else
                     {
@@ -428,13 +428,13 @@
                         var keys = new LibLogicalAccess.UCharCollectionCollection(keyVersions.Length);
                         foreach (var keyversion in samkey.Variant.KeyContainers)
                         {
-                            if (string.IsNullOrEmpty(keyversion.Key.GetAggregatedValue<string>()))
+                            if (string.IsNullOrEmpty(keyversion.Key.GetAggregatedValueString()))
                             {
                                 keys.Add(new LibLogicalAccess.ByteVector(new byte[keyversion.Key.KeySize]));
                             }
                             else
                             {
-                                keys.Add(new LibLogicalAccess.ByteVector(keyversion.Key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary)));
+                                keys.Add(new LibLogicalAccess.ByteVector(keyversion.Key.GetAggregatedValueBinary()));
                             }
                         }
 
@@ -532,7 +532,7 @@
             var key = CreateDESFireKey(keyType, keyVersion, keyValue);
             if (keyType != LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES)
             {
-                var kb = KeyMaterial.GetFormattedValue<byte[]>(keyValue, KeyValueFormat.Binary);
+                var kb = Convert.FromHexString(keyValue);
                 var keys = new LibLogicalAccess.UCharCollectionCollection(3)
                 {
                     new LibLogicalAccess.ByteVector(kb),
@@ -568,7 +568,7 @@
             key.setKeyType(keyType);
             if (!string.IsNullOrEmpty(keyValue))
             {
-                key.fromString(KeyMaterial.GetFormattedValue<string>(keyValue, KeyValueFormat.HexStringWithSpace));
+                key.fromString(KeyMaterial.GetValueString(keyValue, KeyValueStringFormat.HexStringWithSpace));
             }
             return key;
         }
@@ -653,7 +653,7 @@
                 key.setKeyVersion(GetSAMProperties().AuthenticateKeyVersion);
                 if (!string.IsNullOrEmpty(Properties?.Secret))
                 {
-                    key.fromString(KeyMaterial.GetFormattedValue<string>(Properties.Secret, KeyValueFormat.HexStringWithSpace));
+                    key.fromString(KeyMaterial.GetValueString(Properties.Secret, KeyValueStringFormat.HexStringWithSpace));
                 }
                 else
                 {
@@ -714,7 +714,7 @@
             {
                 if (!string.IsNullOrEmpty(GetSAMProperties().Secret) && !_unlocked)
                 {
-                    UnlockSAM(av2cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetFormattedValue<string>(Properties?.Secret, KeyValueFormat.HexStringWithSpace));
+                    UnlockSAM(av2cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetValueString(Properties?.Secret, KeyValueStringFormat.HexStringWithSpace));
                     _unlocked = true;
                 }
 

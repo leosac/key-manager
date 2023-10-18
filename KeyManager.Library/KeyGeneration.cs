@@ -7,12 +7,10 @@ namespace Leosac.KeyManager.Library
     {
         public static string Random(int keySize)
         {
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                var key = new byte[keySize];
-                rng.GetBytes(key);
-                return Convert.ToHexString(key);
-            }
+            using var rng = RandomNumberGenerator.Create();
+            var key = new byte[keySize];
+            rng.GetBytes(key);
+            return Convert.ToHexString(key);
         }
 
         public static string FromPassword(string password, string salt, int keySize)

@@ -127,7 +127,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
                         var kc = ke.Variant.KeyContainers[0];
                         if (!string.IsNullOrEmpty(key.Value))
                         {
-                            kc.Key.SetAggregatedValue(key.Value);
+                            kc.Key.SetAggregatedValueString(key.Value);
                         }
                         if (kc is KeyVersion kv && key.Version != null)
                         {
@@ -280,7 +280,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             }
             if (kc != null)
             {
-                var rawkey = kc.Key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary);
+                var rawkey = kc.Key.GetAggregatedValueBinary();
                 key.Value = (rawkey != null) ? Convert.ToHexString(rawkey) : null;
             }
             if (!string.IsNullOrEmpty(kc?.Key.Link?.KeyStoreFavorite))

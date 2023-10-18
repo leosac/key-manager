@@ -244,7 +244,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                                             KeyEntry = entry,
                                             KeyContainer = kv
                                         };
-                                        kv.Key.SetAggregatedValue(await ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier, keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
+                                        kv.Key.SetAggregatedValueString(await ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier, keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
                                         await ks.Close();
                                     }
                                 }
@@ -337,7 +337,7 @@ namespace Leosac.KeyManager.Library.KeyStore
             return null;
         }
 
-        public async Task<T?> GetKeyValue<T>(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? keyContainerSelector, string? divInput) where T : class
+        public async Task<string?> GetKeyValue(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? keyContainerSelector, string? divInput)
         {
             if (!string.IsNullOrEmpty(divInput))
             {
@@ -346,7 +346,7 @@ namespace Leosac.KeyManager.Library.KeyStore
             }
 
             var key = await GetKey(keyIdentifier, keClass, keyContainerSelector);
-            return key?.GetAggregatedValue<T>();
+            return key?.GetAggregatedValueString();
         }
 
         /// <summary>
@@ -407,7 +407,6 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         public virtual async Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput)
         {
-            string? result = null;
             log.Info(string.Format("Resolving key link with Key Entry Identifier `{0}`, Container Selector `{1}`, Div Input `{2}`...", keyIdentifier, containerSelector, divInput));
 
             if (!await CheckKeyEntryExists(keyIdentifier, keClass))
@@ -416,7 +415,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                 throw new KeyStoreException("The key entry do not exists.");
             }
 
-            result = await GetKeyValue<string>(keyIdentifier, keClass, containerSelector, divInput);
+            var result = await GetKeyValue(keyIdentifier, keClass, containerSelector, divInput);
             if (string.IsNullOrEmpty(result))
             {
                 log.Warn("Key link returned an empty value.");

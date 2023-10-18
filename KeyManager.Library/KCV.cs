@@ -32,7 +32,7 @@ namespace Leosac.KeyManager.Library
             using (var ms = new MemoryStream())
             {
                 var crypto = KeyHelper.GetSymmetricAlgorithm(key, CipherMode.CBC, true) ?? throw new Exception("Unsupported key for KCV calcul.");
-                var parameters = new ParametersWithIV(new KeyParameter(key.GetAggregatedValue<byte[]>(KeyValueFormat.Binary)), paddediv);
+                var parameters = new ParametersWithIV(new KeyParameter(key.GetAggregatedValueBinary()), paddediv);
                 crypto.Init(true, parameters);
                 result = crypto.DoFinal(data);
                 Array.Resize(ref result, 3);

@@ -128,28 +128,26 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.ISLOG
                                         var versionEl = keEl.Element("KeyVersion");
                                         if (versionEl != null && keyEl != null)
                                         {
-                                            var keya = ke.Variant.KeyContainers[0] as KeyVersion;
-                                            var keyb = ke.Variant.KeyContainers[1] as KeyVersion;
                                             KeyVersion? keyc = null;
                                             if (ke.Variant.KeyContainers.Count > 2)
                                             {
                                                 keyc = ke.Variant.KeyContainers[2] as KeyVersion;
                                             }
 
-                                            if (keya != null)
+                                            if (ke.Variant.KeyContainers[0] is KeyVersion keya)
                                             {
                                                 keya.Version = byte.Parse(versionEl.Attribute("vera")?.Value ?? "0");
-                                                keya.Key.SetAggregatedValue(keyEl.Attribute("keya")?.Value ?? string.Empty);
+                                                keya.Key.SetAggregatedValueString(keyEl.Attribute("keya")?.Value ?? string.Empty);
                                             }
-                                            if (keyb != null)
+                                            if (ke.Variant.KeyContainers[1] is KeyVersion keyb)
                                             {
                                                 keyb.Version = byte.Parse(versionEl.Attribute("verb")?.Value ?? "0");
-                                                keyb.Key.SetAggregatedValue(keyEl.Attribute("keyb")?.Value ?? string.Empty);
+                                                keyb.Key.SetAggregatedValueString(keyEl.Attribute("keyb")?.Value ?? string.Empty);
                                             }
                                             if (keyc != null)
                                             {
                                                 keyc.Version = byte.Parse(versionEl.Attribute("verc")?.Value ?? "0");
-                                                keyc.Key.SetAggregatedValue(keyEl.Attribute("keyc")?.Value ?? string.Empty);
+                                                keyc.Key.SetAggregatedValueString(keyEl.Attribute("keyc")?.Value ?? string.Empty);
                                             }
                                         }
                                     }
