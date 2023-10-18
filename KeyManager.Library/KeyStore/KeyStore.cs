@@ -230,7 +230,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                                             KeyEntry = entry,
                                             KeyContainer = kv
                                         };
-                                        kv.Key.SetAggregatedValue(ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier, keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
+                                        kv.Key.SetAggregatedValue(await ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier, keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
                                         await ks.Close();
                                     }
                                 }
