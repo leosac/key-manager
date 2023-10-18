@@ -17,12 +17,14 @@
         <s:Boolean x:Key="True">True</s:Boolean>
         <s:Boolean x:Key="False">False</s:Boolean>
         <materialDesign:BooleanToVisibilityConverter x:Key="BoolToVisibleConverter" />
+        <materialDesign:NullableToVisibilityConverter x:Key="ReverseNullableToVisibilityConverter" NullValue="Visible" NotNullValue="Collapsed" />
         <domain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
         <domain:KeyStoreFavoriteConverter x:Key="KeyStoreFavoriteConverter" />
     </UserControl.Resources>
     <materialDesign:DrawerHost x:Name="DrawerHost" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="2">
         <materialDesign:DrawerHost.BottomDrawerContent>
             <StackPanel Orientation="Vertical">
+                <TextBlock Text="{x:Static properties:Resources.LinkSuccess}" Margin="5" Visibility="{Binding LinkError, Converter={StaticResource ReverseNullableToVisibilityConverter}}" />
                 <PasswordBox Margin="15"
                              materialDesign:PasswordBoxAssist.Password="{Binding LinkResult}"
                              IsEnabled="False"

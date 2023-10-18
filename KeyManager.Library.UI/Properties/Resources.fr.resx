@@ -372,6 +372,9 @@
   <data name="LinkHelper" xml:space="preserve">
     <value>Lier vers un autre magasin de clés</value>
   </data>
+  <data name="LinkSuccess" xml:space="preserve">
+    <value>La liaison a réussi.</value>
+  </data>
   <data name="Mnemonic" xml:space="preserve">
     <value>Mnemonic</value>
   </data>

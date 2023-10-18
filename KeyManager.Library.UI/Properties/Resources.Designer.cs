@@ -826,6 +826,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The link succeeded..
+        /// </summary>
+        public static string LinkSuccess {
+            get {
+                return ResourceManager.GetString("LinkSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mnemonic.
         /// </summary>
         public static string Mnemonic {
