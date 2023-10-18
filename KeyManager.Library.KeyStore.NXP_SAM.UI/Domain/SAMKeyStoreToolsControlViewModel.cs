@@ -28,35 +28,11 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 LibLogicalAccess.Card.SAMLockUnlock.SwitchAV2Mode
             });
 
-            SAMAuthCommand = new RelayCommand(
-                () =>
-                {
-                    SAMAuthenticate();
-                });
-
-            SAMSwitchAV2Command = new RelayCommand(
-                () =>
-                {
-                    SAMSwitchAV2();
-                });
-
-            SAMLockUnlockCommand = new RelayCommand(
-                () =>
-                {
-                    SAMLockUnlock();
-                });
-
-            SAMGetVersionCommand = new RelayCommand(
-                () =>
-                {
-                    SAMGetVersion();
-                });
-
-            SAMActivateMifareSAMCommand = new RelayCommand(
-                () =>
-                {
-                    SAMActivateMifareSAM();
-                });
+            SAMAuthCommand = new RelayCommand(SAMAuthenticate);
+            SAMSwitchAV2Command = new AsyncRelayCommand(SAMSwitchAV2);
+            SAMLockUnlockCommand = new RelayCommand(SAMLockUnlock);
+            SAMGetVersionCommand = new RelayCommand(SAMGetVersion);
+            SAMActivateMifareSAMCommand = new RelayCommand(SAMActivateMifareSAM);
         }
 
         private KeyVersion _samAuthKey;
@@ -107,7 +83,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
 
         public RelayCommand SAMAuthCommand { get; }
 
-        public RelayCommand SAMSwitchAV2Command { get; }
+        public AsyncRelayCommand SAMSwitchAV2Command { get; }
 
         public RelayCommand SAMLockUnlockCommand { get; }
 
@@ -197,7 +173,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             }
         }
 
-        private void SAMSwitchAV2()
+        private async Task SAMSwitchAV2()
         {
             try
             {
@@ -205,7 +181,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 var cmd = ks?.Chip?.getCommands();
                 if (cmd is SAMAV1ISO7816Commands samav1cmd)
                 {
-                    ks?.SwitchSAMToAV2(samav1cmd);
+                    if (ks != null)
+                    {
+                        await ks.SwitchSAMToAV2(samav1cmd);
+                    }
                     SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "SAM Switch to AV2 succeeded!");
                 }
                 else if (cmd is SAMAV2ISO7816Commands samav2cmd)
