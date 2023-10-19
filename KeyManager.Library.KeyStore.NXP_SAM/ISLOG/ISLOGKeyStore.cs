@@ -23,8 +23,6 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.ISLOG
 
         public override bool CanUpdateKeyEntries => false;
 
-        public override bool CanReorderKeyEntries => false;
-
         public override IEnumerable<KeyEntryClass> SupportedClasses
         {
             get => new KeyEntryClass[] { KeyEntryClass.Symmetric };
@@ -72,16 +70,6 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.ISLOG
             }
 
             return Task.FromResult((IList<KeyEntryId>)_keyEntries.Values.Select(ke => ke.Identifier).ToList());
-        }
-
-        public override Task MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task MoveUp(KeyEntryId identifier, KeyEntryClass keClass)
-        {
-            throw new NotImplementedException();
         }
 
         public override async Task Open()

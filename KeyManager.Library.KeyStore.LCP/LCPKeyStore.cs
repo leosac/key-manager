@@ -21,8 +21,6 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
 
         public override bool CanDeleteKeyEntries => true;
 
-        public override bool CanReorderKeyEntries => false;
-
         public override IEnumerable<KeyEntryClass> SupportedClasses
         {
             get => new KeyEntryClass[] { KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric };
@@ -186,16 +184,6 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
         {
             var p = Properties as LCPKeyStoreProperties;
             return p ?? throw new KeyStoreException("Missing LCP key store properties.");
-        }
-
-        public override Task MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task MoveUp(KeyEntryId identifier, KeyEntryClass keClass)
-        {
-            throw new NotImplementedException();
         }
 
         public override async Task Open()

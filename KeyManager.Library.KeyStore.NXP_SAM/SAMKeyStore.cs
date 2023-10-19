@@ -25,8 +25,6 @@
 
         public override bool CanDeleteKeyEntries => false;
 
-        public override bool CanReorderKeyEntries => false;
-
         public override IEnumerable<KeyEntryClass> SupportedClasses
         {
             get => new KeyEntryClass[] { KeyEntryClass.Symmetric };
@@ -196,20 +194,6 @@
             log.Info(string.Format("Deleting key entry `{0}`...", identifier));
             log.Error("A SAM key entry cannot be deleted, only updated.");
             throw new KeyStoreException("A SAM key entry cannot be deleted, only updated.");
-        }
-
-        public override Task MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
-        {
-            log.Info(string.Format("Moving Down key entry `{0}`...", identifier));
-            log.Error("A SAM key entry cannot be reordered.");
-            throw new KeyStoreException("A SAM key entry cannot be reordered.");
-        }
-
-        public override Task MoveUp(KeyEntryId identifier, KeyEntryClass keClass)
-        {
-            log.Info(string.Format("Moving Up key entry `{0}`...", identifier));
-            log.Error("A SAM key entry cannot be reordered.");
-            throw new KeyStoreException("A SAM key entry cannot be reordered.");
         }
 
         public override async Task<KeyEntry?> Get(KeyEntryId identifier, KeyEntryClass keClass)

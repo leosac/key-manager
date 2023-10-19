@@ -46,7 +46,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <summary>
         /// True if key entries can be reordered, false otherwise.
         /// </summary>
-        public abstract bool CanReorderKeyEntries { get; }
+        public virtual bool CanReorderKeyEntries => false;
 
         /// <summary>
         /// Get the supported key entry classes.
@@ -152,14 +152,24 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// </summary>
         /// <param name="identifier">The key entry identifier</param>
         /// <param name="keClass">The key entry class</param>
-        public abstract Task MoveUp(KeyEntryId identifier, KeyEntryClass keClass);
+        public virtual Task MoveUp(KeyEntryId identifier, KeyEntryClass keClass)
+        {
+            log.Info(string.Format("Moving Up key entry `{0}` of class `{1}`...", identifier, keClass));
+            log.Error("The key store doesn't support key entries reordering.");
+            throw new KeyStoreException("The key store doesn't support key entries reordering.");
+        }
 
         /// <summary>
         /// Move down a key entry on the list, if reordering is supported.
         /// </summary>
         /// <param name="identifier">The key entry identifier</param>
         /// <param name="keClass">The key entry class</param>
-        public abstract Task MoveDown(KeyEntryId identifier, KeyEntryClass keClass);
+        public virtual Task MoveDown(KeyEntryId identifier, KeyEntryClass keClass)
+        {
+            log.Info(string.Format("Moving Down key entry `{0}` of class `{1}`...", identifier, keClass));
+            log.Error("The key store doesn't support key entries reordering.");
+            throw new KeyStoreException("The key store doesn't support key entries reordering.");
+        }
 
         /// <summary>
         /// Store a key entry change.
