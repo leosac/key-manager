@@ -35,6 +35,6 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.Domain
 
         public ObservableCollection<CKU> UserTypes { get; private set; }
 
-        public RelayCommand BrowseCommand;
+        public RelayCommand BrowseCommand { get; }
     }
 }

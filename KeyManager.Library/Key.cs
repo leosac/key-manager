@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Leosac.KeyManager.Library.Policy;
 using System.Collections.ObjectModel;
+using System.Text;
 
 namespace Leosac.KeyManager.Library
 {
@@ -127,7 +128,7 @@ namespace Leosac.KeyManager.Library
 
         public string? GetAggregatedValueString(KeyValueStringFormat format, string? delimiter)
         {
-            string? ret = null;
+            StringBuilder? ret = null;
             foreach (var m in Materials)
             {
                 var v = m.GetValueString(format);
@@ -135,19 +136,19 @@ namespace Leosac.KeyManager.Library
                 {
                     if (delimiter != null)
                     {
-                        ret += delimiter;
+                        ret.Append(delimiter);
                     }
                     if (v != null)
                     {
-                        ret += v;
+                        ret.Append(v);
                     }
                 }
                 else
                 {
-                    ret = v ?? string.Empty;
+                    ret = new StringBuilder(v ?? string.Empty);
                 }
             }
-            return ret;
+            return ret?.ToString();
         }
 
         public byte[]? GetAggregatedValueBinary()

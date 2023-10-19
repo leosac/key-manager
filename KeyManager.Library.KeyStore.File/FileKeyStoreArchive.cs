@@ -2,7 +2,7 @@
 
 namespace Leosac.KeyManager.Library.KeyStore.File
 {
-    public class FileKeyStoreArchive
+    public static class FileKeyStoreArchive
     {
         public static void Import(string fileName, FileKeyStore keyStore)
         {

@@ -156,7 +156,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.ISLOG
                                         // We create LLA objects to be able to use Key Entry helpers for SET/ExtSET decoding
                                         var llaKeInfo = new LibLogicalAccess.Card.KeyEntryAV2Information
                                         {
-                                            set = new byte[]
+                                            set = new[]
                                             {
                                                 byte.Parse(setEl.Attribute("set0")?.Value ?? "0"),
                                                 byte.Parse(setEl.Attribute("set1")?.Value ?? "0")

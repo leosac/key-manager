@@ -35,6 +35,11 @@
 
                 if (y is SAMSymmetricKeyEntry ky)
                 {
+                    if (ky.Identifier.Id == _properties.AuthenticateKeyEntryIdentifier.ToString())
+                    {
+                        return -1;
+                    }
+
                     try
                     {
                         return int.Parse(kx.Identifier.Id ?? "0") - int.Parse(ky.Identifier.Id ?? "0");
