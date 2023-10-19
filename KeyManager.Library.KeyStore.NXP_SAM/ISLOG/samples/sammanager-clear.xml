@@ -10,7 +10,7 @@
         <KeyEntryUI>
           <KeyEntryUI SAM="AV2" KeyType="AES128" allowPush="True">
             <KeyAuth KeyEntry="0" Version="0" UseKeyEntry="False" KeyType="DES" IsHiddenKey="False" keyText="00000000000000000000000000000000" IsNotKeyCeremony="True" HiddenKey="00000000000000000000000000000000" />
-            <KeyLockUnlock Enable="False" KeyEntry="0" Version="0" UseKeyEntry="True" KeyType="MIFARE" IsHiddenKey="False" keyText="00000000000000000000000000000000" IsNotKeyCeremony="True" HiddenKey="00000000000000000000000000000000" />
+            <KeyLockUnlock Enable="False" KeyEntry="0" Version="0" UseKeyEntry="True" KeyType="T3KDES" IsHiddenKey="False" keyText="00000000000000000000000000000000" IsNotKeyCeremony="True" HiddenKey="00000000000000000000000000000000" />
             <Hidden KeyA="False" KeyB="False" KeyC="False" />
             <KeyCeremony KeyA="False" KeyB="False" KeyC="False" />
             <Text KeyA="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" KeyB="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" KeyC="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
@@ -36,7 +36,7 @@
         <KeyEntryUI>
           <KeyEntryUI SAM="AV2" KeyType="AES128" allowPush="True">
             <KeyAuth KeyEntry="0" Version="1" UseKeyEntry="False" KeyType="AES128" IsHiddenKey="False" keyText="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" IsNotKeyCeremony="True" HiddenKey="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-            <KeyLockUnlock Enable="False" KeyEntry="0" Version="0" UseKeyEntry="True" KeyType="MIFARE" IsHiddenKey="False" keyText="00000000000000000000000000000000" IsNotKeyCeremony="True" HiddenKey="00000000000000000000000000000000" />
+            <KeyLockUnlock Enable="False" KeyEntry="0" Version="0" UseKeyEntry="True" KeyType="T3KDES" IsHiddenKey="False" keyText="00000000000000000000000000000000" IsNotKeyCeremony="True" HiddenKey="00000000000000000000000000000000" />
             <Hidden KeyA="False" KeyB="False" KeyC="False" />
             <KeyCeremony KeyA="False" KeyB="False" KeyC="False" />
             <Text KeyA="1B9E4BF100C4732E9953E73157BCDAF7" KeyB="4AA4B5A9531E4C714CD0E0DD04AEAAD6" KeyC="06CD67D08890B42D2A82BFAD7DDB9BBB" />
@@ -45,7 +45,7 @@
               <DESFire desfireAid0="0" desfireAid1="0" desfireAid2="0" desfirekeyno="0" />
               <KeyUsageCounter kuc="255" />
               <SET set0="32" set1="4" />
-              <KeyVersion vera="0" verb="0" verc="0" />
+              <KeyVersion vera="1" verb="2" verc="3" />
               <ExtSET bitmask="0" />
               <Key keya="1B9E4BF100C4732E9953E73157BCDAF7" keyb="4AA4B5A9531E4C714CD0E0DD04AEAAD6" keyc="06CD67D08890B42D2A82BFAD7DDB9BBB" />
             </KeyEntry>
@@ -62,7 +62,7 @@
         <KeyEntryUI>
           <KeyEntryUI SAM="AV2" KeyType="AES128" allowPush="True">
             <KeyAuth KeyEntry="0" Version="1" UseKeyEntry="False" KeyType="AES128" IsHiddenKey="False" keyText="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" IsNotKeyCeremony="True" HiddenKey="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-            <KeyLockUnlock Enable="False" KeyEntry="0" Version="0" UseKeyEntry="True" KeyType="MIFARE" IsHiddenKey="False" keyText="00000000000000000000000000000000" IsNotKeyCeremony="True" HiddenKey="00000000000000000000000000000000" />
+            <KeyLockUnlock Enable="False" KeyEntry="0" Version="0" UseKeyEntry="True" KeyType="T3KDES" IsHiddenKey="False" keyText="00000000000000000000000000000000" IsNotKeyCeremony="True" HiddenKey="00000000000000000000000000000000" />
             <Hidden KeyA="False" KeyB="False" KeyC="False" />
             <KeyCeremony KeyA="False" KeyB="False" KeyC="False" />
             <Text KeyA="EFE6233D443500699C127EA46372B3D4" KeyB="96DF16F511A3BBD06B05F685C6DE3946" KeyC="415039C934F5AD3709817666BF8F940E" />
@@ -71,7 +71,7 @@
               <DESFire desfireAid0="103" desfireAid1="0" desfireAid2="0" desfirekeyno="1" />
               <KeyUsageCounter kuc="255" />
               <SET set0="37" set1="8" />
-              <KeyVersion vera="0" verb="0" verc="0" />
+              <KeyVersion vera="1" verb="2" verc="3" />
               <ExtSET bitmask="1" />
               <Key keya="EFE6233D443500699C127EA46372B3D4" keyb="96DF16F511A3BBD06B05F685C6DE3946" keyc="415039C934F5AD3709817666BF8F940E" />
             </KeyEntry>
@@ -93,7 +93,7 @@
             <KeyLockUnlock Enable="False" KeyEntry="0" Version="0" UseKeyEntry="True" KeyType="DES" IsHiddenKey="False" keyText="00000000000000000000000000000000" IsNotKeyCeremony="True" HiddenKey="00000000000000000000000000000000" />
             <KUCEntryInformation keynockuc="0" keyvckuc="0">
               <curval curval0="0" curval1="0" curval2="0" curval3="0" />
-              <limit limit0="255" limit1="255" limit2="255" limit3="255" />
+              <limit limit0="0" limit1="0" limit2="0" limit3="0" />
             </KUCEntryInformation>
           </KUCEntryUI>
         </KUCEntryUI>

@@ -88,6 +88,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.ISLOG
                     var memstream = new MemoryStream();
                     await cryptoStream.CopyToAsync(memstream);
                     stream.Dispose();
+                    memstream.Position = 0;
                     stream = memstream;
                 }
                 var xdoc = await XDocument.LoadAsync(stream, LoadOptions.None, new CancellationToken());
@@ -105,7 +106,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.ISLOG
                             if (keUIEl != null)
                             {
                                 var keyType = keUIEl.Attribute("KeyType")?.Value ?? "DES";
-                                // TODO: adjust key type here if required
+                                // We adjust the key type if required
+                                if (keyType == "AES")
+                                {
+                                    keyType = "AES128";
+                                }
+                                else if (keyType == "T3KDES")
+                                {
+                                    keyType = "TK3DES";
+                                }
                                 ke.Variant = ke.GetAllVariants().Where(v => v.Name == keyType).FirstOrDefault();
                                 var keEl = keUIEl.Element("KeyEntry");
                                 if (keEl != null)
