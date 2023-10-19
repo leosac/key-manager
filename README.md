@@ -1,15 +1,16 @@
 # Leosac Key Manager ![Logo](KeyManager/images/leosac_key.png)
 
 -   Stable branch: master [![Build Status](https://github.com/leosac/key-manager/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/leosac/key-manager/actions/workflows/build.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/8b799c8a9e6a4d4bb04b77eb638678ae?branch=master)](https://app.codacy.com/gh/leosac/key-manager/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
--   Development branch: develop [![Build Status](https://github.com/leosac/key-manager/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/leosac/key-manager/actions/workflows/build.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/8b799c8a9e6a4d4bb04b77eb638678ae?branch=develop)](https://app.codacy.com/gh/leosac/key-manager/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+-   Development branch: develop [![Build Status](https://github.com/leosac/key-manager/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/leosac/key-manager/actions/workflows/build.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/8b799c8a9e6a4d4bb04b77eb638678ae?branch=develop)](https://app.codacy.com/gh/leosac/key-manager/dashboard?branch=develop&utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 Leosac Key Manager is a standalone application to generate, manage and re-deploy key entries on several kind of Key Store.
 
 ## Key Store
 -   Local Key Store
--   NXP SAM AV2 / AV3 Key Store
+-   NXP:tm: SAM AV2 / AV3 Key Store
 -   HSM PKCS#11 Key Store
 -   Leosac Credential Provisioning Server Key Store
+-   ISLOG:tm: SAM Manager template Key Store (read only)
 
 ## Key Generation
 -   Random
@@ -25,9 +26,9 @@ You probably need specific hardware or software server in addition to this softw
 Only **Windows** is supported. See [this thread](https://github.com/leosac/key-manager/issues/1) for more information and to vote for Linux support.
 
 ## License and Support
-The source code of this software is distributed under the GPLv3 license. Dual license may be provided, contact Leosac SAS for more information.
+The source code of this software is distributed under the GPLv3 license. Dual licensing may be provided, contact Leosac SAS for more information.
 
-For support, premium services and further updates guarantees, please subscribe to a lifetime or annual plan. See https://leosac.com/key-manager/.
+For support, private plugins, premium services and further updates guarantees, please subscribe to a lifetime or annual plan. See https://leosac.com/key-manager/.
 
 ## Plugins
 Key Stores, Key Entries and UI Wizards are handled as plugins. Plugins are loaded from `Plugins` folder on the installation directory.
