@@ -49,10 +49,24 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <local:FavoriteKeyStoreSelectionControl Grid.Row="0" SelectedKeyStoreFavorite="{Binding Link.KeyStoreFavorite, Mode=TwoWay, Converter={StaticResource KeyStoreFavoriteConverter}}" />
-                <TextBox Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Link.KeyIdentifier, Mode=TwoWay}" Margin="5"
-                         materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifierHelper}"
-                         materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"
-                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                <GroupBox Grid.Row="1" Header="{x:Static properties:Resources.KeyEntry}" BorderThickness="0" Margin="5,14,5,5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap"
+                                 Text="{Binding Link.KeyIdentifier.Id, Mode=TwoWay}" Margin="5,0,5,0"
+                                 materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifierHelper}"
+                                 materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" Grid.ColumnSpan="3"/>
+                        <TextBox Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap"
+                                 Text="{Binding Link.KeyIdentifier.Label, Mode=TwoWay}" Margin="5,0,5,0"
+                                 materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryLabelHelper}"
+                                 materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryLabel}"
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                    </Grid>
+                </GroupBox>
                 <local:DivInputControl Grid.Row="2" DivInput="{Binding Link.DivInput}" />
                 <materialDesign:Card Grid.Row="3" Margin="5,20,5,5">
                     <StackPanel>

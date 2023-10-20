@@ -7,6 +7,8 @@ namespace Leosac.KeyManager.Library
 {
     public class Link : ObservableValidator
     {
+        public static string StorePlaceholder => "Key Store Placeholder";
+
         public Link()
         {
             DivInput = new ObservableCollection<DivInputFragment>();

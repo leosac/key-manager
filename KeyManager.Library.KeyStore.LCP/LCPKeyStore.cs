@@ -8,7 +8,6 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
 {
     public class LCPKeyStore : KeyStore
     {
-        const string PLACEHOLDER = "Key Store Placeholder";
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         private IAuthenticationAPI? _authAPI;
@@ -138,7 +137,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
                         }
                         else
                         {
-                            kc.Key.Link.KeyStoreFavorite = key.KeyStore ?? PLACEHOLDER;
+                            kc.Key.Link.KeyStoreFavorite = key.KeyStore ?? Link.StorePlaceholder;
                             kc.Key.Link.KeyIdentifier.Id = key.KeyStoreReference;
                         }
                     }
@@ -273,7 +272,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             }
             if (!string.IsNullOrEmpty(kc?.Key.Link?.KeyStoreFavorite))
             {
-                key.KeyStore = kc.Key.Link.KeyStoreFavorite != PLACEHOLDER ? kc.Key.Link.KeyStoreFavorite : null;
+                key.KeyStore = kc.Key.Link.KeyStoreFavorite != Link.StorePlaceholder ? kc.Key.Link.KeyStoreFavorite : null;
                 key.KeyStoreReference = kc.Key.Link.KeyIdentifier?.Id;
                 key.KeyStoreType = "sam"; // TODO: get the referenced key store type here
             }

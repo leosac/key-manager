@@ -82,7 +82,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public async Task RunLink()
         {
-            log.Info(String.Format("Running the link manually..."));
+            log.Info(string.Format("Running the link manually..."));
             LinkError = null;
             if (Link != null && !string.IsNullOrEmpty(Link.KeyStoreFavorite) && Link.KeyIdentifier.IsConfigured())
             {
@@ -98,7 +98,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                             await RunLinkImpl(ks);
                             await ks.Close();
 
-                            log.Info(String.Format("Link execution completed."));
+                            log.Info(string.Format("Link execution completed."));
                         }
                         catch (KeyStoreException ex)
                         {
@@ -106,19 +106,19 @@ namespace Leosac.KeyManager.Library.UI.Domain
                         }
                         catch (Exception ex)
                         {
-                            log.Error(String.Format("Unexpected error when resolving the link: {0}", ex.Message));
-                            LinkError = String.Format("Unexpected error: {0}", ex.Message);
+                            log.Error(string.Format("Unexpected error when resolving the link: {0}", ex.Message));
+                            LinkError = string.Format("Unexpected error: {0}", ex.Message);
                         }
                     }
                     else
                     {
-                        log.Error(String.Format("Cannot create the key store from Favorite `{0}`.", Link.KeyStoreFavorite));
+                        log.Error(string.Format("Cannot create the key store from Favorite `{0}`.", Link.KeyStoreFavorite));
                         LinkError = "Cannot create the key store from Favorite.";
                     }
                 }
                 else
                 {
-                    log.Error(String.Format("Cannot found the linked key store `{0}`.", Link.KeyStoreFavorite));
+                    log.Error(string.Format("Cannot found the linked key store `{0}`.", Link.KeyStoreFavorite));
                     LinkError = "Cannot found the linked key store.";
                 }
             }

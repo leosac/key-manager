@@ -147,6 +147,47 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.ISLOG
                                                 keyc.Key.SetAggregatedValueString(keyEl.Attribute("keyc")?.Value ?? string.Empty);
                                             }
                                         }
+
+
+                                        var dumps = keUIEl.Elements("DumpKeyOption");
+                                        foreach (var dump in dumps)
+                                        {
+                                            if (dump.Attribute("Enable")?.Value?.ToLowerInvariant() == "true")
+                                            {
+                                                KeyContainer? dkey = null;
+                                                if (dump.Attribute("DumpKeyOptionA") != null)
+                                                {
+                                                    dkey = ke.Variant.KeyContainers[0];
+                                                }
+                                                else if (dump.Attribute("DumpKeyOptionB") != null)
+                                                {
+                                                    dkey = ke.Variant.KeyContainers[1];
+                                                }
+                                                else if (dump.Attribute("DumpKeyOptionC") != null && ke.Variant.KeyContainers.Count > 2)
+                                                {
+                                                    dkey = ke.Variant.KeyContainers[2];
+                                                }
+
+                                                if (dkey != null)
+                                                {
+                                                    dkey.Key.Link.KeyStoreFavorite = Link.StorePlaceholder;
+                                                    if (dump.Attribute("Type")?.Value == "1")
+                                                    {
+                                                        dkey.Key.Link.KeyIdentifier.Label = dump.Attribute("KeyLabel")?.Value;
+                                                    }
+                                                    else
+                                                    {
+                                                        dkey.Key.Link.KeyIdentifier.Id = dump.Attribute("KeySlot")?.Value;
+                                                        dkey.Key.Link.ContainerSelector = dump.Attribute("KeyVersion")?.Value;
+                                                        var divinput = dump.Attribute("Diversification")?.Value;
+                                                        if (!string.IsNullOrEmpty(divinput))
+                                                        {
+                                                            dkey.Key.Link.DivInput.Add(new DivInput.StaticDivInputFragment { Input = divinput });
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
 
                                     var setEl = keEl.Element("SET");
