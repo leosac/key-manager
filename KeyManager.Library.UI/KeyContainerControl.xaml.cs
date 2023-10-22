@@ -62,6 +62,15 @@ namespace Leosac.KeyManager.Library.UI
         public static readonly DependencyProperty ShowKeyLinkProperty = DependencyProperty.Register(nameof(ShowKeyLink), typeof(bool), typeof(KeyContainerControl),
             new FrameworkPropertyMetadata(true));
 
+        public bool ShowKeyMaterials
+        {
+            get { return (bool)GetValue(ShowKeyMaterialsProperty); }
+            set { SetValue(ShowKeyMaterialsProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowKeyMaterialsProperty = DependencyProperty.Register(nameof(ShowKeyMaterials), typeof(bool), typeof(KeyContainerControl),
+            new FrameworkPropertyMetadata(true));
+
         private void KeyContent_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             RecreateKeyControl();

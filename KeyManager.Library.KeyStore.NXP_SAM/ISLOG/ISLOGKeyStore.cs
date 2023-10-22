@@ -30,6 +30,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.ISLOG
 
         public override Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
         {
+            if (!string.IsNullOrEmpty(identifier.Label))
+            {
+                log.Warn("KeyEntry label specified but such key resolution is not supported by the key store type.");
+            }
             var id = GetId(identifier, keClass);
             return Task.FromResult(_keyEntries.ContainsKey(id));
         }

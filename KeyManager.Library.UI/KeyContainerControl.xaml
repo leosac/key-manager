@@ -9,12 +9,22 @@
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="500"
              x:Name="keyControl" DataContextChanged="KeyControl_DataContextChanged">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <materialDesign:BooleanToVisibilityConverter x:Key="BoolToVisibleConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <ContentControl x:Name="containerExtContent" Grid.Row="0" DataContext="{Binding DataContext, Mode=OneWay, ElementName=keyControl}" />
-        <ContentControl x:Name="keyContent" Grid.Row="1" DataContext="{Binding DataContext.Key, Mode=OneWay, ElementName=keyControl}" DataContextChanged="KeyContent_DataContextChanged" HorizontalContentAlignment="Stretch" />
+        <ContentControl x:Name="containerExtContent" Grid.Row="0"
+                        DataContext="{Binding DataContext, Mode=OneWay, ElementName=keyControl}" />
+        <ContentControl x:Name="keyContent" Grid.Row="1"
+                        DataContext="{Binding DataContext.Key, Mode=OneWay, ElementName=keyControl}"
+                        DataContextChanged="KeyContent_DataContextChanged"
+                        Visibility="{Binding ShowKeyMaterials, ElementName=keyControl, Converter={StaticResource BoolToVisibleConverter}}"
+                        HorizontalContentAlignment="Stretch" />
     </Grid>
 </UserControl>

@@ -52,7 +52,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Wizard
             return entries;
         }
 
-        private SAMSymmetricKeyEntry CreateKeyEntry(string id, string label, bool generateKeys = true)
+        private static SAMSymmetricKeyEntry CreateKeyEntry(string id, string label, bool generateKeys = true)
         {
             var ke = new SAMSymmetricKeyEntry();
             ke.Identifier.Id = id;
@@ -62,11 +62,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Wizard
             {
                 for (byte i = 0; i < ke.Variant!.KeyContainers.Count; ++i)
                 {
-                    var keyVersion = ke.Variant.KeyContainers[i] as KeyVersion;
-                    if (keyVersion != null)
+                    if (ke.Variant.KeyContainers[i] is KeyVersion keyVersion)
                     {
                         keyVersion.Version = i;
-                        keyVersion.Key.Materials[0].Value = KeyGeneration.Random((int)keyVersion.Key.KeySize);
+                        keyVersion.Key.Materials[0].Value = KeyGeneration.Random(keyVersion.Key.KeySize);
                     }
                 }
             }

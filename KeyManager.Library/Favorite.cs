@@ -8,6 +8,7 @@ namespace Leosac.KeyManager.Library
         public Favorite()
         {
             _name = string.Empty;
+            DefaultKeyEntries = new Dictionary<KeyEntryClass, KeyEntry?>();
         }
 
         private string _name;
@@ -25,6 +26,8 @@ namespace Leosac.KeyManager.Library
             get => _properties;
             set => SetProperty(ref _properties, value);
         }
+
+        public IDictionary<KeyEntryClass, KeyEntry?> DefaultKeyEntries { get; set; }
 
         private DateTime _creationDate = DateTime.Now;
 

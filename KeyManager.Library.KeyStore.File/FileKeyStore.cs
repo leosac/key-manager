@@ -65,6 +65,10 @@ namespace Leosac.KeyManager.Library.KeyStore.File
 
         public override Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
         {
+            if (!string.IsNullOrEmpty(identifier.Label))
+            {
+                log.Warn("KeyEntry label specified but such key resolution is not supported by the key store type.");
+            }
             return Task.FromResult(System.IO.File.Exists(GetKeyEntryFile(identifier, keClass)));
         }
 

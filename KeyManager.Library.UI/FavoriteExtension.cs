@@ -1,9 +1,4 @@
 ﻿using Leosac.KeyManager.Library.Plugin;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Library.UI
 {
@@ -16,6 +11,7 @@ namespace Leosac.KeyManager.Library.UI
             {
                 var ks = factory.CreateKeyStore();
                 ks.Properties = fav.Properties;
+                ks.DefaultKeyEntries = fav.DefaultKeyEntries;
 
                 return ks;
             }

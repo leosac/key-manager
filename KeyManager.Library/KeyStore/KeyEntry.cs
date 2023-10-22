@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Newtonsoft.Json;
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
@@ -82,6 +83,12 @@ namespace Leosac.KeyManager.Library.KeyStore
             };
             variant.KeyContainers.Add(new KeyContainer("Key", new Key(tags, keySize)));
             return variant;
+        }
+
+        public KeyEntry? DeepCopy()
+        {
+            var serialized = JsonConvert.SerializeObject(this);
+            return serialized != null ? JsonConvert.DeserializeObject<KeyEntry>(serialized) : null;
         }
     }
 }

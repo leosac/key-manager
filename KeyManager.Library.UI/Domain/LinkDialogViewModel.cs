@@ -82,7 +82,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public async Task RunLink()
         {
-            log.Info(string.Format("Running the link manually..."));
+            log.Info("Running the link manually...");
             LinkError = null;
             if (Link != null && !string.IsNullOrEmpty(Link.KeyStoreFavorite) && Link.KeyIdentifier.IsConfigured())
             {
@@ -98,7 +98,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                             await RunLinkImpl(ks);
                             await ks.Close();
 
-                            log.Info(string.Format("Link execution completed."));
+                            log.Info("Link execution completed.");
                         }
                         catch (KeyStoreException ex)
                         {

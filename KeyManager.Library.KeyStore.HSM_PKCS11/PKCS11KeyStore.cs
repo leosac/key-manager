@@ -118,21 +118,8 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                     var rawkey = material.GetValueBinary();
                     if (rawkey != null)
                     {
-                        var attributes = GetKeyEntryAttributes(entry, true);
+                        var attributes = GetKeyEntryAttributes(entry, true, material.Name);
                         attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE, rawkey));
-                        if (entry.KClass == KeyEntryClass.PrivateKey || (entry.KClass == KeyEntryClass.Asymmetric && material.Name == KeyMaterial.PRIVATE_KEY))
-                        {
-                            attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PRIVATE_KEY));
-                        }
-                        else if (entry.KClass == KeyEntryClass.PublicKey || (entry.KClass == KeyEntryClass.Asymmetric && material.Name == KeyMaterial.PUBLIC_KEY))
-                        {
-                            attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PUBLIC_KEY));
-                        }
-                        else
-                        {
-                            attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_SECRET_KEY));
-                        }
-
                         _session!.CreateObject(attributes);
                     }
                 }
@@ -161,12 +148,79 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             log.Info(string.Format("Key entry `{0}` created.", change.Identifier));
         }
 
+        public override Task<KeyEntryId> Generate(KeyEntryId? identifier, KeyEntryClass keClass)
+        {
+            if (identifier == null)
+            {
+                identifier = new KeyEntryId();
+            }
+
+            if (keClass != KeyEntryClass.Symmetric)
+            {
+                log.Error(string.Format("The key store doesn't support key entry generation without specifing the target type for class `{0}`.", keClass));
+                throw new NotImplementedException();
+            }
+
+            var keyEntry = new SymmetricPKCS11KeyEntry
+            {
+                Identifier = identifier
+            };
+            keyEntry.Variant = keyEntry.GetAllVariants(keClass).FirstOrDefault(v => v.Name == "GENERIC_SECRET");
+            keyEntry.PKCS11Properties!.Extractable = true;
+            return Generate(keyEntry);
+        }
+
+        public override Task<KeyEntryId> Generate(KeyEntry keyEntry)
+        {
+            log.Info(string.Format("Generating key entry `{0}`...", keyEntry.Identifier));
+
+            if(keyEntry.KClass != KeyEntryClass.Symmetric)
+            {
+                log.Error(string.Format("The key store doesn't support key entry generation for class `{0}`.", keyEntry.KClass));
+                throw new NotImplementedException();
+            }
+
+            var attributes = GetKeyEntryAttributes(keyEntry, true);
+            IMechanism? mechanism = null;
+            var key = keyEntry.Variant?.KeyContainers.FirstOrDefault()?.Key;
+            if (key != null)
+            {
+                if (key.Tags.Contains("AES"))
+                {
+                    mechanism = _session!.Factories.MechanismFactory.Create(CKM.CKM_AES_KEY_GEN);
+                }
+                else if (key.Tags.Contains("DES") && key.KeySize == 8)
+                {
+                    mechanism = _session!.Factories.MechanismFactory.Create(CKM.CKM_DES_KEY_GEN);
+                }
+                else if (key.Tags.Contains("DES") && key.KeySize == 16)
+                {
+                    mechanism = _session!.Factories.MechanismFactory.Create(CKM.CKM_DES2_KEY_GEN);
+                }
+                else if (key.Tags.Contains("DES") && key.KeySize == 24)
+                {
+                    mechanism = _session!.Factories.MechanismFactory.Create(CKM.CKM_DES3_KEY_GEN);
+                }
+            }
+
+            mechanism ??= _session!.Factories.MechanismFactory.Create(CKM.CKM_GENERIC_SECRET_KEY_GEN);
+
+            _session!.GenerateKey(mechanism, attributes);
+            log.Info(string.Format("Key entry `{0}` generated.", keyEntry.Identifier));
+            return Task.FromResult(keyEntry.Identifier);
+        }
+
         private List<IObjectAttribute> GetKeyEntryAttributes(KeyEntry? entry)
         {
             return GetKeyEntryAttributes(entry, false);
         }
 
         private List<IObjectAttribute> GetKeyEntryAttributes(KeyEntry? entry, bool create)
+        {
+            return GetKeyEntryAttributes(entry, create, null);
+        }
+
+        private List<IObjectAttribute> GetKeyEntryAttributes(KeyEntry? entry, bool create, string? materialName)
         {
             if (entry != null && entry.Variant?.KeyContainers.Count > 1)
             {
@@ -224,6 +278,22 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             if (create)
             {
                 attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_TOKEN, true));
+            }
+
+            if (entry != null && !string.IsNullOrEmpty(materialName))
+            {
+                if (entry.KClass == KeyEntryClass.PrivateKey || (entry.KClass == KeyEntryClass.Asymmetric && materialName == KeyMaterial.PRIVATE_KEY))
+                {
+                    attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PRIVATE_KEY));
+                }
+                else if (entry.KClass == KeyEntryClass.PublicKey || (entry.KClass == KeyEntryClass.Asymmetric && materialName == KeyMaterial.PUBLIC_KEY))
+                {
+                    attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PUBLIC_KEY));
+                }
+                else
+                {
+                    attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_SECRET_KEY));
+                }
             }
 
             return attributes;
@@ -589,6 +659,23 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             }
 
             log.Info(string.Format("Key entry `{0}` updated.", change.Identifier));
+        }
+
+        public override KeyEntry? GetDefaultKeyEntry(KeyEntryClass keClass)
+        {
+            var keyEntry = base.GetDefaultKeyEntry(keClass);
+            if (keyEntry == null)
+            {
+                if (keClass == KeyEntryClass.Symmetric)
+                {
+                    keyEntry = new SymmetricPKCS11KeyEntry();
+                }
+                else if (keClass == KeyEntryClass.Asymmetric)
+                {
+                    keyEntry = new AsymmetricPKCS11KeyEntry();
+                }
+            }
+            return keyEntry;
         }
     }
 }

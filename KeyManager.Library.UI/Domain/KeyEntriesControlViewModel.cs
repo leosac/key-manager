@@ -26,13 +26,48 @@ namespace Leosac.KeyManager.Library.UI.Domain
             CreateKeyEntryCommand = new AsyncRelayCommand(
                 async () =>
             {
-                var model = new KeyEntryDialogViewModel { KClass = _keClass };
+                var model = new KeyEntryDialogViewModel
+                {
+                    KClass = _keClass
+                };
+                model.SetKeyEntry(KeyStore?.GetDefaultKeyEntry(_keClass));
                 var dialog = new KeyEntryDialog
                 {
                     DataContext = model
                 };
                 await CreateKeyEntry(dialog);
             });
+
+            GenerateKeyEntryCommand = new AsyncRelayCommand(
+                async () =>
+                {
+                    var model = new KeyEntryDialogViewModel
+                    {
+                        KClass = _keClass,
+                        ShowKeyMaterials = false
+                    };
+                    model.SetKeyEntry(KeyStore?.GetDefaultKeyEntry(_keClass));
+                    var dialog = new KeyEntryDialog
+                    {
+                        DataContext = model
+                    };
+                    await GenerateKeyEntry(dialog);
+                });
+
+            EditDefaultKeyEntryCommand = new AsyncRelayCommand(
+                async () =>
+                {
+                    var model = new KeyEntryDialogViewModel
+                    {
+                        KClass = _keClass
+                    };
+                    model.SetKeyEntry(KeyStore?.GetDefaultKeyEntry(_keClass, false));
+                    var dialog = new KeyEntryDialog
+                    {
+                        DataContext = model
+                    };
+                    await EditDefaultKeyEntry(dialog);
+                });
 
             EditKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
                 async identifier =>
@@ -44,30 +79,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
                         var model = new KeyEntryDialogViewModel
                         {
                             KClass = _keClass,
-                            KeyEntry = await KeyStore.Get(identifier.KeyEntryId, _keClass),
                             CanChangeFactory = false,
                             AllowSubmit = KeyStore.CanUpdateKeyEntries,
                             SubmitButtonText = Properties.Resources.Update
                         };
-                        var factory = KeyEntryUIFactory.GetFactoryFromPropertyType(model.KeyEntry!.Properties?.GetType());
-                        if (factory != null)
-                        {
-                            model.AutoCreate = false;
-                            model.SelectedFactoryItem = model.KeyEntryFactories.Where(item => item.Factory == factory).FirstOrDefault();
-                            model.SelectedFactoryItem!.DataContext!.Properties = model.KeyEntry.Properties;
-                            var variant = model.KeyEntry.Variant;
-                            if (variant != null)
-                            {
-                                model.RefreshVariants();
-                                var emptyv = model.Variants.Where(v => v.Name == variant.Name).FirstOrDefault();
-                                if (emptyv != null)
-                                {
-                                    model.Variants.Remove(emptyv);
-                                }
-                                model.Variants.Add(variant);
-                                model.KeyEntry.Variant = variant;
-                            }
-                        }
+                        model.SetKeyEntry(await KeyStore.Get(identifier.KeyEntryId, _keClass));
                         var dialog = new KeyEntryDialog
                         {
                             DataContext = model
@@ -233,6 +249,53 @@ namespace Leosac.KeyManager.Library.UI.Domain
                         SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
                         await CreateKeyEntry(dialog);
                     }
+                }
+            }
+        }
+
+        public AsyncRelayCommand GenerateKeyEntryCommand { get; }
+
+        private async Task GenerateKeyEntry(KeyEntryDialog dialog)
+        {
+            var ret = await DialogHelper.ForceShow(dialog, "RootDialog");
+            if (ret != null && dialog.DataContext is KeyEntryDialogViewModel model)
+            {
+                if (KeyStore != null && model.KeyEntry != null)
+                {
+                    try
+                    {
+                        var id = await KeyStore.Generate(model.KeyEntry);
+                        Identifiers.Add(new SelectableKeyEntryId
+                        {
+                            Selected = false,
+                            KeyEntryId = id
+                        });
+                    }
+                    catch (KeyStoreException ex)
+                    {
+                        SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
+                        await CreateKeyEntry(dialog);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error("Generating the Key Entry failed unexpected.", ex);
+                        SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
+                        await CreateKeyEntry(dialog);
+                    }
+                }
+            }
+        }
+
+        public AsyncRelayCommand EditDefaultKeyEntryCommand { get; }
+
+        private async Task EditDefaultKeyEntry(KeyEntryDialog dialog)
+        {
+            var ret = await DialogHelper.ForceShow(dialog, "RootDialog");
+            if (ret != null && dialog.DataContext is KeyEntryDialogViewModel model)
+            {
+                if (KeyStore != null && model.KeyEntry != null)
+                {
+                    KeyStore.DefaultKeyEntries[_keClass] = model.KeyEntry;
                 }
             }
         }

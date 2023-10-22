@@ -168,6 +168,9 @@
   <data name="Drives" xml:space="preserve">
     <value>Drives</value>
   </data>
+  <data name="EditDefaultKeyEntry" xml:space="preserve">
+    <value>Edit default key entry definition</value>
+  </data>
   <data name="EditKeyEntry" xml:space="preserve">
     <value>Edit the key entry</value>
   </data>
@@ -200,6 +203,9 @@
   </data>
   <data name="General" xml:space="preserve">
     <value>General</value>
+  </data>
+  <data name="GenerateKeyEntry" xml:space="preserve">
+    <value>Generate Key Entry</value>
   </data>
   <data name="GenerateRandom" xml:space="preserve">
     <value>Generate Random Key</value>
@@ -395,6 +401,9 @@
   </data>
   <data name="NewFolderNameHelper" xml:space="preserve">
     <value>Name of the new folder to create</value>
+  </data>
+  <data name="NewKeyEntry" xml:space="preserve">
+    <value>New key entry</value>
   </data>
   <data name="Note" xml:space="preserve">
     <value>Note</value>

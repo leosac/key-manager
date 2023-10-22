@@ -1,4 +1,6 @@
-﻿namespace Leosac.KeyManager.Library.KeyStore.Memory
+﻿using Org.BouncyCastle.Tls;
+
+namespace Leosac.KeyManager.Library.KeyStore.Memory
 {
     public class MemoryKeyStore : KeyStore
     {
@@ -39,7 +41,11 @@
 
         protected Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass, out KeyEntry? keyEntry)
         {
-            keyEntry = _keyEntries.Where(k => k.Identifier == identifier && k.KClass == keClass).SingleOrDefault();
+            keyEntry = _keyEntries.SingleOrDefault(k => k.Identifier.Id == identifier.Id && k.KClass == keClass);
+            if (keyEntry == null && !string.IsNullOrEmpty(identifier.Label))
+            {
+                keyEntry = _keyEntries.SingleOrDefault(k => k.Identifier.Label?.ToLowerInvariant() == identifier.Label?.ToLowerInvariant() && k.KClass == keClass);
+            }
             return Task.FromResult(keyEntry != null);
         }
 
@@ -58,6 +64,28 @@
             {
                 throw new KeyStoreException("Unsupported `change` parameter.");
             }
+        }
+
+        public override Task<KeyEntryId> Generate(KeyEntryId? identifier, KeyEntryClass keClass)
+        {
+            if (identifier == null)
+            {
+                identifier = new KeyEntryId();
+            }
+
+            var keyEntry = new MemoryKeyEntry
+            {
+                Identifier = identifier
+            };
+            if (keClass == KeyEntryClass.Symmetric)
+            {
+                keyEntry.Variant = keyEntry.GetAllVariants(keClass).FirstOrDefault(v => v.Name == "AES128");
+            }
+            else
+            {
+                keyEntry.Variant = keyEntry.GetAllVariants(keClass).FirstOrDefault(v => v.Name == "RSA");
+            }
+            return Generate(keyEntry);
         }
 
         public override async Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing)

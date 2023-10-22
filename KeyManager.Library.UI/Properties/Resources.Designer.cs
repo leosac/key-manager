@@ -214,6 +214,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit default key entry definition.
+        /// </summary>
+        public static string EditDefaultKeyEntry {
+            get {
+                return ResourceManager.GetString("EditDefaultKeyEntry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit the key entry.
         /// </summary>
         public static string EditKeyEntry {
@@ -309,6 +318,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string General {
             get {
                 return ResourceManager.GetString("General", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generate Key Entry.
+        /// </summary>
+        public static string GenerateKeyEntry {
+            get {
+                return ResourceManager.GetString("GenerateKeyEntry", resourceCulture);
             }
         }
         
@@ -894,6 +912,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string NewFolderNameHelper {
             get {
                 return ResourceManager.GetString("NewFolderNameHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New key entry.
+        /// </summary>
+        public static string NewKeyEntry {
+            get {
+                return ResourceManager.GetString("NewKeyEntry", resourceCulture);
             }
         }
         

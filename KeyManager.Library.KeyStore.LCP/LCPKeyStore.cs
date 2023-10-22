@@ -29,6 +29,11 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
         {
             CheckAuthentication();
 
+            if (!string.IsNullOrEmpty(identifier.Label))
+            {
+                log.Warn("KeyEntry label specified but such key resolution is not supported by the key store type.");
+            }
+
             if (!string.IsNullOrEmpty(identifier.Id))
             {
                 var key = await _keyAPI!.Get(Guid.Parse(identifier.Id));
@@ -79,6 +84,30 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             }
 
             log.Info(string.Format("Key entry `{0}` created.", change.Identifier));
+        }
+
+        public override Task<KeyEntryId> Generate(KeyEntryId? identifier, KeyEntryClass keClass)
+        {
+            if (identifier == null)
+            {
+                identifier = new KeyEntryId();
+            }
+
+            var keyEntry = new LCPKeyEntry
+            {
+                Identifier = identifier
+            };
+
+            if (keClass == KeyEntryClass.Symmetric)
+            {
+                keyEntry.Variant = keyEntry.GetAllVariants(keClass).FirstOrDefault(v => v.Name == "AES128");
+            }
+            else
+            {
+                log.Error(string.Format("The key store doesn't support key entry generation without specifing the target type for class `{0}`.", keClass));
+                throw new NotImplementedException();
+            }
+            return Generate(keyEntry);
         }
 
         public override async Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing)
@@ -256,6 +285,16 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             }
 
             log.Info(string.Format("Key entry `{0}` updated.", change.Identifier));
+        }
+
+        public override KeyEntry? GetDefaultKeyEntry(KeyEntryClass keClass)
+        {
+            var keyEntry = base.GetDefaultKeyEntry(keClass);
+            if (keyEntry == null)
+            {
+                keyEntry = new LCPKeyEntry(keClass);
+            }
+            return keyEntry;
         }
 
         private static CredentialKey CreateCredentialKey(KeyEntryId identifier, KeyContainer? kc, LCPKeyEntryProperties? properties)

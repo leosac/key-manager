@@ -161,6 +161,10 @@
 
         public override Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
         {
+            if (!string.IsNullOrEmpty(identifier.Label))
+            {
+                log.Warn("KeyEntry label specified but such key resolution is not supported by the key store type.");
+            }
             if (identifier.Id == null)
             {
                 return Task.FromResult(false);
@@ -715,6 +719,18 @@
                 log.Error("Inserted SAM is not in AV2 mode.");
                 throw new KeyStoreException("Inserted SAM is not in AV2 mode.");
             }
+        }
+        public override KeyEntry? GetDefaultKeyEntry(KeyEntryClass keClass)
+        {
+            var keyEntry = base.GetDefaultKeyEntry(keClass);
+            if (keyEntry == null)
+            {
+                if (keClass == KeyEntryClass.Symmetric)
+                {
+                    keyEntry = new SAMSymmetricKeyEntry();
+                }
+            }
+            return keyEntry;
         }
     }
 }

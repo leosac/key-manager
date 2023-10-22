@@ -5,7 +5,7 @@ namespace Leosac.KeyManager.Library
 {
     public static class KeyGeneration
     {
-        public static string Random(int keySize)
+        public static string Random(uint keySize)
         {
             using var rng = RandomNumberGenerator.Create();
             var key = new byte[keySize];
@@ -20,7 +20,7 @@ namespace Leosac.KeyManager.Library
             return Convert.ToHexString(key);
         }
 
-        public static byte[] CreateRandomSalt(int length)
+        public static byte[] CreateRandomSalt(uint length)
         {
             byte[] randBytes = (length >= 1) ? new byte[length] : new byte[1];
             using (var rng = RandomNumberGenerator.Create())

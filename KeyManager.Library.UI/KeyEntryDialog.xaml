@@ -1,4 +1,5 @@
 ﻿<UserControl x:Class="Leosac.KeyManager.Library.UI.KeyEntryDialog"
+             x:Name="userControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -106,7 +107,7 @@
                                         <StackPanel>
                                             <Expander HorizontalAlignment="Stretch" Header="{Binding Name}">
                                                 <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                                                    <local:KeyContainerControl />
+                                                    <local:KeyContainerControl ShowKeyMaterials="{Binding DataContext.ShowKeyMaterials, ElementName=userControl}" />
                                                 </StackPanel>
                                             </Expander>
                                         </StackPanel>

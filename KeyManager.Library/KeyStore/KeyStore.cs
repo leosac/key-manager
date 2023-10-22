@@ -21,6 +21,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                 ObjectCreationHandling = ObjectCreationHandling.Replace,
                 Formatting = Formatting.Indented
             };
+            DefaultKeyEntries = new Dictionary<KeyEntryClass, KeyEntry?>();
         }
 
         /// <summary>
@@ -57,6 +58,8 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// The key store properties.
         /// </summary>
         public KeyStoreProperties? Properties { get; set; }
+
+        public IDictionary<KeyEntryClass, KeyEntry?> DefaultKeyEntries { get; set; }
 
         public bool CreateIfMissing { get; set; }
 
@@ -104,6 +107,48 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// </summary>
         /// <param name="keyEntry">The key entry details</param>
         public abstract Task Create(IChangeKeyEntry keyEntry);
+
+        /// <summary>
+        /// Generate a new key entry.
+        /// </summary>
+        /// <param name="identifier">The new key entry identifier</param>
+        /// <param name="keClass">The key entry class</param>
+        /// <returns>The key entry identifier</returns>
+        public virtual Task<KeyEntryId> Generate(KeyEntryId? identifier, KeyEntryClass keClass)
+        {
+            log.Error("The key store doesn't support key entry generation without specifing the target type.");
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Generate a new key entry.
+        /// </summary>
+        /// <param name="keyEntry">The new key entry</param>
+        /// <returns>The key entry identifier</returns>
+        public virtual async Task<KeyEntryId> Generate(KeyEntry keyEntry)
+        {
+            if (keyEntry.Variant != null && keyEntry.KClass == KeyEntryClass.Symmetric)
+            {
+                foreach (var kv in keyEntry.Variant.KeyContainers)
+                {
+                    if (kv.Key.KeySize > 0)
+                    {
+                        foreach (var m in kv.Key.Materials)
+                        {
+                            m.Value = KeyGeneration.Random(kv.Key.KeySize);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                log.Error(string.Format("The key store doesn't support key entry generation for class `{0}`.", keyEntry.KClass));
+                throw new NotImplementedException();
+            }
+
+            await Create(keyEntry);
+            return keyEntry.Identifier;
+        }
 
         /// <summary>
         /// Get a key entry.
@@ -433,6 +478,21 @@ namespace Leosac.KeyManager.Library.KeyStore
 
             log.Info("Key link completed.");
             return result;
+        }
+
+        public virtual KeyEntry? GetDefaultKeyEntry(KeyEntryClass keClass)
+        {
+            return GetDefaultKeyEntry(keClass, true);
+        }
+
+        public KeyEntry? GetDefaultKeyEntry(KeyEntryClass keClass, bool clone)
+        {
+            if (DefaultKeyEntries.ContainsKey(keClass))
+            {
+                return clone ? DefaultKeyEntries[keClass]?.DeepCopy() : DefaultKeyEntries[keClass];
+            }
+
+            return null;
         }
 
         public event EventHandler<KeyEntry>? KeyEntryRetrieved;

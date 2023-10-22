@@ -48,8 +48,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
         }
 
         private bool _canChangeFactory = true;
+        private bool _showKeyMaterials = true;
         private bool _allowSubmit = true;
-        private bool _autoCreate = true;
         private string _submitButtonText;
         private KeyEntryClass _kClass = KeyEntryClass.Symmetric;
         private KeyEntry? _keyEntry;
@@ -68,7 +68,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public KeyEntry? KeyEntry
         {
             get => _keyEntry;
-            set
+            protected set
             {
                 SetProperty(ref _keyEntry, value);
                 if (_selectedFactoryItem?.DataContext != null)
@@ -84,7 +84,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set
             {
                 SetProperty(ref _selectedFactoryItem, value);
-                if (value != null && value?.GetType() != KeyEntry?.GetType() && AutoCreate)
+                if (value != null && value?.GetType() != KeyEntry?.GetType() && CanChangeFactory)
                 {
                     KeyEntry = _selectedFactoryItem?.Factory.TargetFactory?.CreateKeyEntry();
                     RefreshVariants();
@@ -98,16 +98,16 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _canChangeFactory, value);
         }
 
+        public bool ShowKeyMaterials
+        {
+            get => _showKeyMaterials;
+            set => SetProperty(ref _showKeyMaterials, value);
+        }
+
         public bool AllowSubmit
         {
             get => _allowSubmit;
             set => SetProperty(ref _allowSubmit, value);
-        }
-
-        public bool AutoCreate
-        {
-            get => _autoCreate;
-            set => SetProperty(ref _autoCreate, value);
         }
 
         public string SubmitButtonText
@@ -137,6 +137,32 @@ namespace Leosac.KeyManager.Library.UI.Domain
         private bool CanSubmit()
         {
             return AllowSubmit && !HasErrors;
+        }
+
+        public void SetKeyEntry(KeyEntry? keyEntry)
+        {
+            KeyEntry = keyEntry;
+            if (keyEntry != null)
+            {
+                var factory = KeyEntryUIFactory.GetFactoryFromPropertyType(KeyEntry!.Properties?.GetType());
+                if (factory != null)
+                {
+                    var variant = KeyEntry.Variant;
+                    SelectedFactoryItem = KeyEntryFactories.Where(item => item.Factory == factory).FirstOrDefault();
+                    SelectedFactoryItem!.DataContext!.Properties = KeyEntry.Properties;
+                    if (variant != null)
+                    {
+                        RefreshVariants();
+                        var emptyv = Variants.Where(v => v.Name == variant.Name).FirstOrDefault();
+                        if (emptyv != null)
+                        {
+                            Variants.Remove(emptyv);
+                        }
+                        Variants.Add(variant);
+                        KeyEntry.Variant = variant;
+                    }
+                }
+            }
         }
 
         public AsyncRelayCommand OpenLinkCommand { get; }

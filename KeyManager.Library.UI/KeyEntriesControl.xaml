@@ -32,12 +32,31 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <WrapPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
-                            Command="{Binding DataContext.CreateKeyEntryCommand, ElementName=keyStoreControl}"
-                            IsEnabled="{Binding DataContext.KeyStore.CanCreateKeyEntries, ElementName=keyStoreControl}"
-                            ToolTip="{x:Static properties:Resources.CreateKeyEntry}" Margin="5">
-                        <materialDesign:PackIcon Kind="KeyAdd" Height="24" Width="24" Cursor="Hand" />
-                    </Button>
+                    <materialDesign:PopupBox
+                        PlacementMode="BottomAndAlignCentres"
+                        ToolTip="{x:Static properties:Resources.NewKeyEntry}" Margin="5"
+                        Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}">
+                        <materialDesign:PopupBox.ToggleContent>
+                            <materialDesign:PackIcon Kind="KeyAdd" Height="24" Width="24" Cursor="Hand" />
+                        </materialDesign:PopupBox.ToggleContent>
+                        <StackPanel Orientation="Vertical">
+                            <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
+                                    Command="{Binding DataContext.CreateKeyEntryCommand, ElementName=keyStoreControl}"
+                                    ToolTip="{x:Static properties:Resources.CreateKeyEntry}" Margin="5">
+                                <materialDesign:PackIcon Kind="Key" Height="24" Width="24" Cursor="Hand" />
+                            </Button>
+                            <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
+                                    Command="{Binding DataContext.GenerateKeyEntryCommand, ElementName=keyStoreControl}"
+                                    ToolTip="{x:Static properties:Resources.GenerateKeyEntry}" Margin="5">
+                                <materialDesign:PackIcon Kind="ShuffleVariant" Height="24" Width="24" Cursor="Hand" />
+                            </Button>
+                            <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
+                                    Command="{Binding DataContext.EditDefaultKeyEntryCommand, ElementName=keyStoreControl}"
+                                    ToolTip="{x:Static properties:Resources.EditDefaultKeyEntry}" Margin="5">
+                                <materialDesign:PackIcon Kind="LibraryEdit" Height="24" Width="24" Cursor="Hand" />
+                            </Button>
+                        </StackPanel>
+                    </materialDesign:PopupBox>
                     <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
                             Command="{Binding DataContext.ImportCryptogramCommand, ElementName=keyStoreControl}"
                             IsEnabled="{Binding DataContext.KeyStore.CanUpdateKeyEntries, ElementName=keyStoreControl}"
