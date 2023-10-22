@@ -37,15 +37,8 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             log.Info(String.Format("Opening the key store `{0}`...", GetFileProperties().Fullpath));
             if (!System.IO.Directory.Exists(GetFileProperties().Fullpath))
             {
-                if (CreateIfMissing)
-                {
-                    System.IO.Directory.CreateDirectory(GetFileProperties().Fullpath);
-                }
-                else
-                {
-                    log.Error(string.Format("Cannot open the key sore `{0}`.", GetFileProperties().Fullpath));
-                    throw new KeyStoreException("Cannot open the key sore.");
-                }
+                log.Error(string.Format("Cannot open the key sore `{0}`.", GetFileProperties().Fullpath));
+                throw new KeyStoreException("Cannot open the key sore.");
             }
             log.Info("Key store opened.");
             return Task.CompletedTask;

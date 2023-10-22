@@ -18,12 +18,6 @@
                 <Setter Property="Padding" Value="5,5" />
             </Style>
         </WrapPanel.Resources>
-        <materialDesign:Card x:Name="createKeyStore" HorizontalAlignment="Left" VerticalAlignment="Center" Height="175" Width="175" Cursor="Hand" MouseDown="CreateKeyStore_MouseDown">
-            <StackPanel HorizontalAlignment="Center">
-                <Label Content="{x:Static properties:Resources.CreateKeyStore}" HorizontalAlignment="Center" Margin="0,24,0,0" VerticalAlignment="Top"/>
-                <materialDesign:PackIcon  Kind="CreateNewFolder" Height="87" Width="132"/>
-            </StackPanel>
-        </materialDesign:Card>
         <materialDesign:Card x:Name="openKeyStore" HorizontalAlignment="Center" VerticalAlignment="Center" Height="175" Width="175" Cursor="Hand" MouseDown="OpenKeyStore_MouseDown">
             <StackPanel HorizontalAlignment="Center">
                 <Label Content="{x:Static properties:Resources.OpenKeyStore}" HorizontalAlignment="Center" Margin="0,24,0,0" VerticalAlignment="Top"/>

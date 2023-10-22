@@ -61,8 +61,6 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         public IDictionary<KeyEntryClass, KeyEntry?> DefaultKeyEntries { get; set; }
 
-        public bool CreateIfMissing { get; set; }
-
         public Task<bool> CheckKeyEntryExists(KeyEntry keyEntry)
         {
             return CheckKeyEntryExists(keyEntry.Identifier, keyEntry.KClass);

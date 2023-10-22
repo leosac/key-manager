@@ -138,9 +138,6 @@
   <data name="Confirm" xml:space="preserve">
     <value>Confirm</value>
   </data>
-  <data name="CreateKeyStore" xml:space="preserve">
-    <value>Create a new Key Store</value>
-  </data>
   <data name="DeleteFavorite" xml:space="preserve">
     <value>Remove Key Store from favorites</value>
   </data>

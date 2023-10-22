@@ -124,15 +124,6 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create a new Key Store.
-        /// </summary>
-        public static string CreateKeyStore {
-            get {
-                return ResourceManager.GetString("CreateKeyStore", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Remove Key Store from favorites.
         /// </summary>
         public static string DeleteFavorite {
