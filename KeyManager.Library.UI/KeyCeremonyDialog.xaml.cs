@@ -24,7 +24,15 @@ namespace Leosac.KeyManager.Library.UI
             {
                 for (int i = 0; i < model.Fragments.Count; ++i)
                 {
-                    transition.Items.Insert(i + 1, new KeyCeremonyFragmentControl { Fragment = i + 1 });
+                    transition.Items.Insert(i + 1, new KeyCeremonyFragmentControl
+                    {
+                        DataContext = new KeyCeremonyFragmentControlViewModel
+                        {
+                            Fragment = i + 1,
+                            IsReunification = model.IsReunification,
+                            FragmentValue = model.Fragments[i]
+                        }
+                    });
                 }
             }
         }
@@ -38,11 +46,17 @@ namespace Leosac.KeyManager.Library.UI
         {
             if (DataContext is KeyCeremonyDialogViewModel model)
             {
-                for (int i = 0; i < model.Fragments.Count && (i + 1) < transition.Items.Count; ++i)
+                if (model.IsReunification)
                 {
-                    if (transition.Items[i + 1] is KeyCeremonyFragmentControl fragmentControl)
+                    for (int i = 0; i < model.Fragments.Count && (i + 1) < transition.Items.Count; ++i)
                     {
-                        model.Fragments[i] = fragmentControl.FragmentValue;
+                        if (transition.Items[i + 1] is KeyCeremonyFragmentControl fragmentControl)
+                        {
+                            if (fragmentControl.DataContext is KeyCeremonyFragmentControlViewModel fragmentControlModel)
+                            {
+                                model.Fragments[i] = fragmentControlModel.FragmentValue;
+                            }
+                        }
                     }
                 }
                 this.DialogResult = true;

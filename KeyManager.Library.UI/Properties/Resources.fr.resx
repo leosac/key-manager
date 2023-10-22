@@ -174,6 +174,9 @@
   <data name="EditKeyEntry" xml:space="preserve">
     <value>Modifier l'enregistrement de clés</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Erreur</value>
+  </data>
   <data name="ExportToFile" xml:space="preserve">
     <value>Exporter vers un fichier</value>
   </data>
@@ -187,7 +190,7 @@
     <value>Terminer</value>
   </data>
   <data name="FragmentInputHelper" xml:space="preserve">
-    <value>Merci de renseigner le fragment de clé #</value>
+    <value>Fragment de clé #</value>
   </data>
   <data name="FragmentManualInput" xml:space="preserve">
     <value>Saisie manuelle</value>
@@ -199,7 +202,7 @@
     <value>La valeur secrète du fragment de clé</value>
   </data>
   <data name="FromFile" xml:space="preserve">
-    <value>A partir d'un fichier</value>
+    <value>Fichier</value>
   </data>
   <data name="General" xml:space="preserve">
     <value>Général</value>
@@ -250,7 +253,7 @@
     <value>Nombre de fragments de clé à utiliser durant la cérémonie</value>
   </data>
   <data name="KeyCeremonyHelper" xml:space="preserve">
-    <value>Exécutez une cérémonie de clé afin de réunifier la valeur d'une clé partagée entre plusieurs individus.</value>
+    <value>Exécutez une cérémonie de clé afin de réunifier ou partager la valeur d'une clé entre plusieurs individus.</value>
   </data>
   <data name="KeyCeremonyType" xml:space="preserve">
     <value>Type</value>
@@ -262,10 +265,10 @@
     <value>La cérémonie de clé est à présent prête à être terminée.</value>
   </data>
   <data name="KeyCeremonyWizardEnd2" xml:space="preserve">
-    <value>Appuyez sur le bouton 'Terminer' afin de procéder au calcul final.</value>
+    <value>Appuyez sur le bouton 'Terminer' afin de terminer la cérémonie.</value>
   </data>
   <data name="KeyCeremonyWizardStart1" xml:space="preserve">
-    <value>Rassemblez tous les individus requis et préparez les fragments de clé.</value>
+    <value>Rassemblez tous les individus requis et/ou préparez les fragments de clé.</value>
   </data>
   <data name="KeyCeremonyWizardStart2" xml:space="preserve">
     <value>Lorsque vous êtes prêt, allez à l'étape suivante.</value>
@@ -328,7 +331,7 @@
     <value>Si vous avez reçu ce document par erreur, merci de le détruire immédiatement et de reporter cette action à un agent de sécurité.</value>
   </data>
   <data name="KeyExportPrint" xml:space="preserve">
-    <value>Export / Impression d'une clé</value>
+    <value>Export / Impression</value>
   </data>
   <data name="KeyGeneration" xml:space="preserve">
     <value>Génération locale d'une clé</value>
@@ -462,8 +465,11 @@
   <data name="SelectTargetFolder" xml:space="preserve">
     <value>Sélectionnez le dossier cible</value>
   </data>
-  <data name="StartKeyCeremony" xml:space="preserve">
-    <value>Démarrer la cérémonie</value>
+  <data name="StartSharingKeyCeremony" xml:space="preserve">
+    <value>Démarrer la cérémonie de partage</value>
+  </data>
+  <data name="StartUnionKeyCeremony" xml:space="preserve">
+    <value>Démarrer la cérémonie de réunification</value>
   </data>
   <data name="Test" xml:space="preserve">
     <value>Tester</value>

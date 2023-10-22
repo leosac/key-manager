@@ -1,5 +1,4 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
-using Leosac.KeyManager.Library.Plugin;
 using Leosac.KeyManager.Library.Plugin.UI;
 using Leosac.WpfApp;
 using MaterialDesignThemes.Wpf;

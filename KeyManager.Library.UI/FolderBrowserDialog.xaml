@@ -20,8 +20,8 @@
     <Grid>
         <DockPanel LastChildFill="True">
             <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,5">
-                <Button x:Name="btnOk" Width="100" IsDefault="True" Content="{x:Static properties:Resources.OK}" Click="btnOk_Click"/>
-                <Button x:Name="btnCancel" Width="100" IsCancel="True" Content="{x:Static properties:Resources.Cancel}" Margin="15,0,0,0" Click="btnCancel_Click"/>
+                <Button x:Name="btnOk" Width="100" IsDefault="True" Content="{x:Static properties:Resources.OK}" Click="BtnOk_Click"/>
+                <Button x:Name="btnCancel" Width="100" IsCancel="True" Content="{x:Static properties:Resources.Cancel}" Margin="15,0,0,0" Click="BtnCancel_Click"/>
             </WrapPanel>
             <GroupBox Header="{x:Static properties:Resources.Drives}" Width="200">
                 <ListBox x:Name="lbDrives" ItemsSource="{Binding Drives, Mode=OneWay}" SelectedItem="{Binding SelectedDrive}">

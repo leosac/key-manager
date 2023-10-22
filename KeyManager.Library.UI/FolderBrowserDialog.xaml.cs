@@ -28,8 +28,7 @@ namespace Leosac.KeyManager.Library.UI
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var model = DataContext as FolderBrowserDialogViewModel;
-            if (model != null)
+            if (DataContext is FolderBrowserDialogViewModel model)
             {
                 if (model.SelectedDrive == null)
                 {
@@ -41,12 +40,12 @@ namespace Leosac.KeyManager.Library.UI
             }
         }
 
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
-        private void btnOk_Click(object sender, RoutedEventArgs e)
+        private void BtnOk_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = true;
         }

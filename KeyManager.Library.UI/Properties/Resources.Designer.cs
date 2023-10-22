@@ -232,6 +232,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export to file.
         /// </summary>
         public static string ExportToFile {
@@ -268,7 +277,7 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please input the Key Fragment #.
+        ///   Looks up a localized string similar to Key Fragment #.
         /// </summary>
         public static string FragmentInputHelper {
             get {
@@ -304,7 +313,7 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to From File.
+        ///   Looks up a localized string similar to File.
         /// </summary>
         public static string FromFile {
             get {
@@ -457,7 +466,7 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run a Key Ceremony to recover a key value shared between several individuals..
+        ///   Looks up a localized string similar to Run a Key Ceremony to recover or share a key value shared between several individuals..
         /// </summary>
         public static string KeyCeremonyHelper {
             get {
@@ -493,7 +502,7 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Press the &apos;Finish&apos; button to perform the final computation..
+        ///   Looks up a localized string similar to Press the &apos;Finish&apos; button to complete the ceremony..
         /// </summary>
         public static string KeyCeremonyWizardEnd2 {
             get {
@@ -502,7 +511,7 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gather all required individuals and prepare all key fragments..
+        ///   Looks up a localized string similar to Gather all required individuals and/or prepare all key fragments..
         /// </summary>
         public static string KeyCeremonyWizardStart1 {
             get {
@@ -691,7 +700,7 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Key Export / Print.
+        ///   Looks up a localized string similar to Export / Print.
         /// </summary>
         public static string KeyExportPrint {
             get {
@@ -1096,11 +1105,20 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start the ceremony.
+        ///   Looks up a localized string similar to Start the sharing ceremony.
         /// </summary>
-        public static string StartKeyCeremony {
+        public static string StartSharingKeyCeremony {
             get {
-                return ResourceManager.GetString("StartKeyCeremony", resourceCulture);
+                return ResourceManager.GetString("StartSharingKeyCeremony", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start the reunification ceremony.
+        /// </summary>
+        public static string StartUnionKeyCeremony {
+            get {
+                return ResourceManager.GetString("StartUnionKeyCeremony", resourceCulture);
             }
         }
         

@@ -289,12 +289,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
 
         public override KeyEntry? GetDefaultKeyEntry(KeyEntryClass keClass)
         {
-            var keyEntry = base.GetDefaultKeyEntry(keClass);
-            if (keyEntry == null)
-            {
-                keyEntry = new LCPKeyEntry(keClass);
-            }
-            return keyEntry;
+            return base.GetDefaultKeyEntry(keClass) ?? new LCPKeyEntry(keClass);
         }
 
         private static CredentialKey CreateCredentialKey(KeyEntryId identifier, KeyContainer? kc, LCPKeyEntryProperties? properties)

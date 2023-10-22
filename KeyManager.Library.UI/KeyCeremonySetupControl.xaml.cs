@@ -13,6 +13,8 @@ namespace Leosac.KeyManager.Library.UI
     /// </summary>
     public partial class KeyCeremonySetupControl : UserControl
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
+
         public KeyCeremonySetupControl()
         {
             CeremonyTypes = new ObservableCollection<KeyCeremonyType>(Enum.GetValues<KeyCeremonyType>());
@@ -48,10 +50,11 @@ namespace Leosac.KeyManager.Library.UI
 
         public static readonly DependencyProperty KeyValueProperty = DependencyProperty.Register(nameof(KeyValue), typeof(string), typeof(KeyCeremonySetupControl));
 
-        private void BtnCeremony_Click(object sender, RoutedEventArgs e)
+        private void BtnUnionCeremony_Click(object sender, RoutedEventArgs e)
         {
             var model = new KeyCeremonyDialogViewModel
             {
+                IsReunification = true,
                 Fragments = new ObservableCollection<string>(new string[Fragments])
             };
             var dialog = new KeyCeremonyDialog
@@ -60,18 +63,50 @@ namespace Leosac.KeyManager.Library.UI
             };
             if (dialog.ShowDialog() == true)
             {
-                KeyValue = ComputeKeyCeremony(SelectedCeremonyType, model.Fragments.ToArray());
+                try
+                {
+                    KeyValue = ComputeFragments(SelectedCeremonyType, model.Fragments.ToArray());
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Error during the key ceremony.", ex);
+                    MessageBox.Show(ex.Message, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
-        private static string ComputeKeyCeremony(KeyCeremonyType ceremonyType, string[] fragments)
+        private void BtnSharingCeremony_Click(object sender, RoutedEventArgs e)
+        {
+            var model = new KeyCeremonyDialogViewModel
+            {
+                IsReunification = false
+            };
+            var fragments = CreateFragments(SelectedCeremonyType, KeyValue, Fragments);
+            foreach (var fragment in fragments)
+            {
+                model.Fragments.Add(fragment);
+            }
+
+            var dialog = new KeyCeremonyDialog
+            {
+                DataContext = model
+            };
+            dialog.ShowDialog();
+        }
+
+        private static string[] CreateFragments(KeyCeremonyType ceremonyType, string? keyValue, int nbFragments)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static string ComputeFragments(KeyCeremonyType ceremonyType, string[] fragments)
         {
             string keystr = string.Empty;
             switch (ceremonyType)
             {
                 case KeyCeremonyType.Concat:
                     {
-                        keystr = String.Join("", fragments);
+                        keystr = string.Join("", fragments);
                     }
                     break;
 
@@ -97,7 +132,7 @@ namespace Leosac.KeyManager.Library.UI
                     {
                         var gcd = new ExtendedEuclideanAlgorithm<BigInteger>();
                         var combine = new ShamirsSecretSharing<BigInteger>(gcd);
-                        var shares = String.Join(Environment.NewLine, fragments);
+                        var shares = string.Join(Environment.NewLine, fragments);
                         var secret = combine.Reconstruction(shares);
                         var key = secret.ToByteArray();
                         keystr = Convert.ToHexString(key);

@@ -15,10 +15,12 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.Domain
             UserTypes = new ObservableCollection<CKU>(Enum.GetValues<CKU>());
             BrowseCommand = new RelayCommand(() =>
             {
-                var ofd = new OpenFileDialog();
-                ofd.Filter = "Dll files (*.dll)|*.dll";
-                ofd.FileName = PKCS11Properties!.LibraryPath;
-                ofd.CheckPathExists = true;
+                var ofd = new OpenFileDialog
+                {
+                    Filter = "Dll files (*.dll)|*.dll",
+                    FileName = PKCS11Properties!.LibraryPath,
+                    CheckPathExists = true
+                };
                 if (ofd.ShowDialog() == true)
                 {
                     PKCS11Properties.LibraryPath = ofd.FileName;
