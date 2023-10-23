@@ -8,7 +8,7 @@ based on the
 
 Thank you for your interest in contributing to an open source project maintained by LEOSAC SAS's ("We" or "Us").
 
-The purpose of this contributor agreement ("Agreement") is to clarify and document the rights granted by contributors to Us. To make this document effective, please follow the instructions at https://github.com/leosac/key-manager/blob/master/CLA.md.
+The purpose of this contributor agreement ("Agreement") is to clarify and document the rights granted by contributors to Us. To make this document effective, please follow the instructions at https://github.com/leosac/key-manager/blob/develop/CONTRIBUTING.md.
 
 ### 0\. Preamble
 

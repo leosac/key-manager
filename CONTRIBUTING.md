@@ -16,4 +16,4 @@ Please follow the issue template as close as possible.
 
 ## Development
 
-Any code contribution / pull request first requires to sign the CLA. You will be invited for signing process by CLA Assitant bot when submiting a PR for the first time.
+Any code contribution / pull request first requires to [sign the CLA](https://cla-assistant.io/leosac/key-manager). You will be invited for signing process by CLA Assitant bot when submiting a PR for the first time.
