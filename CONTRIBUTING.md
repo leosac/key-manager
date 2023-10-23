@@ -17,3 +17,24 @@ Please follow the issue template as close as possible.
 ## Development
 
 Any code contribution / pull request first requires to [sign the CLA](https://cla-assistant.io/leosac/key-manager). You will be invited for signing process by CLA Assitant bot when submiting a PR for the first time.
+
+## _Keys_ terminology
+
+## Key Store
+
+## Key Entry
+### Key Entry Cryptogram
+### Key Entry Link
+
+## Key Variant
+
+## Key Container
+A base container for the Key. Allows to define a user-friendly name for it.
+### Key Version
+Another container which also provides versioning of the Key.
+
+## Key
+
+## Key Material
+
+## Key Link
