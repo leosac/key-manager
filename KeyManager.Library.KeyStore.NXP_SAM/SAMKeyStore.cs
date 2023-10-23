@@ -389,7 +389,6 @@
                     }
 
                     var natkey = new LibLogicalAccess.Card.AV2SAMKeyEntry();
-
                     var infoav2 = new LibLogicalAccess.Card.KeyEntryAV2Information();
 
                     if (samkey.SAMProperties != null)
@@ -410,8 +409,20 @@
                         infoav2.ExtSET |= (byte)(Convert.ToByte(samkey.SAMProperties.AllowDumpSecretKey) << 3);
                         infoav2.ExtSET |= (byte)(Convert.ToByte(samkey.SAMProperties.AllowDumpSecretKeyWithDiv) << 4);
                     }
+
+                    var updateSettings = new LibLogicalAccess.Card.KeyEntryUpdateSettings();
+                    updateSettings.df_aid_keyno = 1;
+                    updateSettings.key_no_v_cek = 1;
+                    updateSettings.refkeykuc = 1;
+                    updateSettings.keyversionsentseparatly = 1;
+                    updateSettings.updateset = 1;
+
                     if (samkey.Variant != null)
                     {
+                        updateSettings.keyVa = 1;
+                        updateSettings.keyVb = 1;
+                        updateSettings.keyVc = 1;
+
                         var keyVersions = samkey.Variant.KeyContainers.OfType<KeyVersion>().ToArray();
                         var keys = new LibLogicalAccess.UCharCollectionCollection(keyVersions.Length);
                         foreach (var keyversion in samkey.Variant.KeyContainers)
@@ -450,6 +461,7 @@
                             else
                             {
                                 natkey.setKeysData(keys, LibLogicalAccess.Card.SAMKeyType.SAM_KEY_3K3DES);
+                                updateSettings.keyVc = 0;
                             }
                         }
                     }
@@ -476,7 +488,7 @@
                     natkey.setSETKeyTypeFromKeyType();
 
                     av2cmd.authenticateHost(key, GetSAMProperties().AuthenticateKeyEntryIdentifier);
-                    natkey.setUpdateMask(0xFF);
+                    natkey.setUpdateSettings(updateSettings); // Or call setUpdateMask
                     av2cmd.changeKeyEntry((byte)Convert.ToDecimal(samkey.Identifier.Id), natkey, key);
                 }
                 else
