@@ -15,22 +15,29 @@ namespace Leosac.KeyManager.Library.UI
             SingletonCreated?.Invoke(_singleton, new EventArgs());
         }
 
-        public static Favorites GetSingletonInstance()
+        public static Favorites? GetSingletonInstance()
         {
             return GetSingletonInstance(false);
         }
 
-        public static Favorites GetSingletonInstance(bool forceRecreate)
+        public static Favorites? GetSingletonInstance(bool forceRecreate)
         {
             lock (_objlock)
             {
                 if (_singleton == null || forceRecreate)
                 {
-                    _singleton = LoadFromFile();
-                    OnSingletonCreated();
+                    try
+                    {
+                        _singleton = LoadFromFile();
+                        OnSingletonCreated();
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error("Cannot load Favorites from file.", ex);
+                    }
                 }
 
-                return _singleton!;
+                return _singleton;
             }
         }
 

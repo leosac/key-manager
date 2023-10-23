@@ -86,40 +86,44 @@ namespace Leosac.KeyManager.Library.UI.Domain
             LinkError = null;
             if (Link != null && !string.IsNullOrEmpty(Link.KeyStoreFavorite) && Link.KeyIdentifier.IsConfigured())
             {
-                var fav = Favorites.GetSingletonInstance().KeyStores.Where(f => f.Name.ToLower() == Link.KeyStoreFavorite.ToLower()).FirstOrDefault();
-                if (fav != null)
+                var favorites = Favorites.GetSingletonInstance();
+                if (favorites != null)
                 {
-                    var ks = fav.CreateKeyStore();
-                    if (ks != null)
+                    var fav = favorites.KeyStores.Where(f => f.Name.ToLower() == Link.KeyStoreFavorite.ToLower()).FirstOrDefault();
+                    if (fav != null)
                     {
-                        try
+                        var ks = fav.CreateKeyStore();
+                        if (ks != null)
                         {
-                            await ks.Open();
-                            await RunLinkImpl(ks);
-                            await ks.Close();
+                            try
+                            {
+                                await ks.Open();
+                                await RunLinkImpl(ks);
+                                await ks.Close();
 
-                            log.Info("Link execution completed.");
+                                log.Info("Link execution completed.");
+                            }
+                            catch (KeyStoreException ex)
+                            {
+                                LinkError = ex.Message;
+                            }
+                            catch (Exception ex)
+                            {
+                                log.Error(string.Format("Unexpected error when resolving the link: {0}", ex.Message));
+                                LinkError = string.Format("Unexpected error: {0}", ex.Message);
+                            }
                         }
-                        catch (KeyStoreException ex)
+                        else
                         {
-                            LinkError = ex.Message;
-                        }
-                        catch (Exception ex)
-                        {
-                            log.Error(string.Format("Unexpected error when resolving the link: {0}", ex.Message));
-                            LinkError = string.Format("Unexpected error: {0}", ex.Message);
+                            log.Error(string.Format("Cannot create the key store from Favorite `{0}`.", Link.KeyStoreFavorite));
+                            LinkError = "Cannot create the key store from Favorite.";
                         }
                     }
                     else
                     {
-                        log.Error(string.Format("Cannot create the key store from Favorite `{0}`.", Link.KeyStoreFavorite));
-                        LinkError = "Cannot create the key store from Favorite.";
+                        log.Error(string.Format("Cannot found the linked key store `{0}`.", Link.KeyStoreFavorite));
+                        LinkError = "Cannot found the linked key store.";
                     }
-                }
-                else
-                {
-                    log.Error(string.Format("Cannot found the linked key store `{0}`.", Link.KeyStoreFavorite));
-                    LinkError = "Cannot found the linked key store.";
                 }
             }
             else

@@ -17,7 +17,7 @@ namespace Leosac.KeyManager.Library.UI
             Favorites = DesignerProperties.GetIsInDesignMode(this) ? new Favorites() : Favorites.GetSingletonInstance();
         }
 
-        public Favorites Favorites
+        public Favorites? Favorites
         {
             get { return (Favorites)GetValue(FavoritesProperty); }
             set { SetValue(FavoritesProperty, value); }

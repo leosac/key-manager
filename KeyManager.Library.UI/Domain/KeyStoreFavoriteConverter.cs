@@ -10,11 +10,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
             _favorites = Favorites.GetSingletonInstance();
         }
 
-        private readonly Favorites _favorites;
+        private readonly Favorites? _favorites;
 
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value != null && value is string v)
+            if (_favorites != null && value != null && value is string v)
             {
                 return _favorites.KeyStores.Where(ks => ks.Name == v).FirstOrDefault();
             }
