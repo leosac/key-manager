@@ -35,37 +35,38 @@
                     <materialDesign:PopupBox
                         PlacementMode="BottomAndAlignCentres"
                         ToolTip="{x:Static properties:Resources.NewKeyEntry}" Margin="5"
-                        Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}">
+                        Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
+                        Visibility="{Binding KeyStore.CanCreateKeyEntries, Converter={StaticResource BoolToVisibleConverter}}">
                         <materialDesign:PopupBox.ToggleContent>
                             <materialDesign:PackIcon Kind="KeyAdd" Height="24" Width="24" Cursor="Hand" />
                         </materialDesign:PopupBox.ToggleContent>
                         <StackPanel Orientation="Vertical">
                             <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
-                                    Command="{Binding DataContext.CreateKeyEntryCommand, ElementName=keyStoreControl}"
+                                    Command="{Binding CreateKeyEntryCommand}"
                                     ToolTip="{x:Static properties:Resources.CreateKeyEntry}" Margin="5">
                                 <materialDesign:PackIcon Kind="Key" Height="24" Width="24" Cursor="Hand" />
                             </Button>
                             <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
-                                    Command="{Binding DataContext.GenerateKeyEntryCommand, ElementName=keyStoreControl}"
+                                    Command="{Binding GenerateKeyEntryCommand}"
                                     ToolTip="{x:Static properties:Resources.GenerateKeyEntry}" Margin="5">
                                 <materialDesign:PackIcon Kind="ShuffleVariant" Height="24" Width="24" Cursor="Hand" />
                             </Button>
                             <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
-                                    Command="{Binding DataContext.EditDefaultKeyEntryCommand, ElementName=keyStoreControl}"
+                                    Command="{Binding EditDefaultKeyEntryCommand}"
                                     ToolTip="{x:Static properties:Resources.EditDefaultKeyEntry}" Margin="5">
                                 <materialDesign:PackIcon Kind="LibraryEdit" Height="24" Width="24" Cursor="Hand" />
                             </Button>
                         </StackPanel>
                     </materialDesign:PopupBox>
                     <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
-                            Command="{Binding DataContext.ImportCryptogramCommand, ElementName=keyStoreControl}"
-                            IsEnabled="{Binding DataContext.KeyStore.CanUpdateKeyEntries, ElementName=keyStoreControl}"
+                            Command="{Binding ImportCryptogramCommand}"
+                            IsEnabled="{Binding KeyStore.CanUpdateKeyEntries}"
                             ToolTip="{x:Static properties:Resources.ImportCryptogram}" Margin="5">
                         <materialDesign:PackIcon Kind="KeyArrowRight" Height="24" Width="24" Cursor="Hand" />
                     </Button>
                     <materialDesign:PopupBox
                         PlacementMode="BottomAndAlignCentres"
-                        IsEnabled="{Binding DataContext.KeyStore.CanUpdateKeyEntries, ElementName=keyStoreControl}"
+                        IsEnabled="{Binding KeyStore.CanUpdateKeyEntries}"
                         ToolTip="{x:Static properties:Resources.Wizard}" Margin="5"
                         Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}">
                         <materialDesign:PopupBox.ToggleContent>
@@ -87,9 +88,9 @@
                                   Style="{StaticResource MaterialDesignActionToggleButton}"
                                   ToolTip="{x:Static properties:Resources.ToggleSelection}"
                                   Margin="5" Width="56" Height="56"
-                                  IsChecked="{Binding DataContext.ShowSelection, ElementName=keyStoreControl}"
-                                  Command="{Binding DataContext.ShowSelectionChangedCommand, ElementName=keyStoreControl}"/>
-                    <WrapPanel Orientation="Horizontal" Visibility="{Binding DataContext.ShowSelection, ElementName=keyStoreControl, Converter={StaticResource BoolToVisibleConverter}}">
+                                  IsChecked="{Binding ShowSelection}"
+                                  Command="{Binding ShowSelectionChangedCommand}"/>
+                    <WrapPanel Orientation="Horizontal" Visibility="{Binding ShowSelection, Converter={StaticResource BoolToVisibleConverter}}">
                         <Rectangle VerticalAlignment="Stretch" Width="1" Margin="2" Stroke="Gray" />
                         <materialDesign:DialogHost DialogClosed="KeyEntryDeletion_OnDialogClosed" DialogTheme="Inherit">
                             <materialDesign:DialogHost.DialogContent>

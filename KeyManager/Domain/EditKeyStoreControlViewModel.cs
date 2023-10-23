@@ -122,7 +122,7 @@ namespace Leosac.KeyManager.Domain
                     var classes = KeyStore.SupportedClasses;
                     foreach (var kclass in classes)
                     {
-                        var model = new KeyEntriesControlViewModel(_snackbarMessageQueue) { KeyEntryClass = kclass, KeyStore = KeyStore };
+                        var model = new KeyEntriesControlViewModel(_snackbarMessageQueue, kclass) { KeyStore = KeyStore };
                         _keModels.Add(model);
                         Tabs.Add(new TabItem
                         {
@@ -244,15 +244,18 @@ namespace Leosac.KeyManager.Domain
                                     if (!string.IsNullOrEmpty(favoriteName))
                                     {
                                         var favorites = Favorites.GetSingletonInstance();
-                                        var fav = favorites.KeyStores.Where(ks => ks.Name.ToLowerInvariant() == favoriteName.ToLowerInvariant()).SingleOrDefault();
-                                        if (fav != null)
+                                        if (favorites != null)
                                         {
-                                            return fav.CreateKeyStore();
-                                        }
-                                        else
-                                        {
-                                            log.Error(string.Format("Cannot found the favorite Key Store `{0}`.", favoriteName));
-                                            throw new KeyStoreException("Cannot found the favorite Key Store.");
+                                            var fav = favorites.KeyStores.Where(ks => ks.Name.ToLowerInvariant() == favoriteName.ToLowerInvariant()).SingleOrDefault();
+                                            if (fav != null)
+                                            {
+                                                return fav.CreateKeyStore();
+                                            }
+                                            else
+                                            {
+                                                log.Error(string.Format("Cannot found the favorite Key Store `{0}`.", favoriteName));
+                                                throw new KeyStoreException("Cannot found the favorite Key Store.");
+                                            }
                                         }
                                     }
                                     return null;

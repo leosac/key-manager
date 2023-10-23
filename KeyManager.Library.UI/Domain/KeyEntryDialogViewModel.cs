@@ -9,8 +9,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
 {
     public class KeyEntryDialogViewModel : ObservableValidator
     {
-        public KeyEntryDialogViewModel()
+        public KeyEntryDialogViewModel(KeyEntryClass keClass)
         {
+            KClass = keClass;
             _submitButtonText = Leosac.KeyManager.Library.UI.Properties.Resources.OK;
             KeyEntryFactories = new ObservableCollection<KeyEntryItem>();
             foreach (var factory in KeyEntryUIFactory.RegisteredFactories)
@@ -51,7 +52,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
         private bool _showKeyMaterials = true;
         private bool _allowSubmit = true;
         private string _submitButtonText;
-        private KeyEntryClass _kClass = KeyEntryClass.Symmetric;
         private KeyEntry? _keyEntry;
         private KeyEntryItem? _selectedFactoryItem;
 
@@ -59,11 +59,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public ObservableCollection<KeyEntryVariant> Variants { get; set; }
 
-        public KeyEntryClass KClass
-        {
-            get => _kClass;
-            set => SetProperty(ref _kClass, value);
-        }
+        public KeyEntryClass KClass { get; }
 
         public KeyEntry? KeyEntry
         {

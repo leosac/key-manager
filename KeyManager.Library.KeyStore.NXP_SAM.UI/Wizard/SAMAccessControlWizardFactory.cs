@@ -52,6 +52,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Wizard
             return entries;
         }
 
+        public override KeyEntryClass[] KeyEntryClasses => new[] { KeyEntryClass.Symmetric };
+
         private static SAMSymmetricKeyEntry CreateKeyEntry(string id, string label, bool generateKeys = true)
         {
             var ke = new SAMSymmetricKeyEntry();

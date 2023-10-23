@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Leosac.KeyManager.Library.KeyStore;
+using System.Windows;
 
 namespace Leosac.KeyManager.Library.Plugin.UI
 {
@@ -6,6 +7,8 @@ namespace Leosac.KeyManager.Library.Plugin.UI
     {
         public abstract Window CreateWizardWindow();
 
-        public abstract IList<Leosac.KeyManager.Library.KeyStore.KeyEntry> GetKeyEntries(Window window);
+        public abstract IList<KeyEntry> GetKeyEntries(Window window);
+
+        public abstract KeyEntryClass[] KeyEntryClasses { get; }
     }
 }

@@ -59,7 +59,7 @@ namespace Leosac.KeyManager
                 if (model.Favorite != null)
                 {
                     var favorites = Favorites.GetSingletonInstance();
-                    if (favorites!.KeyStores.Contains(model.Favorite))
+                    if (favorites != null && favorites.KeyStores.Contains(model.Favorite))
                     {
                         favorites.KeyStores.Remove(model.Favorite);
                         favorites.SaveToFile();

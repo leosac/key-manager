@@ -14,22 +14,20 @@ namespace Leosac.KeyManager.Library.UI.Domain
     public class KeyEntriesControlViewModel : ObservableValidator
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
-        public KeyEntriesControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
+        public KeyEntriesControlViewModel(ISnackbarMessageQueue snackbarMessageQueue, KeyEntryClass keClass)
         {
             _snackbarMessageQueue = snackbarMessageQueue;
+            KeyEntryClass = keClass;
             _identifierLock = new object();
             Identifiers = new ObservableCollection<SelectableKeyEntryId>();
             BindingOperations.EnableCollectionSynchronization(Identifiers, _identifierLock);
-            WizardFactories = new ObservableCollection<WizardFactory>(WizardFactory.RegisteredFactories);
+            WizardFactories = new ObservableCollection<WizardFactory>(WizardFactory.RegisteredFactories.Where(f => f.KeyEntryClasses.Contains(KeyEntryClass)));
 
             CreateKeyEntryCommand = new AsyncRelayCommand(
                 async () =>
             {
-                var model = new KeyEntryDialogViewModel
-                {
-                    KClass = _keClass
-                };
-                model.SetKeyEntry(KeyStore?.GetDefaultKeyEntry(_keClass));
+                var model = new KeyEntryDialogViewModel(KeyEntryClass);
+                model.SetKeyEntry(KeyStore?.GetDefaultKeyEntry(KeyEntryClass));
                 var dialog = new KeyEntryDialog
                 {
                     DataContext = model
@@ -40,12 +38,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
             GenerateKeyEntryCommand = new AsyncRelayCommand(
                 async () =>
                 {
-                    var model = new KeyEntryDialogViewModel
+                    var model = new KeyEntryDialogViewModel(KeyEntryClass)
                     {
-                        KClass = _keClass,
                         ShowKeyMaterials = false
                     };
-                    model.SetKeyEntry(KeyStore?.GetDefaultKeyEntry(_keClass));
+                    model.SetKeyEntry(KeyStore?.GetDefaultKeyEntry(KeyEntryClass));
                     var dialog = new KeyEntryDialog
                     {
                         DataContext = model
@@ -56,11 +53,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
             EditDefaultKeyEntryCommand = new AsyncRelayCommand(
                 async () =>
                 {
-                    var model = new KeyEntryDialogViewModel
-                    {
-                        KClass = _keClass
-                    };
-                    model.SetKeyEntry(KeyStore?.GetDefaultKeyEntry(_keClass, false));
+                    var model = new KeyEntryDialogViewModel(KeyEntryClass);
+                    model.SetKeyEntry(KeyStore?.GetDefaultKeyEntry(KeyEntryClass, false));
                     var dialog = new KeyEntryDialog
                     {
                         DataContext = model
@@ -75,14 +69,13 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 {
                     if (KeyStore != null && identifier?.KeyEntryId != null)
                     {
-                        var model = new KeyEntryDialogViewModel
+                        var model = new KeyEntryDialogViewModel(KeyEntryClass)
                         {
-                            KClass = _keClass,
                             CanChangeFactory = false,
                             AllowSubmit = KeyStore.CanUpdateKeyEntries,
                             SubmitButtonText = Properties.Resources.Update
                         };
-                        model.SetKeyEntry(await KeyStore.Get(identifier.KeyEntryId, _keClass));
+                        model.SetKeyEntry(await KeyStore.Get(identifier.KeyEntryId, KeyEntryClass));
                         var dialog = new KeyEntryDialog
                         {
                             DataContext = model
@@ -173,7 +166,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     }
                 });
 
-            _keClass = KeyEntryClass.Symmetric;
             _identifiersView = CollectionViewSource.GetDefaultView(Identifiers);
             _identifiersView.Filter = KeyEntryIdentifiersFilter;
         }
@@ -181,7 +173,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
         protected ISnackbarMessageQueue _snackbarMessageQueue;
         private readonly object _identifierLock;
         private KeyStore.KeyStore? _keyStore;
-        private KeyEntryClass _keClass;
         private bool _showSelection;
         private readonly ICollectionView _identifiersView;
         private string? _searchTerms;
@@ -196,11 +187,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _keyStore, value);
         }
 
-        public KeyEntryClass KeyEntryClass
-        {
-            get => _keClass;
-            set => SetProperty(ref _keClass, value);
-        }
+        public KeyEntryClass KeyEntryClass { get; }
 
         public string? SearchTerms
         {
@@ -294,7 +281,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 if (KeyStore != null && model.KeyEntry != null)
                 {
-                    KeyStore.DefaultKeyEntries[_keClass] = model.KeyEntry;
+                    KeyStore.DefaultKeyEntries[KeyEntryClass] = model.KeyEntry;
                 }
             }
         }
@@ -335,7 +322,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 if (KeyStore != null && identifier.KeyEntryId != null)
                 {
-                    await KeyStore.Delete(identifier.KeyEntryId, _keClass);
+                    await KeyStore.Delete(identifier.KeyEntryId, KeyEntryClass);
                 }
                 Identifiers.Remove(identifier);
             }
@@ -358,7 +345,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 if (KeyStore != null && identifier.KeyEntryId != null)
                 {
-                    await KeyStore.MoveUp(identifier.KeyEntryId, _keClass);
+                    await KeyStore.MoveUp(identifier.KeyEntryId, KeyEntryClass);
                 }
                 var oldIndex = Identifiers.IndexOf(identifier);
                 if (oldIndex > 0)
@@ -385,7 +372,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 if (KeyStore != null && identifier.KeyEntryId != null)
                 {
-                    await KeyStore.MoveDown(identifier.KeyEntryId, _keClass);
+                    await KeyStore.MoveDown(identifier.KeyEntryId, KeyEntryClass);
                 }
                 var oldIndex = Identifiers.IndexOf(identifier);
                 if (oldIndex != -1 && oldIndex < Identifiers.Count - 1)
@@ -484,7 +471,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 if (KeyStore != null)
                 {
-                    var ids = await KeyStore.GetAll(_keClass);
+                    var ids = await KeyStore.GetAll(KeyEntryClass);
                     foreach (var id in ids)
                     {
                         lock (_identifierLock)
