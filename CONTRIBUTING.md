@@ -1,0 +1,19 @@
+# Contributing to Leosac Key Manager
+
+Leosac Key Manager is an open source project under a Free Software license.
+The project is currently leaded by Leosac SAS company but anyone can contribute in several way.
+
+## Bug report
+
+Be sure the bug is not already fixed in develop branch or already reported in current open issues.
+Please follow the issue template as close as possible.
+
+## Translation
+
+*   The default and fallback language is *English*
+*   Strings should only be translated where they differ from the source language.
+*   Resources files (.resx) are the central dictionary reference. There is generally one dedicated resx file per UI project and language.
+
+## Development
+
+Any code contribution / pull request first requires to sign the CLA. You will be invited for signing process by CLA Assitant bot when submiting a PR for the first time.
