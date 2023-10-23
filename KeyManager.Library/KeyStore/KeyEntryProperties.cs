@@ -2,7 +2,7 @@
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
-    public abstract class KeyEntryProperties : ObservableValidator
+    public abstract class KeyEntryProperties : ObservableObject
     {
     }
 }

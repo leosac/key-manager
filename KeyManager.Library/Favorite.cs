@@ -3,7 +3,7 @@ using Leosac.KeyManager.Library.KeyStore;
 
 namespace Leosac.KeyManager.Library
 {
-    public sealed class Favorite : ObservableValidator, IEquatable<Favorite>
+    public sealed class Favorite : ObservableObject, IEquatable<Favorite>
     {
         public Favorite()
         {
