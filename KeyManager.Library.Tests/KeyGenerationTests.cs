@@ -7,12 +7,12 @@
         [DataRow(8)]
         [DataRow(16)]
         [DataRow(32)]
-        public void Test_Random(uint keySize)
+        public void Test_Random(int keySize)
         {
-            var key1 = KeyGeneration.Random(keySize);
-            Assert.AreEqual(keySize * 2, (uint)key1.Length);
+            var key1 = KeyGeneration.Random((uint)keySize);
+            Assert.AreEqual(keySize * 2, key1.Length);
 
-            var key2 = KeyGeneration.Random(keySize);
+            var key2 = KeyGeneration.Random((uint)keySize);
             Assert.AreNotEqual(key1, key2);
         }
 
