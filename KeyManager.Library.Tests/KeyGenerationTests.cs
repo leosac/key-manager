@@ -10,7 +10,7 @@
         public void Test_Random(int keySize)
         {
             var key1 = KeyGeneration.Random((uint)keySize);
-            Assert.AreEqual(keySize * 2, key1.Length);
+            Assert.AreEqual(keySize, key1.Length);
 
             var key2 = KeyGeneration.Random((uint)keySize);
             Assert.AreNotEqual(key1, key2);
@@ -22,7 +22,7 @@
         [DataRow(32)]
         public void Test_FromPassword(int keySize)
         {
-            var key = KeyGeneration.FromPassword("test", "Security Freedom", keySize);
+            var key = Convert.ToHexString(KeyGeneration.FromPassword("test", "Security Freedom", keySize));
             var rkey = "E088566240571EAD486818BE1199F53EB407411014BA1E36101C242FC34DEBAF"[..(keySize * 2)];
             Assert.AreEqual(rkey, key, true);
         }

@@ -67,7 +67,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Wizard
                     if (ke.Variant.KeyContainers[i] is KeyVersion keyVersion)
                     {
                         keyVersion.Version = i;
-                        keyVersion.Key.Materials[0].Value = KeyGeneration.Random(keyVersion.Key.KeySize);
+                        keyVersion.Key.Materials[0].SetValueBinary(KeyGeneration.Random(keyVersion.Key.KeySize));
                     }
                 }
             }

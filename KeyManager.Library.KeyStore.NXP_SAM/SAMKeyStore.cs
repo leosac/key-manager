@@ -428,6 +428,7 @@
                         };
                         if (!containers[1].Key.IsEmpty())
                         {
+                            log.Info("Updating value for key version A.");
                             updateSettings.keyVa = 1;
                         }
                         if (containers[0] is KeyVersion keyVersionA)
@@ -438,6 +439,7 @@
                         {
                             if (!containers[1].Key.IsEmpty())
                             {
+                                log.Info("Updating value for key version B.");
                                 updateSettings.keyVb = 1;
                             }
                             keys.Add(new LibLogicalAccess.ByteVector(containers[1].Key.GetAggregatedValueBinary(true)));
@@ -450,6 +452,7 @@
                             {
                                 if (!containers[2].Key.IsEmpty())
                                 {
+                                    log.Info("Updating value for key version C.");
                                     updateSettings.keyVc = 1;
                                 }
                                 keys.Add(new LibLogicalAccess.ByteVector(containers[2].Key.GetAggregatedValueBinary(true)));

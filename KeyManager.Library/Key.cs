@@ -50,10 +50,6 @@ namespace Leosac.KeyManager.Library
         public Key(IEnumerable<string>? tags, uint keySize, string value) : this(tags, keySize, 0)
         {
             Materials.Add(new KeyMaterial(value));
-            if (keySize == 0)
-            {
-                KeySize = (uint)Materials[0].GetValueBinary()!.Length;
-            }
         }
 
         public Key(IEnumerable<string>? tags, uint keySize, params KeyMaterial[] materials) : this(tags, keySize, 0)

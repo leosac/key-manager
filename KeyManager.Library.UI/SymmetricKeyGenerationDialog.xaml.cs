@@ -77,12 +77,12 @@ namespace Leosac.KeyManager.Library.UI
 
         private void BtnRandom_Click(object sender, RoutedEventArgs e)
         {
-            KeyValue = KeyGeneration.Random((uint)(KeySize > 0 ? KeySize : 16));
+            KeyValue = Convert.ToHexString(KeyGeneration.Random((uint)(KeySize > 0 ? KeySize : 16)));
         }
 
         private void BtnPassword_Click(object sender, RoutedEventArgs e)
         {
-            KeyValue = KeyGeneration.FromPassword(tbxPassword.Password, tbxSalt.Text, KeySize);
+            KeyValue = Convert.ToHexString(KeyGeneration.FromPassword(tbxPassword.Password, tbxSalt.Text, KeySize));
         }
 
         private void BtnImportMnemonic_Click(object sender, RoutedEventArgs e)

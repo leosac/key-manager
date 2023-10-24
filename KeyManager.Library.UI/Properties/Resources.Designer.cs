@@ -511,7 +511,7 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gather all required individuals and/or prepare all key fragments..
+        ///   Looks up a localized string similar to Gather all required individuals, prepare all key fragments materials, ensure the environment match the minimal security requirements..
         /// </summary>
         public static string KeyCeremonyWizardStart1 {
             get {

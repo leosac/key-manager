@@ -34,7 +34,6 @@
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
     <PackageReference Include="Net.Codecrete.QrCodeGenerator" Version="2.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="SecretSharingDotNet" Version="0.10.2" />
     <PackageReference Include="SkiaSharp" Version="2.88.6" />
   </ItemGroup>
 

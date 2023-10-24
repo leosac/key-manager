@@ -268,7 +268,7 @@
     <value>Appuyez sur le bouton 'Terminer' afin de terminer la cérémonie.</value>
   </data>
   <data name="KeyCeremonyWizardStart1" xml:space="preserve">
-    <value>Rassemblez tous les individus requis et/ou préparez les fragments de clé.</value>
+    <value>Rassemblez tous les individus requis, préparez les supports des fragments, assurez-vous que l'environnement respecte les exigences de sécurité.</value>
   </data>
   <data name="KeyCeremonyWizardStart2" xml:space="preserve">
     <value>Lorsque vous êtes prêt, allez à l'étape suivante.</value>

@@ -9,8 +9,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="500">
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock Text="{x:Static properties:Resources.KeyCeremonyWizardStart1}" FontSize="18" />
-        <TextBlock Text="{x:Static properties:Resources.KeyCeremonyWizardStart2}" FontSize="18" />
+        <TextBlock Text="{x:Static properties:Resources.KeyCeremonyWizardStart1}" TextWrapping="Wrap" FontSize="18" Margin="5" />
+        <TextBlock Text="{x:Static properties:Resources.KeyCeremonyWizardStart2}" FontSize="18" Margin="5 20 5 5" />
         <Button Margin="48"
               Command="{x:Static materialDesign:Transitioner.MoveNextCommand}"
               Style="{StaticResource MaterialDesignFloatingActionButton}">

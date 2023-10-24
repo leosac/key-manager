@@ -64,7 +64,7 @@
                     </DockPanel>
                 </materialDesign:Flipper.BackContent>
             </materialDesign:Flipper>
-            <materialDesign:Flipper Style="{StaticResource MaterialDesignCardFlipper}" Visibility="{Binding IsReunification, ElementName=userControl, Converter={StaticResource ReverseBoolToVisibleConverter}}" Margin="3">
+            <materialDesign:Flipper Style="{StaticResource MaterialDesignCardFlipper}" Visibility="{Binding IsReunification, Converter={StaticResource ReverseBoolToVisibleConverter}}" Margin="3">
                 <materialDesign:Flipper.FrontContent>
                     <Button Width="200" MinHeight="100" Margin="8" Command="{x:Static materialDesign:Flipper.FlipCommand}" Style="{StaticResource MaterialDesignFlatButton}">
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center">

@@ -268,7 +268,7 @@
     <value>Press the 'Finish' button to complete the ceremony.</value>
   </data>
   <data name="KeyCeremonyWizardStart1" xml:space="preserve">
-    <value>Gather all required individuals and/or prepare all key fragments.</value>
+    <value>Gather all required individuals, prepare all key fragments materials, ensure the environment match the minimal security requirements.</value>
   </data>
   <data name="KeyCeremonyWizardStart2" xml:space="preserve">
     <value>When ready, go to the next step.</value>

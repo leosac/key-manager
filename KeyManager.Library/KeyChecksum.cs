@@ -26,7 +26,12 @@
             {
                 ivb = Convert.FromHexString(iv);
             }
-            return Convert.ToHexString(ComputeKCV(new Key(tags, key), ivb));
+            uint keySize = 0;
+            if (!string.IsNullOrEmpty(key))
+            {
+                keySize = (uint)key.Length / 2;
+            }
+            return Convert.ToHexString(ComputeKCV(new Key(tags, keySize, key), ivb));
         }
 
         public string ComputeKCV(Key key, string? iv)

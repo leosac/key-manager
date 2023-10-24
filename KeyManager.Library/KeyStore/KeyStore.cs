@@ -133,7 +133,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                     {
                         foreach (var m in kv.Key.Materials)
                         {
-                            m.Value = KeyGeneration.Random(kv.Key.KeySize);
+                            m.SetValueBinary(KeyGeneration.Random(kv.Key.KeySize));
                         }
                     }
                 }

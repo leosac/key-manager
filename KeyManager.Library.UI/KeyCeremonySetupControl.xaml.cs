@@ -1,8 +1,5 @@
 ﻿using Leosac.KeyManager.Library.UI.Domain;
-using SecretSharingDotNet.Cryptography;
-using SecretSharingDotNet.Math;
 using System.Collections.ObjectModel;
-using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -17,21 +14,21 @@ namespace Leosac.KeyManager.Library.UI
 
         public KeyCeremonySetupControl()
         {
-            CeremonyTypes = new ObservableCollection<KeyCeremonyType>(Enum.GetValues<KeyCeremonyType>());
+            SecretSharings = new ObservableCollection<SecretSharing.SecretSharingBase>(SecretSharing.SecretSharingBase.GetAll());
+            SelectedSecretSharing = SecretSharings.FirstOrDefault();
 
             InitializeComponent();
         }
 
-        public ObservableCollection<KeyCeremonyType> CeremonyTypes { get; set; }
+        public ObservableCollection<SecretSharing.SecretSharingBase> SecretSharings { get; set; }
 
-        public KeyCeremonyType SelectedCeremonyType
+        public SecretSharing.SecretSharingBase? SelectedSecretSharing
         {
-            get { return (KeyCeremonyType)GetValue(SelectedCeremonyTypeProperty); }
-            set { SetValue(SelectedCeremonyTypeProperty, value); }
+            get { return (SecretSharing.SecretSharingBase)GetValue(SelectedSecretSharingProperty); }
+            set { SetValue(SelectedSecretSharingProperty, value); }
         }
 
-        public static readonly DependencyProperty SelectedCeremonyTypeProperty = DependencyProperty.Register(nameof(SelectedCeremonyType), typeof(KeyCeremonyType), typeof(KeyCeremonySetupControl),
-            new FrameworkPropertyMetadata(KeyCeremonyType.ShamirSecretSharing));
+        public static readonly DependencyProperty SelectedSecretSharingProperty = DependencyProperty.Register(nameof(SelectedSecretSharing), typeof(SecretSharing.SecretSharingBase), typeof(KeyCeremonySetupControl));
 
         public int Fragments
         {
@@ -52,94 +49,56 @@ namespace Leosac.KeyManager.Library.UI
 
         private void BtnUnionCeremony_Click(object sender, RoutedEventArgs e)
         {
-            var model = new KeyCeremonyDialogViewModel
+            if (SelectedSecretSharing != null)
             {
-                IsReunification = true,
-                Fragments = new ObservableCollection<string>(new string[Fragments])
-            };
-            var dialog = new KeyCeremonyDialog
-            {
-                DataContext = model
-            };
-            if (dialog.ShowDialog() == true)
-            {
-                try
+                var model = new KeyCeremonyDialogViewModel
                 {
-                    KeyValue = ComputeFragments(SelectedCeremonyType, model.Fragments.ToArray());
-                }
-                catch (Exception ex)
+                    IsReunification = true,
+                    Fragments = new ObservableCollection<string>(new string[Fragments])
+                };
+                var dialog = new KeyCeremonyDialog
                 {
-                    log.Error("Error during the key ceremony.", ex);
-                    MessageBox.Show(ex.Message, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    DataContext = model
+                };
+                if (dialog.ShowDialog() == true)
+                {
+                    try
+                    {
+                        var key = SelectedSecretSharing.ComputeFragments(model.Fragments.ToArray());
+                        KeyValue = key != null ? Convert.ToHexString(key) : string.Empty;
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error("Error during the key ceremony.", ex);
+                        MessageBox.Show(ex.Message, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
         }
 
         private void BtnSharingCeremony_Click(object sender, RoutedEventArgs e)
         {
-            var model = new KeyCeremonyDialogViewModel
+            if (SelectedSecretSharing != null && !string.IsNullOrEmpty(KeyValue))
             {
-                IsReunification = false
-            };
-            var fragments = CreateFragments(SelectedCeremonyType, KeyValue, Fragments);
-            foreach (var fragment in fragments)
-            {
-                model.Fragments.Add(fragment);
+                var model = new KeyCeremonyDialogViewModel
+                {
+                    IsReunification = false
+                };
+                var fragments = SelectedSecretSharing.CreateFragments(Convert.FromHexString(KeyValue), Fragments);
+                if (fragments != null)
+                {
+                    foreach (var fragment in fragments)
+                    {
+                        model.Fragments.Add(fragment);
+                    }
+
+                    var dialog = new KeyCeremonyDialog
+                    {
+                        DataContext = model
+                    };
+                    dialog.ShowDialog();
+                }
             }
-
-            var dialog = new KeyCeremonyDialog
-            {
-                DataContext = model
-            };
-            dialog.ShowDialog();
-        }
-
-        private static string[] CreateFragments(KeyCeremonyType ceremonyType, string? keyValue, int nbFragments)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static string ComputeFragments(KeyCeremonyType ceremonyType, string[] fragments)
-        {
-            string keystr = string.Empty;
-            switch (ceremonyType)
-            {
-                case KeyCeremonyType.Concat:
-                    {
-                        keystr = string.Join("", fragments);
-                    }
-                    break;
-
-                case KeyCeremonyType.Xor:
-                    {
-                        if (fragments.Length > 0)
-                        {
-                            var key = new byte[fragments[0].Length];
-                            foreach (string fragment in fragments)
-                            {
-                                var keyb = Convert.FromHexString(fragment);
-                                for (int i = 0; i < key.Length && i < keyb.Length; ++i)
-                                {
-                                    key[i] ^= keyb[i];
-                                }
-                            }
-                            keystr = Convert.ToHexString(key);
-                        }
-                    }
-                    break;
-
-                default:
-                    {
-                        var gcd = new ExtendedEuclideanAlgorithm<BigInteger>();
-                        var combine = new ShamirsSecretSharing<BigInteger>(gcd);
-                        var shares = string.Join(Environment.NewLine, fragments);
-                        var secret = combine.Reconstruction(shares);
-                        var key = secret.ToByteArray();
-                        keystr = Convert.ToHexString(key);
-                    }
-                    break;
-            }
-            return keystr;
         }
     }
 }

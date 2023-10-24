@@ -12,6 +12,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 return Binding.DoNothing;
             }
 
+            if (value2.KeySize == 0)
+            {
+                return string.Empty;
+            }
+
             if (string.IsNullOrEmpty(value2.GetAggregatedValueString()))
             {
                 return Binding.DoNothing;

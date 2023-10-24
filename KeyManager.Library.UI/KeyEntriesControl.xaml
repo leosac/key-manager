@@ -36,7 +36,7 @@
                         PlacementMode="BottomAndAlignCentres"
                         ToolTip="{x:Static properties:Resources.NewKeyEntry}" Margin="5"
                         Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
-                        Visibility="{Binding KeyStore.CanCreateKeyEntries, Converter={StaticResource BoolToVisibleConverter}}">
+                        IsEnabled="{Binding KeyStore.CanCreateKeyEntries}">
                         <materialDesign:PopupBox.ToggleContent>
                             <materialDesign:PackIcon Kind="KeyAdd" Height="24" Width="24" Cursor="Hand" />
                         </materialDesign:PopupBox.ToggleContent>
