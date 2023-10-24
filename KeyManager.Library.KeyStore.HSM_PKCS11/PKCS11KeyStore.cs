@@ -642,7 +642,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             if (change is KeyEntry entry)
             {
                 var attributes = GetKeyEntryAttributes(entry);
-                if (entry.Variant?.KeyContainers.Count == 1)
+                if (entry.Variant?.KeyContainers.Count == 1 && !entry.Variant.KeyContainers[0].Key.IsEmpty())
                 {
                     var rawkey = entry.Variant.KeyContainers[0].Key.GetAggregatedValueBinary();
                     if (rawkey != null)

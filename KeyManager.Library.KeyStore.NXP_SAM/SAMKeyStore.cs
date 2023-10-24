@@ -238,14 +238,14 @@
                             throw new KeyStoreException("Unexpected number of keys on the SAM Key Entry.");
                         }
 
-                        keyVersions[0].Key.SetAggregatedValueString(Convert.ToHexString(keysdata[0].ToArray()));
+                        keyVersions[0].Key.SetAggregatedValueString(string.Empty);
                         keyVersions[0].Version = infoav2.vera;
-                        keyVersions[1].Key.SetAggregatedValueString(Convert.ToHexString(keysdata[1].ToArray()));
+                        keyVersions[1].Key.SetAggregatedValueString(string.Empty);
                         keyVersions[1].Version = infoav2.verb;
 
                         if (keyEntry.Variant.KeyContainers.Count >= 3)
                         {
-                            keyVersions[2].Key.SetAggregatedValueString(Convert.ToHexString(keysdata[2].ToArray()));
+                            keyVersions[2].Key.SetAggregatedValueString(string.Empty);
                             keyVersions[2].Version = infoav2.verc;
                         }
                     }
@@ -410,60 +410,69 @@
                         infoav2.ExtSET |= (byte)(Convert.ToByte(samkey.SAMProperties.AllowDumpSecretKeyWithDiv) << 4);
                     }
 
-                    var updateSettings = new LibLogicalAccess.Card.KeyEntryUpdateSettings();
-                    updateSettings.df_aid_keyno = 1;
-                    updateSettings.key_no_v_cek = 1;
-                    updateSettings.refkeykuc = 1;
-                    updateSettings.keyversionsentseparatly = 1;
-                    updateSettings.updateset = 1;
+                    var updateSettings = new LibLogicalAccess.Card.KeyEntryUpdateSettings
+                    {
+                        df_aid_keyno = 1,
+                        key_no_v_cek = 1,
+                        refkeykuc = 1,
+                        keyversionsentseparatly = 1,
+                        updateset = 1
+                    };
 
                     if (samkey.Variant != null)
                     {
-                        updateSettings.keyVa = 1;
-                        updateSettings.keyVb = 1;
-                        updateSettings.keyVc = 1;
-
-                        var keyVersions = samkey.Variant.KeyContainers.OfType<KeyVersion>().ToArray();
-                        var keys = new LibLogicalAccess.UCharCollectionCollection(keyVersions.Length);
-                        foreach (var keyversion in samkey.Variant.KeyContainers)
+                        var containers = samkey.Variant.KeyContainers;
+                        var keys = new LibLogicalAccess.UCharCollectionCollection(containers.Count)
                         {
-                            if (string.IsNullOrEmpty(keyversion.Key.GetAggregatedValueString()))
+                            new LibLogicalAccess.ByteVector(containers[0].Key.GetAggregatedValueBinary(true))
+                        };
+                        if (!containers[1].Key.IsEmpty())
+                        {
+                            updateSettings.keyVa = 1;
+                        }
+                        if (containers[0] is KeyVersion keyVersionA)
+                        {
+                            infoav2.vera = keyVersionA.Version;
+                        }
+                        if (containers.Count >= 2)
+                        {
+                            if (!containers[1].Key.IsEmpty())
                             {
-                                keys.Add(new LibLogicalAccess.ByteVector(new byte[keyversion.Key.KeySize]));
+                                updateSettings.keyVb = 1;
                             }
-                            else
+                            keys.Add(new LibLogicalAccess.ByteVector(containers[1].Key.GetAggregatedValueBinary(true)));
+                            if (containers[1] is KeyVersion keyVersionB)
                             {
-                                keys.Add(new LibLogicalAccess.ByteVector(keyversion.Key.GetAggregatedValueBinary()));
+                                infoav2.verb = keyVersionB.Version;
+                            }
+
+                            if (containers.Count >= 3)
+                            {
+                                if (!containers[2].Key.IsEmpty())
+                                {
+                                    updateSettings.keyVc = 1;
+                                }
+                                keys.Add(new LibLogicalAccess.ByteVector(containers[2].Key.GetAggregatedValueBinary(true)));
+                                if (containers[2] is KeyVersion keyVersionC)
+                                {
+                                    infoav2.verc = keyVersionC.Version;
+                                }
                             }
                         }
 
-                        infoav2.vera = keyVersions[0].Version;
-                        if (keyVersions.Length >= 2)
+                        var samkt = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_DES;
+                        if (containers[0].Key.Tags.Contains("AES"))
                         {
-                            infoav2.verb = keyVersions[1].Version;
-                        }
-
-                        if (keyVersions.Length >= 3)
-                        {
-                            infoav2.verc = keyVersions[2].Version;
-                        }
-
-                        if (keyVersions[0].Key.Tags.Contains("AES"))
-                        {
-                            natkey.setKeysData(keys, LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES);
+                            samkt = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES;
                         }
                         else
                         {
-                            if (keyVersions[0].Key.KeySize == 16)
+                            if (containers[0].Key.KeySize > 16)
                             {
-                                natkey.setKeysData(keys, LibLogicalAccess.Card.SAMKeyType.SAM_KEY_DES);
-                            }
-                            else
-                            {
-                                natkey.setKeysData(keys, LibLogicalAccess.Card.SAMKeyType.SAM_KEY_3K3DES);
-                                updateSettings.keyVc = 0;
+                                samkt = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_3K3DES;
                             }
                         }
+                        natkey.setKeysData(keys, samkt);
                     }
                     natkey.setKeyEntryInformation(infoav2);
 

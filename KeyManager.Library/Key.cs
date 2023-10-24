@@ -153,6 +153,11 @@ namespace Leosac.KeyManager.Library
 
         public byte[]? GetAggregatedValueBinary()
         {
+            return GetAggregatedValueBinary(false);
+        }
+
+        public byte[]? GetAggregatedValueBinary(bool padKeySize)
+        {
             var data = new List<byte>();
             foreach (var m in Materials)
             {
@@ -161,6 +166,10 @@ namespace Leosac.KeyManager.Library
                 {
                     data.AddRange(mdata);
                 }
+            }
+            if (padKeySize && KeySize > 0 && data.Count < KeySize)
+            {
+                data.AddRange(new byte[KeySize - data.Count]);
             }
             return data.ToArray();
         }
@@ -205,6 +214,18 @@ namespace Leosac.KeyManager.Library
                     Materials[i].SetValueString(values[i], format);
                 }
             }
+        }
+
+        public bool IsEmpty()
+        {
+            foreach (var m in Materials)
+            {
+                if (!string.IsNullOrEmpty(m.Value))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }
