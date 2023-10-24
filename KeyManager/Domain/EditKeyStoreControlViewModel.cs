@@ -173,7 +173,7 @@ namespace Leosac.KeyManager.Domain
             }
         }
 
-        public static async Task EditFavorite(Favorites favorites, Favorite fav)
+        public static async Task EditFavorite(Favorites? favorites, Favorite fav)
         {
             var factory = KeyStoreUIFactory.GetFactoryFromPropertyType(fav.Properties?.GetType());
             if (factory != null)
