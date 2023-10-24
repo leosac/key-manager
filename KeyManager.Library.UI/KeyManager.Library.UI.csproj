@@ -8,6 +8,23 @@
     <RootNamespace>Leosac.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
   
+  <PropertyGroup>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>Leosac.$(AssemblyName)</PackageId>
+    <Title>Leosac Key Manager UI Library</Title>
+    <Company>Leosac SAS</Company>
+    <Product>Leosac Key Manager</Product>
+    <Authors>leosac</Authors>
+    <Description>Core Library for Leosac Key Manager UI development</Description>
+    <Copyright>Copyright ©2023 Leosac SAS</Copyright>
+    <PackageProjectUrl>https://github.com/leosac/key-manager</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/leosac/key-manager.git</RepositoryUrl>
+    <PackageTags>leosac key manager management hsm pkcs11 sam core</PackageTags>
+    <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+  
   <ItemGroup>
     <None Remove="images\confidential.png" />
   </ItemGroup>

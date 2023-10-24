@@ -26,9 +26,15 @@ You probably need specific hardware or software server in addition to this softw
 Only **Windows** is supported. See [this thread](https://github.com/leosac/key-manager/issues/1) for more information and to vote for Linux support.
 
 ## License and Support
-The source code of this software is distributed under the GPLv3 license. Dual licensing may be provided, contact Leosac SAS for more information.
+The source code of this software is distributed under the **GPLv3** license except the following libraries/folders distributed under the **LGPLv3** and unless another license is specified at a folder level.
+*   KeyManager.Library library
+*   KeyManager.Library.Plugin library
+*   KeyManager.Library.Plugin.UI library
+*   KeyManager.Library.UI library
 
-For support, private plugins, premium services and further updates guarantees, please subscribe to a lifetime or annual plan. See https://leosac.com/key-manager/.
+Please contact Leosac SAS (legal@leosac.com) for licensing and legal questions.
+
+For support, private plugins, premium services and further updates guarantees, you should subscribe to a lifetime or annual plan. See https://leosac.com/key-manager/.
 
 ## Plugins
 Key Stores, Key Entries and UI Wizards are handled as plugins. Plugins are loaded from `Plugins` folder on the installation directory.
