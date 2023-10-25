@@ -14,13 +14,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 return Binding.DoNothing;
             }
 
-            if (key.KeySize == 0)
-            {
-#pragma warning disable CS8603 // Possible null reference return.
-                return null;
-#pragma warning restore CS8603 // Possible null reference return.
-            }
-
             var checksum = new Sha256Checksum();
             string uri = string.Format("https://leak.leosac.com/key/{0}", checksum.ComputeKCV(key, "53656375726974792046726565646f6d"));
             if (targetType == typeof(ImageSource))

@@ -71,9 +71,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
             var printDialog = new PrintDialog();
             if (!string.IsNullOrEmpty(FragmentValue) && printDialog.ShowDialog() == true)
             {
-                var control = new KeyPrintControl
+                var control = new FragmentPrintControl
                 {
-                    Key = new Key(new[] { "FRAGMENT" }, FragmentValue)
+                    Fragment = FragmentValue
                 };
 
                 printDialog.PrintVisual(control, "Leosac Key Manager - Key Fragment Printing");

@@ -189,6 +189,9 @@
   <data name="Finish" xml:space="preserve">
     <value>Finish</value>
   </data>
+  <data name="FragmentExportPrint" xml:space="preserve">
+    <value>Fragment Export / Print</value>
+  </data>
   <data name="FragmentInputHelper" xml:space="preserve">
     <value>Key Fragment #</value>
   </data>
@@ -331,7 +334,7 @@
     <value>If you received this document by mistake, please destroy it without further notice and directly report this action to a security officer.</value>
   </data>
   <data name="KeyExportPrint" xml:space="preserve">
-    <value>Export / Print</value>
+    <value>Key Export / Print</value>
   </data>
   <data name="KeyGeneration" xml:space="preserve">
     <value>Local Key Generation</value>

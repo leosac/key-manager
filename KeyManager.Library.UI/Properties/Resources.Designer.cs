@@ -277,6 +277,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fragment Export / Print.
+        /// </summary>
+        public static string FragmentExportPrint {
+            get {
+                return ResourceManager.GetString("FragmentExportPrint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Key Fragment #.
         /// </summary>
         public static string FragmentInputHelper {
@@ -700,7 +709,7 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export / Print.
+        ///   Looks up a localized string similar to Key Export / Print.
         /// </summary>
         public static string KeyExportPrint {
             get {

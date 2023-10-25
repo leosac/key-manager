@@ -189,6 +189,9 @@
   <data name="Finish" xml:space="preserve">
     <value>Terminer</value>
   </data>
+  <data name="FragmentExportPrint" xml:space="preserve">
+    <value>Export / Impression d'un fragment</value>
+  </data>
   <data name="FragmentInputHelper" xml:space="preserve">
     <value>Fragment de clé #</value>
   </data>
@@ -331,7 +334,7 @@
     <value>Si vous avez reçu ce document par erreur, merci de le détruire immédiatement et de reporter cette action à un agent de sécurité.</value>
   </data>
   <data name="KeyExportPrint" xml:space="preserve">
-    <value>Export / Impression</value>
+    <value>Export / Impression d'une clé</value>
   </data>
   <data name="KeyGeneration" xml:space="preserve">
     <value>Génération locale d'une clé</value>
