@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Leosac.KeyManager.Library;
+using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using MaterialDesignThemes.Wpf;
@@ -70,6 +71,22 @@ namespace Leosac.KeyManager.Domain
                         RefreshFavorites();
                     }
                 });
+            ChangeMasterKeyCommand = new RelayCommand(() =>
+                {
+                    if (!string.IsNullOrEmpty(NewMasterKey))
+                    {
+                        EncryptJsonConverter.MasterKey = NewMasterKey;
+                        NewMasterKey = null;
+                    }
+                    else
+                    {
+                        EncryptJsonConverter.ResetToDefaultMasterKey();
+                    }
+
+
+                    IsCustomMasterKey = !EncryptJsonConverter.IsDefaultMasterKey();
+                    DialogHost.CloseDialogCommand.Execute(null, null);
+                });
         }
 
         protected ISnackbarMessageQueue _snackbarMessageQueue;
@@ -90,6 +107,22 @@ namespace Leosac.KeyManager.Domain
             set => SetProperty(ref _isLoadingFavorites, value);
         }
 
+        private bool _isCustomMasterKey;
+
+        public bool IsCustomMasterKey
+        {
+            get => _isCustomMasterKey;
+            set => SetProperty(ref _isCustomMasterKey, value);
+        }
+
+        private string? _newMasterKey;
+
+        public string? NewMasterKey
+        {
+            get => _newMasterKey;
+            set => SetProperty(ref _newMasterKey, value);
+        }
+
         public void RefreshFavorites()
         {
             IsLoadingFavorites = true;
@@ -107,6 +140,7 @@ namespace Leosac.KeyManager.Domain
         public RelayCommand<Favorite>? RemoveFavoriteCommand { get; set; }
         public AsyncRelayCommand<Favorite>? EditFavoriteCommand { get; }
         public AsyncRelayCommand<Favorite>? OpenFavoriteCommand { get; }
+        public RelayCommand? ChangeMasterKeyCommand { get; }
 
         public AsyncRelayCommand<object>? KeyStoreCommand { private get; set; }
     }

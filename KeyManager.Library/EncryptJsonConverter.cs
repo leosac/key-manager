@@ -6,22 +6,30 @@ namespace Leosac.KeyManager.Library
 {
     public class EncryptJsonConverter : JsonConverter
     {
-        private readonly byte[] _encryptionKeyBytes;
+        private readonly byte[]? _encryptionKey;
 
-        public static string MasterKey { private get; set; } = "changeme";
+        private static readonly string _defaultMasterKey = "057BA03D6C44104863DC7361FE4578965D1887360F90A0895882E58A6248FC86"; // SHA256 of "changeme" text
 
-        public EncryptJsonConverter() : this(null)
-        {
+        public static string MasterKey { private get; set; } = _defaultMasterKey;
 
-        }
+        public EncryptJsonConverter() : this(null) { }
 
         public EncryptJsonConverter(string? encryptionKey)
         {
             if (string.IsNullOrEmpty(encryptionKey))
             {
-                encryptionKey = MasterKey;
+                _encryptionKey = null;
             }
-            _encryptionKeyBytes = SHA256.HashData(Encoding.UTF8.GetBytes(encryptionKey));
+        }
+
+        public static bool IsDefaultMasterKey()
+        {
+            return MasterKey.ToLowerInvariant() == _defaultMasterKey.ToLowerInvariant();
+        }
+
+        public static void ResetToDefaultMasterKey()
+        {
+            MasterKey = _defaultMasterKey;
         }
 
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
@@ -33,9 +41,14 @@ namespace Leosac.KeyManager.Library
                 return;
             }
             using var aes = Aes.Create();
-            aes.Key = _encryptionKeyBytes;
+            aes.Key = GetKey();
             var data = aes.EncryptCbc(Encoding.UTF8.GetBytes(stringValue), new byte[16], System.Security.Cryptography.PaddingMode.PKCS7);
             writer.WriteValue(Convert.ToBase64String(data));
+        }
+
+        private byte[] GetKey()
+        {
+            return _encryptionKey ?? Convert.FromHexString(MasterKey);
         }
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
@@ -50,7 +63,7 @@ namespace Leosac.KeyManager.Library
             {
                 var buffer = Convert.FromBase64String(value);
                 using var aes = Aes.Create();
-                aes.Key = _encryptionKeyBytes;
+                aes.Key = GetKey();
                 var data = aes.DecryptCbc(buffer, new byte[16], System.Security.Cryptography.PaddingMode.PKCS7);
                 return Encoding.UTF8.GetString(data);
             }

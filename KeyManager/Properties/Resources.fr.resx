@@ -159,6 +159,9 @@
   <data name="Information" xml:space="preserve">
     <value>Information</value>
   </data>
+  <data name="MasterKey" xml:space="preserve">
+    <value>Clé maître</value>
+  </data>
   <data name="MenuFavorites" xml:space="preserve">
     <value>Favoris</value>
   </data>

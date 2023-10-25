@@ -187,6 +187,15 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Master Key.
+        /// </summary>
+        public static string MasterKey {
+            get {
+                return ResourceManager.GetString("MasterKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Favorites.
         /// </summary>
         public static string MenuFavorites {
