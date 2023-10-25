@@ -17,7 +17,6 @@
              Loaded="userControl_Loaded"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <materialDesign:BooleanToVisibilityConverter x:Key="ReverseBoolToVisibleConverter" TrueValue="Collapsed" FalseValue="Visible" />
         <CollectionViewSource x:Key='Favorites' Source="{Binding Favorites.KeyStores}">
             <CollectionViewSource.SortDescriptions>
                 <componentModel:SortDescription PropertyName="Name" />
@@ -61,7 +60,7 @@
                                                      Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
                                                      materialDesign:PasswordBoxAssist.Password="{Binding Properties.Secret, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                      MaxLength="{Binding Properties.SecretMaxLength, Mode=OneWay}"
-                                                     Visibility="{Binding Properties.StoreSecret, Converter={StaticResource ReverseBoolToVisibleConverter}}"/>
+                                                     Visibility="{Binding Properties.StoreSecret, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
                                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                             <Button Margin="0,8,8,0" CommandParameter="{Binding}" Command="{Binding DataContext.OpenFavoriteCommand, ElementName=userControl}" Content="{x:Static properties:Resources.OK}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}" />
                                             <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />

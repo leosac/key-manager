@@ -1015,6 +1015,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Qr Code.
+        /// </summary>
+        public static string QrCode {
+            get {
+                return ResourceManager.GetString("QrCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Random.
         /// </summary>
         public static string Random {

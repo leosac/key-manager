@@ -435,6 +435,9 @@
   <data name="PublishKeyStore" xml:space="preserve">
     <value>Publier vers un autre magasin de clés</value>
   </data>
+  <data name="QrCode" xml:space="preserve">
+    <value>Qr Code</value>
+  </data>
   <data name="Random" xml:space="preserve">
     <value>Aléatoire</value>
   </data>
