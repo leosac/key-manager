@@ -53,7 +53,7 @@ namespace Leosac.KeyManager.Library
             set { SetProperty(ref _name, value); }
         }
 
-        public static string? GetValueString(string? value, KeyValueStringFormat format)
+        public static string? GetValueAsString(string? value, KeyValueStringFormat format)
         {
             if (value != null)
             {
@@ -65,17 +65,17 @@ namespace Leosac.KeyManager.Library
             return value;
         }
 
-        public string? GetValueString(KeyValueStringFormat format)
+        public string? GetValueAsString(KeyValueStringFormat format)
         {
-            return GetValueString(Value, format);
+            return GetValueAsString(Value, format);
         }
 
-        public void SetValueString(string? value, KeyValueStringFormat format)
+        public void SetValueAsString(string? value, KeyValueStringFormat format)
         {
             Value = GetInvariantStringValue(value, format);
         }
 
-        public byte[]? GetValueBinary()
+        public byte[]? GetValueAsBinary()
         {
             if (Value != null)
             {
@@ -85,7 +85,7 @@ namespace Leosac.KeyManager.Library
             return null;
         }
 
-        public void SetValueBinary(byte[]? value)
+        public void SetValueAsBinary(byte[]? value)
         {
             Value = (value != null) ? Convert.ToHexString(value) : string.Empty;
         }

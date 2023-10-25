@@ -115,7 +115,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             {
                 foreach (var material in entry.Variant.KeyContainers[0].Key.Materials)
                 {
-                    var rawkey = material.GetValueBinary();
+                    var rawkey = material.GetValueAsBinary();
                     if (rawkey != null)
                     {
                         var attributes = GetKeyEntryAttributes(entry, true, material.Name);
@@ -644,7 +644,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                 var attributes = GetKeyEntryAttributes(entry);
                 if (entry.Variant?.KeyContainers.Count == 1 && !entry.Variant.KeyContainers[0].Key.IsEmpty())
                 {
-                    var rawkey = entry.Variant.KeyContainers[0].Key.GetAggregatedValueBinary();
+                    var rawkey = entry.Variant.KeyContainers[0].Key.GetAggregatedValueAsBinary();
                     if (rawkey != null)
                     {
                         // We should already have only one key material during an update

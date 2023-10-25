@@ -7,7 +7,7 @@
         public void OneMaterial_GetAggregatedValue_HexString()
         {
             var key = new Key(null, 16, "00112233445566778899AABBCCDDEEFF");
-            var v = key.GetAggregatedValueString();
+            var v = key.GetAggregatedValueAsString();
             Assert.AreEqual("00112233445566778899AABBCCDDEEFF", v, true);
         }
 
@@ -15,7 +15,7 @@
         public void OneMaterial_SetAggregatedValue_HexString()
         {
             var key = new Key();
-            key.SetAggregatedValueString("00112233445566778899AABBCCDDEEFF");
+            key.SetAggregatedValueAsString("00112233445566778899AABBCCDDEEFF");
             Assert.AreEqual("00112233445566778899AABBCCDDEEFF", key.Materials[0].Value, true);
         }
 
@@ -23,7 +23,7 @@
         public void OneMaterial_GetAggregatedValue_Binary()
         {
             var key = new Key(null, 16, "00112233445566778899AABBCCDDEEFF");
-            var v = key.GetAggregatedValueBinary();
+            var v = key.GetAggregatedValueAsBinary();
             Assert.IsNotNull(v);
             Assert.AreEqual("00112233445566778899AABBCCDDEEFF", Convert.ToHexString(v), true);
         }
@@ -32,7 +32,7 @@
         public void OneMaterial_GetAggregatedValue_HexStringWithSpace()
         {
             var key = new Key(null, 16, "00112233445566778899AABBCCDDEEFF");
-            var v = key.GetAggregatedValueString(KeyValueStringFormat.HexStringWithSpace);
+            var v = key.GetAggregatedValueAsString(KeyValueStringFormat.HexStringWithSpace);
             Assert.AreEqual("00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF", v, true);
         }
 
@@ -40,7 +40,7 @@
         public void OneMaterial_SetAggregatedValue_HexStringWithSpace()
         {
             var key = new Key();
-            key.SetAggregatedValueString("00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF", KeyValueStringFormat.HexStringWithSpace);
+            key.SetAggregatedValueAsString("00 11 22 33 44 55 66 77 88 99 AA BB CC DD EE FF", KeyValueStringFormat.HexStringWithSpace);
             Assert.AreEqual("00112233445566778899AABBCCDDEEFF", key.Materials[0].Value, true);
         }
 
@@ -48,7 +48,7 @@
         public void TwoMaterials_GetAggregatedValue_HexString()
         {
             var key = new Key(null, 8, new KeyMaterial("0011223344556677"), new KeyMaterial("8899AABBCCDDEEFF"));
-            var v = key.GetAggregatedValueString();
+            var v = key.GetAggregatedValueAsString();
             Assert.AreEqual("00112233445566778899AABBCCDDEEFF", v, true);
         }
 
@@ -56,7 +56,7 @@
         public void TwoMaterials_SetAggregatedValue_HexString()
         {
             var key = new Key(null, 8, 2);
-            key.SetAggregatedValueString("00112233445566778899AABBCCDDEEFF");
+            key.SetAggregatedValueAsString("00112233445566778899AABBCCDDEEFF");
             Assert.AreEqual("0011223344556677", key.Materials[0].Value, true);
             Assert.AreEqual("8899AABBCCDDEEFF", key.Materials[1].Value, true);
         }
@@ -65,7 +65,7 @@
         public void TwoMaterials_GetAggregatedValue_Binary()
         {
             var key = new Key(null, 8, new KeyMaterial("0011223344556677"), new KeyMaterial("8899AABBCCDDEEFF"));
-            var v = key.GetAggregatedValueBinary();
+            var v = key.GetAggregatedValueAsBinary();
             Assert.IsNotNull(v);
             Assert.AreEqual("00112233445566778899AABBCCDDEEFF", Convert.ToHexString(v), true);
         }

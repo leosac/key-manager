@@ -238,14 +238,14 @@
                             throw new KeyStoreException("Unexpected number of keys on the SAM Key Entry.");
                         }
 
-                        keyVersions[0].Key.SetAggregatedValueString(string.Empty);
+                        keyVersions[0].Key.SetAggregatedValueAsString(string.Empty);
                         keyVersions[0].Version = infoav2.vera;
-                        keyVersions[1].Key.SetAggregatedValueString(string.Empty);
+                        keyVersions[1].Key.SetAggregatedValueAsString(string.Empty);
                         keyVersions[1].Version = infoav2.verb;
 
                         if (keyEntry.Variant.KeyContainers.Count >= 3)
                         {
-                            keyVersions[2].Key.SetAggregatedValueString(string.Empty);
+                            keyVersions[2].Key.SetAggregatedValueAsString(string.Empty);
                             keyVersions[2].Version = infoav2.verc;
                         }
                     }
@@ -381,7 +381,7 @@
                     key.setKeyVersion(GetSAMProperties().AuthenticateKeyVersion);
                     if (!string.IsNullOrEmpty(Properties?.Secret))
                     {
-                        key.fromString(KeyMaterial.GetValueString(Properties.Secret, KeyValueStringFormat.HexStringWithSpace));
+                        key.fromString(KeyMaterial.GetValueAsString(Properties.Secret, KeyValueStringFormat.HexStringWithSpace));
                     }
                     else
                     {
@@ -424,7 +424,7 @@
                         var containers = samkey.Variant.KeyContainers;
                         var keys = new LibLogicalAccess.UCharCollectionCollection(containers.Count)
                         {
-                            new LibLogicalAccess.ByteVector(containers[0].Key.GetAggregatedValueBinary(true))
+                            new LibLogicalAccess.ByteVector(containers[0].Key.GetAggregatedValueAsBinary(true))
                         };
                         if (!containers[1].Key.IsEmpty())
                         {
@@ -442,7 +442,7 @@
                                 log.Info("Updating value for key version B.");
                                 updateSettings.keyVb = 1;
                             }
-                            keys.Add(new LibLogicalAccess.ByteVector(containers[1].Key.GetAggregatedValueBinary(true)));
+                            keys.Add(new LibLogicalAccess.ByteVector(containers[1].Key.GetAggregatedValueAsBinary(true)));
                             if (containers[1] is KeyVersion keyVersionB)
                             {
                                 infoav2.verb = keyVersionB.Version;
@@ -455,7 +455,7 @@
                                     log.Info("Updating value for key version C.");
                                     updateSettings.keyVc = 1;
                                 }
-                                keys.Add(new LibLogicalAccess.ByteVector(containers[2].Key.GetAggregatedValueBinary(true)));
+                                keys.Add(new LibLogicalAccess.ByteVector(containers[2].Key.GetAggregatedValueAsBinary(true)));
                                 if (containers[2] is KeyVersion keyVersionC)
                                 {
                                     infoav2.verc = keyVersionC.Version;
@@ -580,7 +580,7 @@
             key.setKeyType(keyType);
             if (!string.IsNullOrEmpty(keyValue))
             {
-                key.fromString(KeyMaterial.GetValueString(keyValue, KeyValueStringFormat.HexStringWithSpace));
+                key.fromString(KeyMaterial.GetValueAsString(keyValue, KeyValueStringFormat.HexStringWithSpace));
             }
             return key;
         }
@@ -665,7 +665,7 @@
                 key.setKeyVersion(GetSAMProperties().AuthenticateKeyVersion);
                 if (!string.IsNullOrEmpty(Properties?.Secret))
                 {
-                    key.fromString(KeyMaterial.GetValueString(Properties.Secret, KeyValueStringFormat.HexStringWithSpace));
+                    key.fromString(KeyMaterial.GetValueAsString(Properties.Secret, KeyValueStringFormat.HexStringWithSpace));
                 }
                 else
                 {
@@ -726,7 +726,7 @@
             {
                 if (!string.IsNullOrEmpty(GetSAMProperties().Secret) && !_unlocked)
                 {
-                    UnlockSAM(av2cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetValueString(Properties?.Secret, KeyValueStringFormat.HexStringWithSpace));
+                    UnlockSAM(av2cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetValueAsString(Properties?.Secret, KeyValueStringFormat.HexStringWithSpace));
                     _unlocked = true;
                 }
 

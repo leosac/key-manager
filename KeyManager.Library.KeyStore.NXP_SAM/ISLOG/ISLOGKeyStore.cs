@@ -138,17 +138,17 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.ISLOG
                                             if (ke.Variant.KeyContainers[0] is KeyVersion keya)
                                             {
                                                 keya.Version = byte.Parse(versionEl.Attribute("vera")?.Value ?? "0");
-                                                keya.Key.SetAggregatedValueString(keyEl.Attribute("keya")?.Value ?? string.Empty);
+                                                keya.Key.SetAggregatedValueAsString(keyEl.Attribute("keya")?.Value ?? string.Empty);
                                             }
                                             if (ke.Variant.KeyContainers[1] is KeyVersion keyb)
                                             {
                                                 keyb.Version = byte.Parse(versionEl.Attribute("verb")?.Value ?? "0");
-                                                keyb.Key.SetAggregatedValueString(keyEl.Attribute("keyb")?.Value ?? string.Empty);
+                                                keyb.Key.SetAggregatedValueAsString(keyEl.Attribute("keyb")?.Value ?? string.Empty);
                                             }
                                             if (keyc != null)
                                             {
                                                 keyc.Version = byte.Parse(versionEl.Attribute("verc")?.Value ?? "0");
-                                                keyc.Key.SetAggregatedValueString(keyEl.Attribute("keyc")?.Value ?? string.Empty);
+                                                keyc.Key.SetAggregatedValueAsString(keyEl.Attribute("keyc")?.Value ?? string.Empty);
                                             }
                                         }
 

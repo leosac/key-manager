@@ -17,7 +17,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 return string.Empty;
             }
 
-            if (string.IsNullOrEmpty(value2.GetAggregatedValueString()))
+            if (string.IsNullOrEmpty(value2.GetAggregatedValueAsString()))
             {
                 return Binding.DoNothing;
             }

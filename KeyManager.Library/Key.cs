@@ -112,22 +112,22 @@ namespace Leosac.KeyManager.Library
             }
         }
 
-        public string? GetAggregatedValueString()
+        public string? GetAggregatedValueAsString()
         {
-            return GetAggregatedValueString(KeyValueStringFormat.HexString);
+            return GetAggregatedValueAsString(KeyValueStringFormat.HexString);
         }
 
-        public string? GetAggregatedValueString(KeyValueStringFormat format)
+        public string? GetAggregatedValueAsString(KeyValueStringFormat format)
         {
-            return GetAggregatedValueString(format, KeySize == 0 ? Environment.NewLine : null);
+            return GetAggregatedValueAsString(format, KeySize == 0 ? Environment.NewLine : null);
         }
 
-        public string? GetAggregatedValueString(KeyValueStringFormat format, string? delimiter)
+        public string? GetAggregatedValueAsString(KeyValueStringFormat format, string? delimiter)
         {
             StringBuilder? ret = null;
             foreach (var m in Materials)
             {
-                var v = m.GetValueString(format);
+                var v = m.GetValueAsString(format);
                 if (ret != null)
                 {
                     if (delimiter != null)
@@ -147,17 +147,17 @@ namespace Leosac.KeyManager.Library
             return ret?.ToString();
         }
 
-        public byte[]? GetAggregatedValueBinary()
+        public byte[]? GetAggregatedValueAsBinary()
         {
-            return GetAggregatedValueBinary(false);
+            return GetAggregatedValueAsBinary(false);
         }
 
-        public byte[]? GetAggregatedValueBinary(bool padKeySize)
+        public byte[]? GetAggregatedValueAsBinary(bool padKeySize)
         {
             var data = new List<byte>();
             foreach (var m in Materials)
             {
-                var mdata = m.GetValueBinary();
+                var mdata = m.GetValueAsBinary();
                 if (mdata != null)
                 {
                     data.AddRange(mdata);
@@ -170,16 +170,16 @@ namespace Leosac.KeyManager.Library
             return data.ToArray();
         }
 
-        public void SetAggregatedValueString(string? value)
+        public void SetAggregatedValueAsString(string? value)
         {
-            SetAggregatedValueString(value, KeyValueStringFormat.HexString);
+            SetAggregatedValueAsString(value, KeyValueStringFormat.HexString);
         }
 
-        public void SetAggregatedValueString(string? value, KeyValueStringFormat format)
+        public void SetAggregatedValueAsString(string? value, KeyValueStringFormat format)
         {
             if (KeySize == 0)
             {
-                SetAggregatedValueString(value, format, Environment.NewLine);
+                SetAggregatedValueAsString(value, format, Environment.NewLine);
             }
             else
             {
@@ -192,13 +192,13 @@ namespace Leosac.KeyManager.Library
                     {
                         int pos = i * length;
                         var sub = invariant.Substring(pos, (pos + length) < invariant.Length ? length : (invariant.Length - pos));
-                        Materials[i++].SetValueString(sub, KeyValueStringFormat.HexString);
+                        Materials[i++].SetValueAsString(sub, KeyValueStringFormat.HexString);
                     } while (i < Materials.Count && invariant.Length >= (i + 1) * KeySize * 2);
                 }
             }
         }
 
-        public void SetAggregatedValueString(string? value, KeyValueStringFormat format, string? separator)
+        public void SetAggregatedValueAsString(string? value, KeyValueStringFormat format, string? separator)
         {
             var v = value ?? string.Empty;
             var values = separator != null ? v.Split(separator) : new[] { v };
@@ -207,7 +207,7 @@ namespace Leosac.KeyManager.Library
             {
                 for (int i = 0; i < values.Length; ++i)
                 {
-                    Materials[i].SetValueString(values[i], format);
+                    Materials[i].SetValueAsString(values[i], format);
                 }
             }
         }

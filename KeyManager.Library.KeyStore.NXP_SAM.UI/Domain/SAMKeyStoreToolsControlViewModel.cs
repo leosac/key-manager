@@ -152,7 +152,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                     key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_3K3DES);
                 }
 
-                key.fromString(SAMAuthKey.Key.GetAggregatedValueString(KeyValueStringFormat.HexStringWithSpace));
+                key.fromString(SAMAuthKey.Key.GetAggregatedValueAsString(KeyValueStringFormat.HexStringWithSpace));
                 key.setKeyVersion(SAMAuthKey.Version);
                 var cmd = (KeyStore as SAMKeyStore)?.Chip?.getCommands();
                 if (cmd is SAMAV1ISO7816Commands samav1cmd)
@@ -231,7 +231,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
 
                 var key = new LibLogicalAccess.Card.DESFireKey();
                 key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
-                key.fromString(SAMUnlockKey.Key.GetAggregatedValueString(KeyValueStringFormat.HexStringWithSpace));
+                key.fromString(SAMUnlockKey.Key.GetAggregatedValueAsString(KeyValueStringFormat.HexStringWithSpace));
                 key.setKeyVersion(SAMUnlockKey.Version);
 
                 if (cmd is SAMAV1ISO7816Commands samav1cmd)

@@ -133,7 +133,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                     {
                         foreach (var m in kv.Key.Materials)
                         {
-                            m.SetValueBinary(KeyGeneration.Random(kv.Key.KeySize));
+                            m.SetValueAsBinary(KeyGeneration.Random(kv.Key.KeySize));
                         }
                     }
                 }
@@ -297,7 +297,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                                             KeyEntry = entry,
                                             KeyContainer = kv
                                         };
-                                        kv.Key.SetAggregatedValueString(await ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier, keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
+                                        kv.Key.SetAggregatedValueAsString(await ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier, keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
                                         await ks.Close();
                                     }
                                 }
@@ -399,7 +399,7 @@ namespace Leosac.KeyManager.Library.KeyStore
             }
 
             var key = await GetKey(keyIdentifier, keClass, keyContainerSelector);
-            return key?.GetAggregatedValueString();
+            return key?.GetAggregatedValueAsString();
         }
 
         /// <summary>

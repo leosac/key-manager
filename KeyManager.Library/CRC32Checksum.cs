@@ -8,7 +8,7 @@ namespace Leosac.KeyManager.Library
 
         public override byte[] ComputeKCV(Key key, byte[]? iv)
         {
-            var rawkey = key.GetAggregatedValueBinary() ?? throw new Exception("Key value is null");
+            var rawkey = key.GetAggregatedValueAsBinary() ?? throw new Exception("Key value is null");
 
             // Use the IV as a Salt
             byte[] data;
