@@ -64,7 +64,7 @@ namespace Leosac.KeyManager.Library.UI
                 {
                     try
                     {
-                        var key = SelectedSecretSharing.ComputeFragments(model.Fragments.ToArray());
+                        var key = SelectedSecretSharing.ComputeFragments(model.Fragments.Select(f => f.Replace(Environment.NewLine, string.Empty)).ToArray());
                         KeyValue = key != null ? Convert.ToHexString(key) : string.Empty;
                     }
                     catch (Exception ex)

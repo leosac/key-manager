@@ -19,3 +19,4 @@ Please use [GitHub issues](https://github.com/leosac/key-manager/issues) directl
 
 As Leosac Key Manager is a standalone application expected to run on an isolated environmnent without requiring administration privileges, security issues could be discussed publicly.
 Timing should matter less here but we will see over time!
+

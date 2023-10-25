@@ -10,6 +10,7 @@
              d:DesignHeight="300" d:DesignWidth="500">
     <StackPanel Orientation="Vertical" VerticalAlignment="Center">
         <TextBlock Text="{x:Static properties:Resources.KeyCeremonyWizardEnd1}" FontSize="18" HorizontalAlignment="Center" />
+        <materialDesign:PackIcon Kind="SealOutline" Width="192" Height="192" HorizontalAlignment="Center" Margin="20" />
         <TextBlock Text="{x:Static properties:Resources.KeyCeremonyWizardEnd2}" FontSize="18" HorizontalAlignment="Center" />
     </StackPanel>
 </UserControl>

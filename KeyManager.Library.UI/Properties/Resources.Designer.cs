@@ -520,20 +520,38 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gather all required individuals, prepare all key fragments materials, ensure the environment match the minimal security requirements..
+        ///   Looks up a localized string similar to When ready, go to the next step..
         /// </summary>
-        public static string KeyCeremonyWizardStart1 {
+        public static string KeyCeremonyWizardStart {
             get {
-                return ResourceManager.GetString("KeyCeremonyWizardStart1", resourceCulture);
+                return ResourceManager.GetString("KeyCeremonyWizardStart", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When ready, go to the next step..
+        ///   Looks up a localized string similar to Gather all required individuals.
         /// </summary>
-        public static string KeyCeremonyWizardStart2 {
+        public static string KeyCeremonyWizardStartReq1 {
             get {
-                return ResourceManager.GetString("KeyCeremonyWizardStart2", resourceCulture);
+                return ResourceManager.GetString("KeyCeremonyWizardStartReq1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prepare all key fragments materials.
+        /// </summary>
+        public static string KeyCeremonyWizardStartReq2 {
+            get {
+                return ResourceManager.GetString("KeyCeremonyWizardStartReq2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ensure the environment match the minimal security requirements.
+        /// </summary>
+        public static string KeyCeremonyWizardStartReq3 {
+            get {
+                return ResourceManager.GetString("KeyCeremonyWizardStartReq3", resourceCulture);
             }
         }
         

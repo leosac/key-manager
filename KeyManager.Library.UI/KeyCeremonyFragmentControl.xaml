@@ -36,52 +36,41 @@
                 <materialDesign:Flipper.BackContent>
                     <DockPanel LastChildFill="True" Width="200" MinHeight="100" Margin="8">
                         <Button DockPanel.Dock="Bottom" Width="184" Margin="5" Command="{x:Static materialDesign:Flipper.FlipCommand}" Content="Back" Style="{StaticResource MaterialDesignFlatButton}" />
-                        <PasswordBox
+                        <TextBox
                             materialDesign:HintAssist.HelperText="{x:Static properties:Resources.FragmentValueHelper}"
                             materialDesign:HintAssist.Hint="{x:Static properties:Resources.FragmentValue}"
-                            materialDesign:TextFieldAssist.HasClearButton="True"
                             materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
-                            Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
-                            materialDesign:PasswordBoxAssist.Password="{Binding FragmentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                            Text="{Binding FragmentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            TextWrapping="Wrap" AcceptsReturn="True"
+                            IsReadOnly="{Binding IsReunification, Converter={StaticResource InvertBooleanConverter}}" />
                     </DockPanel>
                 </materialDesign:Flipper.BackContent>
             </materialDesign:Flipper>
-            <materialDesign:Flipper Style="{StaticResource MaterialDesignCardFlipper}" Margin="3">
-                <materialDesign:Flipper.FrontContent>
-                    <Button Width="200" MinHeight="100" Margin="8" Command="{x:Static materialDesign:Flipper.FlipCommand}" Style="{StaticResource MaterialDesignFlatButton}">
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                            <materialDesign:PackIcon Kind="File" Width="64" Height="64" HorizontalAlignment="Center" />
-                            <TextBlock Text="{x:Static properties:Resources.FromFile}" HorizontalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                </materialDesign:Flipper.FrontContent>
-                <materialDesign:Flipper.BackContent>
-                    <DockPanel LastChildFill="True" Width="200" MinHeight="100" Margin="8">
-                        <Button DockPanel.Dock="Bottom" Width="184" Margin="5" Command="{x:Static materialDesign:Flipper.FlipCommand}" Content="Back" Style="{StaticResource MaterialDesignFlatButton}" />
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                            <Button Content="{x:Static properties:Resources.Browse}" HorizontalAlignment="Center" Command="{Binding BrowseCommand}" />
-                        </StackPanel>
-                    </DockPanel>
-                </materialDesign:Flipper.BackContent>
-            </materialDesign:Flipper>
-            <materialDesign:Flipper Style="{StaticResource MaterialDesignCardFlipper}" Visibility="{Binding IsReunification, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Margin="3">
-                <materialDesign:Flipper.FrontContent>
-                    <Button Width="200" MinHeight="100" Margin="8" Command="{x:Static materialDesign:Flipper.FlipCommand}" Style="{StaticResource MaterialDesignFlatButton}">
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                            <materialDesign:PackIcon Kind="Printer" Width="64" Height="64" HorizontalAlignment="Center" />
-                            <TextBlock Text="{x:Static properties:Resources.KeyExportPrint}" HorizontalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                </materialDesign:Flipper.FrontContent>
-                <materialDesign:Flipper.BackContent>
-                    <DockPanel LastChildFill="True" Width="200" MinHeight="100" Margin="8">
-                        <Button DockPanel.Dock="Bottom" Width="184" Margin="5" Command="{x:Static materialDesign:Flipper.FlipCommand}" Content="Back" Style="{StaticResource MaterialDesignFlatButton}" />
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                            <Button Content="{x:Static properties:Resources.KeyExportPrint}" HorizontalAlignment="Center" Command="{Binding PrintCommand}" />
-                        </StackPanel>
-                    </DockPanel>
-                </materialDesign:Flipper.BackContent>
-            </materialDesign:Flipper>
+            <materialDesign:Card Margin="3">
+                <Button Width="200" MinHeight="100" Margin="8" Command="{Binding BrowseCommand}" Style="{StaticResource MaterialDesignFlatButton}">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                        <materialDesign:PackIcon Kind="File" Width="64" Height="64" HorizontalAlignment="Center" />
+                        <TextBlock Text="{x:Static properties:Resources.FromFile}" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </materialDesign:Card>
+            <materialDesign:Card Visibility="{Binding IsReunification, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Margin="3">
+                <Button Width="200" MinHeight="100" Margin="8" Command="{Binding CopyToClipboardCommand}" Style="{StaticResource MaterialDesignFlatButton}">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                        <materialDesign:PackIcon Kind="ContentCopy" Width="64" Height="64" HorizontalAlignment="Center" />
+                        <TextBlock Text="{x:Static properties:Resources.CopyClipboard}" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </materialDesign:Card>
+            <materialDesign:Card Visibility="{Binding IsReunification, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Margin="3">
+                <Button Width="200" MinHeight="100" Margin="8" Command="{Binding PrintCommand}" Style="{StaticResource MaterialDesignFlatButton}">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                        <materialDesign:PackIcon Kind="Printer" Width="64" Height="64" HorizontalAlignment="Center" />
+                        <TextBlock Text="{x:Static properties:Resources.FragmentExportPrint}" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </materialDesign:Card>
             <materialDesign:Flipper Style="{StaticResource MaterialDesignCardFlipper}" Visibility="{Binding IsReunification, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Margin="3">
                 <materialDesign:Flipper.FrontContent>
                     <Button Width="200" MinHeight="100" Margin="8" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding GenerateQrCodeCommand}">

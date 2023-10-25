@@ -7,10 +7,17 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="500">
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock Text="{x:Static properties:Resources.KeyCeremonyWizardStart1}" TextWrapping="Wrap" FontSize="18" Margin="5" />
-        <TextBlock Text="{x:Static properties:Resources.KeyCeremonyWizardStart2}" FontSize="18" Margin="5 20 5 5" />
+             d:DesignHeight="400" d:DesignWidth="500">
+    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+        <WrapPanel HorizontalAlignment="Center" Margin="20">
+            <StackPanel VerticalAlignment="Center">
+                <CheckBox Content="{x:Static properties:Resources.KeyCeremonyWizardStartReq1}" Style="{StaticResource MaterialDesignFilterChipPrimaryCheckBox}" FontSize="16" Margin="5" />
+                <CheckBox Content="{x:Static properties:Resources.KeyCeremonyWizardStartReq2}" Style="{StaticResource MaterialDesignFilterChipPrimaryCheckBox}" FontSize="16" Margin="5" />
+                <CheckBox Content="{x:Static properties:Resources.KeyCeremonyWizardStartReq3}" Style="{StaticResource MaterialDesignFilterChipPrimaryCheckBox}" FontSize="16" Margin="5" />
+            </StackPanel>
+            <materialDesign:PackIcon Kind="Blackboard" Width="192" Height="192" />
+        </WrapPanel>
+        <TextBlock Text="{x:Static properties:Resources.KeyCeremonyWizardStart}" FontSize="18" Margin="20" HorizontalAlignment="Center" />
         <Button Margin="48"
               Command="{x:Static materialDesign:Transitioner.MoveNextCommand}"
               Style="{StaticResource MaterialDesignFloatingActionButton}">

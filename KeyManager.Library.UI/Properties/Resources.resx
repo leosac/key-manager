@@ -270,11 +270,17 @@
   <data name="KeyCeremonyWizardEnd2" xml:space="preserve">
     <value>Press the 'Finish' button to complete the ceremony.</value>
   </data>
-  <data name="KeyCeremonyWizardStart1" xml:space="preserve">
-    <value>Gather all required individuals, prepare all key fragments materials, ensure the environment match the minimal security requirements.</value>
-  </data>
-  <data name="KeyCeremonyWizardStart2" xml:space="preserve">
+  <data name="KeyCeremonyWizardStart" xml:space="preserve">
     <value>When ready, go to the next step.</value>
+  </data>
+  <data name="KeyCeremonyWizardStartReq1" xml:space="preserve">
+    <value>Gather all required individuals</value>
+  </data>
+  <data name="KeyCeremonyWizardStartReq2" xml:space="preserve">
+    <value>Prepare all key fragments materials</value>
+  </data>
+  <data name="KeyCeremonyWizardStartReq3" xml:space="preserve">
+    <value>Ensure the environment match the minimal security requirements</value>
   </data>
   <data name="KeyChecksum" xml:space="preserve">
     <value>Checksum</value>

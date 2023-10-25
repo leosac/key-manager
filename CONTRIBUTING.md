@@ -18,7 +18,7 @@ Please follow the issue template as close as possible.
 
 Any code contribution / pull request first requires to [sign the CLA](https://cla-assistant.io/leosac/key-manager). You will be invited for signing process by CLA Assitant bot when submiting a PR for the first time.
 
-## _Keys_ terminology
+## *Keys* terminology
 
 ## Key Store
 
@@ -38,3 +38,4 @@ Another container which also provides versioning of the Key.
 ## Key Material
 
 ## Key Link
+

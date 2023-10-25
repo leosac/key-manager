@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using Net.Codecrete.QrCodeGenerator;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Leosac.KeyManager.Library.UI.Domain
@@ -17,6 +18,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 GenerateQrCode();
                 MaterialDesignThemes.Wpf.Flipper.FlipCommand.Execute(null, null);
             });
+            CopyToClipboardCommand = new RelayCommand(CopyToClipboard);
         }
 
         private int _fragment;
@@ -98,6 +100,13 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
                 printDialog.PrintVisual(control, "Leosac Key Manager - Key Fragment Printing");
             }
+        }
+
+        public RelayCommand CopyToClipboardCommand { get; }
+
+        public void CopyToClipboard()
+        {
+            Clipboard.SetText(FragmentValue);
         }
     }
 }
