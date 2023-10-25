@@ -246,6 +246,9 @@
   <data name="KCVHelper" xml:space="preserve">
     <value>The Key Checksum Value</value>
   </data>
+  <data name="Key" xml:space="preserve">
+    <value>Key</value>
+  </data>
   <data name="KeyCeremony" xml:space="preserve">
     <value>Key Ceremony</value>
   </data>
@@ -287,6 +290,9 @@
   </data>
   <data name="KeyChecksumHelper" xml:space="preserve">
     <value>Key Checksum</value>
+  </data>
+  <data name="KeyComputationConfirmation" xml:space="preserve">
+    <value>Key has been computed.</value>
   </data>
   <data name="KeyEntry" xml:space="preserve">
     <value>Key Entry</value>

@@ -21,26 +21,47 @@
     <Grid>
         <DockPanel LastChildFill="True">
             <TextBlock DockPanel.Dock="Top" Text="{x:Static properties:Resources.KeyGeneration}" FontSize="18" Margin="8" />
-            <StackPanel DockPanel.Dock="Top" Orientation="Vertical" Margin="5">
-                <wpfappctrls:NumericUpDownControl Hint="{x:Static properties:Resources.KeySize}" HelperText="{x:Static properties:Resources.KeySizeHelper}" MinValue="8" CurrentValue="{Binding KeySize, ElementName=userControl, Mode=TwoWay}" Margin="8" />
-                <PasswordBox Margin="5"
-                     materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyValueHelper}"
-                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyValue}"
-                     materialDesign:TextFieldAssist.HasClearButton="True"
-                     materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
-                     Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
-                     materialDesign:PasswordBoxAssist.Password="{Binding Path=KeyValue, ElementName=userControl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
-            </StackPanel>
+            <Expander DockPanel.Dock="Top" Header="{x:Static properties:Resources.Key}" Margin="5">
+                <StackPanel Orientation="Vertical">
+                    <wpfappctrls:NumericUpDownControl Hint="{x:Static properties:Resources.KeySize}" HelperText="{x:Static properties:Resources.KeySizeHelper}" MinValue="8" CurrentValue="{Binding KeySize, ElementName=userControl, Mode=TwoWay}" Margin="8" />
+                    <PasswordBox Margin="5"
+                         materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyValueHelper}"
+                         materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyValue}"
+                         materialDesign:TextFieldAssist.HasClearButton="True"
+                         materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
+                         Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
+                         materialDesign:PasswordBoxAssist.Password="{Binding Path=KeyValue, ElementName=userControl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+                </StackPanel>
+            </Expander>
             <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,5,5,5">
                 <Button Width="100" IsDefault="True" Content="{x:Static properties:Resources.Close}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
             </WrapPanel>
             <TabControl TabStripPlacement="Left" Margin="5,15,5,5">
-                <TabItem Header="{x:Static properties:Resources.Random}">
+                <TabItem>
+                    <TabItem.Header>
+                        <WrapPanel>
+                            <materialDesign:PackIcon Kind="ShuffleVariant" />
+                            <TextBlock Text="{x:Static properties:Resources.Random}" Margin="5 0 0 0" />
+                        </WrapPanel>
+                    </TabItem.Header>
                     <Grid>
-                        <Button x:Name="btnRandom" Content="{x:Static properties:Resources.GenerateRandom}" HorizontalAlignment="Center" VerticalAlignment="Center" Click="BtnRandom_Click"/>
+                        <Button x:Name="btnRandom" HorizontalAlignment="Center" VerticalAlignment="Center" Height="80" Click="BtnRandom_Click">
+                            <Button.Content>
+                                <StackPanel>
+                                    <materialDesign:PackIcon Kind="ShuffleVariant" Width="32" Height="32" HorizontalAlignment="Center" Margin="5" />
+                                    <TextBlock Text="{x:Static properties:Resources.GenerateRandom}" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
                     </Grid>
                 </TabItem>
-                <TabItem Header="{x:Static properties:Resources.Password}">
+                <TabItem>
+                    <TabItem.Header>
+                        <WrapPanel>
+                            <materialDesign:PackIcon Kind="Abc" />
+                            <TextBlock Text="{x:Static properties:Resources.Password}" Margin="5 0 0 0" />
+                        </WrapPanel>
+                    </TabItem.Header>
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -61,7 +82,13 @@
                         <Button x:Name="btnPassword" Grid.Row="3" Content="{x:Static properties:Resources.Create}" Width="150" Click="BtnPassword_Click" Margin="10" />
                     </Grid>
                 </TabItem>
-                <TabItem Header="{x:Static properties:Resources.Mnemonic}">
+                <TabItem>
+                    <TabItem.Header>
+                        <WrapPanel>
+                            <materialDesign:PackIcon Kind="TagText" />
+                            <TextBlock Text="{x:Static properties:Resources.Mnemonic}" Margin="5 0 0 0" />
+                        </WrapPanel>
+                    </TabItem.Header>
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -114,10 +141,17 @@
                         <Button Grid.Row="3" x:Name="btnImportMnemonic" Content="{x:Static properties:Resources.Create}" Width="150" Click="BtnImportMnemonic_Click" Margin="10" />
                     </Grid>
                 </TabItem>
-                <TabItem Header="{x:Static properties:Resources.KeyCeremony}">
+                <TabItem>
+                    <TabItem.Header>
+                        <WrapPanel>
+                            <materialDesign:PackIcon Kind="Merge" />
+                            <TextBlock Text="{x:Static properties:Resources.KeyCeremony}" Margin="5 0 0 0" />
+                        </WrapPanel>
+                    </TabItem.Header>
                     <local:KeyCeremonySetupControl KeyValue="{Binding Path=KeyValue, Mode=TwoWay, ElementName=userControl}"/>
                 </TabItem>
             </TabControl>
         </DockPanel>
+        <materialDesign:Snackbar x:Name="keyGenSnackbar" MessageQueue="{materialDesign:MessageQueue}" />
     </Grid>
 </UserControl>

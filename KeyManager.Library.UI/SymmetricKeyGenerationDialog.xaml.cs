@@ -1,26 +1,8 @@
-﻿using Leosac.KeyManager.Library;
-using Leosac.KeyManager.Library.UI.Domain;
-using MaterialDesignThemes.Wpf;
-using SecretSharingDotNet.Cryptography;
-using SecretSharingDotNet.Math;
-using System;
-using System.Collections.Generic;
+﻿using Leosac.WpfApp;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Numerics;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Leosac.KeyManager.Library.UI
 {
@@ -78,17 +60,20 @@ namespace Leosac.KeyManager.Library.UI
         private void BtnRandom_Click(object sender, RoutedEventArgs e)
         {
             KeyValue = Convert.ToHexString(KeyGeneration.Random((uint)(KeySize > 0 ? KeySize : 16)));
+            ShowKeyComputationConfirmation();
         }
 
         private void BtnPassword_Click(object sender, RoutedEventArgs e)
         {
             KeyValue = Convert.ToHexString(KeyGeneration.FromPassword(tbxPassword.Password, tbxSalt.Text, KeySize));
+            ShowKeyComputationConfirmation();
         }
 
         private void BtnImportMnemonic_Click(object sender, RoutedEventArgs e)
         {
             var bip39 = new Mnemonic.BIP39();
             KeyValue = bip39.MnemonicToSeedHex(String.Join(" ", MnemonicWords), tbxMnemonicPassphrase.Password, KeySize);
+            ShowKeyComputationConfirmation();
         }
 
         private void BtnGenerateMnemonic_Click(object sender, RoutedEventArgs e)
@@ -141,14 +126,19 @@ namespace Leosac.KeyManager.Library.UI
             if (e.Key == System.Windows.Input.Key.Enter)
             {
                 AddWordInput(tbxNewWord.Text);
-                tbxNewWord.Text = String.Empty;
+                tbxNewWord.Text = string.Empty;
                 e.Handled = true;
             }
         }
 
         private void BtnCopyMnemonic_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(String.Join(" ", MnemonicWords));
+            Clipboard.SetText(string.Join(" ", MnemonicWords));
+        }
+
+        private void ShowKeyComputationConfirmation()
+        {
+            SnackbarHelper.EnqueueMessage(keyGenSnackbar.MessageQueue, Properties.Resources.KeyComputationConfirmation);
         }
     }
 }

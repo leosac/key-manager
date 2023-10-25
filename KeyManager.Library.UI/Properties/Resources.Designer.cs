@@ -448,6 +448,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Key.
+        /// </summary>
+        public static string Key {
+            get {
+                return ResourceManager.GetString("Key", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Key Ceremony.
         /// </summary>
         public static string KeyCeremony {
@@ -570,6 +579,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string KeyChecksumHelper {
             get {
                 return ResourceManager.GetString("KeyChecksumHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key has been computed..
+        /// </summary>
+        public static string KeyComputationConfirmation {
+            get {
+                return ResourceManager.GetString("KeyComputationConfirmation", resourceCulture);
             }
         }
         
