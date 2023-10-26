@@ -162,6 +162,9 @@
   <data name="MasterKey" xml:space="preserve">
     <value>Master Key</value>
   </data>
+  <data name="MasterKeyHelper" xml:space="preserve">
+    <value>The master encryption key used to store Key Store favorites secret (if enabled).</value>
+  </data>
   <data name="MenuFavorites" xml:space="preserve">
     <value>Favorites</value>
   </data>

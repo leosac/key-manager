@@ -7,10 +7,9 @@ namespace Leosac.KeyManager.Library
     public class EncryptJsonConverter : JsonConverter
     {
         private readonly byte[]? _encryptionKey;
-
-        private static readonly string _defaultMasterKey = "057BA03D6C44104863DC7361FE4578965D1887360F90A0895882E58A6248FC86"; // SHA256 of "changeme" text
-
-        public static string MasterKey { private get; set; } = _defaultMasterKey;
+        // SHA256 of "changeme"
+        private static readonly string _defaultMasterKey = "057BA03D6C44104863DC7361FE4578965D1887360F90A0895882E58A6248FC86";
+        private static string _globalMasterKey = _defaultMasterKey;
 
         public EncryptJsonConverter() : this(null) { }
 
@@ -24,12 +23,17 @@ namespace Leosac.KeyManager.Library
 
         public static bool IsDefaultMasterKey()
         {
-            return MasterKey.ToLowerInvariant() == _defaultMasterKey.ToLowerInvariant();
+            return _globalMasterKey.ToLowerInvariant() == _defaultMasterKey.ToLowerInvariant();
         }
 
         public static void ResetToDefaultMasterKey()
         {
-            MasterKey = _defaultMasterKey;
+            _globalMasterKey = _defaultMasterKey;
+        }
+
+        public static void ChangeMasterKey(string masterKey)
+        {
+            _globalMasterKey = masterKey;
         }
 
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
@@ -48,7 +52,7 @@ namespace Leosac.KeyManager.Library
 
         private byte[] GetKey()
         {
-            return _encryptionKey ?? Convert.FromHexString(MasterKey);
+            return _encryptionKey ?? Convert.FromHexString(_globalMasterKey);
         }
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)

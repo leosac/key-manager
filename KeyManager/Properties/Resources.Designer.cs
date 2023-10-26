@@ -196,6 +196,15 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The master encryption key used to store Key Store favorites secret (if enabled)..
+        /// </summary>
+        public static string MasterKeyHelper {
+            get {
+                return ResourceManager.GetString("MasterKeyHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Favorites.
         /// </summary>
         public static string MenuFavorites {

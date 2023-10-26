@@ -162,6 +162,9 @@
   <data name="MasterKey" xml:space="preserve">
     <value>Clé maître</value>
   </data>
+  <data name="MasterKeyHelper" xml:space="preserve">
+    <value>La clé de chiffrement maître utilisée pour le stockage du secret des magasins de clés favoris (si activé).</value>
+  </data>
   <data name="MenuFavorites" xml:space="preserve">
     <value>Favoris</value>
   </data>

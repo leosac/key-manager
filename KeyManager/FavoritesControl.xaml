@@ -33,14 +33,14 @@
                     <materialDesign:DialogHost.DialogContent>
                         <StackPanel Margin="16">
                             <WrapPanel>
-                                <PasswordBox materialDesign:HintAssist.HelperText="{x:Static properties:Resources.MasterKey}"
+                                <PasswordBox materialDesign:HintAssist.HelperText="{x:Static properties:Resources.MasterKeyHelper}"
                                              materialDesign:HintAssist.Hint="{x:Static properties:Resources.MasterKey}"
                                              materialDesign:TextFieldAssist.HasClearButton="True"
                                              materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
                                              Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
                                              materialDesign:PasswordBoxAssist.Password="{Binding NewMasterKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                              MaxLength="64"
-                                             Width="200" Margin="3" />
+                                             Width="400" Margin="3" />
                                 <materialDesign:DialogHost Identifier="KeyGenerationDialog" DialogTheme="Inherit">
                                     <materialDesign:DialogHost.DialogContent>
                                         <kslib:SymmetricKeyGenerationDialog KeySize="32" KeyValue="{Binding NewMasterKey, Mode=TwoWay}" />
@@ -52,7 +52,7 @@
                                     </Button>
                                 </materialDesign:DialogHost>
                             </WrapPanel>
-                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0 15 0 0">
                                 <Button Margin="0,8,8,0" Content="{x:Static properties:Resources.OK}" Command="{Binding ChangeMasterKeyCommand}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}" />
                                 <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />
                             </StackPanel>
@@ -60,14 +60,30 @@
                     </materialDesign:DialogHost.DialogContent>
                     <Button ToolTip="{x:Static properties:Resources.MasterKey}"
                             Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
-                            Style="{StaticResource MaterialDesignFloatingActionButton}"
                             Margin="5">
                         <Button.Content>
                             <Grid>
-                                <materialDesign:PackIcon Kind="PasswordCheck" Width="24" Height="24" Visibility="{Binding IsCustomMasterKey, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                <materialDesign:PackIcon Kind="PasswordAlert" Width="24" Height="24" Visibility="{Binding IsCustomMasterKey, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                                <materialDesign:PackIcon Kind="PasswordCheck" Width="24" Height="24" Visibility="{Binding IsDefaultMasterKey, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                                <materialDesign:PackIcon Kind="PasswordAlert" Width="24" Height="24" Visibility="{Binding IsDefaultMasterKey, Converter={StaticResource BooleanToVisibilityConverter}}" />
                             </Grid>
                         </Button.Content>
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsDefaultMasterKey}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                                        FillBehavior="Stop" 
+                                                        To="Red" Duration="0:0:2" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
                     </Button>
                 </materialDesign:DialogHost>
                 <Button Style="{StaticResource MaterialDesignFloatingActionButton}"

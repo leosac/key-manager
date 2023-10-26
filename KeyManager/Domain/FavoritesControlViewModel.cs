@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Leosac.KeyManager.Library;
-using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using MaterialDesignThemes.Wpf;
@@ -75,7 +74,7 @@ namespace Leosac.KeyManager.Domain
                 {
                     if (!string.IsNullOrEmpty(NewMasterKey))
                     {
-                        EncryptJsonConverter.MasterKey = NewMasterKey;
+                        EncryptJsonConverter.ChangeMasterKey(NewMasterKey);
                         NewMasterKey = null;
                     }
                     else
@@ -83,10 +82,15 @@ namespace Leosac.KeyManager.Domain
                         EncryptJsonConverter.ResetToDefaultMasterKey();
                     }
 
-
-                    IsCustomMasterKey = !EncryptJsonConverter.IsDefaultMasterKey();
+                    RefreshMasterKeyState();
                     DialogHost.CloseDialogCommand.Execute(null, null);
+                    RefreshFavorites();
                 });
+        }
+
+        public void RefreshMasterKeyState()
+        {
+            IsDefaultMasterKey = EncryptJsonConverter.IsDefaultMasterKey();
         }
 
         protected ISnackbarMessageQueue _snackbarMessageQueue;
@@ -107,12 +111,12 @@ namespace Leosac.KeyManager.Domain
             set => SetProperty(ref _isLoadingFavorites, value);
         }
 
-        private bool _isCustomMasterKey;
+        private bool _isDefaultMasterKey;
 
-        public bool IsCustomMasterKey
+        public bool IsDefaultMasterKey
         {
-            get => _isCustomMasterKey;
-            set => SetProperty(ref _isCustomMasterKey, value);
+            get => _isDefaultMasterKey;
+            set => SetProperty(ref _isDefaultMasterKey, value);
         }
 
         private string? _newMasterKey;
