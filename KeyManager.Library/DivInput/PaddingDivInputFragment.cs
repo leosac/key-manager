@@ -1,4 +1,6 @@
-﻿namespace Leosac.KeyManager.Library.DivInput
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Leosac.KeyManager.Library.DivInput
 {
     public class PaddingDivInputFragment : DivInputFragment
     {
@@ -7,8 +9,9 @@
             _padLength = 1;
         }
 
-        private int _padLength;
+        public override string Name => "Padding";
 
+        private int _padLength;
         public int PadLength
         {
             get => _padLength;
@@ -16,11 +19,19 @@
         }
 
         private byte _padByte;
-
         public byte PadByte
         {
             get => _padByte;
             set => SetProperty(ref _padByte, value);
+        }
+
+        public override object Clone()
+        {
+            return new PaddingDivInputFragment
+            {
+                PadByte = PadByte,
+                PadLength = PadLength
+            };
         }
 
         public override string GetFragment(DivInputContext context)

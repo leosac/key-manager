@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddDivInputFragment" xml:space="preserve">
+    <value>Ajouter un fragment</value>
+  </data>
   <data name="Browse" xml:space="preserve">
     <value>Parcourir</value>
   </data>
@@ -161,6 +164,12 @@
   </data>
   <data name="Directories" xml:space="preserve">
     <value>Répertoires</value>
+  </data>
+  <data name="DivInput" xml:space="preserve">
+    <value>Données de diversification</value>
+  </data>
+  <data name="DivInputHelper" xml:space="preserve">
+    <value>Les données de diversification, optionnelles, avec lesquelles dériver la clé de base.</value>
   </data>
   <data name="DocumentGenerated" xml:space="preserve">
     <value>Document généré avec</value>
@@ -363,6 +372,9 @@
   <data name="KeySizeHelper" xml:space="preserve">
     <value>Taille de la clé</value>
   </data>
+  <data name="KeyStoreAttribute" xml:space="preserve">
+    <value>Attribut du magasin de clés</value>
+  </data>
   <data name="KeyStoreProperties" xml:space="preserve">
     <value>Propriétés du magasin de clés</value>
   </data>
@@ -429,6 +441,12 @@
   <data name="OK" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="PadByte" xml:space="preserve">
+    <value>Byte</value>
+  </data>
+  <data name="PadLength" xml:space="preserve">
+    <value>Taille de padding</value>
+  </data>
   <data name="Passphrase" xml:space="preserve">
     <value>Phrase secrète</value>
   </data>
@@ -452,6 +470,9 @@
   </data>
   <data name="Random" xml:space="preserve">
     <value>Aléatoire</value>
+  </data>
+  <data name="RandomLength" xml:space="preserve">
+    <value>Taille aléatoire</value>
   </data>
   <data name="Salt" xml:space="preserve">
     <value>Sel</value>
@@ -488,6 +509,9 @@
   </data>
   <data name="StartUnionKeyCeremony" xml:space="preserve">
     <value>Démarrer la cérémonie de réunification</value>
+  </data>
+  <data name="StaticValue" xml:space="preserve">
+    <value>Valeur statique</value>
   </data>
   <data name="Test" xml:space="preserve">
     <value>Tester</value>

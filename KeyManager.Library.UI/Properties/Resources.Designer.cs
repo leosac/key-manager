@@ -61,6 +61,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add div input fragment.
+        /// </summary>
+        public static string AddDivInputFragment {
+            get {
+                return ResourceManager.GetString("AddDivInputFragment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Browse.
         /// </summary>
         public static string Browse {
@@ -192,6 +201,24 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string Directories {
             get {
                 return ResourceManager.GetString("Directories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diversification Input.
+        /// </summary>
+        public static string DivInput {
+            get {
+                return ResourceManager.GetString("DivInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The optional diversification input to derivate the base key with..
+        /// </summary>
+        public static string DivInputHelper {
+            get {
+                return ResourceManager.GetString("DivInputHelper", resourceCulture);
             }
         }
         
@@ -799,6 +826,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Key Store Attribute.
+        /// </summary>
+        public static string KeyStoreAttribute {
+            get {
+                return ResourceManager.GetString("KeyStoreAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Key Store Properties.
         /// </summary>
         public static string KeyStoreProperties {
@@ -997,6 +1033,24 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Byte.
+        /// </summary>
+        public static string PadByte {
+            get {
+                return ResourceManager.GetString("PadByte", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Padding Length.
+        /// </summary>
+        public static string PadLength {
+            get {
+                return ResourceManager.GetString("PadLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Passphrase.
         /// </summary>
         public static string Passphrase {
@@ -1065,6 +1119,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string Random {
             get {
                 return ResourceManager.GetString("Random", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random Length.
+        /// </summary>
+        public static string RandomLength {
+            get {
+                return ResourceManager.GetString("RandomLength", resourceCulture);
             }
         }
         
@@ -1173,6 +1236,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string StartUnionKeyCeremony {
             get {
                 return ResourceManager.GetString("StartUnionKeyCeremony", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Static Value.
+        /// </summary>
+        public static string StaticValue {
+            get {
+                return ResourceManager.GetString("StaticValue", resourceCulture);
             }
         }
         

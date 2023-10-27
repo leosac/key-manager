@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="Leosac.KeyManager.Library.UI.RandomDivInputFragmentControl"
+             x:Name="userControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
+             xmlns:wpfappctrls="clr-namespace:Leosac.WpfApp.Controls;assembly=WpfApp"
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="200">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <wpfappctrls:NumericUpDownControl Grid.Row="0" MinValue="0" MaxValue="255" Margin="5"
+                                          CurrentValue="{Binding Fragment.ByteLength, ElementName=userControl, Mode=TwoWay}"
+                                          HelperText="{x:Static properties:Resources.RandomLength}"
+                                          Hint="{x:Static properties:Resources.RandomLength}"/>
+    </Grid>
+</UserControl>

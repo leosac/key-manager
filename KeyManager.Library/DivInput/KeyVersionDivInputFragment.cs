@@ -4,6 +4,13 @@ namespace Leosac.KeyManager.Library.DivInput
 {
     public class KeyVersionDivInputFragment : DivInputFragment
     {
+        public override string Name => "Key Version";
+
+        public override object Clone()
+        {
+            return new KeyVersionDivInputFragment();
+        }
+
         public override string GetFragment(DivInputContext context)
         {
             if (context.KeyContainer is KeyVersion kv)

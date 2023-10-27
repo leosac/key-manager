@@ -22,6 +22,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                 Formatting = Formatting.Indented
             };
             DefaultKeyEntries = new Dictionary<KeyEntryClass, KeyEntry?>();
+            Attributes = new Dictionary<string, string>();
         }
 
         /// <summary>
@@ -60,6 +61,8 @@ namespace Leosac.KeyManager.Library.KeyStore
         public KeyStoreProperties? Properties { get; set; }
 
         public IDictionary<KeyEntryClass, KeyEntry?> DefaultKeyEntries { get; set; }
+
+        public IDictionary<string, string> Attributes { get; }
 
         public Task<bool> CheckKeyEntryExists(KeyEntry keyEntry)
         {
@@ -315,12 +318,16 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         private static string? ComputeDivInput(DivInputContext divContext, IList<DivInputFragment> divInput)
         {
-            if (divContext != null && divInput != null && divInput.Count > 0)
+            divContext.CurrentDivInput = null;
+            if (divInput != null && divInput.Count > 0)
             {
-                throw new NotImplementedException();
+                divContext.CurrentDivInput = string.Empty;
+                foreach (var input in divInput)
+                {
+                    divContext.CurrentDivInput += input.GetFragment(divContext);
+                }
             }
-
-            return null;
+            return divContext.CurrentDivInput;
         }
 
         protected void OnKeyEntryRetrieved(KeyEntry keyEntry)

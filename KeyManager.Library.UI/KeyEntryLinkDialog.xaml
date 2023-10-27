@@ -67,8 +67,8 @@
                                  Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
                     </Grid>
                 </GroupBox>
-                <local:DivInputControl Grid.Row="2" DivInput="{Binding Link.DivInput}" />
-                <materialDesign:Card Grid.Row="3" Margin="5,20,5,5">
+                <local:DivInputControl Grid.Row="2" DivInput="{Binding Link.DivInput}" Margin="5, 15, 5, 5" />
+                <materialDesign:Card Grid.Row="3" Margin="5">
                     <StackPanel>
                         <Expander HorizontalAlignment="Stretch" Header="{x:Static properties:Resources.WrappingKey}">
                             <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">

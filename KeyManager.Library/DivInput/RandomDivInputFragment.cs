@@ -7,12 +7,21 @@
             _byteLength = 1;
         }
 
-        private int _byteLength;
+        public override string Name => "Random";
 
+        private int _byteLength;
         public int ByteLength
         {
             get => _byteLength;
             set => SetProperty(ref _byteLength, value);
+        }
+
+        public override object Clone()
+        {
+            return new RandomDivInputFragment
+            {
+                ByteLength = ByteLength
+            };
         }
 
         public override string GetFragment(DivInputContext context)

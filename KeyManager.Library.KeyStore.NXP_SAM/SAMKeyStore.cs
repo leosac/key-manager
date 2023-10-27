@@ -7,6 +7,8 @@
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
+        private const string ATTRIBUTE_UID = "uid";
+
         private bool _unlocked;
 
         public LibLogicalAccess.ReaderProvider? ReaderProvider { get; private set; }
@@ -104,7 +106,8 @@
 
                         if (version != null)
                         {
-                            log.Info(string.Format("SAM Version {0}.{1}, UID: {2}", version.software.majorversion, version.software.minorversion, Convert.ToHexString(version.manufacture.uniqueserialnumber)));
+                            Attributes.Add(ATTRIBUTE_UID, Convert.ToHexString(version.manufacture.uniqueserialnumber));
+                            log.Info(string.Format("SAM Version {0}.{1}, UID: {2}", version.software.majorversion, version.software.minorversion, Attributes[ATTRIBUTE_UID]));
                         }
                     }
                     else
@@ -152,6 +155,11 @@
                 ReaderProvider.release();
                 ReaderProvider.Dispose();
                 ReaderProvider = null;
+            }
+
+            if (Attributes.ContainsKey(ATTRIBUTE_UID))
+            {
+                Attributes.Remove(ATTRIBUTE_UID);
             }
 
             _unlocked = false;

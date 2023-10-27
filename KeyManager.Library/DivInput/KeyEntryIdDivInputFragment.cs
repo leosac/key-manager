@@ -4,6 +4,13 @@ namespace Leosac.KeyManager.Library.DivInput
 {
     public class KeyEntryIdDivInputFragment : DivInputFragment
     {
+        public override string Name => "Key Entry Id";
+
+        public override object Clone()
+        {
+            return new KeyEntryIdDivInputFragment();
+        }
+
         public override string GetFragment(DivInputContext context)
         {
             // TODO: we may want to have a property to define the input conversion (eg. to use decimal string as byte value, ...)

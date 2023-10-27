@@ -51,6 +51,15 @@
     <Compile Update="KeyEntryLinkDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="KeyStoreAttributeDivInputFragmentControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="StaticDivInputFragmentControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="RandomDivInputFragmentControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

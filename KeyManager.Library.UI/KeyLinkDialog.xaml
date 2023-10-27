@@ -16,7 +16,6 @@
     <UserControl.Resources>
         <s:Boolean x:Key="True">True</s:Boolean>
         <s:Boolean x:Key="False">False</s:Boolean>
-        <materialDesign:BooleanToVisibilityConverter x:Key="BoolToVisibleConverter" />
         <materialDesign:NullableToVisibilityConverter x:Key="ReverseNullableToVisibilityConverter" NullValue="Visible" NotNullValue="Collapsed" />
         <domain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
         <domain:KeyStoreFavoriteConverter x:Key="KeyStoreFavoriteConverter" />
@@ -28,7 +27,7 @@
                 <PasswordBox Margin="15"
                              materialDesign:PasswordBoxAssist.Password="{Binding LinkResult}"
                              IsEnabled="False"
-                             Visibility="{Binding AllowImport, Converter={StaticResource BoolToVisibleConverter}}" />
+                             Visibility="{Binding AllowImport, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <WrapPanel Visibility="{Binding LinkError, Converter={StaticResource NullableToVisibilityConverter}}">
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="{x:Static properties:Resources.LinkError}" />
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding LinkError}" />
@@ -40,7 +39,7 @@
                             CommandParameter="{x:Static Dock.Bottom}"
                             Content="IMPORT NOW"
                             Style="{StaticResource MaterialDesignFlatLightButton}" 
-                            Visibility="{Binding AllowImport, Converter={StaticResource BoolToVisibleConverter}}" IsEnabled="{Binding LinkResult, Converter={StaticResource NullToBooleanConverter}}" />
+                            Visibility="{Binding AllowImport, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding LinkResult, Converter={StaticResource NullToBooleanConverter}}" />
                     <Button Margin="5" VerticalAlignment="Center"
                             Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"
                             CommandParameter="{x:Static Dock.Bottom}"
@@ -96,7 +95,7 @@
                          materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyVersionHelper}"
                          materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyVersion}"
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                <local:DivInputControl Grid.Row="3" DivInput="{Binding Link.DivInput}" />
+                <local:DivInputControl Grid.Row="3" DivInput="{Binding Link.DivInput}" Margin="5, 15, 5, 5" />
             </Grid>
         </DockPanel>
     </materialDesign:DrawerHost>

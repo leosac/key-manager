@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddDivInputFragment" xml:space="preserve">
+    <value>Add div input fragment</value>
+  </data>
   <data name="Browse" xml:space="preserve">
     <value>Browse</value>
   </data>
@@ -161,6 +164,12 @@
   </data>
   <data name="Directories" xml:space="preserve">
     <value>Directories</value>
+  </data>
+  <data name="DivInput" xml:space="preserve">
+    <value>Diversification Input</value>
+  </data>
+  <data name="DivInputHelper" xml:space="preserve">
+    <value>The optional diversification input to derivate the base key with.</value>
   </data>
   <data name="DocumentGenerated" xml:space="preserve">
     <value>Document generated with</value>
@@ -363,6 +372,9 @@
   <data name="KeySizeHelper" xml:space="preserve">
     <value>Key Size</value>
   </data>
+  <data name="KeyStoreAttribute" xml:space="preserve">
+    <value>Key Store Attribute</value>
+  </data>
   <data name="KeyStoreProperties" xml:space="preserve">
     <value>Key Store Properties</value>
   </data>
@@ -429,6 +441,12 @@
   <data name="OK" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="PadByte" xml:space="preserve">
+    <value>Byte</value>
+  </data>
+  <data name="PadLength" xml:space="preserve">
+    <value>Padding Length</value>
+  </data>
   <data name="Passphrase" xml:space="preserve">
     <value>Passphrase</value>
   </data>
@@ -452,6 +470,9 @@
   </data>
   <data name="Random" xml:space="preserve">
     <value>Random</value>
+  </data>
+  <data name="RandomLength" xml:space="preserve">
+    <value>Random Length</value>
   </data>
   <data name="Salt" xml:space="preserve">
     <value>Salt</value>
@@ -488,6 +509,9 @@
   </data>
   <data name="StartUnionKeyCeremony" xml:space="preserve">
     <value>Start the reunification ceremony</value>
+  </data>
+  <data name="StaticValue" xml:space="preserve">
+    <value>Static Value</value>
   </data>
   <data name="Test" xml:space="preserve">
     <value>Test</value>

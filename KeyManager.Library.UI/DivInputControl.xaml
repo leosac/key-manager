@@ -1,12 +1,50 @@
 ﻿<UserControl x:Class="Leosac.KeyManager.Library.UI.DivInputControl"
+             x:Name="userControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="150" d:DesignWidth="400">
-    <Grid>
-            
-    </Grid>
+    <materialDesign:Card>
+        <Expander Header="{x:Static properties:Resources.DivInput}">
+            <StackPanel>
+                <TextBlock Text="{x:Static properties:Resources.DivInputHelper}" Margin="5" />
+                <ListBox x:Name="fragments" ItemsSource="{Binding DivInput, ElementName=userControl}" MaxWidth="500" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="5">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel IsItemsHost="True" Orientation="Horizontal"></WrapPanel>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <materialDesign:Chip Content="{Binding}"
+                                 IsDeletable="True"
+                                 DeleteClick="RemoveFragmentClick"
+                                 Click="EditFragmentClick"
+                                 Margin="0 0 4 4" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <materialDesign:DialogHost Identifier="fragmentDialog" CloseOnClickAway="True" DialogTheme="Inherit" />
+                <WrapPanel>
+                    <ComboBox Width="200" Margin="5"
+                              materialDesign:HintAssist.Hint="{x:Static properties:Resources.AddDivInputFragment}"
+                              ItemsSource="{Binding FragmentTypes, ElementName=userControl}"
+                              SelectedItem="{Binding SelectedFragmentType, ElementName=userControl}"
+                              Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <Button Content="{materialDesign:PackIcon Kind=Plus,Size=24}" Click="AddFragment_Click" Margin="5" />
+                </WrapPanel>
+            </StackPanel>
+        </Expander>
+    </materialDesign:Card>
 </UserControl>
