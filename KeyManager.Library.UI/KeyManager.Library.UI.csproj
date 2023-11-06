@@ -11,6 +11,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>Leosac.$(AssemblyName)</PackageId>
+    <Version>1.11.0</Version>
     <Title>Leosac Key Manager UI Library</Title>
     <Company>Leosac SAS</Company>
     <Product>Leosac Key Manager</Product>
