@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace Leosac.KeyManager.Library
 {
-    public class Link : ObservableValidator
+    public class Link : ObservableObject
     {
         public static string StorePlaceholder => "Key Store Placeholder";
 

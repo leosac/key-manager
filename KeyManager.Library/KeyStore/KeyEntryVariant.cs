@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
-    public class KeyEntryVariant : ObservableValidator
+    public class KeyEntryVariant : ObservableObject
     {
         public KeyEntryVariant()
         {

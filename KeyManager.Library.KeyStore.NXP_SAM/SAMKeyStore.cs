@@ -248,13 +248,16 @@
 
                         keyVersions[0].Key.SetAggregatedValueAsString(string.Empty);
                         keyVersions[0].Version = infoav2.vera;
+                        keyVersions[0].TrackChanges();
                         keyVersions[1].Key.SetAggregatedValueAsString(string.Empty);
                         keyVersions[1].Version = infoav2.verb;
+                        keyVersions[1].TrackChanges();
 
                         if (keyEntry.Variant.KeyContainers.Count >= 3)
                         {
                             keyVersions[2].Key.SetAggregatedValueAsString(string.Empty);
                             keyVersions[2].Version = infoav2.verc;
+                            keyVersions[2].TrackChanges();
                         }
                     }
                 }
@@ -434,7 +437,7 @@
                         {
                             new LibLogicalAccess.ByteVector(containers[0].Key.GetAggregatedValueAsBinary(true))
                         };
-                        if (!containers[1].Key.IsEmpty())
+                        if (containers[1].IsConfigured())
                         {
                             log.Info("Updating value for key version A.");
                             updateSettings.keyVa = 1;
@@ -445,7 +448,7 @@
                         }
                         if (containers.Count >= 2)
                         {
-                            if (!containers[1].Key.IsEmpty())
+                            if (containers[1].IsConfigured())
                             {
                                 log.Info("Updating value for key version B.");
                                 updateSettings.keyVb = 1;
@@ -458,7 +461,7 @@
 
                             if (containers.Count >= 3)
                             {
-                                if (!containers[2].Key.IsEmpty())
+                                if (containers[2].IsConfigured())
                                 {
                                     log.Info("Updating value for key version C.");
                                     updateSettings.keyVc = 1;

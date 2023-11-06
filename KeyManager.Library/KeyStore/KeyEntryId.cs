@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
-    public class KeyEntryId : ObservableValidator, IEquatable<KeyEntryId>
+    public class KeyEntryId : ObservableObject, IEquatable<KeyEntryId>
     {
         public KeyEntryId()
         {

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Leosac.KeyManager.Library
 {
-    public class Key : ObservableValidator
+    public class Key : ObservableObject
     {
         public Key() : this(null, 0, 1)
         {

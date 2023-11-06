@@ -2,7 +2,7 @@
 
 namespace Leosac.KeyManager.Library
 {
-    public class KeyContainer : ObservableValidator
+    public class KeyContainer : ObservableObject
     {
         public KeyContainer() : this(null, null)
         {
@@ -33,6 +33,11 @@ namespace Leosac.KeyManager.Library
         {
             get => _name;
             set => SetProperty(ref _name, value);
+        }
+
+        public virtual bool IsConfigured()
+        {
+            return !Key.IsEmpty();
         }
     }
 }

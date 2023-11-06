@@ -1,7 +1,12 @@
-﻿namespace Leosac.KeyManager.Library.KeyStore
+﻿using System.Text.Json.Serialization;
+
+namespace Leosac.KeyManager.Library.KeyStore
 {
     public class KeyVersion : KeyContainer
     {
+        private bool _trackChanges;
+        private bool _hasChanges;
+
         public KeyVersion() : base("Key Version")
         {
             _version = 0;
@@ -22,7 +27,25 @@
         public byte Version
         {
             get => _version;
-            set => SetProperty(ref _version, value);
+            set
+            {
+                SetProperty(ref _version, value);
+                if (_trackChanges)
+                {
+                    _hasChanges = true;
+                }
+            }
+        }
+
+        public void TrackChanges()
+        {
+            _trackChanges = true;
+            _hasChanges = false;
+        }
+
+        public override bool IsConfigured()
+        {
+            return base.IsConfigured() || _hasChanges;
         }
     }
 }

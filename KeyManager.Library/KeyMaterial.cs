@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace Leosac.KeyManager.Library
 {
-    public partial class KeyMaterial : ObservableValidator
+    public partial class KeyMaterial : ObservableObject
     {
         public static string PRIVATE_KEY => "Private Key";
         public static string PUBLIC_KEY => "Public Key";

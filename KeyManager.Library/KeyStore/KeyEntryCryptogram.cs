@@ -2,7 +2,7 @@
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
-    public class KeyEntryCryptogram : ObservableValidator, IChangeKeyEntry
+    public class KeyEntryCryptogram : ObservableObject, IChangeKeyEntry
     {
         public KeyEntryCryptogram()
         {
