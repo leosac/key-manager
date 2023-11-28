@@ -437,7 +437,7 @@
                         {
                             new LibLogicalAccess.ByteVector(containers[0].Key.GetAggregatedValueAsBinary(true))
                         };
-                        if (containers[1].IsConfigured())
+                        if (containers[0].IsConfigured())
                         {
                             log.Info("Updating value for key version A.");
                             updateSettings.keyVa = 1;
