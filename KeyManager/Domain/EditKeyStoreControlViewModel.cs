@@ -200,6 +200,7 @@ namespace Leosac.KeyManager.Domain
                             {
                                 favorites.KeyStores.RemoveAt(favindex);
                             }
+                            fav.Properties = model.SelectedFactoryItem.DataContext.Properties;
                             favorites.KeyStores.Add(fav);
                             favorites.SaveToFile();
                         }
