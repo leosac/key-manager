@@ -65,7 +65,7 @@
     <WixVariable Id="WixUIDialogBmp" Value="dialog.bmp" />
     <WixVariable Id="WixUIInfoIco" Value="leosac.ico" />
 
-    <netfx:DotNetCompatibilityCheck RuntimeType="desktop" Platform="$(var.Platform)" RollForward="latestMinor" Version ="7.0.0" Property="NETCORESTATUS" />
+    <netfx:DotNetCompatibilityCheck RuntimeType="desktop" Platform="$(var.Platform)" RollForward="latestMinor" Version ="8.0.0" Property="NETCORESTATUS" />
     <Launch Condition="Installed OR NETCORESTATUS=&quot;0&quot;" Message="!(loc.DotNetRequiredError)" />
 
     <!-- Launch the application after setup exits -->
