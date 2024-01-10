@@ -39,6 +39,17 @@ namespace Leosac.KeyManager.Domain
         protected ISnackbarMessageQueue _snackbarMessageQueue;
 
         protected IList<KeyEntriesControlViewModel> _keModels;
+        protected void OnKeyStoreUpdated()
+        {
+            if (Favorite != null)
+            {
+                var favorites = Favorites.GetSingletonInstance();
+                if (favorites != null)
+                {
+                    SaveToFavorite(favorites, Favorite);
+                }
+            }
+        }
 
         private KeyStore? _keyStore;
 
@@ -123,6 +134,10 @@ namespace Leosac.KeyManager.Domain
                     foreach (var kclass in classes)
                     {
                         var model = new KeyEntriesControlViewModel(_snackbarMessageQueue, kclass) { KeyStore = KeyStore };
+                        model.DefaultKeyEntryUpdated += (sender, e) =>
+                        {
+                            OnKeyStoreUpdated();
+                        };
                         _keModels.Add(model);
                         Tabs.Add(new TabItem
                         {
@@ -180,7 +195,6 @@ namespace Leosac.KeyManager.Domain
             {
                 if (favorites != null)
                 {
-                    int favindex = favorites.KeyStores.IndexOf(fav);
                     var model = new KeyStoreSelectorDialogViewModel
                     {
                         Message = "Edit the Key Store Favorite"
@@ -196,17 +210,23 @@ namespace Leosac.KeyManager.Domain
                         object? ret = await DialogHost.Show(dialog, "RootDialog");
                         if (ret != null)
                         {
-                            if (favindex > -1)
-                            {
-                                favorites.KeyStores.RemoveAt(favindex);
-                            }
                             fav.Properties = model.SelectedFactoryItem.DataContext.Properties;
-                            favorites.KeyStores.Add(fav);
-                            favorites.SaveToFile();
+                            SaveToFavorite(favorites, fav);
                         }
                     }
                 }
             }
+        }
+
+        private static void SaveToFavorite(Favorites favorites, Favorite fav)
+        {
+            int favindex = favorites.KeyStores.IndexOf(fav);
+            if (favindex > -1)
+            {
+                favorites.KeyStores.RemoveAt(favindex);
+            }
+            favorites.KeyStores.Add(fav);
+            favorites.SaveToFile();
         }
 
         public async Task Publish()

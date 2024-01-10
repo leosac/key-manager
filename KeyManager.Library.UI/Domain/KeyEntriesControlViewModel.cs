@@ -59,7 +59,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     {
                         DataContext = model
                     };
-                    await EditDefaultKeyEntry(dialog);
+                    if (await EditDefaultKeyEntry(dialog))
+                    {
+                        OnDefaultKeyEntryUpdated();
+                    }
                 });
 
             EditKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
@@ -177,6 +180,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
         private readonly ICollectionView _identifiersView;
         private string? _searchTerms;
 
+        public event EventHandler? DefaultKeyEntryUpdated;
+        protected void OnDefaultKeyEntryUpdated()
+        {
+            DefaultKeyEntryUpdated?.Invoke(this, new EventArgs());
+        }
+
         public ObservableCollection<SelectableKeyEntryId> Identifiers { get; }
 
         public ObservableCollection<WizardFactory> WizardFactories { get; }
@@ -274,7 +283,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public AsyncRelayCommand EditDefaultKeyEntryCommand { get; }
 
-        private async Task EditDefaultKeyEntry(KeyEntryDialog dialog)
+        private async Task<bool> EditDefaultKeyEntry(KeyEntryDialog dialog)
         {
             var ret = await DialogHelper.ForceShow(dialog, "RootDialog");
             if (ret != null && dialog.DataContext is KeyEntryDialogViewModel model)
@@ -282,8 +291,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 if (KeyStore != null && model.KeyEntry != null)
                 {
                     KeyStore.DefaultKeyEntries[KeyEntryClass] = model.KeyEntry;
+                    return true;
                 }
             }
+            return false;
         }
 
         public AsyncRelayCommand<SelectableKeyEntryId> EditKeyEntryCommand { get; }

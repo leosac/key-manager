@@ -87,8 +87,19 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         public KeyEntry? DeepCopy()
         {
-            var serialized = JsonConvert.SerializeObject(this);
-            return serialized != null ? JsonConvert.DeserializeObject<KeyEntry>(serialized) : null;
+            var serialized = JsonConvert.SerializeObject(this, CreateJsonSerializerSettings());
+            return serialized != null ? JsonConvert.DeserializeObject(serialized, this.GetType(), CreateJsonSerializerSettings()) as KeyEntry : null;
+        }
+
+        public static JsonSerializerSettings CreateJsonSerializerSettings()
+        {
+            return new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                NullValueHandling = NullValueHandling.Ignore,
+                ObjectCreationHandling = ObjectCreationHandling.Replace,
+                Formatting = Formatting.Indented
+            };
         }
     }
 }

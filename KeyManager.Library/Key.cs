@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Leosac.KeyManager.Library.Policy;
+using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Text;
 
@@ -86,6 +87,7 @@ namespace Leosac.KeyManager.Library
 
         public ObservableCollection<string> Tags { get; set; }
 
+        [JsonIgnore]
         public ObservableCollection<IKeyPolicy> Policies { get; set; }
 
         private KeyLink _link;

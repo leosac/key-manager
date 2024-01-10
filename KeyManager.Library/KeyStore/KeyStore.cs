@@ -14,13 +14,7 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         protected KeyStore()
         {
-            _jsonSettings = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Auto,
-                NullValueHandling = NullValueHandling.Ignore,
-                ObjectCreationHandling = ObjectCreationHandling.Replace,
-                Formatting = Formatting.Indented
-            };
+            _jsonSettings = KeyEntry.CreateJsonSerializerSettings();
             DefaultKeyEntries = new Dictionary<KeyEntryClass, KeyEntry?>();
             Attributes = new Dictionary<string, string>();
         }
