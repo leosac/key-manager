@@ -5,6 +5,8 @@
         Host = 0x00,
         PICC = 0x01,
         OfflineChange = 0x02,
-        OfflineCrypto = 0x04
+        OfflineCrypto = 0x04,
+        OfflineUpload = 0x05,
+        OfflinePerso = 0x06
     }
 }

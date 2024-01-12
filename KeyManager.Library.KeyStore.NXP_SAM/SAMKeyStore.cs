@@ -1,4 +1,6 @@
-﻿namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
+﻿using LibLogicalAccess;
+
+namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 {
     public class SAMKeyStore : KeyStore
     {
@@ -95,7 +97,7 @@
 
                         var cmd = chip.getCommands();
                         LibLogicalAccess.Card.SAMVersion? version = null;
-                        if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av1cmd)
+                        if (cmd is LibLogicalAccess.Reader.SAMAV1ISO7816Commands av1cmd)
                         {
                             version = av1cmd.getVersion();
                         }
@@ -308,6 +310,7 @@
                 properties.AuthenticateHost = Convert.ToBoolean(set.authkey);
                 properties.AllowDumpSecretKey = Convert.ToBoolean(infoav2.ExtSET & 0x08);
                 properties.AllowDumpSecretKeyWithDiv = Convert.ToBoolean(infoav2.ExtSET & 0x10);
+                properties.ReservedForPerso = Convert.ToBoolean(infoav2.ExtSET & 0x20);
             }
         }
 
@@ -318,9 +321,17 @@
             {
                 keyEntry.SetVariant("DES");
             }
-            else if (keyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES)
+            else if (keyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES128)
             {
                 keyEntry.SetVariant("AES128");
+            }
+            else if (keyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES192)
+            {
+                keyEntry.SetVariant("AES192");
+            }
+            else if (keyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES256)
+            {
+                keyEntry.SetVariant("AES256");
             }
             else
             {
@@ -365,6 +376,24 @@
                 {
                     log.Error("Inserted SAM is AV1 mode and Auto Switch to AV2 wasn't enabled.");
                     throw new KeyStoreException("Inserted SAM is AV1 mode and Auto Switch to AV2 wasn't enabled.");
+                }
+            }
+            else if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
+            {
+                try
+                {
+                    if (GetSAMProperties().AutoSwitchToAV2)
+                    {
+                        var version = av2cmd.getVersion();
+                        if (version != null && version.manufacture.modecompatibility == 0x03) // Unactivated MIFARE SAM AV3
+                        {
+                            ActivateMifareSAM(av2cmd);
+                        }
+                    }
+                }
+                catch(LibLogicalAccessException ex)
+                {
+                    log.Error("SAM automatic activation failed.", ex);
                 }
             }
 
@@ -419,6 +448,7 @@
 
                         infoav2.ExtSET |= (byte)(Convert.ToByte(samkey.SAMProperties.AllowDumpSecretKey) << 3);
                         infoav2.ExtSET |= (byte)(Convert.ToByte(samkey.SAMProperties.AllowDumpSecretKeyWithDiv) << 4);
+                        infoav2.ExtSET |= (byte)(Convert.ToByte(samkey.SAMProperties.ReservedForPerso) << 5);
                     }
 
                     var updateSettings = new LibLogicalAccess.Card.KeyEntryUpdateSettings
@@ -477,7 +507,18 @@
                         var samkt = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_DES;
                         if (containers[0].Key.Tags.Contains("AES"))
                         {
-                            samkt = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES;
+                            if (containers[0].Key.KeySize == 32)
+                            {
+                                samkt = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES256;
+                            }
+                            else if (containers[0].Key.KeySize == 24)
+                            {
+                                samkt = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES192;
+                            }
+                            else
+                            {
+                                samkt = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES128;
+                            }
                         }
                         else
                         {
@@ -548,7 +589,7 @@
                 keyType = keyav1entry.getKeyType() switch
                 {
                     LibLogicalAccess.Card.SAMKeyType.SAM_KEY_3K3DES => LibLogicalAccess.Card.DESFireKeyType.DF_KEY_3K3DES,
-                    LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES => LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES,
+                    LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES128 => LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES,
                     _ => LibLogicalAccess.Card.DESFireKeyType.DF_KEY_DES,
                 };
             }
@@ -563,7 +604,7 @@
                     new LibLogicalAccess.ByteVector(kb)
                 };
 
-                keyav1entry.setKeysData(keys, LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES);
+                keyav1entry.setKeysData(keys, LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES128);
                 var keyInfo = keyav1entry.getKeyEntryInformation();
                 keyInfo.vera = keyVersion;
                 keyInfo.verb = keyVersion;

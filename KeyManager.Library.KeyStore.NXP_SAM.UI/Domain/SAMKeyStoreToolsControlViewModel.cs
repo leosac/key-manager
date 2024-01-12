@@ -14,7 +14,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
         {
             _samAuthKey = new KeyVersion { Name = "Key" };
             _samAuthKeyId = 0;
-            _samAuthKeyType = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES;
+            _samAuthKeyType = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES128;
 
             _samUnlockKey = new KeyVersion { Name = "Key", Key = new Key(null, 16, "") };
             _samUnlockKeyId = 1;
@@ -143,7 +143,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 {
                     key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_DES);
                 }
-                else if (SAMAuthKeyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES)
+                else if (SAMAuthKeyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES128)
                 {
                     key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
                 }

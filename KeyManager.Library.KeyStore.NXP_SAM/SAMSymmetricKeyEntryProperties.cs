@@ -30,6 +30,8 @@
 
         public bool AllowDumpSecretKeyWithDiv { get; set; }
 
+        public bool ReservedForPerso { get; set; }
+
         public byte[] DESFireAID { get; set; } = new byte[3];
 
         public byte DESFireKeyNum { get; set; }

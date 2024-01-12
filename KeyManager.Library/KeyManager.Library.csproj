@@ -41,7 +41,7 @@
     <PackageReference Include="Crc32.NET" Version="1.2.0" />
     <PackageReference Include="log4net" Version="2.0.15" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="SecretSharingDotNet" Version="0.10.2" />
+    <PackageReference Include="SecretSharingDotNet" Version="0.11.0" />
   </ItemGroup>
 
 </Project>
