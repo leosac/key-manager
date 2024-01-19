@@ -38,6 +38,19 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 aes128var.KeyContainers.Add(new KeyVersion("Key Version B", 0, new Key(new[] { "AES", KeyEntryClass.Symmetric.ToString() }, 16)));
                 aes128var.KeyContainers.Add(new KeyVersion("Key Version C", 0, new Key(new[] { "AES", KeyEntryClass.Symmetric.ToString() }, 16)));
                 variants.Add(aes128var);
+                var aes192var = new KeyEntryVariant { Name = "AES192" };
+                aes192var.KeyContainers.Add(new KeyVersion("Key Version A", 0, new Key(new[] { "AES", KeyEntryClass.Symmetric.ToString() }, 24)));
+                aes192var.KeyContainers.Add(new KeyVersion("Key Version B", 0, new Key(new[] { "AES", KeyEntryClass.Symmetric.ToString() }, 24)));
+                variants.Add(aes192var);
+                var aes256var = new KeyEntryVariant { Name = "AES256" };
+                aes256var.KeyContainers.Add(new KeyVersion("Key Version A", 0, new Key(new[] { "AES", KeyEntryClass.Symmetric.ToString() }, 32)));
+                aes256var.KeyContainers.Add(new KeyVersion("Key Version B", 0, new Key(new[] { "AES", KeyEntryClass.Symmetric.ToString() }, 32)));
+                variants.Add(aes256var);
+                var mfvar = new KeyEntryVariant { Name = "MIFARE" };
+                mfvar.KeyContainers.Add(new KeyVersion("Key Version A", 0, new Key(new[] { "MIFARE", KeyEntryClass.Symmetric.ToString() }, 12)));
+                mfvar.KeyContainers.Add(new KeyVersion("Key Version B", 0, new Key(new[] { "MIFARE", KeyEntryClass.Symmetric.ToString() }, 12)));
+                mfvar.KeyContainers.Add(new KeyVersion("Key Version C", 0, new Key(new[] { "MIFARE", KeyEntryClass.Symmetric.ToString() }, 12)));
+                variants.Add(mfvar);
             }
 
             return variants;

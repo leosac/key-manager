@@ -333,6 +333,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             {
                 keyEntry.SetVariant("AES256");
             }
+            else if (keyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_MIFARE)
+            {
+                keyEntry.SetVariant("MIFARE");
+            }
             else
             {
                 keyEntry.SetVariant("TK3DES");
@@ -519,6 +523,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                             {
                                 samkt = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES128;
                             }
+                        }
+                        else if (containers[0].Key.Tags.Contains("MIFARE"))
+                        {
+                            samkt = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_MIFARE;
                         }
                         else
                         {
