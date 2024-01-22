@@ -14,7 +14,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
             targetFactory = new SAMKeyStoreFactory();
         }
 
-        public override string Name => "NXP SAM AV2";
+        public override string Name => "NXP SAM AV2/AV3";
 
         public override Type GetPropertiesType()
         {

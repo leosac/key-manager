@@ -7,7 +7,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
-        public override string Name => "NXP SAM AV2";
+        public override string Name => "NXP SAM AV2/AV3";
 
         public override KeyStore CreateKeyStore()
         {
