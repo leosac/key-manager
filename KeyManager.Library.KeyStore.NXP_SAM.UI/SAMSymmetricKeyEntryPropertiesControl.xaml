@@ -93,6 +93,10 @@
                                 <ToggleButton IsChecked="{Binding Properties.DisableKeyEntry}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
                                 <TextBlock Text="{x:Static properties:Resources.DisableKeyEntry}" Padding="3" />
                             </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="7" Grid.Column="1" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.ReservedForPerso}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.ReservedForPerso}" Padding="3" />
+                            </StackPanel>
                         </Grid>
                     </StackPanel>
                 </Expander>

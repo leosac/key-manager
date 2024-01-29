@@ -664,6 +664,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reserved for Offline Perso.
+        /// </summary>
+        public static string ReservedForPerso {
+            get {
+                return ResourceManager.GetString("ReservedForPerso", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SAM Authentication.
         /// </summary>
         public static string SAMAuthentication {

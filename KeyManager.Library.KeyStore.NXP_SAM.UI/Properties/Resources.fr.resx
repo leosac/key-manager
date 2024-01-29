@@ -318,6 +318,9 @@
   <data name="RefreshReaderUnits" xml:space="preserve">
     <value>Actualiser la liste des lecteurs</value>
   </data>
+  <data name="ReservedForPerso" xml:space="preserve">
+    <value>Réservé pour Offline Perso</value>
+  </data>
   <data name="SAMAuthentication" xml:space="preserve">
     <value>Authentification SAM</value>
   </data>
