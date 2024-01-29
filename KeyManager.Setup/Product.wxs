@@ -340,8 +340,8 @@
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="NXP_SAMPluginDependenciesComponents" Directory="NXP_SAMPLUGIN">
-      <Component Id="LibLogicalAccessNetComponent">
-        <File Id="___var.LibLogicalAccessNet.dll_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.TargetDir)\LibLogicalAccessNet.dll" />
+      <Component Id="LibLogicalAccessNetCEComponent">
+        <File Id="___var.LibLogicalAccessNetCE.dll_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.TargetDir)\LibLogicalAccessNetCE.dll" />
       </Component>
     </ComponentGroup>
     
