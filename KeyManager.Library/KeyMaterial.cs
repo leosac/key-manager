@@ -19,10 +19,16 @@ namespace Leosac.KeyManager.Library
 
         }
 
-        public KeyMaterial(string value, string? name)
+        public KeyMaterial(string value, string? name) : this(value, name, 0)
+        {
+
+        }
+
+        public KeyMaterial(string value, string? name, uint overrideSize)
         {
             _value = value ?? string.Empty;
             _name = name;
+            _overrideSize = overrideSize;
         }
 
         [JsonIgnore]
@@ -51,6 +57,14 @@ namespace Leosac.KeyManager.Library
         {
             get => _name;
             set { SetProperty(ref _name, value); }
+        }
+
+        private uint _overrideSize;
+
+        public uint OverrideSize
+        {
+            get => _overrideSize;
+            set { SetProperty(ref _overrideSize, value); }
         }
 
         public static string? GetValueAsString(string? value, KeyValueStringFormat format)
@@ -101,5 +115,13 @@ namespace Leosac.KeyManager.Library
 
         [GeneratedRegex(".{2}")]
         private static partial Regex HexStringRegex();
+
+        /// <summary>
+        /// Some key materials shouldn't be treated as a key... (eg. MIFARE key entries).
+        /// </summary>
+        public bool IsRealKeyMateriel
+        {
+            get { return OverrideSize == 0; }
+        }
     }
 }

@@ -394,6 +394,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value.
+        /// </summary>
+        public static string GenericValue {
+            get {
+                return ResourceManager.GetString("GenericValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Go to parent.
         /// </summary>
         public static string GoToParent {

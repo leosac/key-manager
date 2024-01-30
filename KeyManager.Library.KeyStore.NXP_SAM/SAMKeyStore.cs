@@ -242,7 +242,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     {
                         var keysdata = av2entry.getKeysData();
                         var keyVersions = keyEntry.Variant.KeyContainers.OfType<KeyVersion>().ToArray();
-                        if (keysdata.Count < 2 || keysdata.Count != keyVersions.Length)
+                        if (keysdata.Count < 1 || keysdata.Count != keyVersions.Length)
                         {
                             log.Error(string.Format("Unexpected number of keys ({0}) on the SAM Key Entry.", keysdata.Count));
                             throw new KeyStoreException("Unexpected number of keys on the SAM Key Entry.");
@@ -251,9 +251,12 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                         keyVersions[0].Key.SetAggregatedValueAsString(string.Empty);
                         keyVersions[0].Version = infoav2.vera;
                         keyVersions[0].TrackChanges();
-                        keyVersions[1].Key.SetAggregatedValueAsString(string.Empty);
-                        keyVersions[1].Version = infoav2.verb;
-                        keyVersions[1].TrackChanges();
+                        if (keyEntry.Variant.KeyContainers.Count >= 2)
+                        {
+                            keyVersions[1].Key.SetAggregatedValueAsString(string.Empty);
+                            keyVersions[1].Version = infoav2.verb;
+                            keyVersions[1].TrackChanges();
+                        }
 
                         if (keyEntry.Variant.KeyContainers.Count >= 3)
                         {
@@ -535,6 +538,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                                 samkt = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_3K3DES;
                             }
                         }
+                        natkey.setKeyType(samkt); // Temporary fix, this could be removed with LLA version >= v3.1
                         natkey.setKeysData(keys, samkt);
                     }
                     natkey.setKeyEntryInformation(infoav2);

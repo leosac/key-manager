@@ -69,5 +69,14 @@
             Assert.IsNotNull(v);
             Assert.AreEqual("00112233445566778899AABBCCDDEEFF", Convert.ToHexString(v), true);
         }
+
+        [TestMethod]
+        public void ThreeMaterialsWithOneOverrideSize_GetAggregatedValue_Binary()
+        {
+            var key = new Key(null, 6, new KeyMaterial("001122334455"), new KeyMaterial("FFFFFFFF", null, 4), new KeyMaterial("8899AABBCCDD"));
+            var v = key.GetAggregatedValueAsBinary();
+            Assert.IsNotNull(v);
+            Assert.AreEqual("001122334455FFFFFFFF8899AABBCCDD", Convert.ToHexString(v), true);
+        }
     }
 }

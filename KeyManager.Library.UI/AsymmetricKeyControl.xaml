@@ -34,7 +34,7 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" HorizontalAlignment="Right" Text="{Binding Name}" />
-                        <TextBox Grid.Row="1" x:Name="tbxKeyValue" Margin="8,8,8,20" Width="380" Height="60"
+                        <TextBox Grid.Row="1" Margin="8,8,8,20" Width="380" Height="60"
                                      materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyValueHelper}"
                                      materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyValue}"
                                      materialDesign:TextFieldAssist.HasClearButton="True"

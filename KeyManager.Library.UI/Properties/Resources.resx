@@ -228,6 +228,9 @@
   <data name="GenerateWords" xml:space="preserve">
     <value>Generate new words</value>
   </data>
+  <data name="GenericValue" xml:space="preserve">
+    <value>Value</value>
+  </data>
   <data name="GoToParent" xml:space="preserve">
     <value>Go to parent</value>
   </data>

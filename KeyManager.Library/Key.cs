@@ -163,11 +163,12 @@ namespace Leosac.KeyManager.Library
                 if (mdata != null)
                 {
                     data.AddRange(mdata);
+                    var padsize = m.OverrideSize > 0 ? m.OverrideSize : KeySize;
+                    if (padKeySize && padsize > 0 && mdata.Length < padsize)
+                    {
+                        data.AddRange(new byte[padsize - mdata.Length]);
+                    }
                 }
-            }
-            if (padKeySize && KeySize > 0 && data.Count < KeySize)
-            {
-                data.AddRange(new byte[KeySize - data.Count]);
             }
             return data.ToArray();
         }
@@ -188,14 +189,15 @@ namespace Leosac.KeyManager.Library
                 var invariant = KeyMaterial.GetInvariantStringValue(value, format);
                 if (!string.IsNullOrEmpty(invariant))
                 {
-                    int length = (int)KeySize * 2;
                     int i = 0;
+                    int pos = 0;
                     do
                     {
-                        int pos = i * length;
+                        int length = (int)(Materials[i].OverrideSize > 0 ? Materials[i].OverrideSize : KeySize) * 2;
                         var sub = invariant.Substring(pos, (pos + length) < invariant.Length ? length : (invariant.Length - pos));
                         Materials[i++].SetValueAsString(sub, KeyValueStringFormat.HexString);
-                    } while (i < Materials.Count && invariant.Length >= (i + 1) * KeySize * 2);
+                        pos += length;
+                    } while (i < Materials.Count && invariant.Length > pos);
                 }
             }
         }

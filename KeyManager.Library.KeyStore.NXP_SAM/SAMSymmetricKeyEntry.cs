@@ -44,12 +44,11 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 variants.Add(aes192var);
                 var aes256var = new KeyEntryVariant { Name = "AES256" };
                 aes256var.KeyContainers.Add(new KeyVersion("Key Version A", 0, new Key(new[] { "AES", KeyEntryClass.Symmetric.ToString() }, 32)));
-                aes256var.KeyContainers.Add(new KeyVersion("Key Version B", 0, new Key(new[] { "AES", KeyEntryClass.Symmetric.ToString() }, 32)));
                 variants.Add(aes256var);
                 var mfvar = new KeyEntryVariant { Name = "MIFARE" };
-                mfvar.KeyContainers.Add(new KeyVersion("Key Version A", 0, new Key(new[] { "MIFARE", KeyEntryClass.Symmetric.ToString() }, 12)));
-                mfvar.KeyContainers.Add(new KeyVersion("Key Version B", 0, new Key(new[] { "MIFARE", KeyEntryClass.Symmetric.ToString() }, 12)));
-                mfvar.KeyContainers.Add(new KeyVersion("Key Version C", 0, new Key(new[] { "MIFARE", KeyEntryClass.Symmetric.ToString() }, 12)));
+                mfvar.KeyContainers.Add(new KeyVersion("Key Version A", 0, new Key(new[] { "MIFARE", KeyEntryClass.Symmetric.ToString() }, 6, new KeyMaterial(string.Empty, "Key A"), new KeyMaterial("00", "Key A Div KeyNo", 1), new KeyMaterial("00", "Key A Div KeyVer", 1), new KeyMaterial(string.Empty, "Key B"), new KeyMaterial("00", "Key B Div KeyNo", 1), new KeyMaterial("00", "Key B Div KeyVer", 1))));
+                mfvar.KeyContainers.Add(new KeyVersion("Key Version B", 0, new Key(new[] { "MIFARE", KeyEntryClass.Symmetric.ToString() }, 6, new KeyMaterial(string.Empty, "Key A"), new KeyMaterial("00", "Key A Div KeyNo", 1), new KeyMaterial("00", "Key A Div KeyVer", 1), new KeyMaterial(string.Empty, "Key B"), new KeyMaterial("00", "Key B Div KeyNo", 1), new KeyMaterial("00", "Key B Div KeyVer", 1))));
+                mfvar.KeyContainers.Add(new KeyVersion("Key Version C", 0, new Key(new[] { "MIFARE", KeyEntryClass.Symmetric.ToString() }, 6, new KeyMaterial(string.Empty, "Key A"), new KeyMaterial("00", "Key A Div KeyNo", 1), new KeyMaterial("00", "Key A Div KeyVer", 1), new KeyMaterial(string.Empty, "Key B"), new KeyMaterial("00", "Key B Div KeyNo", 1), new KeyMaterial("00", "Key B Div KeyVer", 1))));
                 variants.Add(mfvar);
             }
 
