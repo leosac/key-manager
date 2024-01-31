@@ -10,13 +10,13 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>Leosac.$(AssemblyName)</PackageId>
-    <Version>1.12.0</Version>
+    <Version>1.13.0</Version>
     <Title>Leosac Key Manager Plugin UI Library</Title>
     <Company>Leosac SAS</Company>
     <Product>Leosac Key Manager</Product>
     <Authors>leosac</Authors>
     <Description>Library for Leosac Key Manager plugin UI development</Description>
-    <Copyright>Copyright ©2023 Leosac SAS</Copyright>
+    <Copyright>Copyright ©2024 Leosac SAS</Copyright>
     <PackageProjectUrl>https://github.com/leosac/key-manager</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/leosac/key-manager.git</RepositoryUrl>

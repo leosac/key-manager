@@ -538,7 +538,6 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                                 samkt = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_3K3DES;
                             }
                         }
-                        natkey.setKeyType(samkt); // Temporary fix, this could be removed with LLA version >= v3.1
                         natkey.setKeysData(keys, samkt);
                     }
                     natkey.setKeyEntryInformation(infoav2);
