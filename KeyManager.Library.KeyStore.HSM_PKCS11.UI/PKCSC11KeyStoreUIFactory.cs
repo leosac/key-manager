@@ -7,6 +7,11 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI
 {
     public class PKCSC11KeyStoreUIFactory : KeyStoreUIFactory
     {
+        public PKCSC11KeyStoreUIFactory()
+        {
+            targetFactory = new PKCSC11KeyStoreFactory();
+        }
+
         public override string Name => "HSM PKCS#11";
 
         public override Type GetPropertiesType()
