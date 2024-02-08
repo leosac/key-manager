@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
-    public class KeyEntryId : ObservableObject, IEquatable<KeyEntryId>
+    public class KeyEntryId : ObservableObject, IEquatable<KeyEntryId>, ICloneable
     {
         public KeyEntryId()
         {
@@ -85,6 +85,34 @@ namespace Leosac.KeyManager.Library.KeyStore
         public override string ToString()
         {
             return string.Format("Key Entry Id (Identifier: `{0}`, Label: `{1}`)", Id, Label);
+        }
+
+        public object Clone()
+        {
+            return Clone(null);
+        }
+
+        public KeyEntryId Clone(IDictionary<string, string>? attributes)
+        {
+            var clone = new KeyEntryId();
+            clone.Id = Id;
+            clone.Label = Label;
+            if (attributes != null)
+            {
+                foreach (var key in attributes.Keys)
+                {
+                    if (!string.IsNullOrEmpty(clone.Id))
+                    {
+                        clone.Id = clone.Id.Replace("%{" + key + "}", attributes[key]);
+                    }
+                    if (!string.IsNullOrEmpty(clone.Label))
+                    {
+                        clone.Label = clone.Label.Replace("%{" + key + "}", attributes[key]);
+                    }
+                }
+            }
+            clone.Handle = Handle;
+            return clone;
         }
     }
 }

@@ -10,6 +10,8 @@ namespace Leosac.KeyManager.Library.KeyStore
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
+        public const string ATTRIBUTE_NAME = "name";
+
         protected readonly JsonSerializerSettings _jsonSettings;
 
         protected KeyStore()
@@ -253,6 +255,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                 var entry = await Get(id, keClass);
                 if (entry != null)
                 {
+                    entry.Identifier = entry.Identifier.Clone(Attributes);
                     if (entry.Link != null && entry.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(entry.Link.KeyStoreFavorite))
                     {
                         var cryptogram = new KeyEntryCryptogram
@@ -272,7 +275,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                                 KeyStore = ks,
                                 KeyEntry = entry
                             };
-                            cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier, keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKeyId, entry.Link.WrappingKeySelector);
+                            cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier.Clone(Attributes), keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKeyId, entry.Link.WrappingKeySelector);
                             await ks.Close();
                         }
                     }
@@ -294,7 +297,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                                             KeyEntry = entry,
                                             KeyContainer = kv
                                         };
-                                        kv.Key.SetAggregatedValueAsString(await ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier, keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
+                                        kv.Key.SetAggregatedValueAsString(await ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier.Clone(Attributes), keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
                                         await ks.Close();
                                     }
                                 }

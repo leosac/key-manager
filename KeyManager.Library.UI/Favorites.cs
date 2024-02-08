@@ -61,6 +61,7 @@ namespace Leosac.KeyManager.Library.UI
                 SaveToFile();
             }
             log.Info(string.Format("New Favorite `{0}` saved.", favorite.Name));
+            store.Attributes[KeyStore.KeyStore.ATTRIBUTE_NAME] = favorite.Name;
             return favorite;
         }
     }

@@ -13,6 +13,8 @@ namespace Leosac.KeyManager.Library.UI
                 ks.Properties = fav.Properties;
                 ks.DefaultKeyEntries = fav.DefaultKeyEntries;
 
+                ks.Attributes[KeyStore.KeyStore.ATTRIBUTE_NAME] = fav.Name;
+
                 return ks;
             }
 
