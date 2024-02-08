@@ -150,6 +150,9 @@
   <data name="SlotFilterTypeHelper" xml:space="preserve">
     <value>Filtre de sélection du slot</value>
   </data>
+  <data name="StoreSecret" xml:space="preserve">
+    <value>Enregistrer</value>
+  </data>
   <data name="User" xml:space="preserve">
     <value>Utilisateur</value>
   </data>
