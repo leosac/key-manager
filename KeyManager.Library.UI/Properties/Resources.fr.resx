@@ -120,6 +120,9 @@
   <data name="AddDivInputFragment" xml:space="preserve">
     <value>Ajouter un fragment</value>
   </data>
+  <data name="Attributes" xml:space="preserve">
+    <value>Attributs</value>
+  </data>
   <data name="Browse" xml:space="preserve">
     <value>Parcourir</value>
   </data>
