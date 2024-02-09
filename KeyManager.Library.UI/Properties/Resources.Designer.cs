@@ -367,6 +367,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generate Key Entries.
+        /// </summary>
+        public static string GenerateKeyEntries {
+            get {
+                return ResourceManager.GetString("GenerateKeyEntries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Generate Key Entry.
         /// </summary>
         public static string GenerateKeyEntry {
@@ -1038,6 +1047,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string OK {
             get {
                 return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Options.
+        /// </summary>
+        public static string Options {
+            get {
+                return ResourceManager.GetString("Options", resourceCulture);
             }
         }
         

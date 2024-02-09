@@ -757,7 +757,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             log.Info(string.Format("Key usage counter `{0}` updated.", counter.Identifier));
         }
 
-        public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector)
+        public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, WrappingKey? wrappingKey)
         {
             // Will be supported with SAM AV3
             throw new NotSupportedException();

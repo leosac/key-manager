@@ -1,5 +1,6 @@
 ﻿using Leosac.WpfApp;
 using System.Collections.ObjectModel;
+using System.Text;
 
 namespace Leosac.KeyManager.Library.UI
 {
@@ -62,6 +63,7 @@ namespace Leosac.KeyManager.Library.UI
             }
             log.Info(string.Format("New Favorite `{0}` saved.", favorite.Name));
             store.Attributes[KeyStore.KeyStore.ATTRIBUTE_NAME] = favorite.Name;
+            store.Attributes[KeyStore.KeyStore.ATTRIBUTE_HEXNAME] = Convert.ToHexString(Encoding.UTF8.GetBytes(favorite.Name));
             return favorite;
         }
     }

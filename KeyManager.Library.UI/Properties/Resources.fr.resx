@@ -219,6 +219,9 @@
   <data name="General" xml:space="preserve">
     <value>Général</value>
   </data>
+  <data name="GenerateKeyEntries" xml:space="preserve">
+    <value>Générer les clés</value>
+  </data>
   <data name="GenerateKeyEntry" xml:space="preserve">
     <value>Générer un enregistrement de clés</value>
   </data>
@@ -443,6 +446,9 @@
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>Options</value>
   </data>
   <data name="PadByte" xml:space="preserve">
     <value>Byte</value>

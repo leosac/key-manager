@@ -11,6 +11,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         public const string ATTRIBUTE_NAME = "name";
+        public const string ATTRIBUTE_HEXNAME = "hexname";
 
         protected readonly JsonSerializerSettings _jsonSettings;
 
@@ -59,6 +60,8 @@ namespace Leosac.KeyManager.Library.KeyStore
         public IDictionary<KeyEntryClass, KeyEntry?> DefaultKeyEntries { get; set; }
 
         public IDictionary<string, string> Attributes { get; }
+
+        public StoreOptions? Options { get; set; }
 
         public Task<bool> CheckKeyEntryExists(KeyEntry keyEntry)
         {
@@ -231,22 +234,22 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="changes">The key entries details.</param>
         public abstract Task Store(IList<IChangeKeyEntry> changes);
 
-        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector, Action<KeyStore, KeyEntryClass, int>? initCallback)
+        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
             var classes = SupportedClasses;
             foreach (var keClass in classes)
             {
-                await Publish(store, getFavoriteKeyStore, keClass, wrappingKeyId, wrappingContainerSelector, initCallback);
+                await Publish(store, getFavoriteKeyStore, keClass, initCallback);
             }
         }
 
-        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryClass keClass, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector, Action<KeyStore, KeyEntryClass, int>? initCallback)
+        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryClass keClass, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
             var ids = await GetAll(keClass);
-            await Publish(store, getFavoriteKeyStore, ids, keClass, wrappingKeyId, wrappingContainerSelector, initCallback);
+            await Publish(store, getFavoriteKeyStore, ids, keClass, initCallback);
         }
 
-        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, IEnumerable<KeyEntryId> ids, KeyEntryClass keClass, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector, Action<KeyStore, KeyEntryClass, int>? initCallback)
+        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, IEnumerable<KeyEntryId> ids, KeyEntryClass keClass, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
             var changes = new List<IChangeKeyEntry>();
             initCallback?.Invoke(this, keClass, ids.Count());
@@ -260,10 +263,8 @@ namespace Leosac.KeyManager.Library.KeyStore
                     {
                         var cryptogram = new KeyEntryCryptogram
                         {
-                            Identifier = id,
-                            // TODO: we may want to have multiple wrapping keys later on
-                            WrappingKeyId = wrappingKeyId,
-                            WrappingContainerSelector = wrappingContainerSelector
+                            Identifier = id
+                            // TODO: we may want to have a different wrapping key per Cryptogram later on
                         };
 
                         var ks = getFavoriteKeyStore(entry.Link.KeyStoreFavorite);
@@ -275,7 +276,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                                 KeyStore = ks,
                                 KeyEntry = entry
                             };
-                            cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier.Clone(Attributes), keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKeyId, entry.Link.WrappingKeySelector);
+                            cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier.Clone(Attributes), keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKey);
                             await ks.Close();
                         }
                     }
@@ -309,8 +310,14 @@ namespace Leosac.KeyManager.Library.KeyStore
             }
 
             await store.Open();
-            await store.Store(changes);
-            await store.Close();
+            try
+            {
+                await store.Store(changes);
+            }
+            finally
+            {
+                await store.Close();
+            }
         }
 
         private static string? ComputeDivInput(DivInputContext divContext, IList<DivInputFragment> divInput)
@@ -412,10 +419,9 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="keyIdentifier">The key entry identifier</param>
         /// <param name="keClass">The key entry class</param>
         /// <param name="divInput">The key div input (optional)</param>
-        /// <param name="wrappingKeyId">The wrapping key identifier for cryptogram computation (optional)</param>
-        /// <param name="wrappingKeyContainerSelector">The wrapping key container selector for cryptogram computation (optional)</param>
+        /// <param name="wrappingKey">The wrapping key for cryptogram computation (optional)</param>
         /// <returns>The change key entry cryptogram</returns>
-        public virtual async Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, KeyEntryId? wrappingKeyId, string? wrappingKeyContainerSelector)
+        public virtual async Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, WrappingKey? wrappingKey)
         {
             string? result = null;
             log.Info(string.Format("Resolving key entry link with Key Entry Identifier `{0}`, Div Input `{1}`...", keyIdentifier, divInput));
@@ -424,10 +430,10 @@ namespace Leosac.KeyManager.Library.KeyStore
             if (keyEntry != null)
             {
                 log.Info("Key entry link resolved.");
-                if (wrappingKeyId != null)
+                if (wrappingKey != null && wrappingKey.KeyId.IsConfigured())
                 {
-                    var wrappingKey = await GetKey(wrappingKeyId, KeyEntryClass.Symmetric, wrappingKeyContainerSelector);
-                    if (wrappingKey != null)
+                    var wKey = await GetKey(wrappingKey.KeyId, KeyEntryClass.Symmetric, wrappingKey.ContainerSelector);
+                    if (wKey != null)
                     {
                         // TODO: do something here to encipher the key value?
                         // The wrapping algorithm may be too close to the targeted Key Store

@@ -27,20 +27,12 @@ namespace Leosac.KeyManager.Library.KeyStore
             set => SetProperty(ref _value, value);
         }
 
-        private KeyEntryId? _wrappingKeyId;
+        private WrappingKey? _wrappingKey;
 
-        public KeyEntryId? WrappingKeyId
+        public WrappingKey? WrappingKey
         {
-            get => _wrappingKeyId;
-            set => SetProperty(ref _wrappingKeyId, value);
-        }
-
-        private string? _wrappingContainerSelector;
-
-        public string? WrappingContainerSelector
-        {
-            get => _wrappingContainerSelector;
-            set => SetProperty(ref _wrappingContainerSelector, value);
+            get => _wrappingKey;
+            set => SetProperty(ref _wrappingKey, value);
         }
     }
 }

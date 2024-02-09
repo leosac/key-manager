@@ -1,4 +1,5 @@
 ﻿using Leosac.KeyManager.Library.Plugin;
+using System.Text;
 
 namespace Leosac.KeyManager.Library.UI
 {
@@ -14,6 +15,7 @@ namespace Leosac.KeyManager.Library.UI
                 ks.DefaultKeyEntries = fav.DefaultKeyEntries;
 
                 ks.Attributes[KeyStore.KeyStore.ATTRIBUTE_NAME] = fav.Name;
+                ks.Attributes[KeyStore.KeyStore.ATTRIBUTE_HEXNAME] = Convert.ToHexString(Encoding.UTF8.GetBytes(fav.Name));
 
                 return ks;
             }

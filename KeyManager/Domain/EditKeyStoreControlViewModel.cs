@@ -256,6 +256,7 @@ namespace Leosac.KeyManager.Domain
                                 deststore.Properties = prop;
                                 deststore.KeyEntryRetrieved += (sender, e) => ProgressValue++;
                                 deststore.KeyEntryUpdated += (sender, e) => ProgressValue++;
+                                deststore.Options = model.Options;
                                 var initCallback = new Action<KeyStore, KeyEntryClass, int>((_, _, nbentries) =>
                                 {
                                     ProgressMaximum = nbentries * 2;
@@ -291,8 +292,6 @@ namespace Leosac.KeyManager.Domain
                                             getFavoriteKeyStore,
                                             entries,
                                             keModel.KeyEntryClass,
-                                            model.WrappingKeyId,
-                                            model.WrappingKeySelector,
                                             initCallback
                                         );
                                     }
@@ -301,8 +300,6 @@ namespace Leosac.KeyManager.Domain
                                         await KeyStore.Publish(deststore,
                                             getFavoriteKeyStore,
                                             keModel.KeyEntryClass,
-                                            model.WrappingKeyId,
-                                            model.WrappingKeySelector,
                                             initCallback
                                         );
                                     }

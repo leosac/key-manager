@@ -68,15 +68,20 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             }
             else if (change is KeyEntryCryptogram cryptogram)
             {
-                if (cryptogram.WrappingKeyId == null)
+                var wrappingKey = cryptogram.WrappingKey;
+                if (wrappingKey == null)
+                {
+                    wrappingKey = Options?.WrappingKey;
+                }
+                if (wrappingKey == null || !wrappingKey.KeyId.IsConfigured())
                 {
                     log.Error("Wrapping Key Entry Identifier parameter is expected.");
                     throw new KeyStoreException("Wrapping Key Entry Identifier parameter is expected.");
                 }
 
-                if (!await CheckKeyEntryExists(cryptogram.WrappingKeyId, change.KClass))
+                if (!await CheckKeyEntryExists(wrappingKey.KeyId, change.KClass))
                 {
-                    log.Error(string.Format("The key entry `{0}` doesn't exist.", cryptogram.WrappingKeyId));
+                    log.Error(string.Format("The key entry `{0}` doesn't exist.", wrappingKey.KeyId));
                     throw new KeyStoreException("The key entry doesn't exist.");
                 }
 

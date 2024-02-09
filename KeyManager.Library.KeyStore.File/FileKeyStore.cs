@@ -40,6 +40,17 @@ namespace Leosac.KeyManager.Library.KeyStore.File
                 log.Error(string.Format("Cannot open the key sore `{0}`.", GetFileProperties().Fullpath));
                 throw new KeyStoreException("Cannot open the key sore.");
             }
+
+            if (!Attributes.ContainsKey(ATTRIBUTE_NAME))
+            {
+                var dirname = System.IO.Path.GetDirectoryName(GetFileProperties().Fullpath);
+                if (!string.IsNullOrEmpty(dirname))
+                {
+                    Attributes[ATTRIBUTE_NAME] = dirname;
+                    Attributes[ATTRIBUTE_HEXNAME] = Convert.ToHexString(Encoding.UTF8.GetBytes(dirname));
+                }
+            }
+
             log.Info("Key store opened.");
             return Task.CompletedTask;
         }

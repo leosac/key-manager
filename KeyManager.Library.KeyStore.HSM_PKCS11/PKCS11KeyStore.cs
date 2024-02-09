@@ -126,15 +126,21 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             }
             else if (change is KeyEntryCryptogram cryptogram)
             {
-                if (cryptogram.WrappingKeyId == null)
+                var wrappingKey = cryptogram.WrappingKey;
+                if (!(wrappingKey?.KeyId.IsConfigured()).GetValueOrDefault(false))
+                {
+                    wrappingKey = Options?.WrappingKey;
+                }
+
+                if (wrappingKey?.KeyId == null)
                 {
                     log.Error("Wrapping Key Entry Identifier parameter is expected.");
                     throw new KeyStoreException("Wrapping Key Entry Identifier parameter is expected.");
                 }
 
-                if (!await CheckKeyEntryExists(cryptogram.WrappingKeyId, out IObjectHandle? wrapHandle))
+                if (!await CheckKeyEntryExists(wrappingKey.KeyId, out IObjectHandle? wrapHandle))
                 {
-                    log.Error(string.Format("The key entry `{0}` doesn't exist.", cryptogram.WrappingKeyId));
+                    log.Error(string.Format("The key entry `{0}` doesn't exist.", wrappingKey.KeyId));
                     throw new KeyStoreException("The key entry doesn't exist.");
                 }
                 if (!string.IsNullOrEmpty(cryptogram.Value))
@@ -200,6 +206,11 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                 else if (key.Tags.Contains("DES") && key.KeySize == 24)
                 {
                     mechanism = _session!.Factories.MechanismFactory.Create(CKM.CKM_DES3_KEY_GEN);
+                }
+
+                if (key.KeySize > 0)
+                {
+                    attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE_LEN, key.KeySize));
                 }
             }
 
@@ -280,21 +291,19 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                 attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_TOKEN, true));
             }
 
+            var cclass = CKO.CKO_SECRET_KEY;
             if (entry != null && !string.IsNullOrEmpty(materialName))
             {
                 if (entry.KClass == KeyEntryClass.PrivateKey || (entry.KClass == KeyEntryClass.Asymmetric && materialName == KeyMaterial.PRIVATE_KEY))
                 {
-                    attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PRIVATE_KEY));
+                    cclass = CKO.CKO_PRIVATE_KEY;
                 }
                 else if (entry.KClass == KeyEntryClass.PublicKey || (entry.KClass == KeyEntryClass.Asymmetric && materialName == KeyMaterial.PUBLIC_KEY))
                 {
-                    attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_PUBLIC_KEY));
-                }
-                else
-                {
-                    attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, CKO.CKO_SECRET_KEY));
+                    cclass = CKO.CKO_PUBLIC_KEY;
                 }
             }
+            attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, cclass));
 
             return attributes;
         }
@@ -535,10 +544,10 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return Task.CompletedTask;
         }
 
-        public override async Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, KeyEntryId? wrappingKeyId, string? wrappingContainerSelector)
+        public override async Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, WrappingKey? wrappingKey)
         {
-            log.Info(string.Format("Resolving key entry link with Key Entry Identifier `{0}` and Wrapping Key Entry Identifier `{1}`...", keyIdentifier, wrappingKeyId));
-            if (wrappingKeyId == null)
+            log.Info(string.Format("Resolving key entry link with Key Entry Identifier `{0}` and Wrapping Key Entry Identifier `{1}`...", keyIdentifier, wrappingKey?.KeyId));
+            if (wrappingKey == null || !wrappingKey.KeyId.IsConfigured())
             {
                 log.Error("Wrapping Key Entry Identifier parameter is expected.");
                 throw new KeyStoreException("Wrapping Key Entry Identifier parameter is expected.");
@@ -554,9 +563,9 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                 log.Error(string.Format("The key entry `{0}` doesn't exist.", keyIdentifier));
                 throw new KeyStoreException("The key entry doesn't exist.");
             }
-            if (!await CheckKeyEntryExists(wrappingKeyId, out IObjectHandle? wrapHandle))
+            if (!await CheckKeyEntryExists(wrappingKey.KeyId, out IObjectHandle? wrapHandle))
             {
-                log.Error(string.Format("The key entry `{0}` doesn't exist.", wrappingKeyId));
+                log.Error(string.Format("The key entry `{0}` doesn't exist.", wrappingKey.KeyId));
                 throw new KeyStoreException("The key entry doesn't exist.");
             }
 
@@ -622,7 +631,21 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                 }
                 else
                 {
-                    await Create(change);
+                    if ((Options?.GenerateKeys).GetValueOrDefault(false))
+                    {
+                        if (change is KeyEntry ke)
+                        {
+                            await Generate(ke);
+                        }
+                        else
+                        {
+                            await Generate(change.Identifier, change.KClass);
+                        }
+                    }
+                    else
+                    {
+                        await Create(change);
+                    }
                 }
             }
 

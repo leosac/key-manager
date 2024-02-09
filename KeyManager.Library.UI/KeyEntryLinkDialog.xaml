@@ -72,8 +72,8 @@
                     <StackPanel>
                         <Expander HorizontalAlignment="Stretch" Header="{x:Static properties:Resources.WrappingKey}">
                             <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                                <local:KeyEntryIdControl KeyEntryId="{Binding KeyEntryLink.WrappingKeyId, Mode=TwoWay}" />
-                                <TextBox Text="{Binding KeyEntryLink.WrappingKeySelector, Mode=TwoWay}" Margin="5"
+                                <local:KeyEntryIdControl KeyEntryId="{Binding KeyEntryLink.WrappingKey.KeyId, Mode=TwoWay}" />
+                                <TextBox Text="{Binding KeyEntryLink.WrappingKey.ContainerSelector, Mode=TwoWay}" Margin="5"
                                          materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyVersionHelper}"
                                          materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyVersion}"/>
                             </StackPanel>

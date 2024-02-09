@@ -4,24 +4,15 @@
     {
         public KeyEntryLink()
         {
-            _wrappingKeySelector = "0";
-            _wrappingKeyId = new KeyEntryId(string.Empty);
+            _wrappingKey = new WrappingKey();
         }
 
-        private KeyEntryId _wrappingKeyId;
+        private WrappingKey _wrappingKey;
 
-        public KeyEntryId WrappingKeyId
+        public WrappingKey WrappingKey
         {
-            get => _wrappingKeyId;
-            set => SetProperty(ref _wrappingKeyId, value);
-        }
-
-        private string _wrappingKeySelector;
-
-        public string WrappingKeySelector
-        {
-            get => _wrappingKeySelector;
-            set => SetProperty(ref _wrappingKeySelector, value);
+            get => _wrappingKey;
+            set => SetProperty(ref _wrappingKey, value);
         }
     }
 }

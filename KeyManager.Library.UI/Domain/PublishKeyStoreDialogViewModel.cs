@@ -9,32 +9,21 @@ namespace Leosac.KeyManager.Library.UI.Domain
     {
         public PublishKeyStoreDialogViewModel()
         {
-            _wrappingKeySelector = "0";
-            _wrappingKeyId = new KeyEntryId();
+            _options = new StoreOptions();
         }
 
         private Favorite? _favorite;
-
         public Favorite? Favorite
         {
             get => _favorite;
             set => SetProperty(ref _favorite, value);
         }
 
-        private KeyEntryId _wrappingKeyId;
-
-        public KeyEntryId WrappingKeyId
+        private StoreOptions _options;
+        public StoreOptions Options
         {
-            get => _wrappingKeyId;
-            set => SetProperty(ref _wrappingKeyId, value);
-        }
-
-        private string _wrappingKeySelector;
-
-        public string WrappingKeySelector
-        {
-            get => _wrappingKeySelector;
-            set => SetProperty(ref _wrappingKeySelector, value);
+            get => _options;
+            set => SetProperty(ref _options, value);
         }
     }
 }
