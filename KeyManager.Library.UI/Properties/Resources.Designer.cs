@@ -1168,6 +1168,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Resolve Key links.
+        /// </summary>
+        public static string ResolveKeyLinks {
+            get {
+                return ResourceManager.GetString("ResolveKeyLinks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Salt.
         /// </summary>
         public static string Salt {

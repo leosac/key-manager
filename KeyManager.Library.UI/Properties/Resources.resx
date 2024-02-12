@@ -486,6 +486,9 @@
   <data name="RandomLength" xml:space="preserve">
     <value>Random Length</value>
   </data>
+  <data name="ResolveKeyLinks" xml:space="preserve">
+    <value>Resolve Key links</value>
+  </data>
   <data name="Salt" xml:space="preserve">
     <value>Salt</value>
   </data>

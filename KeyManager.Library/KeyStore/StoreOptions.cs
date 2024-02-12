@@ -7,6 +7,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         public StoreOptions()
         {
             _wrappingKey = new WrappingKey();
+            _resolveKeyLinks = true;
         }
 
         private WrappingKey _wrappingKey;
@@ -21,6 +22,13 @@ namespace Leosac.KeyManager.Library.KeyStore
         {
             get => _generateKeys;
             set => SetProperty(ref _generateKeys, value);
+        }
+
+        private bool _resolveKeyLinks;
+        public bool ResolveKeyLinks
+        {
+            get => _resolveKeyLinks;
+            set => SetProperty(ref _resolveKeyLinks, value);
         }
     }
 }

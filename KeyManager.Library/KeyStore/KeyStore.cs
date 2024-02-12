@@ -261,28 +261,36 @@ namespace Leosac.KeyManager.Library.KeyStore
                     entry.Identifier = entry.Identifier.Clone(Attributes);
                     if (entry.Link != null && entry.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(entry.Link.KeyStoreFavorite))
                     {
-                        var cryptogram = new KeyEntryCryptogram
+                        if ((Options?.ResolveKeyLinks).GetValueOrDefault(true))
                         {
-                            Identifier = id
-                            // TODO: we may want to have a different wrapping key per Cryptogram later on
-                        };
-
-                        var ks = getFavoriteKeyStore(entry.Link.KeyStoreFavorite);
-                        if (ks != null)
-                        {
-                            await ks.Open();
-                            var divContext = new DivInput.DivInputContext
+                            var cryptogram = new KeyEntryCryptogram
                             {
-                                KeyStore = ks,
-                                KeyEntry = entry
+                                Identifier = id
+                                // TODO: we may want to have a different wrapping key per Cryptogram later on
                             };
-                            cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier.Clone(Attributes), keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKey);
-                            await ks.Close();
+
+                            var ks = getFavoriteKeyStore(entry.Link.KeyStoreFavorite);
+                            if (ks != null)
+                            {
+                                await ks.Open();
+                                var divContext = new DivInput.DivInputContext
+                                {
+                                    KeyStore = ks,
+                                    KeyEntry = entry
+                                };
+                                cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier.Clone(Attributes), keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKey);
+                                await ks.Close();
+                            }
+                            changes.Add(cryptogram);
+                        }
+                        else
+                        {
+                            changes.Add(entry);
                         }
                     }
                     else
                     {
-                        if (entry.Variant != null)
+                        if ((Options?.ResolveKeyLinks).GetValueOrDefault(true) && entry.Variant != null)
                         {
                             foreach (var kv in entry.Variant.KeyContainers)
                             {
@@ -301,6 +309,8 @@ namespace Leosac.KeyManager.Library.KeyStore
                                         kv.Key.SetAggregatedValueAsString(await ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier.Clone(Attributes), keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
                                         await ks.Close();
                                     }
+                                    // We remove link information from the being pushed key entry
+                                    kv.Key.Link = new KeyLink();
                                 }
                             }
                         }
