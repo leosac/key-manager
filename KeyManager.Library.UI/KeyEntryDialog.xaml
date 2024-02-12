@@ -95,7 +95,8 @@
                         <TextBox Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding KeyEntry.Identifier.Label}" Margin="6"
                                     materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryLabelHelper}"
                                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryLabel}"
-                                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                    Visibility="{Binding ShowKeyEntryLabel, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="{x:Static properties:Resources.KeyVersion}" IsEnabled="{Binding KeyEntry, Converter={StaticResource NullToBooleanConverter}}">

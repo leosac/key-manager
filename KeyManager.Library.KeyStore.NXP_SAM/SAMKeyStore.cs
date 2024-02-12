@@ -23,11 +23,13 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             return p ?? throw new KeyStoreException("Missing SAM key store properties.");
         }
 
-        public override string Name => "NXP SAM AV2";
+        public override string Name => "NXP SAM AV2/AV3";
 
         public override bool CanCreateKeyEntries => false;
 
         public override bool CanDeleteKeyEntries => false;
+
+        public override bool CanDefineKeyEntryLabel => false;
 
         public override IEnumerable<KeyEntryClass> SupportedClasses
         {

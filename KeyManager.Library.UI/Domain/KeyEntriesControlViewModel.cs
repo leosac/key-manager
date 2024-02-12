@@ -26,8 +26,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             CreateKeyEntryCommand = new AsyncRelayCommand(
                 async () =>
             {
-                var model = new KeyEntryDialogViewModel(KeyEntryClass);
-                model.SetKeyEntry(KeyStore?.GetDefaultKeyEntry(KeyEntryClass));
+                var model = CreateKeyEntryDialogViewModel();
                 var dialog = new KeyEntryDialog
                 {
                     DataContext = model
@@ -38,11 +37,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
             GenerateKeyEntryCommand = new AsyncRelayCommand(
                 async () =>
                 {
-                    var model = new KeyEntryDialogViewModel(KeyEntryClass)
-                    {
-                        ShowKeyMaterials = false
-                    };
-                    model.SetKeyEntry(KeyStore?.GetDefaultKeyEntry(KeyEntryClass));
+                    var model = CreateKeyEntryDialogViewModel();
+                    model.ShowKeyMaterials = false;
                     var dialog = new KeyEntryDialog
                     {
                         DataContext = model
@@ -53,8 +49,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             EditDefaultKeyEntryCommand = new AsyncRelayCommand(
                 async () =>
                 {
-                    var model = new KeyEntryDialogViewModel(KeyEntryClass);
-                    model.SetKeyEntry(KeyStore?.GetDefaultKeyEntry(KeyEntryClass, false));
+                    var model = CreateKeyEntryDialogViewModel(false);
                     var dialog = new KeyEntryDialog
                     {
                         DataContext = model
@@ -72,12 +67,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 {
                     if (KeyStore != null && identifier?.KeyEntryId != null)
                     {
-                        var model = new KeyEntryDialogViewModel(KeyEntryClass)
-                        {
-                            CanChangeFactory = false,
-                            AllowSubmit = KeyStore.CanUpdateKeyEntries,
-                            SubmitButtonText = Properties.Resources.Update
-                        };
+                        var model = CreateKeyEntryDialogViewModel();
+                        model.CanChangeFactory = false;
+                        model.AllowSubmit = KeyStore.CanUpdateKeyEntries;
+                        model.SubmitButtonText = Properties.Resources.Update;
                         model.SetKeyEntry(await KeyStore.Get(identifier.KeyEntryId, KeyEntryClass));
                         var dialog = new KeyEntryDialog
                         {
@@ -184,6 +177,19 @@ namespace Leosac.KeyManager.Library.UI.Domain
         protected void OnDefaultKeyEntryUpdated()
         {
             DefaultKeyEntryUpdated?.Invoke(this, new EventArgs());
+        }
+
+        protected KeyEntryDialogViewModel CreateKeyEntryDialogViewModel()
+        {
+            return CreateKeyEntryDialogViewModel(true);
+        }
+
+        protected KeyEntryDialogViewModel CreateKeyEntryDialogViewModel(bool keClone)
+        {
+            var model = new KeyEntryDialogViewModel(KeyEntryClass);
+            model.SetKeyEntry(KeyStore?.GetDefaultKeyEntry(KeyEntryClass, keClone));
+            model.ShowKeyEntryLabel = (KeyStore?.CanDefineKeyEntryLabel).GetValueOrDefault(true);
+            return model;
         }
 
         public ObservableCollection<SelectableKeyEntryId> Identifiers { get; }

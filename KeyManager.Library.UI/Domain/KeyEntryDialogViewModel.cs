@@ -50,6 +50,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         private bool _canChangeFactory = true;
         private bool _showKeyMaterials = true;
+        private bool _showKeyEntryLabel = true;
         private bool _allowSubmit = true;
         private string _submitButtonText;
         private KeyEntry? _keyEntry;
@@ -98,6 +99,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             get => _showKeyMaterials;
             set => SetProperty(ref _showKeyMaterials, value);
+        }
+
+        public bool ShowKeyEntryLabel
+        {
+            get => _showKeyEntryLabel;
+            set => SetProperty(ref _showKeyEntryLabel, value);
         }
 
         public bool AllowSubmit

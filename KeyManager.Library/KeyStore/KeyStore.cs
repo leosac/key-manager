@@ -48,6 +48,11 @@ namespace Leosac.KeyManager.Library.KeyStore
         public virtual bool CanReorderKeyEntries => false;
 
         /// <summary>
+        /// True if key entries can have a custom label, false otherwise.
+        /// </summary>
+        public virtual bool CanDefineKeyEntryLabel => true;
+
+        /// <summary>
         /// Get the supported key entry classes.
         /// </summary>
         public abstract IEnumerable<KeyEntryClass> SupportedClasses { get; }
