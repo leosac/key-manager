@@ -1,7 +1,7 @@
 ﻿<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl" Culture="fr-FR">
 
   <String Id="DowngradeError" Value="Une version plus récente de [ProductName] est déjà installée." />
-  <String Id="DotNetRequiredError" Value="[ProductName] nécessite Microsoft .NET 7 Desktop." />
+  <String Id="DotNetRequiredError" Value="[ProductName] nécessite Microsoft .NET 8 Desktop." />
   <String Id="LaunchApp" Value="Démarrer l'application à la fin de l'installation." />
   <String Id="ProductDescr" Value="L'application [ProductName]" />
   <String Id="Translations" Value="Traductions" />
