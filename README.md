@@ -31,6 +31,7 @@ The source code of this software is distributed under the **GPLv3** license exce
 *   KeyManager.Library.Plugin library
 *   KeyManager.Library.Plugin.UI library
 *   KeyManager.Library.UI library
+*   KeyManager.Library.KeyStore.File library
 
 Please contact Leosac SAS (legal@leosac.com) for licensing and legal questions.
 
