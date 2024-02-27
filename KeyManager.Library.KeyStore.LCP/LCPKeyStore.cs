@@ -191,7 +191,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             CheckAuthentication();
             var entries = new List<KeyEntryId>();
 
-            var keys = await _keyAPI!.GetAll();
+            var keys = await _keyAPI!.GetAllFiltered();
             foreach (var k in keys)
             {
                 entries.Add(new KeyEntryId
@@ -297,7 +297,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             return base.GetDefaultKeyEntry(keClass) ?? new LCPKeyEntry(keClass);
         }
 
-        private static CredentialKey CreateCredentialKey(KeyEntryId identifier, KeyContainer? kc, LCPKeyEntryProperties? properties)
+        public static CredentialKey CreateCredentialKey(KeyEntryId identifier, KeyContainer? kc, LCPKeyEntryProperties? properties)
         {
             var key = new CredentialKey();
             if (!string.IsNullOrEmpty(identifier.Id))
