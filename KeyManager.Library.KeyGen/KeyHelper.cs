@@ -2,7 +2,7 @@
 using Org.BouncyCastle.Security;
 using System.Security.Cryptography;
 
-namespace Leosac.KeyManager.Library
+namespace Leosac.KeyManager.Library.KeyGen
 {
     public static class KeyHelper
     {

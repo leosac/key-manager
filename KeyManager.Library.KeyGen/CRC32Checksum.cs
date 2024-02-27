@@ -1,10 +1,10 @@
-﻿using System.Security.Cryptography;
+﻿using Force.Crc32;
 
-namespace Leosac.KeyManager.Library
+namespace Leosac.KeyManager.Library.KeyGen
 {
-    public class Sha256Checksum : KeyChecksum
+    public class CRC32Checksum : KeyChecksum
     {
-        public override string Name => "SHA256";
+        public override string Name => "CRC32";
 
         public override byte[] ComputeKCV(Key key, byte[]? iv)
         {
@@ -22,7 +22,7 @@ namespace Leosac.KeyManager.Library
             {
                 data = rawkey;
             }
-            return SHA256.HashData(data);
+            return BitConverter.GetBytes(Crc32Algorithm.ComputeAndWriteToEnd(data));
         }
     }
 }

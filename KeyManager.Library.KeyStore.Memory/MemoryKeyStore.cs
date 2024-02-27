@@ -1,6 +1,4 @@
-﻿using Org.BouncyCastle.Tls;
-
-namespace Leosac.KeyManager.Library.KeyStore.Memory
+﻿namespace Leosac.KeyManager.Library.KeyStore.Memory
 {
     public class MemoryKeyStore : KeyStore
     {

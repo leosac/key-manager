@@ -11,7 +11,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>Leosac.$(AssemblyName)</PackageId>
-    <Version>1.13.1</Version>
+    <Version>1.14.0</Version>
     <Title>Leosac Key Manager UI Library</Title>
     <Company>Leosac SAS</Company>
     <Product>Leosac Key Manager</Product>
@@ -39,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KeyManager.Library.KeyGen\KeyManager.Library.KeyGen.csproj" />
     <ProjectReference Include="..\KeyManager.Library.Plugin.UI\KeyManager.Library.Plugin.UI.csproj" />
     <ProjectReference Include="..\KeyManager.Library.Plugin\KeyManager.Library.Plugin.csproj" />
     <ProjectReference Include="..\KeyManager.Library\KeyManager.Library.csproj" />

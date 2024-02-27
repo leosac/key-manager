@@ -13,22 +13,22 @@ namespace Leosac.KeyManager.Library.UI
     {
         public SymmetricKeyGenerationDialog()
         {
-            MnemonicLanguages = new ObservableCollection<Mnemonic.WordlistLang>(Enum.GetValues<Mnemonic.WordlistLang>());
+            MnemonicLanguages = new ObservableCollection<KeyGen.Mnemonic.WordlistLang>(Enum.GetValues<KeyGen.Mnemonic.WordlistLang>());
             MnemonicWords = new ObservableCollection<string>();
 
             InitializeComponent();
         }
 
-        public ObservableCollection<Mnemonic.WordlistLang> MnemonicLanguages { get; set; }
+        public ObservableCollection<KeyGen.Mnemonic.WordlistLang> MnemonicLanguages { get; set; }
 
-        public Mnemonic.WordlistLang SelectedMnemonicLanguage
+        public KeyGen.Mnemonic.WordlistLang SelectedMnemonicLanguage
         {
-            get { return (Mnemonic.WordlistLang)GetValue(SelectedMnemonicLanguageProperty); }
+            get { return (KeyGen.Mnemonic.WordlistLang)GetValue(SelectedMnemonicLanguageProperty); }
             set { SetValue(SelectedMnemonicLanguageProperty, value); }
         }
 
-        public static readonly DependencyProperty SelectedMnemonicLanguageProperty = DependencyProperty.Register(nameof(SelectedMnemonicLanguage), typeof(Mnemonic.WordlistLang), typeof(SymmetricKeyGenerationDialog),
-            new FrameworkPropertyMetadata(Mnemonic.WordlistLang.English));
+        public static readonly DependencyProperty SelectedMnemonicLanguageProperty = DependencyProperty.Register(nameof(SelectedMnemonicLanguage), typeof(KeyGen.Mnemonic.WordlistLang), typeof(SymmetricKeyGenerationDialog),
+            new FrameworkPropertyMetadata(KeyGen.Mnemonic.WordlistLang.English));
 
         public int KeySize
         {
@@ -71,14 +71,14 @@ namespace Leosac.KeyManager.Library.UI
 
         private void BtnImportMnemonic_Click(object sender, RoutedEventArgs e)
         {
-            var bip39 = new Mnemonic.BIP39();
+            var bip39 = new KeyGen.Mnemonic.BIP39();
             KeyValue = bip39.MnemonicToSeedHex(String.Join(" ", MnemonicWords), tbxMnemonicPassphrase.Password, KeySize);
             ShowKeyComputationConfirmation();
         }
 
         private void BtnGenerateMnemonic_Click(object sender, RoutedEventArgs e)
         {
-            var bip39 = new Mnemonic.BIP39();
+            var bip39 = new KeyGen.Mnemonic.BIP39();
             MnemonicWords.Clear();
             var words = bip39.GenerateMnemonic(256, SelectedMnemonicLanguage).Split(' ');
             foreach(var word in words)

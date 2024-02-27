@@ -6,6 +6,7 @@
     <DefineConstants>Debug</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\KeyManager.Library.KeyGen\KeyManager.Library.KeyGen.csproj" />
     <ProjectReference Include="..\KeyManager.Library.KeyStore.File.UI\KeyManager.Library.KeyStore.File.UI.csproj">
       <Name>KeyManager.Library.KeyStore.File.UI</Name>
       <Project>{d9863530-c6f3-4479-af94-a435c43ad066}</Project>

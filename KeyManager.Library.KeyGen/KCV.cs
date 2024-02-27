@@ -1,7 +1,7 @@
 ﻿using Org.BouncyCastle.Crypto.Parameters;
 using System.Security.Cryptography;
 
-namespace Leosac.KeyManager.Library
+namespace Leosac.KeyManager.Library.KeyGen
 {
     /// <summary>
     /// Key Checksum Value calculation.

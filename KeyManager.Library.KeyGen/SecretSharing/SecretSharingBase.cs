@@ -1,4 +1,4 @@
-﻿namespace Leosac.KeyManager.Library.SecretSharing
+﻿namespace Leosac.KeyManager.Library.KeyGen.SecretSharing
 {
     public abstract class SecretSharingBase
     {

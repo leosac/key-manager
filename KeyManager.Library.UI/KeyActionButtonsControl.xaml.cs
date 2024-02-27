@@ -101,7 +101,7 @@ namespace Leosac.KeyManager.Library.UI
                 };
                 if (KClass == KeyEntryClass.Symmetric)
                 {
-                    var kcv = new KCV();
+                    var kcv = new KeyGen.KCV();
                     control.KeyChecksum = kcv.ComputeKCV(Key.Tags, Key.GetAggregatedValueAsString() ?? "", null);
                 }
                 printDialog.PrintVisual(control, "Leosac Key Manager - Key Printing");

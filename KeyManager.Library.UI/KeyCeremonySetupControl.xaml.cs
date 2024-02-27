@@ -14,21 +14,21 @@ namespace Leosac.KeyManager.Library.UI
 
         public KeyCeremonySetupControl()
         {
-            SecretSharings = new ObservableCollection<SecretSharing.SecretSharingBase>(SecretSharing.SecretSharingBase.GetAll());
+            SecretSharings = new ObservableCollection<KeyGen.SecretSharing.SecretSharingBase>(KeyGen.SecretSharing.SecretSharingBase.GetAll());
             SelectedSecretSharing = SecretSharings.FirstOrDefault();
 
             InitializeComponent();
         }
 
-        public ObservableCollection<SecretSharing.SecretSharingBase> SecretSharings { get; set; }
+        public ObservableCollection<KeyGen.SecretSharing.SecretSharingBase> SecretSharings { get; set; }
 
-        public SecretSharing.SecretSharingBase? SelectedSecretSharing
+        public KeyGen.SecretSharing.SecretSharingBase? SelectedSecretSharing
         {
-            get { return (SecretSharing.SecretSharingBase)GetValue(SelectedSecretSharingProperty); }
+            get { return (KeyGen.SecretSharing.SecretSharingBase)GetValue(SelectedSecretSharingProperty); }
             set { SetValue(SelectedSecretSharingProperty, value); }
         }
 
-        public static readonly DependencyProperty SelectedSecretSharingProperty = DependencyProperty.Register(nameof(SelectedSecretSharing), typeof(SecretSharing.SecretSharingBase), typeof(KeyCeremonySetupControl));
+        public static readonly DependencyProperty SelectedSecretSharingProperty = DependencyProperty.Register(nameof(SelectedSecretSharing), typeof(KeyGen.SecretSharing.SecretSharingBase), typeof(KeyCeremonySetupControl));
 
         public int Fragments
         {

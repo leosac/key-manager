@@ -156,6 +156,9 @@
       <Component Id="KeyManagerLibraryComponent">
         <File Id="___var.KeyManager.Library.TargetPath_" Source="$(var.KeyManager.Library.TargetPath)" />
       </Component>
+      <Component Id="KeyManagerLibraryKeyGenComponent">
+        <File Id="___var.KeyManager.Library.KeyGen.TargetPath_" Source="$(var.KeyManager.Library.KeyGen.TargetPath)" />
+      </Component>
       <Component Id="KeyManagerLibraryPluginComponent">
         <File Id="___var.KeyManager.Library.Plugin.TargetPath_" Source="$(var.KeyManager.Library.Plugin.TargetPath)" />
       </Component>

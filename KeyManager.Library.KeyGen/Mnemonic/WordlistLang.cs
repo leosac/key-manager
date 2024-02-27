@@ -1,4 +1,4 @@
-﻿namespace Leosac.KeyManager.Library.Mnemonic
+﻿namespace Leosac.KeyManager.Library.KeyGen.Mnemonic
 {
     public enum WordlistLang
     {

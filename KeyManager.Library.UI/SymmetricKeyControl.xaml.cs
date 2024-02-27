@@ -1,23 +1,6 @@
-﻿using Leosac.KeyManager.Library.UI.Domain;
-using Leosac.KeyManager.Library.Policy;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using MaterialDesignThemes.Wpf;
-using Microsoft.Win32;
 using System.Collections.ObjectModel;
-using Leosac.KeyManager.Library.KeyStore;
 
 namespace Leosac.KeyManager.Library.UI
 {
@@ -32,28 +15,28 @@ namespace Leosac.KeyManager.Library.UI
 
             Key = new KeyManager.Library.Key();
 
-            KeyChecksumAlgorithms.Add(new CRC32Checksum());
-            KeyChecksumAlgorithms.Add(new KCV());
-            KeyChecksumAlgorithms.Add(new Sha256Checksum());
+            KeyChecksumAlgorithms.Add(new KeyGen.CRC32Checksum());
+            KeyChecksumAlgorithms.Add(new KeyGen.KCV());
+            KeyChecksumAlgorithms.Add(new KeyGen.Sha256Checksum());
             SelectedKeyChecksumAlgorithm = KeyChecksumAlgorithms[0];
         }
 
-        public KeyManager.Library.Key Key
+        public Key Key
         {
-            get { return (KeyManager.Library.Key)GetValue(KeyProperty); }
+            get { return (Key)GetValue(KeyProperty); }
             set { SetValue(KeyProperty, value); }
         }
 
-        public static readonly DependencyProperty KeyProperty = DependencyProperty.Register(nameof(Key), typeof(KeyManager.Library.Key), typeof(SymmetricKeyControl),
+        public static readonly DependencyProperty KeyProperty = DependencyProperty.Register(nameof(Key), typeof(Key), typeof(SymmetricKeyControl),
             new FrameworkPropertyMetadata());
 
-        public KeyManager.Library.KeyChecksum SelectedKeyChecksumAlgorithm
+        public KeyGen.KeyChecksum SelectedKeyChecksumAlgorithm
         {
-            get { return (KeyManager.Library.KeyChecksum)GetValue(SelectedKeyChecksumAlgorithmProperty); }
+            get { return (KeyGen.KeyChecksum)GetValue(SelectedKeyChecksumAlgorithmProperty); }
             set { SetValue(SelectedKeyChecksumAlgorithmProperty, value); }
         }
 
-        public static readonly DependencyProperty SelectedKeyChecksumAlgorithmProperty = DependencyProperty.Register(nameof(SelectedKeyChecksumAlgorithm), typeof(KeyManager.Library.KeyChecksum), typeof(SymmetricKeyControl));
+        public static readonly DependencyProperty SelectedKeyChecksumAlgorithmProperty = DependencyProperty.Register(nameof(SelectedKeyChecksumAlgorithm), typeof(KeyManager.Library.KeyGen.KeyChecksum), typeof(SymmetricKeyControl));
 
         public string? KeyChecksumIV
         {
@@ -82,6 +65,6 @@ namespace Leosac.KeyManager.Library.UI
         public static readonly DependencyProperty ShowKeyLinkProperty = DependencyProperty.Register(nameof(ShowKeyLink), typeof(bool), typeof(SymmetricKeyControl),
             new FrameworkPropertyMetadata(true));
 
-        public ObservableCollection<KeyManager.Library.KeyChecksum> KeyChecksumAlgorithms { get; set; } = new ObservableCollection<KeyChecksum>();
+        public ObservableCollection<KeyGen.KeyChecksum> KeyChecksumAlgorithms { get; set; } = new ObservableCollection<KeyGen.KeyChecksum>();
     }
 }

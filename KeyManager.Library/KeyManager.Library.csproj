@@ -10,7 +10,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>Leosac.$(AssemblyName)</PackageId>
-    <Version>1.13.1</Version>
+    <Version>1.14.0</Version>
     <Title>Leosac Key Manager Core Library</Title>
     <Company>Leosac SAS</Company>
     <Product>Leosac Key Manager</Product>
@@ -26,22 +26,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Mnemonic\Words\English.txt" />
-    <None Remove="Mnemonic\Words\Francais.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Mnemonic\Words\English.txt" />
-    <EmbeddedResource Include="Mnemonic\Words\Francais.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageReference Include="Crc32.NET" Version="1.2.0" />
     <PackageReference Include="log4net" Version="2.0.15" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="SecretSharingDotNet" Version="0.11.0" />
   </ItemGroup>
 
 </Project>

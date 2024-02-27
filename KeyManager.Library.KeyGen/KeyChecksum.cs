@@ -1,4 +1,4 @@
-﻿namespace Leosac.KeyManager.Library
+﻿namespace Leosac.KeyManager.Library.KeyGen
 {
     public abstract class KeyChecksum
     {

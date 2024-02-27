@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KeyManager.Library.KeyGen\KeyManager.Library.KeyGen.csproj" />
     <ProjectReference Include="..\KeyManager.Library\KeyManager.Library.csproj" />
   </ItemGroup>
 

@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Leosac.KeyManager.Library.SecretSharing
+namespace Leosac.KeyManager.Library.KeyGen.SecretSharing
 {
     public class ShamirsSecretSharing : SecretSharingBase
     {

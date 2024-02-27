@@ -14,7 +14,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 return Binding.DoNothing;
             }
 
-            var checksum = new Sha256Checksum();
+            var checksum = new KeyGen.Sha256Checksum();
             string uri = string.Format("https://leak.leosac.com/key/{0}", checksum.ComputeKCV(key, "53656375726974792046726565646f6d"));
             if (targetType == typeof(ImageSource))
             {

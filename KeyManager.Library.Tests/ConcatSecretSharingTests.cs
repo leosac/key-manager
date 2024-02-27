@@ -1,4 +1,4 @@
-﻿using Leosac.KeyManager.Library.SecretSharing;
+﻿using Leosac.KeyManager.Library.KeyGen.SecretSharing;
 
 namespace Leosac.KeyManager.Library.Tests
 {

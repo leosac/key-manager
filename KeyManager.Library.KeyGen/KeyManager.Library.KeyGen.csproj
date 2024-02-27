@@ -6,26 +6,43 @@
     <Nullable>enable</Nullable>
     <RootNamespace>Leosac.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
+
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>Leosac.$(AssemblyName)</PackageId>
     <Version>1.14.0</Version>
-    <Title>Leosac Key Manager Plugin Library</Title>
+    <Title>Leosac Key Manager Key Generation Library</Title>
     <Company>Leosac SAS</Company>
     <Product>Leosac Key Manager</Product>
     <Authors>leosac</Authors>
-    <Description>Library for Leosac Key Manager plugin development</Description>
+    <Description>Key Generation Library for Leosac Key Manager development</Description>
     <Copyright>Copyright ©2024 Leosac SAS</Copyright>
     <PackageProjectUrl>https://github.com/leosac/key-manager</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/leosac/key-manager.git</RepositoryUrl>
-    <PackageTags>leosac key manager management hsm pkcs11 sam plugin</PackageTags>
+    <PackageTags>leosac key manager generation</PackageTags>
     <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Mnemonic\Words\English.txt" />
+    <None Remove="Mnemonic\Words\Francais.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Mnemonic\Words\English.txt" />
+    <EmbeddedResource Include="Mnemonic\Words\Francais.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\KeyManager.Library\KeyManager.Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
+    <PackageReference Include="Crc32.NET" Version="1.2.0" />
+    <PackageReference Include="SecretSharingDotNet" Version="0.11.0" />
   </ItemGroup>
 
 </Project>
