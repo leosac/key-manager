@@ -20,11 +20,16 @@
              Loaded="userControl_Loaded"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <CollectionViewSource x:Key='Favorites' Source="{Binding Favorites.KeyStores}">
-            <CollectionViewSource.SortDescriptions>
-                <componentModel:SortDescription PropertyName="Name" />
-            </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <CollectionViewSource x:Key='Favorites' Source="{Binding Favorites.KeyStores}">
+                <CollectionViewSource.SortDescriptions>
+                    <componentModel:SortDescription PropertyName="Name" />
+                </CollectionViewSource.SortDescriptions>
+            </CollectionViewSource>
+        </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
         <DockPanel DockPanel.Dock="Top" Margin="15,5,15,5">
@@ -99,6 +104,23 @@
                         ToolTip="{x:Static properties:Resources.NewFavorite}" Margin="5">
                     <materialDesign:PackIcon Kind="StarAdd" Height="24" Width="24" Cursor="Hand" />
                 </Button>
+                <materialDesign:PopupBox PlacementMode="BottomAndAlignCentres" ToolTipService.Placement="Right" Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}">
+                    <materialDesign:PopupBox.ToggleContent>
+                        <materialDesign:PackIcon Kind="DotsVertical" Height="24" Width="24" Cursor="Hand" />
+                    </materialDesign:PopupBox.ToggleContent>
+                    <StackPanel>
+                        <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
+                                Command="{Binding ImportFavoritesCommand}"
+                                ToolTip="{x:Static properties:Resources.Import}" Margin="5">
+                            <materialDesign:PackIcon Kind="Import" Height="24" Width="24" Cursor="Hand" />
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
+                                Command="{Binding ExportFavoritesCommand}"
+                                ToolTip="{x:Static properties:Resources.Export}" Margin="5">
+                            <materialDesign:PackIcon Kind="Export" Height="24" Width="24" Cursor="Hand" />
+                        </Button>
+                    </StackPanel>
+                </materialDesign:PopupBox>
             </WrapPanel>
             <WrapPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left">
                 <TextBlock FontSize="28" FontWeight="Bold" Text="{x:Static properties:Resources.Favorites}" />

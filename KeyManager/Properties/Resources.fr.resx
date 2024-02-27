@@ -147,6 +147,9 @@
   <data name="EditFavorite" xml:space="preserve">
     <value>Modifier le magasin de clés favoris</value>
   </data>
+  <data name="Export" xml:space="preserve">
+    <value>Exporter</value>
+  </data>
   <data name="FavoriteName" xml:space="preserve">
     <value>Nom</value>
   </data>
@@ -155,6 +158,9 @@
   </data>
   <data name="Favorites" xml:space="preserve">
     <value>Magasins de clés favoris</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Importer</value>
   </data>
   <data name="Information" xml:space="preserve">
     <value>Information</value>

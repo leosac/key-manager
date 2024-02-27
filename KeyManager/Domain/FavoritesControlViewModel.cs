@@ -3,8 +3,11 @@ using CommunityToolkit.Mvvm.Input;
 using Leosac.KeyManager.Library;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
+using Leosac.WpfApp;
 using MaterialDesignThemes.Wpf;
+using Microsoft.Win32;
 using System;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Leosac.KeyManager.Domain
@@ -20,6 +23,16 @@ namespace Leosac.KeyManager.Domain
                 () =>
                 {
                     RefreshFavorites();
+                });
+            ImportFavoritesCommand = new RelayCommand(
+                () =>
+                {
+                    ImportFavorites();
+                });
+            ExportFavoritesCommand = new RelayCommand(
+                () =>
+                {
+                    ExportFavorites();
                 });
             OpenFavoriteCommand = new AsyncRelayCommand<Favorite>(
                 async fav =>
@@ -139,13 +152,54 @@ namespace Leosac.KeyManager.Domain
             });
         }
 
+        protected void ImportFavorites()
+        {
+            var ofd = new OpenFileDialog();
+            ofd.Filter = "JSON Files (*.json)|*.json";
+            ofd.CheckFileExists = true;
+            if (ofd.ShowDialog() == true)
+            {
+                try
+                {
+                    var favorites = Favorites.LoadFromFile(ofd.FileName);
+                    if (favorites != null)
+                    {
+                        favorites.SaveToFile();
+                        RefreshFavorites();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
+                }
+            }
+        }
+
+        protected void ExportFavorites()
+        {
+            var sfd = new SaveFileDialog();
+            sfd.Filter = "JSON Files (*.json)|*.json";
+            if (sfd.ShowDialog() == true)
+            {
+                try
+                {
+                    Favorites.GetSingletonInstance()?.SaveToFile(sfd.FileName);
+                }
+                catch (Exception ex)
+                {
+                    SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
+                }
+            }
+        }
+
         public RelayCommand? RefreshFavoritesCommand { get; set; }
+        public RelayCommand? ImportFavoritesCommand { get; set; }
+        public RelayCommand? ExportFavoritesCommand { get; set; }
         public AsyncRelayCommand? CreateFavoriteCommand { get; set; }
         public RelayCommand<Favorite>? RemoveFavoriteCommand { get; set; }
         public AsyncRelayCommand<Favorite>? EditFavoriteCommand { get; }
         public AsyncRelayCommand<Favorite>? OpenFavoriteCommand { get; }
         public RelayCommand? ChangeMasterKeyCommand { get; }
-
         public AsyncRelayCommand<object>? KeyStoreCommand { private get; set; }
     }
 }
