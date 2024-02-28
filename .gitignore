@@ -3,3 +3,4 @@ bin
 obj
 *.user
 /KeyManager.Setup/packages
+/KeyManager.Library.KeyStore.SAM_SE/DLL/Debug/*
