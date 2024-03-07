@@ -138,6 +138,9 @@
   <data name="LibraryPathHelper" xml:space="preserve">
     <value>PKCS#11 Library path</value>
   </data>
+  <data name="Sensitive" xml:space="preserve">
+    <value>Sensitive</value>
+  </data>
   <data name="SlotFilter" xml:space="preserve">
     <value>Filter Value</value>
   </data>

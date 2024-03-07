@@ -124,6 +124,15 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sensitive.
+        /// </summary>
+        public static string Sensitive {
+            get {
+                return ResourceManager.GetString("Sensitive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter Value.
         /// </summary>
         public static string SlotFilter {

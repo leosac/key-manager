@@ -7,6 +7,7 @@
             Encrypt = true;
             Decrypt = true;
             Modifiable = true;
+            Sensitive = true;
         }
 
         public bool? Encrypt { get; set; }
@@ -22,5 +23,7 @@
         public bool? Modifiable   { get; set; }
 
         public bool? Extractable { get; set; }
+
+        public bool? Sensitive { get; set; }
     }
 }

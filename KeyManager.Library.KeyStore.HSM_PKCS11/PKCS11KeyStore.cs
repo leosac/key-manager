@@ -260,6 +260,10 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                     {
                         attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_EXTRACTABLE, pkcsEntry.PKCS11Properties.Extractable.Value));
                     }
+                    if (pkcsEntry.PKCS11Properties.Sensitive != null)
+                    {
+                        attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_SENSITIVE, pkcsEntry.PKCS11Properties.Sensitive.Value));
+                    }
                 }
                 if (pkcsEntry.PKCS11Properties!.Encrypt != null)
                 {
@@ -303,7 +307,11 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                     cclass = CKO.CKO_PUBLIC_KEY;
                 }
             }
-            attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, cclass));
+
+            if (create)
+            {
+                attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_CLASS, cclass));
+            }
 
             return attributes;
         }

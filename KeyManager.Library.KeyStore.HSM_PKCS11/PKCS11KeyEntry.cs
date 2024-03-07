@@ -6,6 +6,8 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 {
     public abstract class PKCS11KeyEntry : KeyEntry
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
+
         protected PKCS11KeyEntry()
         {
             Identifier.Id = Guid.NewGuid().ToString("N");
@@ -43,12 +45,12 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 
         public static IEnumerable<CKK> GetAsymmetricCKKs()
         {
-            return new CKK[]
-            {
+            return
+            [
                 CKK.CKK_RSA,
                 CKK.CKK_DSA,
                 CKK.CKK_ECDSA
-            };
+            ];
         }
 
         public KeyEntryVariant CreateVariantFromCKK(CKK ckk)
@@ -108,6 +110,44 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return ckk;
         }
 
-        public abstract void GetAttributes(ISession session, IObjectHandle? handle);
+        public virtual void GetAttributes(ISession session, IObjectHandle? handle)
+        {
+            var attributes = session!.GetAttributeValue(handle, new List<CKA>
+            {
+                CKA.CKA_ENCRYPT,
+                CKA.CKA_DECRYPT,
+                CKA.CKA_DERIVE,
+                CKA.CKA_EXTRACTABLE,
+                CKA.CKA_SENSITIVE
+            });
+
+            foreach (var attribute in attributes)
+            {
+                if (attribute.CannotBeRead)
+                {
+                    log.Warn(string.Format("The attribute `{0}` ({1}) cannot be read.", attribute.Type, (CKA)attribute.Type));
+                }
+                switch (attribute.Type)
+                {
+                    case (ulong)CKA.CKA_ENCRYPT:
+                        PKCS11Properties!.Encrypt = (!attribute.CannotBeRead) ? attribute.GetValueAsBool() : null;
+                        break;
+                    case (ulong)CKA.CKA_DECRYPT:
+                        PKCS11Properties!.Decrypt = (!attribute.CannotBeRead) ? attribute.GetValueAsBool() : null;
+                        break;
+                    case (ulong)CKA.CKA_DERIVE:
+                        PKCS11Properties!.Derive = (!attribute.CannotBeRead) ? attribute.GetValueAsBool() : null;
+                        break;
+                    case (ulong)CKA.CKA_EXTRACTABLE:
+                        PKCS11Properties!.Extractable = (!attribute.CannotBeRead) ? attribute.GetValueAsBool() : null;
+                        break;
+                    case (ulong)CKA.CKA_SENSITIVE:
+                        PKCS11Properties!.Sensitive = (!attribute.CannotBeRead) ? attribute.GetValueAsBool() : null;
+                        break;
+                    default:
+                        throw new KeyStoreException("Unexpected attribute.");
+                }
+            }
+        }
     }
 }

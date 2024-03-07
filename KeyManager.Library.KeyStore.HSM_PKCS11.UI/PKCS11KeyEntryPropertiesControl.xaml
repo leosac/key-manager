@@ -18,6 +18,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Margin="5">
             <ToggleButton IsChecked="{Binding Properties.Encrypt}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
@@ -34,6 +35,10 @@
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Margin="5">
             <ToggleButton IsChecked="{Binding Properties.Extractable}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
             <TextBlock Text="{x:Static properties:Resources.Extractable}" Padding="3" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2" Margin="5">
+            <ToggleButton IsChecked="{Binding Properties.Sensitive}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+            <TextBlock Text="{x:Static properties:Resources.Sensitive}" Padding="3" />
         </StackPanel>
     </Grid>
 </UserControl>
