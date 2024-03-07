@@ -9,6 +9,7 @@ namespace Leosac.KeyManager.Library.UI
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
         private static readonly object _objlock = new();
         private static Favorites? _singleton;
+        private static KMSettings? _settings;
 
         public static EventHandler? SingletonCreated { get; set; }
         private static void OnSingletonCreated()
@@ -29,7 +30,15 @@ namespace Leosac.KeyManager.Library.UI
                 {
                     try
                     {
-                        _singleton = LoadFromFile();
+                        _settings = KMSettings.LoadFromFile();
+                        if (!string.IsNullOrEmpty(_settings?.FavoritesPath))
+                        {
+                            _singleton = LoadFromFile(_settings.FavoritesPath);
+                        }
+                        else
+                        {
+                            _singleton = LoadFromFile();
+                        }
                         OnSingletonCreated();
                     }
                     catch (Exception ex)
@@ -39,6 +48,18 @@ namespace Leosac.KeyManager.Library.UI
                 }
 
                 return _singleton;
+            }
+        }
+
+        public override void SaveToFile()
+        {
+            if (!string.IsNullOrEmpty(_settings?.FavoritesPath))
+            {
+                SaveToFile(_settings.FavoritesPath);
+            }
+            else
+            {
+                base.SaveToFile();
             }
         }
 

@@ -79,6 +79,15 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Browse.
+        /// </summary>
+        public static string Browse {
+            get {
+                return ResourceManager.GetString("Browse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {
@@ -183,6 +192,33 @@ namespace Leosac.KeyManager.Properties {
         public static string Favorites {
             get {
                 return ResourceManager.GetString("Favorites", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favorites file path.
+        /// </summary>
+        public static string FavoritesPath {
+            get {
+                return ResourceManager.GetString("FavoritesPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The path to the JSON file where favorites are saved. If undefined, the default path will be used..
+        /// </summary>
+        public static string FavoritesPathHelper {
+            get {
+                return ResourceManager.GetString("FavoritesPathHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string General {
+            get {
+                return ResourceManager.GetString("General", resourceCulture);
             }
         }
         

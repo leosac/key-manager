@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Leosac.WpfApp" Version="1.15.1" />
+    <PackageReference Include="Leosac.WpfApp" Version="1.16.0" />
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
     <PackageReference Include="Net.Codecrete.QrCodeGenerator" Version="2.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

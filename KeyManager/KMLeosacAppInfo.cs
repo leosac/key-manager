@@ -23,6 +23,12 @@ namespace Leosac.KeyManager
             ApplicationCode = "lkm";
             ApplicationUrl = "https://leosac.com/key-manager/";
             ApplicationLogo = "/images/leosac_key.png";
+            SettingsCommand = new RelayCommand(() =>
+            {
+                var settingsWindow = new SettingsWindow();
+                settingsWindow.DataContext = KMSettings.LoadFromFile();
+                settingsWindow.ShowDialog();
+            });
         }
 
         public override void InitializeMainWindow(MainWindowViewModel model)

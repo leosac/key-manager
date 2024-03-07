@@ -2,6 +2,7 @@
 using Leosac.KeyManager.Library.UI;
 using Leosac.WpfApp;
 using Newtonsoft.Json;
+using System.Configuration;
 using System.Linq;
 using System.Windows;
 

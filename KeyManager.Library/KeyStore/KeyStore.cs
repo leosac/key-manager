@@ -351,7 +351,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                 }
                 else
                 {
-                    log.Info("Dry Run, skipping key entries storing.");
+                    log.Info("Dry Run, skipping the storage of key entries.");
                 }
             }
             finally

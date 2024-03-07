@@ -1,0 +1,40 @@
+﻿<Window x:Class="Leosac.KeyManager.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:libui="clr-namespace:Leosac.KeyManager.Library.UI;assembly=KeyManager.Library.UI"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Leosac.KeyManager"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:properties="clr-namespace:Leosac.KeyManager.Properties"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance libui:KMSettings}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="11"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="Settings" Height="450" Width="800"
+        Closing="Window_Closing">
+    <DockPanel LastChildFill="True">
+        <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="5,5,50,5">
+            <Button Content="{x:Static properties:Resources.Close}" Width="200" IsDefault="True" x:Name="btnClose" Click="BtnClose_Click" />
+        </WrapPanel>
+        <Grid>
+            <TabControl>
+                <TabItem Header="{x:Static properties:Resources.General}">
+                    <StackPanel>
+                        <DockPanel LastChildFill="True">
+                            <Button Content="{x:Static properties:Resources.Browse}" Click="Browse_Click" DockPanel.Dock="Right" Margin="5" />
+                            <TextBox Text="{Binding FavoritesPath}" Margin="5,5,5,15"
+                                     materialDesign:HintAssist.HelperText="{x:Static properties:Resources.FavoritesPathHelper}"
+                                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.FavoritesPath}"/>
+                        </DockPanel>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </DockPanel>
+</Window>

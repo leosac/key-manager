@@ -123,6 +123,9 @@
   <data name="Back" xml:space="preserve">
     <value>Back</value>
   </data>
+  <data name="Browse" xml:space="preserve">
+    <value>Browse</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
@@ -158,6 +161,15 @@
   </data>
   <data name="Favorites" xml:space="preserve">
     <value>Key Store Favorites</value>
+  </data>
+  <data name="FavoritesPath" xml:space="preserve">
+    <value>Favorites file path</value>
+  </data>
+  <data name="FavoritesPathHelper" xml:space="preserve">
+    <value>The path to the JSON file where favorites are saved. If undefined, the default path will be used.</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>General</value>
   </data>
   <data name="Import" xml:space="preserve">
     <value>Import</value>
