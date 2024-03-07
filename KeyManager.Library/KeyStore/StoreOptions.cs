@@ -31,6 +31,13 @@ namespace Leosac.KeyManager.Library.KeyStore
             set => SetProperty(ref _resolveKeyLinks, value);
         }
 
+        private bool _dryRun;
+        public bool DryRun
+        {
+            get => _dryRun;
+            set => SetProperty(ref _dryRun, value);
+        }
+
         private string? _publishVariable;
         public string? PublishVariable
         {

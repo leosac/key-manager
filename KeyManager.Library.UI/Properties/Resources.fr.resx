@@ -180,6 +180,9 @@
   <data name="Drives" xml:space="preserve">
     <value>Disques</value>
   </data>
+  <data name="DryRun" xml:space="preserve">
+    <value>Essai (ne pas sauvegarder)</value>
+  </data>
   <data name="EditDefaultKeyEntry" xml:space="preserve">
     <value>Modifier la définition de l'enregistrement de clés par défaut</value>
   </data>

@@ -180,6 +180,9 @@
   <data name="Drives" xml:space="preserve">
     <value>Drives</value>
   </data>
+  <data name="DryRun" xml:space="preserve">
+    <value>Dry Run (don't store)</value>
+  </data>
   <data name="EditDefaultKeyEntry" xml:space="preserve">
     <value>Edit default key entry definition</value>
   </data>

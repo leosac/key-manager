@@ -250,6 +250,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dry Run (don&apos;t store).
+        /// </summary>
+        public static string DryRun {
+            get {
+                return ResourceManager.GetString("DryRun", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit default key entry definition.
         /// </summary>
         public static string EditDefaultKeyEntry {

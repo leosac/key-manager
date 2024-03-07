@@ -345,7 +345,14 @@ namespace Leosac.KeyManager.Library.KeyStore
             await store.Open();
             try
             {
-                await store.Store(changes);
+                if (!(Options?.DryRun).GetValueOrDefault(false))
+                {
+                    await store.Store(changes);
+                }
+                else
+                {
+                    log.Info("Dry Run, skipping key entries storing.");
+                }
             }
             finally
             {
