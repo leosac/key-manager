@@ -278,13 +278,19 @@ namespace Leosac.KeyManager.Library.KeyStore
                             if (ks != null)
                             {
                                 await ks.Open();
-                                var divContext = new DivInput.DivInputContext
+                                try
                                 {
-                                    KeyStore = ks,
-                                    KeyEntry = entry
-                                };
-                                cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier.Clone(Attributes), keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKey);
-                                await ks.Close();
+                                    var divContext = new DivInput.DivInputContext
+                                    {
+                                        KeyStore = ks,
+                                        KeyEntry = entry
+                                    };
+                                    cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier.Clone(Attributes), keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKey);
+                                }
+                                finally
+                                {
+                                    await ks.Close();
+                                }
                             }
                             changes.Add(cryptogram);
                         }
@@ -305,14 +311,20 @@ namespace Leosac.KeyManager.Library.KeyStore
                                     if (ks != null)
                                     {
                                         await ks.Open();
-                                        var divContext = new DivInput.DivInputContext
+                                        try
                                         {
-                                            KeyStore = ks,
-                                            KeyEntry = entry,
-                                            KeyContainer = kv
-                                        };
-                                        kv.Key.SetAggregatedValueAsString(await ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier.Clone(Attributes), keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
-                                        await ks.Close();
+                                            var divContext = new DivInput.DivInputContext
+                                            {
+                                                KeyStore = ks,
+                                                KeyEntry = entry,
+                                                KeyContainer = kv
+                                            };
+                                            kv.Key.SetAggregatedValueAsString(await ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier.Clone(Attributes), keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
+                                        }
+                                        finally
+                                        {
+                                            await ks.Close();
+                                        }
                                     }
                                     // We remove link information from the being pushed key entry
                                     kv.Key.Link = new KeyLink();
