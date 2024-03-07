@@ -30,5 +30,12 @@ namespace Leosac.KeyManager.Library.KeyStore
             get => _resolveKeyLinks;
             set => SetProperty(ref _resolveKeyLinks, value);
         }
+
+        private string? _publishVariable;
+        public string? PublishVariable
+        {
+            get => _publishVariable;
+            set => SetProperty(ref _publishVariable, value);
+        }
     }
 }

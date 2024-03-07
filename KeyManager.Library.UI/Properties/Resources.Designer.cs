@@ -1141,6 +1141,24 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Variable.
+        /// </summary>
+        public static string PublishVariable {
+            get {
+                return ResourceManager.GetString("PublishVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A variable which can be used during publish (using %{pubvar})..
+        /// </summary>
+        public static string PublishVariableHelper {
+            get {
+                return ResourceManager.GetString("PublishVariableHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Qr Code.
         /// </summary>
         public static string QrCode {

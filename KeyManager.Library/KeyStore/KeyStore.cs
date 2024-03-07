@@ -12,6 +12,7 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         public const string ATTRIBUTE_NAME = "name";
         public const string ATTRIBUTE_HEXNAME = "hexname";
+        public const string ATTRIBUTE_PUBVAR = "pubvar";
 
         protected readonly JsonSerializerSettings _jsonSettings;
 
@@ -258,6 +259,11 @@ namespace Leosac.KeyManager.Library.KeyStore
         {
             var changes = new List<IChangeKeyEntry>();
             initCallback?.Invoke(this, keClass, ids.Count());
+            if (!string.IsNullOrEmpty(Options?.PublishVariable))
+            {
+                Attributes[ATTRIBUTE_PUBVAR] = Options.PublishVariable;
+            }
+
             foreach (var id in ids)
             {
                 var entry = await Get(id, keClass);

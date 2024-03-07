@@ -477,6 +477,12 @@
   <data name="PublishKeyStore" xml:space="preserve">
     <value>Publier vers un autre magasin de clés</value>
   </data>
+  <data name="PublishVariable" xml:space="preserve">
+    <value>Variable</value>
+  </data>
+  <data name="PublishVariableHelper" xml:space="preserve">
+    <value>Une variable qui peut être utilisée lors de la publication (via %{pubvar}).</value>
+  </data>
   <data name="QrCode" xml:space="preserve">
     <value>Qr Code</value>
   </data>
