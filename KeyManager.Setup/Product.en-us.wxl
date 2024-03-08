@@ -12,5 +12,11 @@
   <String Id="RFIDMiddlewareDescr" Value="The RFID/SmartCard middleware" />
   <String Id="StartMenuShortcut" Value="Start Menu Shortcut" />
   <String Id="DesktopShortcut" Value="Desktop Shortcut" />
+  <String Id="AdditionalPlugins" Value="Additional Plug-ins" />
+  <String Id="AdditionalPluginsDescr" Value="Plug-ins adding support for more key store types" />
+  <String Id="SAM_SEFeature" Value="Synchronic SAM-SE" />
+  <String Id="SAM_SEFeatureDescr" Value="Synchronic SAM-SE Key Store" />
+  <String Id="SAM_SEFrenchFeature" Value="French Translation for Synchronic SAM-SE" />
+  <String Id="SAM_SEFrenchFeatureDescr" Value="The Synchronic SAM-SE plug-in French translation" />
 
 </WixLocalization>

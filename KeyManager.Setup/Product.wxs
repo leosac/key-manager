@@ -21,6 +21,12 @@
       <ComponentGroupRef Id="LCPPluginDependenciesComponents" />
       <ComponentGroupRef Id="NXP_SAMPluginDependenciesComponents" />
 		</Feature>
+    <Feature Id="AdditionalPluginsFeature" Title="!(loc.AdditionalPlugins)" Description="!(loc.AdditionalPluginsDescr)" Level="1">
+      <Feature Id="SAM_SEFeature" Title="!(loc.SAM_SEFeature)" Description="!(loc.SAM_SEFeatureDescr)" Level="2" AllowAbsent="yes">
+        <ComponentGroupRef Id="SAM_SEPluginComponents" />
+        <ComponentGroupRef Id="SAM_SEPluginDependenciesComponents" />
+      </Feature>
+    </Feature>
     <Feature Id="LibLogicalAccessFeature" Title="!(loc.RFIDMiddleware)" Description="!(loc.RFIDMiddlewareDescr)" Level="1" AllowAbsent="no">
       <MergeRef Id="LLAMSM" />
     </Feature>
@@ -32,6 +38,9 @@
         <ComponentGroupRef Id="HSM_PKCS11PluginResourcesFR" />
         <ComponentGroupRef Id="LCPPluginResourcesFR" />
         <ComponentGroupRef Id="NXP_SAMPluginResourcesFR" />
+      </Feature>
+      <Feature Id="SAM_SEFeatureFrench" Title="!(loc.SAM_SEFrenchFeature)" Description="!(loc.SAM_SEFrenchFeatureDescr)" Level="2" AllowAbsent="yes">
+        <ComponentGroupRef Id="SAM_SEPluginResourcesFR" />
       </Feature>
     </Feature>
     <Feature Id="StartMenuShortcut" Title="!(loc.StartMenuShortcut)" Level="1">
@@ -100,6 +109,9 @@
               </Directory>
               <Directory Id="LCPPLUGIN" Name="LCP">
                 <Directory Id="LCPPLUGINFR" Name="fr" />
+              </Directory>
+              <Directory Id="SAM_SEPLUGIN" Name="SAM_SE">
+                <Directory Id="SAM_SEPLUGINFR" Name="fr" />
               </Directory>
             </Directory>
             <Directory Id="APPRUNTIMES" Name="runtimes">
@@ -210,6 +222,14 @@
         <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetPath)" />
       </Component>
     </ComponentGroup>
+    <ComponentGroup Id="SAM_SEPluginComponents" Directory="SAM_SEPLUGIN">
+      <Component Id="KeyManagerLibraryKeyStoreSAM_SEComponent">
+        <File Id="___var.KeyManager.Library.KeyStore.SAM_SE.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.SAM_SE.TargetPath)" />
+      </Component>
+      <Component Id="KeyManagerLibraryKeyStoreSAM_SEUIComponent">
+        <File Id="___var.KeyManager.Library.KeyStore.SAM_SE.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.SAM_SE.UI.TargetPath)" />
+      </Component>
+    </ComponentGroup>
 
     <ComponentGroup Id="KeyManagerResourcesFR" Directory="RESOURCESFR">
       <Component Id="KeyManagerResourcesFRComponent">
@@ -238,6 +258,11 @@
     <ComponentGroup Id="NXP_SAMPluginResourcesFR" Directory="NXP_SAMPLUGINFR">
       <Component Id="KeyManagerLibraryKeyStoreNXP_SAMUIResourcesFRComponent">
         <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetDir)\fr\KeyManager.Library.KeyStore.NXP_SAM.UI.resources.dll" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="SAM_SEPluginResourcesFR" Directory="SAM_SEPLUGINFR">
+      <Component Id="KeyManagerLibraryKeyStoreSAM_SEUIResourcesFRComponent">
+        <File Id="___var.KeyManager.Library.KeyStore.SAM_SE.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.SAM_SE.UI.TargetDir)\fr\KeyManager.Library.KeyStore.SAM_SE.UI.resources.dll" />
       </Component>
     </ComponentGroup>
 
@@ -345,6 +370,14 @@
     <ComponentGroup Id="NXP_SAMPluginDependenciesComponents" Directory="NXP_SAMPLUGIN">
       <Component Id="LibLogicalAccessNetCEComponent">
         <File Id="___var.LibLogicalAccessNetCE.dll_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.TargetDir)\LibLogicalAccessNetCE.dll" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="SAM_SEPluginDependenciesComponents" Directory="SAM_SEPLUGIN">
+      <Component Id="LibFT260Component">
+        <File Id="___var.LibFT260.dll_" Source="$(var.KeyManager.Library.KeyStore.SAM_SE.ProjectDir)\DLL\Release\LibFT260.dll" />
+      </Component>
+      <Component Id="SPSE_DLLComponent">
+        <File Id="___var.SPSE_DLL.dll_" Source="$(var.KeyManager.Library.KeyStore.SAM_SE.ProjectDir)\DLL\Release\SPSE_DLL.dll" />
       </Component>
     </ComponentGroup>
     

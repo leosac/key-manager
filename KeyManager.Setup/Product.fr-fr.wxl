@@ -12,5 +12,11 @@
   <String Id="RFIDMiddlewareDescr" Value="Le middleware RFID/SmartCard" />
   <String Id="StartMenuShortcut" Value="Raccourci dans le menu démarrer" />
   <String Id="DesktopShortcut" Value="Raccourci sur le bureau" />
+  <String Id="AdditionalPlugins" Value="Extensions supplémentaires" />
+  <String Id="AdditionalPluginsDescr" Value="Liste d'extensions ajoutant le support de magasins de clés additionnels" />
+  <String Id="SAM_SEFeature" Value="Synchronic SAM-SE" />
+  <String Id="SAM_SEFeatureDescr" Value="Magasin de clés Synchronic SAM-SE" />
+  <String Id="SAM_SEFrenchFeature" Value="Langue Française pour Synchronic SAM-SE" />
+  <String Id="SAM_SEFrenchFeatureDescr" Value="Les ressources françaises pour l'extension Synchronic SAM-SE" />
 
 </WixLocalization>

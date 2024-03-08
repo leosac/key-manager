@@ -73,6 +73,8 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
+    <ProjectReference Include="..\KeyManager.Library.KeyStore.SAM_SE.UI\KeyManager.Library.KeyStore.SAM_SE.UI.csproj" />
+    <ProjectReference Include="..\KeyManager.Library.KeyStore.SAM_SE\KeyManager.Library.KeyStore.SAM_SE.csproj" />
     <ProjectReference Include="..\KeyManager.Library.Plugin.UI\KeyManager.Library.Plugin.UI.csproj">
       <Name>KeyManager.Library.Plugin.UI</Name>
       <Project>{da74a075-d143-43fe-a977-eddbd3741f26}</Project>
