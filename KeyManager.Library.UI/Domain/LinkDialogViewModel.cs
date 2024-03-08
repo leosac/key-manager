@@ -98,8 +98,14 @@ namespace Leosac.KeyManager.Library.UI.Domain
                             try
                             {
                                 await ks.Open();
-                                await RunLinkImpl(ks);
-                                await ks.Close();
+                                try
+                                {
+                                    await RunLinkImpl(ks);
+                                }
+                                finally
+                                {
+                                    await ks.Close();
+                                }
 
                                 log.Info("Link execution completed.");
                             }
