@@ -1,0 +1,448 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ConfFileDisabled" xml:space="preserve">
+    <value>Désactivée</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ConfFileDiv" xml:space="preserve">
+    <value>Diversification</value>
+    <comment>Unused, keep</comment>
+  </data>
+  <data name="ConfFileDivRid" xml:space="preserve">
+    <value>Diversification sur Random ID</value>
+    <comment>Unused, keep</comment>
+  </data>
+  <data name="DESFire" xml:space="preserve">
+    <value>DESFire</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DESFireAid" xml:space="preserve">
+    <value>AID</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DESFireCipherAes" xml:space="preserve">
+    <value>AES</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DESFireCipherDes" xml:space="preserve">
+    <value>DES/3DES</value>
+    <comment>Unused, keep</comment>
+  </data>
+  <data name="DESFireCommunicationEncrypted" xml:space="preserve">
+    <value>Chiffrée</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DESFireCommunicationPlain" xml:space="preserve">
+    <value>En clair</value>
+    <comment>Unused, keep</comment>
+  </data>
+  <data name="DESFireModeDeactivated" xml:space="preserve">
+    <value>Technologie désactivée</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DESFireModeIdp" xml:space="preserve">
+    <value>ID Privé</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DESFireModeUid" xml:space="preserve">
+    <value>UID</value>
+    <comment>Unused, keep</comment>
+  </data>
+  <data name="KeyEntryDESFireAdvancedSecurity" xml:space="preserve">
+    <value>Sécurité Avancée</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireAuthEv2" xml:space="preserve">
+    <value>Authentification EV2</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireCommunication" xml:space="preserve">
+    <value>Communication</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireCommunicationWarning" xml:space="preserve">
+    <value>Attention : 'en clair' modifié en 'chiffrée'</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireDiv" xml:space="preserve">
+    <value>DESFire Diversification</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireDivActive" xml:space="preserve">
+    <value>Activée</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireDivAid" xml:space="preserve">
+    <value>AID Inversé</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireDivKeyNum" xml:space="preserve">
+    <value>Num. clé inclus</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireDivSi" xml:space="preserve">
+    <value>Système d'Identification</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireEncryption" xml:space="preserve">
+    <value>Chiffrement</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireEncryptTypeWarning" xml:space="preserve">
+    <value>Attention : 'DES' modifié en 'AES' </value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireEv0" xml:space="preserve">
+    <value>EV0</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireEv1" xml:space="preserve">
+    <value>EV1</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireEv2" xml:space="preserve">
+    <value>EV2</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireEv3" xml:space="preserve">
+    <value>EV3</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireFileNum" xml:space="preserve">
+    <value>Numéro de fichier</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireJcop" xml:space="preserve">
+    <value>JCOP</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireKeyNumber" xml:space="preserve">
+    <value>Numéro de clé</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireMode" xml:space="preserve">
+    <value>Mode de lecture</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireMsb" xml:space="preserve">
+    <value>MSB first</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireOffset" xml:space="preserve">
+    <value>Décalage</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireProximityCheck" xml:space="preserve">
+    <value>Proximity Check</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireReadingMode" xml:space="preserve">
+    <value>Mode de lecture</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireReadingModeWarning" xml:space="preserve">
+    <value>Attention : 'UID' modifié en 'technologie désactivée'</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireRid" xml:space="preserve">
+    <value>DESFire UID</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireSize" xml:space="preserve">
+    <value>Taille de lecture</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireUidActive" xml:space="preserve">
+    <value>Activée</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireUidIdentifier" xml:space="preserve">
+    <value>Identifiant</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireUidKeyNum" xml:space="preserve">
+    <value>Numéro de clé de lecture</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireWarningSizeId" xml:space="preserve">
+    <value>Attention : Vérifier que les interfaces sont en format long</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryMessageWarningSiOdd" xml:space="preserve">
+    <value>Le S.I fourni n'est pas de longueur paire</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryPasswordConfirmation" xml:space="preserve">
+    <value>Confirmation du mot de passe</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryPasswordNotMatching" xml:space="preserve">
+    <value>Les mots de passe ne sont pas identiques</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryPasswordRules" xml:space="preserve">
+    <value>8 à 32 caractères / 1 lettre / 1 chiffre</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryPolicies" xml:space="preserve">
+    <value>Politiques</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryPoliciesAuthDESFire" xml:space="preserve">
+    <value>Autoriser cet objet à effectuer des Authentification DESFire</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryPoliciesDecrypt" xml:space="preserve">
+    <value>Autoriser le dechiffrement</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryPoliciesEncrypt" xml:space="preserve">
+    <value>Autoriser le chiffrement</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryPoliciesImport" xml:space="preserve">
+    <value>Autoriser l'import/export de cet objet</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryPoliciesRead" xml:space="preserve">
+    <value>Autoriser la lecture de cet objet</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryPoliciesSessionKeyDESFire" xml:space="preserve">
+    <value>Autoriser le dump à l'hôte de la clé de session DESFire</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryPoliciesWrap" xml:space="preserve">
+    <value>Autoriser le wrapping de clé</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryPoliciesWrite" xml:space="preserve">
+    <value>Autoriser l'écriture de cet objet</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryType" xml:space="preserve">
+    <value>Type</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryTypeHelper" xml:space="preserve">
+    <value>Type de clé SAM-SE</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyStoreDefaultKey" xml:space="preserve">
+    <value>SAM-SE en clé par défaut</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyStoreErrorSelection" xml:space="preserve">
+    <value>Impossible de sélectionner au moins un SAM-SE : Vérifier les leds rouges des stations de programmation</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyStorePasswordHelper" xml:space="preserve">
+    <value>Mot de passe pour accèder au SAM-SE</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyStoreReadersHelper" xml:space="preserve">
+    <value>SAM-SE		MAC		Version</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyStoreReadersProvider" xml:space="preserve">
+    <value>Liste des SAM-SE accesibles</value>
+    <comment>Used</comment>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Mot de passe</value>
+    <comment>Used</comment>
+  </data>
+  <data name="SAM_SEKeyEntryAuthenticate" xml:space="preserve">
+    <value>Authentification</value>
+    <comment>Used</comment>
+  </data>
+  <data name="SAM_SEKeyEntryDESFire" xml:space="preserve">
+    <value>DESFire</value>
+    <comment>Used</comment>
+  </data>
+  <data name="SAM_SEKeyEntryDESFireUid" xml:space="preserve">
+    <value>DESFire UID</value>
+    <comment>Used</comment>
+  </data>
+  <data name="Tools" xml:space="preserve">
+    <value>Outils</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsConfFileConf1" xml:space="preserve">
+    <value>Configuration 1 : </value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsConfFileConf2" xml:space="preserve">
+    <value>Configuration 2 : </value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsConfFileConf3" xml:space="preserve">
+    <value>Configuration 3 : </value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsConfFileConf4" xml:space="preserve">
+    <value>Configuration 4 : </value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsConfFileDefaultOk" xml:space="preserve">
+    <value>Fichier par défaut crée</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsLockAdvancedShort" xml:space="preserve">
+    <value>Verrouillage avancé</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsLockDefaultShort" xml:space="preserve">
+    <value>Verrouillage par défaut</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsLockKeyShort" xml:space="preserve">
+    <value>Verrouillage minimal</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsLockLevelOk" xml:space="preserve">
+    <value>Niveau de verrouillage mis à jour</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsLockUnlock" xml:space="preserve">
+    <value>Verrouillage / Déverrouillage</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsSecurEvoDefault" xml:space="preserve">
+    <value>Créer un fichier de configuration par défaut dans le SAM-SE</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsSummary" xml:space="preserve">
+    <value>Résumé :</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsUpdateDefault" xml:space="preserve">
+    <value>Mettre à jour le SAM-SE avec les valeurs par défaut</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsWarningDefaultFile" xml:space="preserve">
+    <value>Attention : Mettre à jour le fichier de configuration avec les valeurs par défaut vas effacer les métadonnées de chaque objet</value>
+    <comment>Used</comment>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Mise à jour</value>
+    <comment>Used</comment>
+  </data>
+</root>

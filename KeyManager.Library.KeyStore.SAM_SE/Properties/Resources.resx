@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AidNotValid" xml:space="preserve">
+    <value>The AID can't store this value</value>
+  </data>
+  <data name="AidWarningMissing" xml:space="preserve">
+    <value>The AID is not filled in</value>
+  </data>
+  <data name="AidWarningWrongLength" xml:space="preserve">
+    <value>The AID is not equal to length 6</value>
+  </data>
+  <data name="FavoriteSAM_SEDisconnected" xml:space="preserve">
+    <value>The favourite SAM-SE is not connected</value>
+  </data>
+  <data name="KeyStoreEntryNotSupported" xml:space="preserve">
+    <value>This type of key entry is not supported</value>
+  </data>
+  <data name="KeyStoreKeyEntryMissing" xml:space="preserve">
+    <value>The key entry do not exists</value>
+  </data>
+  <data name="KeyStoreKeyEntryTypeMissing" xml:space="preserve">
+    <value>The key entry type do not exists</value>
+  </data>
+  <data name="KeyStorePasswordInvalid" xml:space="preserve">
+    <value>The password is not valid</value>
+  </data>
+  <data name="KeyStorePasswordNotMatching" xml:space="preserve">
+    <value>The two passwords are not matching</value>
+  </data>
+  <data name="KeyStorePropertiesMissing" xml:space="preserve">
+    <value>Missing SAM-SE key store properties</value>
+  </data>
+  <data name="KeyValue" xml:space="preserve">
+    <value>Key value</value>
+  </data>
+  <data name="LabelBioa" xml:space="preserve">
+    <value>MIFARE DESFire key : biometric configuration</value>
+  </data>
+  <data name="LabelDfxa" xml:space="preserve">
+    <value>MIFARE DESFire key : configuration</value>
+  </data>
+  <data name="LabelScp3" xml:space="preserve">
+    <value>SAM-SE authentication key</value>
+  </data>
+  <data name="LabelUidx" xml:space="preserve">
+    <value>Random UID key : configuration</value>
+  </data>
+  <data name="LabelUnknown" xml:space="preserve">
+    <value>Unknown object</value>
+  </data>
+  <data name="LockDefault" xml:space="preserve">
+    <value>Default lock : keys and files are locked inside UTPs</value>
+  </data>
+  <data name="LockKey" xml:space="preserve">
+    <value>Minimal lock : only the secrets keys are locked</value>
+  </data>
+  <data name="LockReadOnly" xml:space="preserve">
+    <value>Advanced lock : keys and files are locked inside UTPs and readonly by Secur'Evolution</value>
+  </data>
+  <data name="PasswordErrorDigit" xml:space="preserve">
+    <value>Password do not contains a digit</value>
+  </data>
+  <data name="PasswordErrorLength" xml:space="preserve">
+    <value>Password do not contains at least 8 characters</value>
+  </data>
+  <data name="PasswordErrorLetter" xml:space="preserve">
+    <value>Password do not contains a letter</value>
+  </data>
+  <data name="ProgrammingStationMissing" xml:space="preserve">
+    <value>No programming station is selected</value>
+  </data>
+  <data name="SAM_SEErrorBadConditions" xml:space="preserve">
+    <value>Communication with SAM-SE is bad</value>
+  </data>
+  <data name="SAM_SEErrorDone" xml:space="preserve">
+    <value>SAM-SE action done</value>
+  </data>
+  <data name="SAM_SEErrorNoSAM_SE" xml:space="preserve">
+    <value>No SAM-SE is connected</value>
+  </data>
+  <data name="SAM_SEErrorOldVersion" xml:space="preserve">
+    <value>Version of configuration file is not up to date</value>
+  </data>
+  <data name="SAM_SEErrorOnError" xml:space="preserve">
+    <value>SAM-SE generic error, a 'get_last_error' should have been called</value>
+  </data>
+  <data name="SAM_SEErrorProbablyDisconnected" xml:space="preserve">
+    <value>The selected programming station seems disconnected</value>
+  </data>
+  <data name="SAM_SEErrorWrongArg" xml:space="preserve">
+    <value>SAM-SE function was incorrectly called</value>
+  </data>
+  <data name="SAM_SEErrorWrongIndex" xml:space="preserve">
+    <value>SAM-SE index do not exists</value>
+  </data>
+  <data name="SAM_SEErrorWrongPtr" xml:space="preserve">
+    <value>SAM-SE context is corrupted</value>
+  </data>
+  <data name="SAM_SEErrorWrongPwd" xml:space="preserve">
+    <value>Impossible to connect to SAM-SE using this password</value>
+  </data>
+  <data name="SAM_SEErrorWrongSize" xml:space="preserve">
+    <value>SAM-SE function size argument is wrong</value>
+  </data>
+  <data name="SAM_SEUnknownError" xml:space="preserve">
+    <value>SAM-SE Error is unknown : </value>
+  </data>
+  <data name="SiNotValid" xml:space="preserve">
+    <value>The SI cannot have an odd length</value>
+  </data>
+</root>
