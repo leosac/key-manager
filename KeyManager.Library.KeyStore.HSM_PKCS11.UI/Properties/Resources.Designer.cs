@@ -97,6 +97,15 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enforce Label use.
+        /// </summary>
+        public static string EnforceLabelUse {
+            get {
+                return ResourceManager.GetString("EnforceLabelUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extractable.
         /// </summary>
         public static string Extractable {

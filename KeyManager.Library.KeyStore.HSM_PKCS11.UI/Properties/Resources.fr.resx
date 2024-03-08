@@ -129,6 +129,9 @@
   <data name="Encrypt" xml:space="preserve">
     <value>Chiffrer</value>
   </data>
+  <data name="EnforceLabelUse" xml:space="preserve">
+    <value>Forcer l'utilisation des labels</value>
+  </data>
   <data name="Extractable" xml:space="preserve">
     <value>Extractible</value>
   </data>

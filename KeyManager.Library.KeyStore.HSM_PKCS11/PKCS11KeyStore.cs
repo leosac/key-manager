@@ -47,7 +47,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             }
 
             var attributes = new List<IObjectAttribute>();
-            if (!string.IsNullOrEmpty(identifier.Id))
+            if (!string.IsNullOrEmpty(identifier.Id) && !GetPKCS11Properties().EnforceLabelUse)
             {
                 attributes.Add(_session.Factories.ObjectAttributeFactory.Create(CKA.CKA_ID, Convert.FromHexString(identifier.Id)));
             }
@@ -635,7 +635,14 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             {
                 if (await CheckKeyEntryExists(change.Identifier, change.KClass))
                 {
-                    await Update(change);
+                    if (!(Options?.GenerateKeys).GetValueOrDefault(false))
+                    {
+                        await Update(change);
+                    }
+                    else
+                    {
+                        log.Info(string.Format("Key Entry `{0}` already exists, skipping update as key generation was expected.", change.Identifier));
+                    }
                 }
                 else
                 {

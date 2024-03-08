@@ -43,6 +43,13 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             set => SetProperty(ref _user, value);
         }
 
+        private bool _enforceLabelUse;
+        public bool EnforceLabelUse
+        {
+            get => _enforceLabelUse;
+            set => SetProperty(ref _enforceLabelUse, value);
+        }
+
         public byte[]? GetUserPINBytes()
         {
             if (Secret == null)
