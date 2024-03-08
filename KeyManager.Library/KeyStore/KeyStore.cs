@@ -276,7 +276,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                         {
                             var cryptogram = new KeyEntryCryptogram
                             {
-                                Identifier = id
+                                Identifier = entry.Identifier
                                 // TODO: we may want to have a different wrapping key per Cryptogram later on
                             };
 

@@ -257,6 +257,7 @@ namespace Leosac.KeyManager.Domain
                                 deststore.KeyEntryRetrieved += (sender, e) => ProgressValue++;
                                 deststore.KeyEntryUpdated += (sender, e) => ProgressValue++;
                                 deststore.Options = model.Options;
+                                KeyStore.Options = model.Options; // Options object contains information for source and destination key stores, this should probably be splitted...
                                 var initCallback = new Action<KeyStore, KeyEntryClass, int>((_, _, nbentries) =>
                                 {
                                     ProgressMaximum = nbentries * 2;
