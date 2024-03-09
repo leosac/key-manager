@@ -15,7 +15,7 @@
              d:DataContext="{d:DesignInstance domain:SAM_SESymmetricKeyEntryPropertiesControlViewModel}"
              d:DesignHeight="800" d:DesignWidth="500">
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <materialDesign:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed" />
         <libuidomain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
     </UserControl.Resources>
     <StackPanel>
