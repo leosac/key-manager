@@ -501,6 +501,9 @@
   <data name="ResolveKeyLinks" xml:space="preserve">
     <value>Resolve Key links</value>
   </data>
+  <data name="ResolveVariables" xml:space="preserve">
+    <value>Resolve Variables</value>
+  </data>
   <data name="Salt" xml:space="preserve">
     <value>Salt</value>
   </data>

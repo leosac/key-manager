@@ -501,6 +501,9 @@
   <data name="ResolveKeyLinks" xml:space="preserve">
     <value>Résoudre la liaison des clés</value>
   </data>
+  <data name="ResolveVariables" xml:space="preserve">
+    <value>Résoudre les variables</value>
+  </data>
   <data name="Salt" xml:space="preserve">
     <value>Sel</value>
   </data>

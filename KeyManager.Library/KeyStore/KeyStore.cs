@@ -272,10 +272,12 @@ namespace Leosac.KeyManager.Library.KeyStore
                 var entry = await Get(id, keClass);
                 if (entry != null)
                 {
-                    entry.Identifier = entry.Identifier.Clone(Attributes);
+                    var resolveKeyLinks = (Options?.ResolveKeyLinks).GetValueOrDefault(true);
+                    var resolveVariables = (Options?.ResolveVariables).GetValueOrDefault(true);
+                    entry.Identifier = entry.Identifier.Clone(resolveVariables ? Attributes : null);
                     if (entry.Link != null && entry.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(entry.Link.KeyStoreFavorite))
                     {
-                        if ((Options?.ResolveKeyLinks).GetValueOrDefault(true))
+                        if (resolveKeyLinks)
                         {
                             var cryptogram = new KeyEntryCryptogram
                             {
@@ -294,7 +296,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                                         KeyStore = ks,
                                         KeyEntry = entry
                                     };
-                                    cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier.Clone(Attributes), keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKey);
+                                    cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier.Clone(resolveVariables ? Attributes : null), keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKey);
                                 }
                                 finally
                                 {
@@ -305,38 +307,52 @@ namespace Leosac.KeyManager.Library.KeyStore
                         }
                         else
                         {
+                            if (resolveVariables)
+                            {
+                                entry.Link.KeyIdentifier = entry.Link.KeyIdentifier.Clone(Attributes);
+                            }
                             changes.Add(entry);
                         }
                     }
                     else
                     {
-                        if ((Options?.ResolveKeyLinks).GetValueOrDefault(true) && entry.Variant != null)
+                        if (entry.Variant != null)
                         {
                             foreach (var kv in entry.Variant.KeyContainers)
                             {
                                 if (kv.Key.Link != null && kv.Key.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(kv.Key.Link.KeyStoreFavorite))
                                 {
-                                    var ks = getFavoriteKeyStore(kv.Key.Link.KeyStoreFavorite);
-                                    if (ks != null)
+                                    if (resolveKeyLinks)
                                     {
-                                        await ks.Open();
-                                        try
+                                        var ks = getFavoriteKeyStore(kv.Key.Link.KeyStoreFavorite);
+                                        if (ks != null)
                                         {
-                                            var divContext = new DivInput.DivInputContext
+                                            await ks.Open();
+                                            try
                                             {
-                                                KeyStore = ks,
-                                                KeyEntry = entry,
-                                                KeyContainer = kv
-                                            };
-                                            kv.Key.SetAggregatedValueAsString(await ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier.Clone(Attributes), keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
+                                                var divContext = new DivInput.DivInputContext
+                                                {
+                                                    KeyStore = ks,
+                                                    KeyEntry = entry,
+                                                    KeyContainer = kv
+                                                };
+                                                kv.Key.SetAggregatedValueAsString(await ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier.Clone(resolveVariables ? Attributes : null), keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
+                                            }
+                                            finally
+                                            {
+                                                await ks.Close();
+                                            }
                                         }
-                                        finally
+                                        // We remove link information from the being pushed key entry
+                                        kv.Key.Link = new KeyLink();
+                                    }
+                                    else
+                                    {
+                                        if (resolveVariables)
                                         {
-                                            await ks.Close();
+                                            kv.Key.Link.KeyIdentifier = kv.Key.Link.KeyIdentifier.Clone(Attributes);
                                         }
                                     }
-                                    // We remove link information from the being pushed key entry
-                                    kv.Key.Link = new KeyLink();
                                 }
                             }
                         }

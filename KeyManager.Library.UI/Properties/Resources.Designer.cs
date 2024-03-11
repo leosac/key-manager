@@ -1213,6 +1213,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Resolve Variables.
+        /// </summary>
+        public static string ResolveVariables {
+            get {
+                return ResourceManager.GetString("ResolveVariables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Salt.
         /// </summary>
         public static string Salt {
