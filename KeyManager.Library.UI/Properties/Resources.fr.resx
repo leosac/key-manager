@@ -165,6 +165,9 @@
   <data name="DerivatePassword" xml:space="preserve">
     <value>Dériver une clé à partir d'un mot de passe (en utilisant RFC 2898)</value>
   </data>
+  <data name="DiffKeyStore" xml:space="preserve">
+    <value>Comparer avec un autre magasin de clés</value>
+  </data>
   <data name="Directories" xml:space="preserve">
     <value>Répertoires</value>
   </data>

@@ -251,13 +251,16 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryClass keClass, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
-            var ids = await GetAll(keClass);
-            await Publish(store, getFavoriteKeyStore, ids, keClass, initCallback);
+            await Publish(store, getFavoriteKeyStore, keClass, null, initCallback);
         }
 
-        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, IEnumerable<KeyEntryId> ids, KeyEntryClass keClass, Action<KeyStore, KeyEntryClass, int>? initCallback)
+        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
             var changes = new List<IChangeKeyEntry>();
+            if (ids == null)
+            {
+                ids = await GetAll(keClass);
+            }
             initCallback?.Invoke(this, keClass, ids.Count());
             if (!string.IsNullOrEmpty(Options?.PublishVariable))
             {
@@ -358,6 +361,11 @@ namespace Leosac.KeyManager.Library.KeyStore
             {
                 await store.Close();
             }
+        }
+
+        public virtual Task Diff(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids, Action<KeyStore, KeyEntryClass, int>? initCallback)
+        {
+            throw new NotImplementedException();
         }
 
         private static string? ComputeDivInput(DivInputContext divContext, IList<DivInputFragment> divInput)

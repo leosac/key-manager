@@ -147,6 +147,9 @@
   <data name="DeleteFavoriteConfirmation" xml:space="preserve">
     <value>Do you confirm the favorite deletion?</value>
   </data>
+  <data name="DiffKeyStore" xml:space="preserve">
+    <value>Diff with another Key Store</value>
+  </data>
   <data name="EditFavorite" xml:space="preserve">
     <value>Edit the Key Store Favorite</value>
   </data>

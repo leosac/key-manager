@@ -147,6 +147,9 @@
   <data name="DeleteFavoriteConfirmation" xml:space="preserve">
     <value>Confirmez-vous la suppression du favori ?</value>
   </data>
+  <data name="DiffKeyStore" xml:space="preserve">
+    <value>Comparer avec un autre magasin de clés</value>
+  </data>
   <data name="EditFavorite" xml:space="preserve">
     <value>Modifier le magasin de clés favoris</value>
   </data>

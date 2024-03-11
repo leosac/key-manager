@@ -205,6 +205,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Diff with another Key Store.
+        /// </summary>
+        public static string DiffKeyStore {
+            get {
+                return ResourceManager.GetString("DiffKeyStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Directories.
         /// </summary>
         public static string Directories {

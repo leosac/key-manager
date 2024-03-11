@@ -92,5 +92,21 @@ namespace Leosac.KeyManager
                 }
             }
         }
+
+        private async void BtnDiff_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is EditKeyStoreControlViewModel model)
+            {
+                var plan = MaintenancePlan.GetSingletonInstance();
+                if (!string.IsNullOrEmpty(plan.LicenseKey))
+                {
+                    await model.Diff();
+                }
+                else
+                {
+                    MaintenancePlan.OpenRegistration();
+                }
+            }
+        }
     }
 }
