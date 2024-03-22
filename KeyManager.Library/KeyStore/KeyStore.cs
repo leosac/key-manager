@@ -1,5 +1,6 @@
 ﻿using Leosac.KeyManager.Library.DivInput;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
@@ -13,6 +14,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         public const string ATTRIBUTE_NAME = "name";
         public const string ATTRIBUTE_HEXNAME = "hexname";
         public const string ATTRIBUTE_PUBVAR = "pubvar";
+        public const string ATTRIBUTE_HEXPUBVAR = "hexpubvar";
 
         protected readonly JsonSerializerSettings _jsonSettings;
 
@@ -265,6 +267,7 @@ namespace Leosac.KeyManager.Library.KeyStore
             if (!string.IsNullOrEmpty(Options?.PublishVariable))
             {
                 Attributes[ATTRIBUTE_PUBVAR] = Options.PublishVariable;
+                Attributes[ATTRIBUTE_HEXPUBVAR] = Convert.ToHexString(Encoding.UTF8.GetBytes(Options.PublishVariable)); 
             }
 
             foreach (var id in ids)
