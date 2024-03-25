@@ -242,21 +242,21 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="changes">The key entries details.</param>
         public abstract Task Store(IList<IChangeKeyEntry> changes);
 
-        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Action<KeyStore, KeyEntryClass, int>? initCallback)
+        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Func<KeyStore, Task<bool>>? askForKeyStoreSecretIfRequired, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
             var classes = SupportedClasses;
             foreach (var keClass in classes)
             {
-                await Publish(store, getFavoriteKeyStore, keClass, initCallback);
+                await Publish(store, getFavoriteKeyStore, askForKeyStoreSecretIfRequired, keClass, initCallback);
             }
         }
 
-        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryClass keClass, Action<KeyStore, KeyEntryClass, int>? initCallback)
+        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Func<KeyStore, Task<bool>>? askForKeyStoreSecretIfRequired, KeyEntryClass keClass, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
-            await Publish(store, getFavoriteKeyStore, keClass, null, initCallback);
+            await Publish(store, getFavoriteKeyStore, askForKeyStoreSecretIfRequired, keClass, null, initCallback);
         }
 
-        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids, Action<KeyStore, KeyEntryClass, int>? initCallback)
+        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Func<KeyStore, Task<bool>>? askForKeyStoreSecretIfRequired, KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
             var changes = new List<IChangeKeyEntry>();
             if (ids == null)
@@ -291,6 +291,14 @@ namespace Leosac.KeyManager.Library.KeyStore
                             var ks = getFavoriteKeyStore(entry.Link.KeyStoreFavorite);
                             if (ks != null)
                             {
+                                if (askForKeyStoreSecretIfRequired != null)
+                                {
+                                    var c = await askForKeyStoreSecretIfRequired(ks);
+                                    if (!c)
+                                    {
+                                        throw new KeyStoreException("Missing secret for the linked key store.");
+                                    }
+                                }
                                 await ks.Open();
                                 try
                                 {
@@ -330,6 +338,14 @@ namespace Leosac.KeyManager.Library.KeyStore
                                         var ks = getFavoriteKeyStore(kv.Key.Link.KeyStoreFavorite);
                                         if (ks != null)
                                         {
+                                            if (askForKeyStoreSecretIfRequired != null)
+                                            {
+                                                var c = await askForKeyStoreSecretIfRequired(ks);
+                                                if (!c)
+                                                {
+                                                    throw new KeyStoreException("Missing secret for the linked key store.");
+                                                }
+                                            }
                                             await ks.Open();
                                             try
                                             {
@@ -382,7 +398,7 @@ namespace Leosac.KeyManager.Library.KeyStore
             }
         }
 
-        public virtual Task Diff(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids, Action<KeyStore, KeyEntryClass, int>? initCallback)
+        public virtual Task Diff(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Func<KeyStore, Task<bool>>? askForKeyStoreSecretIfRequired, KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
             throw new NotImplementedException();
         }

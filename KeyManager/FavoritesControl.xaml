@@ -133,21 +133,7 @@
                         <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
                             <materialDesign:DialogHost DialogTheme="Inherit">
                                 <materialDesign:DialogHost.DialogContent>
-                                    <StackPanel Margin="16" Width="250">
-                                        <Label Content="{x:Static properties:Resources.OpenFavorite}" Margin="5" />
-                                        <PasswordBox materialDesign:HintAssist.HelperText="{x:Static properties:Resources.SecretHelper}"
-                                                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.Secret}"
-                                                     materialDesign:TextFieldAssist.HasClearButton="True" Margin="5"
-                                                     materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
-                                                     Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
-                                                     materialDesign:PasswordBoxAssist.Password="{Binding Properties.Secret, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                     MaxLength="{Binding Properties.SecretMaxLength, Mode=OneWay}"
-                                                     Visibility="{Binding Properties.StoreSecret, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
-                                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                                            <Button Margin="0,8,8,0" CommandParameter="{Binding}" Command="{Binding DataContext.OpenFavoriteCommand, ElementName=userControl}" Content="{x:Static properties:Resources.OK}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}" />
-                                            <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />
-                                        </StackPanel>
-                                    </StackPanel>
+                                    <kslib:OpenFavoriteControl Title="{x:Static properties:Resources.OpenFavorite}" Command="{Binding DataContext.OpenFavoriteCommand, ElementName=userControl}" Properties="{Binding Properties}" />
                                 </materialDesign:DialogHost.DialogContent>
 
                                 <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" ToolTip="{x:Static properties:Resources.OpenFavorite}" Margin="3">

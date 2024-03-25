@@ -15,6 +15,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
 using Org.BouncyCastle.Crypto;
+using log4net;
 
 namespace Leosac.KeyManager.Domain
 {
@@ -229,8 +230,29 @@ namespace Leosac.KeyManager.Domain
             favorites.KeyStores.Add(fav);
             favorites.SaveToFile();
         }
+
+        public static async Task<bool> AskForKeyStoreSecretIfRequired(KeyStore ks)
+        {
+            if (ks.Properties != null && (ks.Properties.StoreSecret || !string.IsNullOrEmpty(ks.Properties.Secret)))
+            {
+                return true;
+            }
+
+            var dialog = new OpenFavoriteControl
+            {
+                DataContext = ks,
+                Properties = ks.Properties,
+                Title = string.Format("{0} - {1}", Properties.Resources.OpenFavorite, ks.Name),
+                Command = new RelayCommand(() =>
+                {
+                    DialogHost.CloseDialogCommand.Execute(ks, null);
+                })
+            };
+            var ret = await DialogHost.Show(dialog, "RootDialog");
+            return (ret != null);
+        }
         
-        public async Task RunOnKeyStore(UserControl dialog, Func<KeyStore, Func<string, KeyStore?>, KeyEntryClass, IEnumerable<KeyEntryId>?, Action<KeyStore, KeyEntryClass, int>?, Task> action)
+        public async Task RunOnKeyStore(UserControl dialog, Func<KeyStore, Func<string, KeyStore?>, Func<KeyStore, Task<bool>>?, KeyEntryClass, IEnumerable<KeyEntryId>?, Action<KeyStore, KeyEntryClass, int>?, Task> action)
         {
             var model = new PublishKeyStoreDialogViewModel();
             dialog.DataContext = model;
@@ -290,6 +312,7 @@ namespace Leosac.KeyManager.Domain
                                 }
                                 await action(deststore,
                                     getFavoriteKeyStore,
+                                    AskForKeyStoreSecretIfRequired,
                                     keModel.KeyEntryClass,
                                     entries,
                                     initCallback
