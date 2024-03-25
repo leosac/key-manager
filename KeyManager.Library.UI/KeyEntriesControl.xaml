@@ -164,22 +164,24 @@
                                                     </StackPanel>
                                                 </StackPanel>
                                             </materialDesign:DialogHost.DialogContent>
-
+                                            
                                             <Button x:Name="btnDeleteKeyEntry" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" ToolTip="{x:Static properties:Resources.DeleteKeyEntry}" Margin="3" Visibility="{Binding DataContext.KeyStore.CanDeleteKeyEntries, ElementName=keyStoreControl, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                 <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" Cursor="Hand" />
                                             </Button>
                                         </materialDesign:DialogHost>
                                         <materialDesign:PopupBox
-                                            PlacementMode="BottomAndAlignCentres" Margin="3"
-                                            Visibility="{Binding DataContext.KeyStore.CanReorderKeyEntries, ElementName=keyStoreControl, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            PlacementMode="BottomAndAlignCentres" Margin="3">
                                             <materialDesign:PopupBox.ToggleContent>
                                                 <materialDesign:PackIcon Kind="DotsVertical" Height="24" Width="24" Cursor="Hand" />
                                             </materialDesign:PopupBox.ToggleContent>
                                             <StackPanel>
-                                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.MoveUpKeyEntryCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.MoveUp}" Margin="3">
+                                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.CopyKeyEntryCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.CopyKeyEntry}" Margin="3" Visibility="{Binding DataContext.KeyStore.CanCreateKeyEntries, ElementName=keystoreControl, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                    <materialDesign:PackIcon Kind="ContentCopy" Height="24" Width="24" Cursor="Hand" />
+                                                </Button>
+                                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.MoveUpKeyEntryCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.MoveUp}" Visibility="{Binding DataContext.KeyStore.CanReorderKeyEntries, ElementName=keyStoreControl, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="3">
                                                     <materialDesign:PackIcon Kind="ArrowUp" Height="24" Width="24" Cursor="Hand" />
                                                 </Button>
-                                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.MoveDownKeyEntryCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.MoveDown}" Margin="3">
+                                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.MoveDownKeyEntryCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.MoveDown}" Visibility="{Binding DataContext.KeyStore.CanReorderKeyEntries, ElementName=keyStoreControl, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="3">
                                                     <materialDesign:PackIcon Kind="ArrowDown" Height="24" Width="24" Cursor="Hand" />
                                                 </Button>
                                             </StackPanel>

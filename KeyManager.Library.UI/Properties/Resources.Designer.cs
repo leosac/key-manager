@@ -133,6 +133,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy the Key Entry.
+        /// </summary>
+        public static string CopyKeyEntry {
+            get {
+                return ResourceManager.GetString("CopyKeyEntry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy words.
         /// </summary>
         public static string CopyWords {

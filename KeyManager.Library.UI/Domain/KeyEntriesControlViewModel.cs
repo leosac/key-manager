@@ -90,6 +90,33 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 }
             });
 
+            CopyKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
+                async identifier =>
+                {
+                    try
+                    {
+                        if (KeyStore != null && identifier?.KeyEntryId != null)
+                        {
+                            var model = CreateKeyEntryDialogViewModel();
+                            model.SetKeyEntry(await KeyStore.Get(identifier.KeyEntryId, KeyEntryClass));
+                            var dialog = new KeyEntryDialog
+                            {
+                                DataContext = model
+                            };
+
+                            await CreateKeyEntry(dialog);
+                        }
+                    }
+                    catch (KeyStoreException ex)
+                    {
+                        SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error("Unexpected error occured.", ex);
+                    }
+                });
+
             MoveUpKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
                 async keyEntryId =>
             {
@@ -304,6 +331,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
         }
 
         public AsyncRelayCommand<SelectableKeyEntryId> EditKeyEntryCommand { get; }
+
+        public AsyncRelayCommand<SelectableKeyEntryId> CopyKeyEntryCommand { get; }
 
         private async Task UpdateKeyEntry(KeyEntryDialog dialog)
         {

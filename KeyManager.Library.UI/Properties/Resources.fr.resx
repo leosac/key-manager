@@ -141,6 +141,9 @@
   <data name="CopyClipboard" xml:space="preserve">
     <value>Copier vers le presse-papier</value>
   </data>
+  <data name="CopyKeyEntry" xml:space="preserve">
+    <value>Copier l'enregistrement de clés</value>
+  </data>
   <data name="CopyWords" xml:space="preserve">
     <value>Copier les mots</value>
   </data>

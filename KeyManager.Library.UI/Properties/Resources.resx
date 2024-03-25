@@ -141,6 +141,9 @@
   <data name="CopyClipboard" xml:space="preserve">
     <value>Copy to clipboard</value>
   </data>
+  <data name="CopyKeyEntry" xml:space="preserve">
+    <value>Copy the Key Entry</value>
+  </data>
   <data name="CopyWords" xml:space="preserve">
     <value>Copy words</value>
   </data>
