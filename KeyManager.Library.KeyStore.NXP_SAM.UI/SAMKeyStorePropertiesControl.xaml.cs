@@ -25,21 +25,5 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
         {
             InitializeComponent();
         }
-
-        private void cbReaderProvider_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (DataContext is SAMKeyStorePropertiesControlViewModel model)
-            {
-                model.RefreshReaderList();
-            }
-        }
-
-        private void btnRefreshReaderUnits_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is SAMKeyStorePropertiesControlViewModel model)
-            {
-                model.RefreshReaderList();
-            }
-        }
     }
 }

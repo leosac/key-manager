@@ -3,6 +3,9 @@ using Leosac.WpfApp;
 using LibLogicalAccess.Reader;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
+using LibLogicalAccess;
+using System.Configuration.Provider;
+using LibLogicalAccess.Card;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
 {
@@ -28,11 +31,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 LibLogicalAccess.Card.SAMLockUnlock.SwitchAV2Mode
             });
 
+            _samDESFireKeyId = 2;
+            _rfidReaderProvider = "PCSC";
+
             SAMAuthCommand = new RelayCommand(SAMAuthenticate);
             SAMSwitchAV2Command = new AsyncRelayCommand(SAMSwitchAV2);
             SAMLockUnlockCommand = new RelayCommand(SAMLockUnlock);
             SAMGetVersionCommand = new RelayCommand(SAMGetVersion);
             SAMActivateMifareSAMCommand = new RelayCommand(SAMActivateMifareSAM);
+            DESFireAuthenticateCommand = new RelayCommand(DESFireAuthenticate);
         }
 
         private KeyVersion _samAuthKey;
@@ -77,6 +84,76 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             set => SetProperty(ref _samUnlockAction, value);
         }
 
+        private byte _samDESFireKeyId;
+        public byte SAMDESFireKeyId
+        {
+            get => _samDESFireKeyId;
+            set => SetProperty(ref _samDESFireKeyId, value);
+        }
+
+        private byte _samDESFireKeyVersion;
+        public byte SAMDESFireKeyVersion
+        {
+            get => _samDESFireKeyVersion;
+            set => SetProperty(ref _samDESFireKeyVersion, value);
+        }
+
+        private string _rfidReaderProvider;
+        public string RFIDReaderProvider
+        {
+            get => _rfidReaderProvider;
+            set => SetProperty(ref _rfidReaderProvider, value);
+        }
+
+        private string _rfidReaderUnit;
+        public string RFIDReaderUnit
+        {
+            get => _rfidReaderUnit;
+            set => SetProperty(ref _rfidReaderUnit, value);
+        }
+
+        private byte[] _desfireAID = new byte[3];
+        public byte[] DESFireAID
+        {
+            get => _desfireAID;
+            set => SetProperty(ref _desfireAID, value);
+        }
+
+        private byte _desfireKeyNum;
+        public byte DESFireKeyNum
+        {
+            get => _desfireKeyNum;
+            set => SetProperty(ref _desfireKeyNum, value);
+        }
+
+        private bool _desfireUseDiversification;
+        public bool DESFireUseDiversification
+        {
+            get => _desfireUseDiversification;
+            set => SetProperty(ref _desfireUseDiversification, value);
+        }
+
+        private byte[] _desfireDivInput = Array.Empty<byte>();
+        public byte[] DESFireDivInput
+        {
+            get => _desfireDivInput;
+            set => SetProperty(ref _desfireDivInput, value);
+        }
+
+        private bool _desfireReadFile;
+        public bool DESFireReadFile
+        {
+            get => _desfireReadFile;
+            set => SetProperty(ref _desfireReadFile, value);
+        }
+
+        private byte _desfireFileNo;
+        public byte DESFireFileNo
+        {
+            get => _desfireFileNo;
+            set => SetProperty(ref _desfireFileNo, value);
+        }
+
         public ObservableCollection<LibLogicalAccess.Card.SAMKeyType> KeyTypes { get; set; }
 
         public ObservableCollection<LibLogicalAccess.Card.SAMLockUnlock> UnlockActions { get; set; }
@@ -90,6 +167,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
         public RelayCommand SAMGetVersionCommand { get; }
 
         public RelayCommand SAMActivateMifareSAMCommand { get; }
+
+        public RelayCommand DESFireAuthenticateCommand { get; }
 
         private void SAMGetVersion()
         {
@@ -248,6 +327,137 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             catch (Exception ex)
             {
                 log.Error("Lock/Unlock SAM failed.", ex);
+                SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
+            }
+        }
+
+        private void DESFireAuthenticate()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(RFIDReaderProvider))
+                {
+                    var ks = KeyStore as SAMKeyStore;
+                    var cmd = ks?.Chip?.getCommands();
+                    if (cmd is SAMAV2ISO7816Commands samav2cmd)
+                    {
+                        var lla = LibLogicalAccess.LibraryManager.getInstance();
+                        var rp = lla.getReaderProvider(RFIDReaderProvider);
+                        if (rp == null)
+                        {
+                            log.Error(string.Format("Cannot initialize the RFID Reader Provider `{0}`.", RFIDReaderProvider));
+                            throw new KeyStoreException("Cannot initialize the RFID Reader Provider.");
+                        }
+
+                        ReaderUnit? ru = null;
+                        if (string.IsNullOrEmpty(RFIDReaderUnit))
+                        {
+                            ru = rp.createReaderUnit();
+                        }
+                        else
+                        {
+                            var readers = rp.getReaderList();
+                            foreach (var reader in readers)
+                            {
+                                if (reader.getName() == RFIDReaderUnit)
+                                {
+                                    ru = reader;
+                                    break;
+                                }
+                            }
+                        }
+                        if (ru == null)
+                        {
+                            log.Error("Cannot initialize the RFID Reader Unit.");
+                            throw new KeyStoreException("Cannot initialize the RFID Reader Unit.");
+                        }
+
+                        if (!ru.connectToReader())
+                        {
+                            log.Error("Cannot connect to the RFID Reader Unit.");
+                            throw new KeyStoreException("Cannot connect to the RFID Reader Unit.");
+                        }
+
+                        if (ru is not ISO7816ReaderUnit isoru)
+                        {
+                            throw new KeyStoreException("The RFID Reader Unit needs to implement ISO7816 interface.");
+                        }
+
+                        isoru.setSAMReaderUnit(ks.ReaderUnit as ISO7816ReaderUnit);
+                        isoru.setSAMChip(ks.Chip as SAMChip);
+
+                        try
+                        {
+                            ru.setCardType("DESFireEV1");
+
+                            if (!ru.waitInsertion(5000))
+                            {
+                                throw new KeyStoreException("No RFID card inserted.");
+                            }
+                            if (!ru.connect())
+                            {
+                                throw new KeyStoreException("Cannot connect to the RFID card.");
+                            }
+
+                            var chip = ru.getSingleChip();
+                            if (chip == null)
+                            {
+                                throw new KeyStoreException("Cannot retrieve the chip for inserted RFID card.");
+                            }
+                            if (chip.getCommands() is not DESFireEV1ISO7816Commands ev1cmd)
+                            {
+                                throw new KeyStoreException("Unexpected commands type for the inserted RFID card.");
+                            }
+
+                            uint aid = BitConverter.ToUInt32(DESFireAID);
+                            ev1cmd.selectApplication(aid);
+
+                            var key = new DESFireKey();
+                            key.setKeyType(DESFireKeyType.DF_KEY_AES);
+                            var kss = new SAMKeyStorage();
+                            kss.setKeySlot(SAMDESFireKeyId);
+                            key.setKeyVersion(SAMDESFireKeyVersion);
+                            key.setKeyStorage(kss);
+
+                            if (DESFireUseDiversification)
+                            {
+                                var div = new NXPAV2KeyDiversification();
+                                if (DESFireDivInput != null && DESFireDivInput.Length > 0)
+                                {
+                                    div.setDivInput(new ByteVector(DESFireDivInput));
+                                }
+                                key.setKeyDiversification(div);
+                            }
+
+                            ev1cmd.authenticate(DESFireKeyNum, key);
+                            SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "DESFire authentication with SAM succeeded.");
+
+                            if (DESFireReadFile)
+                            {
+                                var data = ev1cmd.readData(DESFireFileNo, 0, 0, EncryptionMode.CM_ENCRYPT);
+                                if (data != null)
+                                {
+                                    var datastr = Convert.ToHexString(data.ToArray());
+                                    SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, string.Format("Data read: {0}", datastr));
+                                }
+                            }
+
+                            ru.disconnect();
+                            ru.waitRemoval(1);
+                        }
+                        finally
+                        {
+                            isoru.setSAMChip(null);
+                            isoru.setSAMReaderUnit(null);
+
+                            ru.disconnectFromReader();
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                log.Error("DESFire authentication failed.", ex);
                 SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
             }
         }

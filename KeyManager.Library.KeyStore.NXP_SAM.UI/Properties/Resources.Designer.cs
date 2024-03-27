@@ -205,6 +205,33 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DESFire Authentication.
+        /// </summary>
+        public static string DESFireAuthenticate {
+            get {
+                return ResourceManager.GetString("DESFireAuthenticate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File No.
+        /// </summary>
+        public static string DESFireFileNo {
+            get {
+                return ResourceManager.GetString("DESFireFileNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The DESFire File number.
+        /// </summary>
+        public static string DESFireFileNoHelper {
+            get {
+                return ResourceManager.GetString("DESFireFileNoHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Key Number.
         /// </summary>
         public static string DESFireKeyNumber {
@@ -273,6 +300,24 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         public static string DisableVerifyMACFromPICC {
             get {
                 return ResourceManager.GetString("DisableVerifyMACFromPICC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Div Input.
+        /// </summary>
+        public static string DivInput {
+            get {
+                return ResourceManager.GetString("DivInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diversification Input to use for the key diversification (optional).
+        /// </summary>
+        public static string DivInputHelper {
+            get {
+                return ResourceManager.GetString("DivInputHelper", resourceCulture);
             }
         }
         
@@ -390,6 +435,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         public static string KeepIV {
             get {
                 return ResourceManager.GetString("KeepIV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key Diversification.
+        /// </summary>
+        public static string KeyDiversification {
+            get {
+                return ResourceManager.GetString("KeyDiversification", resourceCulture);
             }
         }
         
@@ -651,6 +705,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         public static string ReaderUnitHelper {
             get {
                 return ResourceManager.GetString("ReaderUnitHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read file data.
+        /// </summary>
+        public static string ReadFile {
+            get {
+                return ResourceManager.GetString("ReadFile", resourceCulture);
             }
         }
         

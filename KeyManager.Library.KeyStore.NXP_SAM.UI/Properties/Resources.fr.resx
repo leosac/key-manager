@@ -165,6 +165,15 @@
   <data name="DESFireAIDHelper" xml:space="preserve">
     <value>L'identifiant d'application DESFire</value>
   </data>
+  <data name="DESFireAuthenticate" xml:space="preserve">
+    <value>Authentification DESFire</value>
+  </data>
+  <data name="DESFireFileNo" xml:space="preserve">
+    <value>Numéro de fichier</value>
+  </data>
+  <data name="DESFireFileNoHelper" xml:space="preserve">
+    <value>Le numéro de fichier DESFire</value>
+  </data>
   <data name="DESFireKeyNumber" xml:space="preserve">
     <value>Numéro de clé</value>
   </data>
@@ -188,6 +197,12 @@
   </data>
   <data name="DisableVerifyMACFromPICC" xml:space="preserve">
     <value>Désactiver la vérification du MAC à partir d'une carte PICC</value>
+  </data>
+  <data name="DivInput" xml:space="preserve">
+    <value>Données de diversification</value>
+  </data>
+  <data name="DivInputHelper" xml:space="preserve">
+    <value>Données de diversification à utiliser pour la dérivation (facultatif)</value>
   </data>
   <data name="EditKUC" xml:space="preserve">
     <value>Modifier le compteur d'usage de clé</value>
@@ -227,6 +242,9 @@
   </data>
   <data name="KeepIV" xml:space="preserve">
     <value>Conserver l'IV</value>
+  </data>
+  <data name="KeyDiversification" xml:space="preserve">
+    <value>Diversification de clé</value>
   </data>
   <data name="KeyEntry" xml:space="preserve">
     <value>Enregistrement de clés</value>
@@ -314,6 +332,9 @@
   </data>
   <data name="ReaderUnitHelper" xml:space="preserve">
     <value>Lecteur</value>
+  </data>
+  <data name="ReadFile" xml:space="preserve">
+    <value>Lire les données du fichier</value>
   </data>
   <data name="RefreshReaderUnits" xml:space="preserve">
     <value>Actualiser la liste des lecteurs</value>
