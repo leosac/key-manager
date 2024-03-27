@@ -318,8 +318,6 @@ namespace Leosac.KeyManager.Domain
                                     initCallback
                                 );
                             }
-
-                            SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "Key Entries have been successfully published.");
                         }
                         finally
                         {
@@ -337,6 +335,7 @@ namespace Leosac.KeyManager.Domain
                 try
                 {
                     await RunOnKeyStore(new PublishKeyStoreDialog(), KeyStore.Publish);
+                    SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "Key Entries have been successfully published.");
                 }
                 catch (KeyStoreException ex)
                 {
@@ -357,6 +356,7 @@ namespace Leosac.KeyManager.Domain
                 try
                 {
                     await RunOnKeyStore(new DiffKeyStoreDialog(), KeyStore.Diff);
+                    SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "No differences found.");
                 }
                 catch (KeyStoreException ex)
                 {
