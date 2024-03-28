@@ -15,6 +15,6 @@
         </Grid.RowDefinitions>
         <wpfappctrls:NumericUpDownControl Hint="{x:Static properties:Resources.KeyVersion}" HelperText="{x:Static properties:Resources.KeyVersionHelper}" Grid.Row="0"
                                     HorizontalAlignment="Left" Width="250" MaxValue="255" VerticalAlignment="Center"
-                                    CurrentValue="{Binding Version, Mode=TwoWay}" />
+                                    CurrentValue="{Binding Version, Mode=TwoWay}" Margin="5" />
     </Grid>
 </UserControl>

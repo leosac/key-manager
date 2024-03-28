@@ -39,60 +39,55 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" HorizontalAlignment="Right" Text="{Binding Name}" />
-                        <Grid Grid.Row="1" Visibility="{Binding IsRealKeyMateriel, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <TextBox Margin="8,8,8,20" Grid.Row="0" Width="380"
+                        <DockPanel Grid.Row="1" LastChildFill="True" Visibility="{Binding IsRealKeyMateriel, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                            <TextBox Margin="0,5,0,20" MinWidth="350"
                                      materialDesign:HintAssist.HelperText="{x:Static properties:Resources.GenericValue}"
                                      materialDesign:HintAssist.Hint="{x:Static properties:Resources.GenericValue}"
                                      MaxLength="{Binding Path=OverrideSize, Converter={StaticResource ByteLengthToCharLengthConverter}}"
                                      Text="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
-                        </Grid>
-                        <Grid Grid.Row="1" Visibility="{Binding IsRealKeyMateriel, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <PasswordBox Margin="8,8,8,20" Grid.Row="0" Grid.ColumnSpan="2" Width="380"
-                 materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyValueHelper}"
-                 materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyValue}"
-                 materialDesign:TextFieldAssist.HasClearButton="True"
-                 materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
-                 MaxLength="{Binding Path=Key.KeySize, Converter={StaticResource ByteLengthToCharLengthConverter}, ElementName=keyControl}"
-                 Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
-                 materialDesign:PasswordBoxAssist.Password="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
-                            <TextBox x:Name="tbxKCV" Grid.Column="0" Grid.Row="1" Margin="8"
-             materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KCVHelper}"
-             materialDesign:HintAssist.Hint="{x:Static properties:Resources.KCV}"
-             Visibility="{Binding ShowKCV, ElementName=keyControl, Converter={StaticResource BooleanToVisibilityConverter}}"
-             IsReadOnly="True">
-                                <TextBox.Text>
-                                    <MultiBinding Converter="{StaticResource KeyChecksumConverter}" Mode="OneWay">
-                                        <Binding Path="SelectedKeyChecksumAlgorithm" ElementName="keyControl" />
-                                        <Binding Path="Key" ElementName="keyControl" />
-                                        <Binding Path="KeyChecksumIV" ElementName="keyControl" />
-                                        <Binding Path="Value" />
-                                    </MultiBinding>
-                                </TextBox.Text>
-                            </TextBox>
-                            <ComboBox Grid.Column="1" Grid.Row="1" Margin="8"
-              ItemsSource="{Binding Path=KeyChecksumAlgorithms, Mode=OneWay, ElementName=keyControl}"
-              SelectedItem="{Binding Path=SelectedKeyChecksumAlgorithm, Mode=TwoWay, ElementName=keyControl}"
-              Visibility="{Binding ShowKCV, ElementName=keyControl, Converter={StaticResource BooleanToVisibilityConverter}}"
-              materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KCVAlgorithmHelper}"
-              materialDesign:HintAssist.Hint="{x:Static properties:Resources.KCVAlgorithm}">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Name}" />
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                        </Grid>
+                        </DockPanel>
+                        <DockPanel Grid.Row="1" LastChildFill="True" Visibility="{Binding IsRealKeyMateriel, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid DockPanel.Dock="Bottom">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" x:Name="tbxKCV" Margin="0,5,0,5"
+                                        materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KCVHelper}"
+                                        materialDesign:HintAssist.Hint="{x:Static properties:Resources.KCV}"
+                                        Visibility="{Binding ShowKCV, ElementName=keyControl, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        IsReadOnly="True">
+                                    <TextBox.Text>
+                                        <MultiBinding Converter="{StaticResource KeyChecksumConverter}" Mode="OneWay">
+                                            <Binding Path="SelectedKeyChecksumAlgorithm" ElementName="keyControl" />
+                                            <Binding Path="Key" ElementName="keyControl" />
+                                            <Binding Path="KeyChecksumIV" ElementName="keyControl" />
+                                            <Binding Path="Value" />
+                                        </MultiBinding>
+                                    </TextBox.Text>
+                                </TextBox>
+                                <ComboBox Grid.Column="1" Margin="0,5,0,5"
+                                          ItemsSource="{Binding Path=KeyChecksumAlgorithms, Mode=OneWay, ElementName=keyControl}"
+                                          SelectedItem="{Binding Path=SelectedKeyChecksumAlgorithm, Mode=TwoWay, ElementName=keyControl}"
+                                          Visibility="{Binding ShowKCV, ElementName=keyControl, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                          materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KCVAlgorithmHelper}"
+                                          materialDesign:HintAssist.Hint="{x:Static properties:Resources.KCVAlgorithm}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </Grid>
+                            <PasswordBox Margin="0,5,0,20" Grid.Row="0" Grid.ColumnSpan="2" MinWidth="350"
+                                         materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyValueHelper}"
+                                         materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyValue}"
+                                         materialDesign:TextFieldAssist.HasClearButton="True"
+                                         materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
+                                         MaxLength="{Binding Path=Key.KeySize, Converter={StaticResource ByteLengthToCharLengthConverter}, ElementName=keyControl}"
+                                         Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
+                                         materialDesign:PasswordBoxAssist.Password="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
+                        </DockPanel>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

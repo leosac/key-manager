@@ -34,22 +34,20 @@
                 <CheckBox Content="{x:Static properties:Resources.GenerateSAMUnlockKey}" IsChecked="{Binding ChangeSAMUnlockKey}" Margin="5" />
             </WrapPanel>
             <Expander HorizontalAlignment="Stretch" Header="{x:Static properties:Resources.PICCKey}" IsExpanded="True">
-                <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <TextBox Grid.Row="0" Text="{Binding PICCAID, Mode=TwoWay, Converter={StaticResource ByteArrayToStringConverter}}"
-                                     materialDesign:HintAssist.HelperText="{x:Static properties:Resources.DESFireAIDHelper}"
-                                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.DESFireAID}" Margin="0,0,0,10"/>
-                        <wpfappctrls:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding PICCKeyNo, Mode=TwoWay}" Grid.Row="1"
-                                                        HelperText="{x:Static properties:Resources.DESFireKeyNumberHelper}"
-                                                        Hint="{x:Static properties:Resources.DESFireKeyNumber}"/>
-                        <libui:KeyContainerControl Grid.Row="2" DataContext="{Binding PICCKey}" ShowKeyLink="False" />
-                    </Grid>
-                </StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBox Grid.Row="0" Text="{Binding PICCAID, Mode=TwoWay, Converter={StaticResource ByteArrayToStringConverter}}"
+                                    materialDesign:HintAssist.HelperText="{x:Static properties:Resources.DESFireAIDHelper}"
+                                    materialDesign:HintAssist.Hint="{x:Static properties:Resources.DESFireAID}" Margin="5,5,5,10"/>
+                    <wpfappctrls:NumericUpDownControl MinValue="0" MaxValue="255" CurrentValue="{Binding PICCKeyNo, Mode=TwoWay}" Grid.Row="1"
+                                                    HelperText="{x:Static properties:Resources.DESFireKeyNumberHelper}"
+                                                    Hint="{x:Static properties:Resources.DESFireKeyNumber}" Margin="5"/>
+                    <libui:KeyContainerControl Grid.Row="2" DataContext="{Binding PICCKey}" ShowKeyLink="False" />
+                </Grid>
             </Expander>
         </StackPanel>
     </DockPanel>
