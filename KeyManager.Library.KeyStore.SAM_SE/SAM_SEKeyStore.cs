@@ -187,6 +187,8 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
         public override Task Store(IList<IChangeKeyEntry> changes)
         {
             log.Info(String.Format("Storing `{0}` key entries...", changes.Count));
+            //Getting all the informations from the SAM-SE before updating its entries
+            GetAll();
             foreach (var change in changes)
             {
                 Update(change, true);
@@ -199,13 +201,6 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
         {
             log.Info(String.Format("Updating key entry `{0}`...", change.Identifier));
             int ret = 0;
-
-            //All the mechanic of Update is based on this list
-            //If it's empty, we must populate it with a GetAll
-            if (_keyEntries.Count == 0)
-            {
-                GetAll();
-            }
 
             //Getting object using informations from arguments
             SAM_SESymmetricKeyEntry? keyEntry = GetKeyEntry(change.Identifier.Id!, change.KClass) ?? throw new KeyStoreException(Resources.KeyStoreKeyEntryMissing);

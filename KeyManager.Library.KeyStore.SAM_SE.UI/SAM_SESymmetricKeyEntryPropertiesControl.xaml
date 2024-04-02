@@ -229,7 +229,11 @@
                                 <CheckBox Grid.Column="2" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"
                                      Content="{x:Static properties:Resources.KeyEntryDESFireProximityCheck}"
                                      IsChecked="{Binding SAM_SEProperties.DESFire.ProximityCheck}"
-                                     IsEnabled="{Binding SAM_SEProperties.DESFire.ProximityCheckEnable}"/>
+                                     IsEnabled="{Binding SAM_SEProperties.DESFire.ProximityCheckEnable}">
+                                    <CheckBox.ToolTip>
+                                        <ToolTip Content="{x:Static properties:Resources.ProximityCheckExplanation}"/>
+                                    </CheckBox.ToolTip>
+                                </CheckBox>
                             </Grid>
                             <Grid Grid.Row="3" Margin="0,5,0,5" IsEnabled="{Binding SAM_SEProperties.DESFire.ParamEnable}">
                                 <Grid.ColumnDefinitions>
@@ -244,12 +248,11 @@
                                     </Grid.RowDefinitions>
                                     <TextBlock Grid.Row="0" Margin="0,3,0,0"
                                         Text="{x:Static properties:Resources.DESFireAid}"
-                                        FontSize="9" Foreground="DarkGray"/>
+                                        FontSize="9.5" Foreground="{DynamicResource MaterialDesignFlatButtonRipple}"/>
                                     <TextBox Grid.Row="1" Margin="0,0,5,0" MaxLength="6"
                                         PreviewTextInput="NumberValidationTextBox"
                                         Text="{Binding SAM_SEProperties.DESFire.AidString, Mode=TwoWay}"
-                                        materialDesign:HintAssist.Hint="{x:Static properties:Resources.DESFireAid}"
-                                        ContextMenu="{x:Null}"/>
+                                        materialDesign:HintAssist.Hint="{x:Static properties:Resources.DESFireAid}"/>
                                     <materialDesign:PackIcon Width="20" Height="20" Grid.Row="1" Margin="0,0,5,0"
                                         Kind="Alert" Foreground="OrangeRed" Background="Transparent"
                                         Visibility="{Binding SAM_SEProperties.DESFire.WarningAid, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -296,10 +299,10 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,0,0"
                                     Text="{x:Static properties:Resources.KeyEntryDESFireEncryption}"
-                                    FontSize="9" Foreground="DarkGray"/>
+                                    FontSize="9.5" Foreground="{DynamicResource MaterialDesignFlatButtonRipple}"/>
                                 <TextBlock Grid.Row="0" Grid.Column="1" Margin="5,0,0,0"
                                     Text="{x:Static properties:Resources.KeyEntryDESFireCommunication}"
-                                    FontSize="9" Foreground="DarkGray"/>
+                                    FontSize="9.5" Foreground="{DynamicResource MaterialDesignFlatButtonRipple}"/>
                                 <ComboBox Grid.Row="1"  Grid.Column="0" Margin="0,0,5,0"
                                     ItemsSource="{Binding SAM_SE_DESFire_Encrypt}"
                                     DisplayMemberPath="Value" SelectedValuePath="Key"

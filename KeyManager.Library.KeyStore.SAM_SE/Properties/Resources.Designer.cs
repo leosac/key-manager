@@ -223,7 +223,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Advanced lock : keys and files are locked inside UTPs and readonly by Secur&apos;Evolution.
+        ///   Recherche une chaîne localisée semblable à Advanced lock : keys and files are locked inside UTPs and readonly by Synchronic softwares.
         /// </summary>
         public static string LockReadOnly {
             get {
@@ -268,7 +268,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Communication with SAM-SE is bad.
+        ///   Recherche une chaîne localisée semblable à Communication with SAM-SE is disturbed.
         /// </summary>
         public static string SAM_SEErrorBadConditions {
             get {
@@ -367,7 +367,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à SAM-SE Error is unknown : .
+        ///   Recherche une chaîne localisée semblable à SAM-SE error is unknown : .
         /// </summary>
         public static string SAM_SEUnknownError {
             get {

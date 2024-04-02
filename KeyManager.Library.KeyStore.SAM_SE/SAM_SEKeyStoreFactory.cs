@@ -15,7 +15,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
     public class SAM_SEKeyStoreFactory : KeyStoreFactory
     {
         private readonly uint MAJOR = 1;
-        private readonly uint MINOR = 1;
+        private readonly uint MINOR = 2;
         private readonly uint DVL = 0;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
