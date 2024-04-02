@@ -252,7 +252,7 @@ namespace Leosac.KeyManager.Domain
             return (ret != null);
         }
         
-        public async Task RunOnKeyStore(UserControl dialog, Func<KeyStore, Func<string, KeyStore?>, Func<KeyStore, Task<bool>>?, KeyEntryClass, IEnumerable<KeyEntryId>?, Action<KeyStore, KeyEntryClass, int>?, Task> action)
+        public async Task<bool> RunOnKeyStore(UserControl dialog, Func<KeyStore, Func<string, KeyStore?>, Func<KeyStore, Task<bool>>?, KeyEntryClass, IEnumerable<KeyEntryId>?, Action<KeyStore, KeyEntryClass, int>?, Task> action)
         {
             var model = new PublishKeyStoreDialogViewModel();
             dialog.DataContext = model;
@@ -323,9 +323,13 @@ namespace Leosac.KeyManager.Domain
                         {
                             ShowProgress = false;
                         }
+
+                        return true;
                     }
                 }
             }
+
+            return false;
         }
 
         public async Task Publish()
@@ -334,8 +338,10 @@ namespace Leosac.KeyManager.Domain
             {
                 try
                 {
-                    await RunOnKeyStore(new PublishKeyStoreDialog(), KeyStore.Publish);
-                    SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "Key Entries have been successfully published.");
+                    if (await RunOnKeyStore(new PublishKeyStoreDialog(), KeyStore.Publish))
+                    {
+                        SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "Key Entries have been successfully published.");
+                    }
                 }
                 catch (KeyStoreException ex)
                 {
@@ -355,8 +361,10 @@ namespace Leosac.KeyManager.Domain
             {
                 try
                 {
-                    await RunOnKeyStore(new DiffKeyStoreDialog(), KeyStore.Diff);
-                    SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "No differences found.");
+                    if (await RunOnKeyStore(new DiffKeyStoreDialog(), KeyStore.Diff))
+                    {
+                        SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "No differences found.");
+                    }
                 }
                 catch (KeyStoreException ex)
                 {
