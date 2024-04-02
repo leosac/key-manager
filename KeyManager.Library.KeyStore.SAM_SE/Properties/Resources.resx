@@ -172,7 +172,7 @@
     <value>Minimal lock : only the secrets keys are locked</value>
   </data>
   <data name="LockReadOnly" xml:space="preserve">
-    <value>Advanced lock : keys and files are locked inside UTPs and readonly by Secur'Evolution</value>
+    <value>Advanced lock : keys and files are locked inside UTPs and readonly by Synchronic softwares</value>
   </data>
   <data name="PasswordErrorDigit" xml:space="preserve">
     <value>Password do not contains a digit</value>
@@ -187,7 +187,7 @@
     <value>No programming station is selected</value>
   </data>
   <data name="SAM_SEErrorBadConditions" xml:space="preserve">
-    <value>Communication with SAM-SE is bad</value>
+    <value>Communication with SAM-SE is disturbed</value>
   </data>
   <data name="SAM_SEErrorDone" xml:space="preserve">
     <value>SAM-SE action done</value>
@@ -220,7 +220,7 @@
     <value>SAM-SE function size argument is wrong</value>
   </data>
   <data name="SAM_SEUnknownError" xml:space="preserve">
-    <value>SAM-SE Error is unknown : </value>
+    <value>SAM-SE error is unknown : </value>
   </data>
   <data name="SiNotValid" xml:space="preserve">
     <value>The SI cannot have an odd length</value>

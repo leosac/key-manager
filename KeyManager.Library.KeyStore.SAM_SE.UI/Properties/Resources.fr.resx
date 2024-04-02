@@ -158,7 +158,7 @@
     <comment>Used</comment>
   </data>
   <data name="DESFireModeIdp" xml:space="preserve">
-    <value>ID Privé</value>
+    <value>ID privé</value>
     <comment>Used</comment>
   </data>
   <data name="DESFireModeUid" xml:space="preserve">
@@ -166,7 +166,7 @@
     <comment>Unused, keep</comment>
   </data>
   <data name="KeyEntryDESFireAdvancedSecurity" xml:space="preserve">
-    <value>Sécurité Avancée</value>
+    <value>Sécurité avancée</value>
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireAuthEv2" xml:space="preserve">
@@ -190,15 +190,15 @@
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireDivAid" xml:space="preserve">
-    <value>AID Inversé</value>
+    <value>AID inversé</value>
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireDivKeyNum" xml:space="preserve">
-    <value>Num. clé inclus</value>
+    <value>Numéro de clé inclus</value>
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireDivSi" xml:space="preserve">
-    <value>Système d'Identification</value>
+    <value>Système d'identification</value>
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireEncryption" xml:space="preserve">
@@ -250,7 +250,7 @@
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireProximityCheck" xml:space="preserve">
-    <value>Proximity Check</value>
+    <value>Contrôle de proximité</value>
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireReadingMode" xml:space="preserve">
@@ -306,11 +306,11 @@
     <comment>Used</comment>
   </data>
   <data name="KeyEntryPoliciesAuthDESFire" xml:space="preserve">
-    <value>Autoriser cet objet à effectuer des Authentification DESFire</value>
+    <value>Autoriser cet objet à effectuer des authentifications DESFire</value>
     <comment>Used</comment>
   </data>
   <data name="KeyEntryPoliciesDecrypt" xml:space="preserve">
-    <value>Autoriser le dechiffrement</value>
+    <value>Autoriser le déchiffrement</value>
     <comment>Used</comment>
   </data>
   <data name="KeyEntryPoliciesEncrypt" xml:space="preserve">
@@ -326,7 +326,7 @@
     <comment>Used</comment>
   </data>
   <data name="KeyEntryPoliciesSessionKeyDESFire" xml:space="preserve">
-    <value>Autoriser le dump à l'hôte de la clé de session DESFire</value>
+    <value>Autoriser le transfert de la clé de session DESFire à l'hôte</value>
     <comment>Used</comment>
   </data>
   <data name="KeyEntryPoliciesWrap" xml:space="preserve">
@@ -362,11 +362,15 @@
     <comment>Used</comment>
   </data>
   <data name="KeyStoreReadersProvider" xml:space="preserve">
-    <value>Liste des SAM-SE accesibles</value>
+    <value>Liste des SAM-SE accessibles</value>
     <comment>Used</comment>
   </data>
   <data name="Password" xml:space="preserve">
     <value>Mot de passe</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ProximityCheckExplanation" xml:space="preserve">
+    <value>Active la protection contre les attaques relais</value>
     <comment>Used</comment>
   </data>
   <data name="SAM_SEKeyEntryAuthenticate" xml:space="preserve">
@@ -379,6 +383,10 @@
   </data>
   <data name="SAM_SEKeyEntryDESFireUid" xml:space="preserve">
     <value>DESFire UID</value>
+    <comment>Used</comment>
+  </data>
+  <data name="StoreSecret" xml:space="preserve">
+    <value>Sauvegarde des informations de connexion</value>
     <comment>Used</comment>
   </data>
   <data name="Tools" xml:space="preserve">

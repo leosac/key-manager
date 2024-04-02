@@ -190,15 +190,15 @@
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireDivAid" xml:space="preserve">
-    <value>AID Inverted</value>
+    <value>AID inverted</value>
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireDivKeyNum" xml:space="preserve">
-    <value>Key n° included</value>
+    <value>Key number included</value>
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireDivSi" xml:space="preserve">
-    <value>System Identifier</value>
+    <value>System identifier</value>
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireEncryption" xml:space="preserve">
@@ -250,7 +250,7 @@
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireProximityCheck" xml:space="preserve">
-    <value>Proximity Check</value>
+    <value>Proximity check</value>
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireReadingMode" xml:space="preserve">
@@ -278,7 +278,7 @@
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireUidKeyNum" xml:space="preserve">
-    <value>Reading Key Number</value>
+    <value>Reading key number</value>
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireWarningSizeId" xml:space="preserve">
@@ -306,7 +306,7 @@
     <comment>Used</comment>
   </data>
   <data name="KeyEntryPoliciesAuthDESFire" xml:space="preserve">
-    <value>Allow this object to perform DESFire Authentication</value>
+    <value>Allow this object to perform DESFire authentication</value>
     <comment>Used</comment>
   </data>
   <data name="KeyEntryPoliciesDecrypt" xml:space="preserve">
@@ -342,7 +342,7 @@
     <comment>Used</comment>
   </data>
   <data name="KeyEntryTypeHelper" xml:space="preserve">
-    <value>SAM-SE Key Entry Type</value>
+    <value>SAM-SE key entry type</value>
     <comment>Used</comment>
   </data>
   <data name="KeyStoreDefaultKey" xml:space="preserve">
@@ -369,6 +369,10 @@
     <value>Password</value>
     <comment>Used</comment>
   </data>
+  <data name="ProximityCheckExplanation" xml:space="preserve">
+    <value>Enables protection against relay attacks</value>
+    <comment>Used</comment>
+  </data>
   <data name="SAM_SEKeyEntryAuthenticate" xml:space="preserve">
     <value>Authenticate</value>
     <comment>Used</comment>
@@ -379,6 +383,10 @@
   </data>
   <data name="SAM_SEKeyEntryDESFireUid" xml:space="preserve">
     <value>DESFire UID</value>
+    <comment>Used</comment>
+  </data>
+  <data name="StoreSecret" xml:space="preserve">
+    <value>Save connection informations</value>
     <comment>Used</comment>
   </data>
   <data name="Tools" xml:space="preserve">

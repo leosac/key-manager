@@ -172,7 +172,7 @@
     <value>Verouillage minimal : seules les clés secrètes sont verrouillées</value>
   </data>
   <data name="LockReadOnly" xml:space="preserve">
-    <value>Verouillage avancé : clés et fichiers verrouillés dans les UTPs et lecture seule via Secur'Evolution</value>
+    <value>Verouillage avancé : clés et fichiers verrouillés dans les UTPs et lecture seule via les logiciels Synchronic</value>
   </data>
   <data name="PasswordErrorDigit" xml:space="preserve">
     <value>Le mot de passe ne contient pas de chiffre</value>
@@ -187,7 +187,7 @@
     <value>Aucune station de programmation sélectionnée</value>
   </data>
   <data name="SAM_SEErrorBadConditions" xml:space="preserve">
-    <value>La communication avec le SAM-SE est mauvaise</value>
+    <value>La communication avec le SAM-SE est perturbée</value>
   </data>
   <data name="SAM_SEErrorDone" xml:space="preserve">
     <value>L'action du SAM-SE est effectuée</value>
