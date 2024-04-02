@@ -22,7 +22,7 @@
       <ComponentGroupRef Id="NXP_SAMPluginDependenciesComponents" />
 		</Feature>
     <Feature Id="AdditionalPluginsFeature" Title="!(loc.AdditionalPlugins)" Description="!(loc.AdditionalPluginsDescr)" Level="1">
-      <Feature Id="SAM_SEFeature" Title="!(loc.SAM_SEFeature)" Description="!(loc.SAM_SEFeatureDescr)" Level="2" AllowAbsent="yes">
+      <Feature Id="SAM_SEFeature" Title="!(loc.SAM_SEFeature)" Description="!(loc.SAM_SEFeatureDescr)" Level="1" AllowAbsent="yes">
         <ComponentGroupRef Id="SAM_SEPluginComponents" />
         <ComponentGroupRef Id="SAM_SEPluginDependenciesComponents" />
       </Feature>
@@ -39,7 +39,7 @@
         <ComponentGroupRef Id="LCPPluginResourcesFR" />
         <ComponentGroupRef Id="NXP_SAMPluginResourcesFR" />
       </Feature>
-      <Feature Id="SAM_SEFeatureFrench" Title="!(loc.SAM_SEFrenchFeature)" Description="!(loc.SAM_SEFrenchFeatureDescr)" Level="2" AllowAbsent="yes">
+      <Feature Id="SAM_SEFeatureFrench" Title="!(loc.SAM_SEFrenchFeature)" Description="!(loc.SAM_SEFrenchFeatureDescr)" Level="1" AllowAbsent="yes">
         <ComponentGroupRef Id="SAM_SEPluginResourcesFR" />
       </Feature>
     </Feature>
