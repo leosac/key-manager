@@ -97,5 +97,24 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             }
             return CreateVariantFromAlgo(algo, keySize);
         }
+
+        public static string GetKeyTypeFromVariant(KeyEntryVariant variant)
+        {
+            var vname = variant.Name.ToLowerInvariant();
+            string keyType;
+            if (vname == "des")
+            {
+                keyType = "2k3des";
+            }
+            else if (vname == "tk3des")
+            {
+                keyType = "3k3des";
+            }
+            else
+            {
+                keyType = vname;
+            }
+            return keyType;
+        }
     }
 }

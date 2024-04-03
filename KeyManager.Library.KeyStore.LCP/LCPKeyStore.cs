@@ -60,7 +60,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
 
             if (change is KeyEntry entry && entry.Variant != null && entry.Variant.KeyContainers.Count > 0)
             {
-                var key = CreateCredentialKey(entry.Identifier, entry.Variant.KeyContainers[0] as KeyVersion, (entry as LCPKeyEntry)?.LCPProperties);
+                var key = CreateCredentialKey(entry.Identifier, entry.Variant, (entry as LCPKeyEntry)?.LCPProperties);
                 if (key != null)
                 {
                     await _keyAPI!.Create(key);
@@ -276,7 +276,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             {
                 if (entry.Variant?.KeyContainers.Count == 1)
                 {
-                    var key = CreateCredentialKey(entry.Identifier, entry.Variant.KeyContainers[0] as KeyVersion, (entry as LCPKeyEntry)?.LCPProperties);
+                    var key = CreateCredentialKey(entry.Identifier, entry.Variant, (entry as LCPKeyEntry)?.LCPProperties);
                     if (key != null)
                     {
                         // We should already have only one key material during an update
@@ -297,37 +297,43 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             return base.GetDefaultKeyEntry(keClass) ?? new LCPKeyEntry(keClass);
         }
 
-        public static CredentialKey CreateCredentialKey(KeyEntryId identifier, KeyContainer? kc, LCPKeyEntryProperties? properties)
+        public static CredentialKey CreateCredentialKey(KeyEntryId identifier, KeyEntryVariant? variant, LCPKeyEntryProperties? properties)
         {
             var key = new CredentialKey();
             if (!string.IsNullOrEmpty(identifier.Id))
             {
                 key.Id = Guid.Parse(identifier.Id);
             }
-            if (kc != null)
-            {
-                var rawkey = kc.Key.GetAggregatedValueAsBinary();
-                key.Value = (rawkey != null) ? Convert.ToHexString(rawkey) : null;
-            }
-            if (!string.IsNullOrEmpty(kc?.Key.Link?.KeyStoreFavorite))
-            {
-                key.KeyStore = kc.Key.Link.KeyStoreFavorite != Link.StorePlaceholder ? kc.Key.Link.KeyStoreFavorite : null;
-                key.KeyStoreReference = kc.Key.Link.KeyIdentifier?.Id;
-                key.KeyStoreType = "sam"; // TODO: get the referenced key store type here
-            }
-            else
-            {
-                key.KeyStoreType = "database";
-            }
 
-            if (kc is KeyVersion kv)
+            if (variant != null)
             {
-                key.Version = kv.Version;
-            }
-            if (properties != null)
-            {
-                key.Scope = properties.Scope;
-                key.ScopeDiversifier = properties.ScopeDiversifier;
+                var kc = variant.KeyContainers[0];
+                key.KeyType = LCPKeyEntry.GetKeyTypeFromVariant(variant);
+                if (kc != null)
+                {
+                    var rawkey = kc.Key.GetAggregatedValueAsBinary();
+                    key.Value = (rawkey != null) ? Convert.ToHexString(rawkey) : null;
+                }
+                if (!string.IsNullOrEmpty(kc?.Key.Link?.KeyStoreFavorite))
+                {
+                    key.KeyStore = kc.Key.Link.KeyStoreFavorite != Link.StorePlaceholder ? kc.Key.Link.KeyStoreFavorite : null;
+                    key.KeyStoreReference = kc.Key.Link.KeyIdentifier?.Id;
+                    key.KeyStoreType = "sam"; // TODO: get the referenced key store type here
+                }
+                else
+                {
+                    key.KeyStoreType = "database";
+                }
+
+                if (kc is KeyVersion kv)
+                {
+                    key.Version = kv.Version;
+                }
+                if (properties != null)
+                {
+                    key.Scope = properties.Scope;
+                    key.ScopeDiversifier = properties.ScopeDiversifier;
+                }
             }
             return key;
         }
