@@ -3,15 +3,32 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
              mc:Ignorable="d" 
-             d:DesignHeight="150" d:DesignWidth="290">
-    <StackPanel Margin="16" Width="250">
+             d:DesignHeight="150" d:DesignWidth="390">
+    <UserControl.Resources>
+        <domain:HexStringLengthConverter x:Key="HexStringLengthConverter" />
+    </UserControl.Resources>
+    <StackPanel Margin="16" Width="350">
         <Label Content="{Binding Path=Title, ElementName=favControl}" Margin="5" />
-        <PasswordBox materialDesign:HintAssist.HelperText="{x:Static properties:Resources.SecretHelper}"
+        <DockPanel>
+            <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center">
+                <materialDesign:DialogHost Identifier="KeyGenerationDialog" DialogTheme="Inherit">
+                    <materialDesign:DialogHost.DialogContent>
+                        <local:SymmetricKeyGenerationDialog KeySize="{Binding Path=Properties.SecretMaxLength, Mode=OneWay, Converter={StaticResource HexStringLengthConverter}, ElementName=favControl}" KeyValue="{Binding Properties.Secret, Mode=TwoWay, ElementName=favControl}" />
+                    </materialDesign:DialogHost.DialogContent>
+                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                            Width="24" Height="24" Margin="2"
+                            ToolTip="{x:Static properties:Resources.KeyGeneration}">
+                        <materialDesign:PackIcon Kind="Seedling" Height="16" Width="16"/>
+                    </Button>
+                </materialDesign:DialogHost>
+            </WrapPanel>
+            <PasswordBox materialDesign:HintAssist.HelperText="{x:Static properties:Resources.SecretHelper}"
                  materialDesign:HintAssist.Hint="{x:Static properties:Resources.Secret}"
                  materialDesign:TextFieldAssist.HasClearButton="True" Margin="5"
                  materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
@@ -19,6 +36,7 @@
                  materialDesign:PasswordBoxAssist.Password="{Binding Properties.Secret, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ElementName=favControl}"
                  MaxLength="{Binding Properties.SecretMaxLength, Mode=OneWay, ElementName=favControl}"
                  Visibility="{Binding Properties.StoreSecret, Converter={StaticResource InverseBooleanToVisibilityConverter}, ElementName=favControl}"/>
+        </DockPanel>
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
             <Button Margin="0,8,8,0" CommandParameter="{Binding}" Command="{Binding Command, ElementName=favControl}" Content="{x:Static properties:Resources.OK}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}" />
             <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />

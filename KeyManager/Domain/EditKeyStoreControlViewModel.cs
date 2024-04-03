@@ -241,7 +241,7 @@ namespace Leosac.KeyManager.Domain
             var dialog = new OpenFavoriteControl
             {
                 DataContext = ks,
-                Properties = ks.Properties,
+                Properties = ks.Properties!,
                 Title = string.Format("{0} - {1}", Properties.Resources.OpenFavorite, ks.Name),
                 Command = new RelayCommand(() =>
                 {
