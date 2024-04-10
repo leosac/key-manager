@@ -176,8 +176,17 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
                         }
                     }
                 }
-                //Update enabled conf depending on the linked objects
-                UpdateConfEnabled();
+                try
+                {
+                    //Update enabled conf depending on the linked objects
+                    UpdateConfEnabled();
+                }
+                catch (KeyStoreException)
+                {
+                    //Do nothing. This try catch is just here to not throw an error when the user opens
+                    //KeyManager with a not up-to-date SAM-SE (v1.6.0) and gets an error right away ...
+                }
+
             }
 
             log.Info(String.Format("{0} key entries returned.", entries.Count));
