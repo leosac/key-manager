@@ -1,4 +1,5 @@
 ﻿using Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -9,11 +10,15 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
     /// </summary>
     public partial class LLAReaderControl : UserControl
     {
+        private readonly LibLogicalAccess.LibraryManager _lla;
+
         public LLAReaderControl()
         {
-            InitializeComponent();
+            _lla = LibLogicalAccess.LibraryManager.getInstance();
+            ReaderProviders = new ObservableCollection<string>(_lla.getAvailableReaders().ToArray());
+            ReaderUnits = new ObservableCollection<string>();
 
-            DataContext = new LLAReaderViewModel();
+            InitializeComponent();
         }
 
         public string ReaderProvider
@@ -32,20 +37,34 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI
         public static readonly DependencyProperty ReaderUnitProperty = DependencyProperty.Register(nameof(ReaderUnit), typeof(string), typeof(LLAReaderControl),
             new FrameworkPropertyMetadata(""));
 
+        public ObservableCollection<string> ReaderProviders { get; set; }
+
+        public ObservableCollection<string> ReaderUnits { get; set; }
+
+        public void RefreshReaderList()
+        {
+            var prevru = ReaderUnit;
+            ReaderUnits.Clear();
+            var rp = _lla.getReaderProvider(ReaderProvider);
+            var ruList = rp.getReaderList();
+            foreach (var ru in ruList)
+            {
+                ReaderUnits.Add(ru.getName());
+            }
+            if (ReaderUnits.Contains(prevru))
+            {
+                ReaderUnit = prevru;
+            }
+        }
+
         private void cbReaderProvider_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DataContext is LLAReaderViewModel model)
-            {
-                model.RefreshReaderList(this);
-            }
+            RefreshReaderList();
         }
 
         private void btnRefreshReaderUnits_Click(object sender, RoutedEventArgs e)
         {
-            if (DataContext is LLAReaderViewModel model)
-            {
-                model.RefreshReaderList(this);
-            }
+            RefreshReaderList();
         }
     }
 }

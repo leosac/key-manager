@@ -409,7 +409,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                                 throw new KeyStoreException("Unexpected commands type for the inserted RFID card.");
                             }
 
-                            uint aid = BitConverter.ToUInt32(DESFireAID);
+                            uint aid = (uint)(DESFireAID[0] << 16 | DESFireAID[1] << 8 | DESFireAID[2]);
                             ev1cmd.selectApplication(aid);
 
                             var key = new DESFireKey();

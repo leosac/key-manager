@@ -10,17 +10,16 @@
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties"
              xmlns:wpfappctrls="clr-namespace:Leosac.WpfApp.Controls;assembly=WpfApp"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance domain:LLAReaderViewModel}"
              d:DesignHeight="250" d:DesignWidth="400">
     <StackPanel>
-        <ComboBox ItemsSource="{Binding ReaderProviders}" SelectedItem="{Binding ReaderProvider, ElementName=llaControl}"
+        <ComboBox ItemsSource="{Binding ReaderProviders, ElementName=llaControl}" SelectedItem="{Binding ReaderProvider, ElementName=llaControl, UpdateSourceTrigger=PropertyChanged}"
                   materialDesign:HintAssist.HelperText="{x:Static properties:Resources.ReaderProviderHelper}"
                   materialDesign:HintAssist.Hint="{x:Static properties:Resources.ReaderProvider}" Margin="5,5,5,10" SelectionChanged="cbReaderProvider_SelectionChanged" />
         <DockPanel LastChildFill="True">
             <Button DockPanel.Dock="Right" x:Name="btnRefreshReaderUnits" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="24" Height="24" Margin="3" ToolTip="{x:Static properties:Resources.RefreshReaderUnits}" Click="btnRefreshReaderUnits_Click">
                 <materialDesign:PackIcon Kind="Refresh" Height="16" Width="16"/>
             </Button>
-            <ComboBox ItemsSource="{Binding ReaderUnits}" SelectedItem="{Binding ReaderUnit, ElementName=llaControl}"
+            <ComboBox ItemsSource="{Binding ReaderUnits, ElementName=llaControl}" SelectedItem="{Binding ReaderUnit, ElementName=llaControl, UpdateSourceTrigger=PropertyChanged}"
                   materialDesign:HintAssist.HelperText="{x:Static properties:Resources.ReaderUnitHelper}"
                   materialDesign:HintAssist.Hint="{x:Static properties:Resources.ReaderUnit}"
                   materialDesign:TextFieldAssist.HasClearButton="True" Margin="5,5,5,10" />
