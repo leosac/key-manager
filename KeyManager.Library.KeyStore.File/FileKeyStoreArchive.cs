@@ -19,7 +19,13 @@ namespace Leosac.KeyManager.Library.KeyStore.File
                 System.IO.File.Delete(fileName);
             }
 
-            ZipFile.CreateFromDirectory(keyStore.GetFileProperties().Fullpath, fileName);
+            var filesToAdd = Directory.GetFiles(keyStore.GetFileProperties().Fullpath, "*.leok", SearchOption.TopDirectoryOnly);
+            using var zipFileStream = new FileStream(fileName, FileMode.Create);
+            using var archive = new ZipArchive(zipFileStream, ZipArchiveMode.Create);
+            for (int i = 0; i < filesToAdd.Length; i++)
+            {
+                archive.CreateEntryFromFile(filesToAdd[i], Path.GetFileName(filesToAdd[i]));
+            }
         }
     }
 }
