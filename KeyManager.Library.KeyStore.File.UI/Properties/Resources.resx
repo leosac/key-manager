@@ -120,6 +120,12 @@
   <data name="Browse" xml:space="preserve">
     <value>Browse...</value>
   </data>
+  <data name="DeepListing" xml:space="preserve">
+    <value>Deep Listing</value>
+  </data>
+  <data name="DeepListingHelper" xml:space="preserve">
+    <value>Deep Listing (may have performance issues on large key store)</value>
+  </data>
   <data name="Directory" xml:space="preserve">
     <value>Directory</value>
   </data>

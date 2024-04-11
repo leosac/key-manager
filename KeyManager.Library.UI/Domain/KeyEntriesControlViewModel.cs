@@ -77,7 +77,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
                             DataContext = model
                         };
 
-                        await UpdateKeyEntry(dialog);
+                        if (await UpdateKeyEntry(dialog) && model.KeyEntry != null)
+                        {
+                            identifier.KeyEntryId = model.KeyEntry.Identifier;
+                        }
                     }
                 }
                 catch (KeyStoreException ex)
@@ -334,7 +337,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public AsyncRelayCommand<SelectableKeyEntryId> CopyKeyEntryCommand { get; }
 
-        private async Task UpdateKeyEntry(KeyEntryDialog dialog)
+        private async Task<bool> UpdateKeyEntry(KeyEntryDialog dialog)
         {
             try
             {
@@ -344,20 +347,23 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     if (KeyStore != null && model.KeyEntry != null)
                     {
                         await KeyStore.Update(model.KeyEntry);
+                        return true;
                     }
                 }
             }
             catch (KeyStoreException ex)
             {
                 SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
-                await UpdateKeyEntry(dialog);
+                return await UpdateKeyEntry(dialog);
             }
             catch (Exception ex)
             {
                 log.Error("Updating the Key Entry failed unexpected.", ex);
                 SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
-                await UpdateKeyEntry(dialog);
+                return await UpdateKeyEntry(dialog);
             }
+
+            return false;
         }
 
         public AsyncRelayCommand<SelectableKeyEntryId> DeleteKeyEntryCommand { get; }

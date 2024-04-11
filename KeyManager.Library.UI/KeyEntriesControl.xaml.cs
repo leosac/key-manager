@@ -21,7 +21,10 @@ namespace Leosac.KeyManager.Library.UI
 
         private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            KeyEntriesDataContext?.RefreshKeyEntries();
+            if (e.OldValue != null)
+            {
+                KeyEntriesDataContext?.RefreshKeyEntries();
+            }
         }
 
         private void KeyEntryEdit_OnDialogClosed(object sender, DialogClosedEventArgs e)

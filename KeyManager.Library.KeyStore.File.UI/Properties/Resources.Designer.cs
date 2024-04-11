@@ -70,6 +70,24 @@ namespace Leosac.KeyManager.Library.KeyStore.File.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deep Listing.
+        /// </summary>
+        public static string DeepListing {
+            get {
+                return ResourceManager.GetString("DeepListing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deep Listing (may have performance issues on large key store).
+        /// </summary>
+        public static string DeepListingHelper {
+            get {
+                return ResourceManager.GetString("DeepListingHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Directory.
         /// </summary>
         public static string Directory {

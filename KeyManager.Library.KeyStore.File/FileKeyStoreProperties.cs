@@ -5,14 +5,21 @@
         public FileKeyStoreProperties()
         {
             _fullpath = string.Empty;
+            _deepListing = true;
         }
 
         private string _fullpath;
-
         public string Fullpath
         {
             get => _fullpath;
             set => SetProperty(ref _fullpath, value);
+        }
+
+        private bool _deepListing;
+        public bool DeepListing
+        {
+            get => _deepListing;
+            set => SetProperty(ref _deepListing, value);
         }
 
         public override int? SecretMaxLength => 32;

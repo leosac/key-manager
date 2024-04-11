@@ -29,12 +29,12 @@ namespace Leosac.KeyManager.Library.KeyStore.File
 
         public override IEnumerable<KeyEntryClass> SupportedClasses
         {
-            get => new KeyEntryClass[] { KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric };
+            get => [KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric];
         }
 
         public override Task Open()
         {
-            log.Info(String.Format("Opening the key store `{0}`...", GetFileProperties().Fullpath));
+            log.Info(string.Format("Opening the key store `{0}`...", GetFileProperties().Fullpath));
             if (!System.IO.Directory.Exists(GetFileProperties().Fullpath))
             {
                 log.Error(string.Format("Cannot open the key sore `{0}`.", GetFileProperties().Fullpath));
@@ -166,7 +166,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             return key;
         }
 
-        public override Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass)
+        public override async Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass)
         {
             log.Info(string.Format("Getting all key entries (class: `{0}`)...", keClass));
             IList<KeyEntryId> keyEntries = new List<KeyEntryId>();
@@ -180,10 +180,19 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             foreach (var file in files)
             {
                 string identifier = System.IO.Path.GetFileNameWithoutExtension(System.IO.Path.GetFileNameWithoutExtension(file));
-                keyEntries.Add(new KeyEntryId { Id = identifier });
+                var keid = new KeyEntryId { Id = identifier };
+                if (GetFileProperties().DeepListing && keClass != null)
+                {
+                    var ke = await Get(keid, keClass.Value);
+                    if (ke != null)
+                    {
+                        keid = ke.Identifier;
+                    }
+                }
+                keyEntries.Add(keid);
             }
             log.Info(string.Format("{0} key entries returned.", keyEntries.Count));
-            return Task.FromResult(keyEntries);
+            return keyEntries;
         }
 
         public override async Task Store(IList<IChangeKeyEntry> changes)
