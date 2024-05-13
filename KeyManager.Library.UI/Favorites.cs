@@ -22,6 +22,11 @@ namespace Leosac.KeyManager.Library.UI
             return GetSingletonInstance(false);
         }
 
+        public Favorites()
+        {
+            IsUserConfiguration = true;
+        }
+
         public static Favorites? GetSingletonInstance(bool forceRecreate)
         {
             lock (_objlock)
@@ -30,14 +35,14 @@ namespace Leosac.KeyManager.Library.UI
                 {
                     try
                     {
-                        _settings = KMSettings.LoadFromFile();
+                        _settings = KMSettings.LoadFromFile(true);
                         if (!string.IsNullOrEmpty(_settings?.FavoritesPath))
                         {
                             _singleton = LoadFromFile(_settings.FavoritesPath);
                         }
                         else
                         {
-                            _singleton = LoadFromFile();
+                            _singleton = LoadFromFile(true);
                         }
                         OnSingletonCreated();
                     }

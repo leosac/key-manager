@@ -125,7 +125,7 @@
     <Content Include="leosac_key.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.4" />
-    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.4" />
+    <PackageReference Include="WixToolset.Netfx.wixext" Version="4.0.5" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.5" />
   </ItemGroup>
 </Project>

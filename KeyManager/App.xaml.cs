@@ -38,7 +38,7 @@ namespace Leosac.KeyManager
         {
             log.Debug("Starting up the application...");
 
-            var settings = AppSettings.GetSingletonInstance();
+            var settings = UserAppSettings.GetSingletonInstance();
             if (!string.IsNullOrEmpty(settings.Language))
             {
                 LangHelper.ChangeLanguage(settings.Language);

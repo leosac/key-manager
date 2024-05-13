@@ -26,7 +26,7 @@ namespace Leosac.KeyManager
             SettingsCommand = new RelayCommand(() =>
             {
                 var settingsWindow = new SettingsWindow();
-                settingsWindow.DataContext = KMSettings.LoadFromFile();
+                settingsWindow.DataContext = KMSettings.LoadFromFile(false);
                 settingsWindow.ShowDialog();
             });
         }

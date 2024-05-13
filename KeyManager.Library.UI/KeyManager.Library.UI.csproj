@@ -11,7 +11,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>Leosac.$(AssemblyName)</PackageId>
-    <Version>1.15.0</Version>
+    <Version>1.16.0</Version>
     <Title>Leosac Key Manager UI Library</Title>
     <Company>Leosac SAS</Company>
     <Product>Leosac Key Manager</Product>
@@ -31,11 +31,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Leosac.WpfApp" Version="1.16.0" />
+    <PackageReference Include="Leosac.WpfApp" Version="1.17.0" />
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
-    <PackageReference Include="Net.Codecrete.QrCodeGenerator" Version="2.0.4" />
+    <PackageReference Include="Net.Codecrete.QrCodeGenerator" Version="2.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="SkiaSharp" Version="2.88.7" />
+    <PackageReference Include="SkiaSharp" Version="2.88.8" />
   </ItemGroup>
 
   <ItemGroup>
