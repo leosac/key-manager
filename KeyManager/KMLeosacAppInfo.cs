@@ -29,6 +29,7 @@ namespace Leosac.KeyManager
                 settingsWindow.DataContext = KMSettings.LoadFromFile(false);
                 settingsWindow.ShowDialog();
             });
+            PerUserInstallation = null; // Automatic decision based on program installation
         }
 
         public override void InitializeMainWindow(MainWindowViewModel model)
