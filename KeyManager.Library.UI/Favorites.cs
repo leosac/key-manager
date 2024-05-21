@@ -1,4 +1,4 @@
-﻿using Leosac.WpfApp;
+﻿using Leosac.SharedServices;
 using System.Collections.ObjectModel;
 using System.Text;
 

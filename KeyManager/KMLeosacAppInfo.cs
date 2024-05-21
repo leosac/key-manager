@@ -12,7 +12,7 @@ using System.Windows.Controls;
 
 namespace Leosac.KeyManager
 {
-    public class KMLeosacAppInfo : LeosacAppInfo
+    public class KMLeosacAppInfo : LeosacWinAppInfo
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 

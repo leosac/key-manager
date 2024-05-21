@@ -306,6 +306,9 @@
       <Component Id="SecretSharingDotNetComponent">
         <File Id="___var.SecretSharingDotNet.dll_" Source="$(var.KeyManager.TargetDir)\SecretSharingDotNet.dll" />
       </Component>
+      <Component Id="SharedServicesComponent">
+        <File Id="___var.SharedServices.dll_" Source="$(var.KeyManager.TargetDir)\SharedServices.dll" />
+      </Component>
       <Component Id="SkiaSharpComponent">
         <File Id="___var.SkiaSharp.dll_" Source="$(var.KeyManager.TargetDir)\SkiaSharp.dll" />
       </Component>

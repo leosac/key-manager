@@ -1,4 +1,4 @@
-﻿using Leosac.WpfApp;
+﻿using Leosac.SharedServices;
 
 namespace Leosac.KeyManager.Library.UI
 {
