@@ -1,14 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Leosac.KeyManager.Library;
+using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using Leosac.WpfApp;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using System;
+using System.ComponentModel;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using System.Windows.Data;
 
 namespace Leosac.KeyManager.Domain
 {
@@ -71,7 +74,7 @@ namespace Leosac.KeyManager.Domain
 
                         Favorites?.KeyStores.Remove(fav);
                         Favorites?.SaveToFile();
-                        log.Info(String.Format("Favorite `{0}` removed.", fav.Name));
+                        log.Info(string.Format("Favorite `{0}` removed.", fav.Name));
                     }
                 });
             EditFavoriteCommand = new AsyncRelayCommand<Favorite>(
@@ -140,9 +143,24 @@ namespace Leosac.KeyManager.Domain
             set => SetProperty(ref _newMasterKey, value);
         }
 
+        private string? _searchTerms;
+
+        public string? SearchTerms
+        {
+            get => _searchTerms;
+            set
+            {
+                if (SetProperty(ref _searchTerms, value))
+                {
+                    RefreshFavoritesView();
+                }
+            }
+        }
+
         public void RefreshFavorites()
         {
             IsLoadingFavorites = true;
+            SearchTerms = string.Empty;
             Favorites = Favorites.GetSingletonInstance(true);
             Task.Run(async () =>
             {
@@ -150,6 +168,24 @@ namespace Leosac.KeyManager.Domain
                 await Task.Delay(500);
                 IsLoadingFavorites = false;
             });
+            if (Favorites != null)
+            {
+                FavoritesView = CollectionViewSource.GetDefaultView(Favorites.KeyStores);
+                FavoritesView.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
+                FavoritesView.Filter = FavoritesFilter;
+            }
+        }
+
+        public void RefreshFavoritesView()
+        {
+            FavoritesView?.Refresh();
+        }
+
+        private ICollectionView? _favoritesView;
+        public ICollectionView? FavoritesView
+        {
+            get => _favoritesView;
+            set => SetProperty(ref _favoritesView, value);
         }
 
         protected void ImportFavorites()
@@ -190,6 +226,26 @@ namespace Leosac.KeyManager.Domain
                     SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
                 }
             }
+        }
+
+        private bool FavoritesFilter(object obj)
+        {
+            if (string.IsNullOrWhiteSpace(_searchTerms))
+            {
+                return true;
+            }
+
+            if (obj is Favorite item)
+            {
+                var terms = _searchTerms.ToLowerInvariant();
+
+                if (item.Name != null && item.Name.ToLowerInvariant().Contains(terms))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public RelayCommand? RefreshFavoritesCommand { get; set; }

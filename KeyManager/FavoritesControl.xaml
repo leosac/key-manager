@@ -24,11 +24,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <CollectionViewSource x:Key='Favorites' Source="{Binding Favorites.KeyStores}">
-                <CollectionViewSource.SortDescriptions>
-                    <componentModel:SortDescription PropertyName="Name" />
-                </CollectionViewSource.SortDescriptions>
-            </CollectionViewSource>
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
@@ -99,6 +94,25 @@
                         ToolTip="{x:Static properties:Resources.RefreshFavorites}" Margin="5">
                     <materialDesign:PackIcon Kind="Reload" Height="24" Width="24" Cursor="Hand" />
                 </Button>
+                <materialDesign:DialogHost DialogTheme="Inherit">
+                    <materialDesign:DialogHost.DialogContent>
+                        <WrapPanel Margin="16">
+                            <TextBox TextWrapping="Wrap" Margin="3" MinWidth="200"
+                                     Text="{Binding SearchTerms}"
+                                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.Search}"
+                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                            <Button Margin="4" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" IsDefault="True" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}">
+                                <materialDesign:PackIcon Kind="Search" Height="24" Width="24" Cursor="Hand" />
+                            </Button>
+                        </WrapPanel>
+                    </materialDesign:DialogHost.DialogContent>
+                    <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
+                            ToolTip="{x:Static properties:Resources.Search}"
+                            Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                            Margin="5">
+                        <materialDesign:PackIcon Kind="Search" Width="24" Height="24" />
+                    </Button>
+                </materialDesign:DialogHost>
                 <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
                         Command="{Binding CreateFavoriteCommand}"
                         ToolTip="{x:Static properties:Resources.NewFavorite}" Margin="5">
@@ -123,10 +137,12 @@
                 </materialDesign:PopupBox>
             </WrapPanel>
             <WrapPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left">
-                <TextBlock FontSize="28" FontWeight="Bold" Text="{x:Static properties:Resources.Favorites}" />
+                <materialDesign:Badged Badge="{Binding Favorites.KeyStores.Count}">
+                    <TextBlock FontSize="28" FontWeight="Bold" Text="{x:Static properties:Resources.Favorites}" />
+                </materialDesign:Badged>
             </WrapPanel>
         </DockPanel>
-        <ListBox ItemsSource="{Binding Source={StaticResource Favorites}}" HorizontalContentAlignment="Stretch">
+        <ListBox ItemsSource="{Binding FavoritesView}" HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="lib:Favorite">
                     <DockPanel LastChildFill="True">

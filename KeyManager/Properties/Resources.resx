@@ -228,6 +228,9 @@
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
   <data name="Secret" xml:space="preserve">
     <value>Secret</value>
   </data>
