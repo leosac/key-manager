@@ -35,7 +35,7 @@ namespace Leosac.KeyManager.Library.UI
                 {
                     try
                     {
-                        _settings = KMSettings.LoadFromFile(true);
+                        _settings = KMSettings.LoadFromFile(false);
                         if (!string.IsNullOrEmpty(_settings?.FavoritesPath))
                         {
                             _singleton = LoadFromFile(_settings.FavoritesPath);

@@ -125,7 +125,13 @@
             <Merge Id="LLAMSM" Language="1033" DiskId="1" SourceFile="$(var.LLAMSMPath)" />
           </Directory>
         </Directory>
-			</StandardDirectory>
+      </StandardDirectory>
+
+      <StandardDirectory Id="CommonAppDataFolder">
+        <Directory Id="COMMONCOMPANYFOLDER" Name="$(var.Manufacturer)">
+          <Directory Id="COMMONAPPLICATIONFOLDER" Name="Key Manager" />
+        </Directory>
+      </StandardDirectory>
 
       <StandardDirectory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)">

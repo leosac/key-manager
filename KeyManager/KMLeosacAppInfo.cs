@@ -25,9 +25,13 @@ namespace Leosac.KeyManager
             ApplicationLogo = "/images/leosac_key.png";
             SettingsCommand = new RelayCommand(() =>
             {
-                var settingsWindow = new SettingsWindow();
-                settingsWindow.DataContext = KMSettings.LoadFromFile(false);
-                settingsWindow.ShowDialog();
+                var settings = KMSettings.LoadFromFile(false);
+                if (settings != null && settings.EnsureElevation())
+                {
+                    var settingsWindow = new SettingsWindow();
+                    settingsWindow.DataContext = settings;
+                    settingsWindow.ShowDialog();
+                }
             });
             PerUserInstallation = null; // Automatic decision based on program installation
         }

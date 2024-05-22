@@ -1,5 +1,6 @@
 ﻿using Leosac.KeyManager.Library.UI;
 using Microsoft.Win32;
+using System;
 using System.Windows;
 
 namespace Leosac.KeyManager
@@ -18,7 +19,14 @@ namespace Leosac.KeyManager
         {
             if (DataContext is KMSettings settings)
             {
-                settings.SaveToFile();
+                try
+                {
+                    settings.SaveToFile();
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
