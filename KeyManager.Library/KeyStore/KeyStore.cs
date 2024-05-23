@@ -499,6 +499,11 @@ namespace Leosac.KeyManager.Library.KeyStore
             KeyEntryUpdated?.Invoke(this, keyEntry);
         }
 
+        protected void OnUserMessageNotified(string message)
+        {
+            UserMessageNotified?.Invoke(this, message);
+        }
+
         /// <summary>
         /// Get a key from a key entry.
         /// </summary>
@@ -661,5 +666,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         public event EventHandler<KeyEntry>? KeyEntryRetrieved;
 
         public event EventHandler<IChangeKeyEntry>? KeyEntryUpdated;
+
+        public event EventHandler<string>? UserMessageNotified;
     }
 }

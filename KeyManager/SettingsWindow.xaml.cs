@@ -19,13 +19,9 @@ namespace Leosac.KeyManager
         {
             if (DataContext is KMSettings settings)
             {
-                try
+                if (!settings.SaveToFile())
                 {
-                    settings.SaveToFile();
-                }
-                catch(Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(Properties.Resources.SaveConfigFileError, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

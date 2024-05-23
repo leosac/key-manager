@@ -84,7 +84,13 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         public override string ToString()
         {
-            return string.Format("Key Entry Id (Identifier: `{0}`, Label: `{1}`)", Id, Label);
+            var str = string.Format("Key Entry Id (Identifier: `{0}`", Id);
+            if (!string.IsNullOrEmpty(Label))
+            {
+                str += string.Format(", Label: `{0}`", Label);
+            }
+            str += ")";
+            return str;
         }
 
         public object Clone()

@@ -169,6 +169,15 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export.
         /// </summary>
         public static string Export {
@@ -390,6 +399,15 @@ namespace Leosac.KeyManager.Properties {
         public static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The configuration file cannot be saved. Please check your user account permissions..
+        /// </summary>
+        public static string SaveConfigFileError {
+            get {
+                return ResourceManager.GetString("SaveConfigFileError", resourceCulture);
             }
         }
         

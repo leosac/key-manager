@@ -153,6 +153,9 @@
   <data name="EditFavorite" xml:space="preserve">
     <value>Edit the Key Store Favorite</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
   <data name="Export" xml:space="preserve">
     <value>Export</value>
   </data>
@@ -227,6 +230,9 @@
   </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
+  </data>
+  <data name="SaveConfigFileError" xml:space="preserve">
+    <value>The configuration file cannot be saved. Please check your user account permissions.</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>

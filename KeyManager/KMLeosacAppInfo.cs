@@ -79,6 +79,7 @@ namespace Leosac.KeyManager
                                         // Ensure everything is back to original state
                                         editModel.CloseKeyStore(false);
                                         editModel.KeyStore = ks;
+                                        editModel.KeyStore.UserMessageNotified += (sender, e) => SnackbarHelper.EnqueueMessage(editModel.SnackbarMessageQueue, e);
                                         editModel.Favorite = fav;
                                         await editModel.OpenKeyStore();
 

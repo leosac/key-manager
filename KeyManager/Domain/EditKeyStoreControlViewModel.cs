@@ -25,7 +25,7 @@ namespace Leosac.KeyManager.Domain
         public EditKeyStoreControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
             _showProgress = false;
-            _snackbarMessageQueue = snackbarMessageQueue;
+            SnackbarMessageQueue = snackbarMessageQueue;
             Tabs = new ObservableCollection<TabItem>();
             _keModels = new List<KeyEntriesControlViewModel>();
             RefreshKeyEntriesCommand = new AsyncRelayCommand(() => RefreshKeyEntries(500));
@@ -38,7 +38,7 @@ namespace Leosac.KeyManager.Domain
                 });
         }
 
-        protected ISnackbarMessageQueue _snackbarMessageQueue;
+        public ISnackbarMessageQueue SnackbarMessageQueue { get; private set; }
 
         protected IList<KeyEntriesControlViewModel> _keModels;
         protected void OnKeyStoreUpdated()
@@ -135,7 +135,7 @@ namespace Leosac.KeyManager.Domain
                     var classes = KeyStore.SupportedClasses;
                     foreach (var kclass in classes)
                     {
-                        var model = new KeyEntriesControlViewModel(_snackbarMessageQueue, kclass) { KeyStore = KeyStore };
+                        var model = new KeyEntriesControlViewModel(SnackbarMessageQueue, kclass) { KeyStore = KeyStore };
                         model.DefaultKeyEntryUpdated += (sender, e) =>
                         {
                             OnKeyStoreUpdated();
@@ -177,7 +177,7 @@ namespace Leosac.KeyManager.Domain
             }
             catch(Exception ex)
             {
-                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
+                SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex, "Key Store Error");
             }
             IsLoadingKeyEntries = false;
         }
@@ -274,6 +274,7 @@ namespace Leosac.KeyManager.Domain
                             deststore.Properties = prop;
                             deststore.KeyEntryRetrieved += (sender, e) => ProgressValue++;
                             deststore.KeyEntryUpdated += (sender, e) => ProgressValue++;
+                            deststore.UserMessageNotified += (sender, e) => SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, e);
                             deststore.Options = model.Options;
                             KeyStore!.Options = model.Options; // Options object contains information for source and destination key stores, this should probably be splitted...
                             var initCallback = new Action<KeyStore, KeyEntryClass, int>((_, _, nbentries) =>
@@ -340,17 +341,17 @@ namespace Leosac.KeyManager.Domain
                 {
                     if (await RunOnKeyStore(new PublishKeyStoreDialog(), KeyStore.Publish))
                     {
-                        SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "Key Entries have been successfully published.");
+                        SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "Key Entries have been successfully published.");
                     }
                 }
                 catch (KeyStoreException ex)
                 {
-                    SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
+                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex, "Key Store Error");
                 }
                 catch (Exception ex)
                 {
                     log.Error("Publishing the Key Entries failed unexpected.", ex);
-                    SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
+                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
                 }
             }
         }
@@ -363,17 +364,17 @@ namespace Leosac.KeyManager.Domain
                 {
                     if (await RunOnKeyStore(new DiffKeyStoreDialog(), KeyStore.Diff))
                     {
-                        SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "No differences found.");
+                        SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "No differences found.");
                     }
                 }
                 catch (KeyStoreException ex)
                 {
-                    SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
+                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex, "Key Store Error");
                 }
                 catch (Exception ex)
                 {
                     log.Error("Comparing the Key Entries failed unexpected.", ex);
-                    SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
+                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
                 }
             }
         }

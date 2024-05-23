@@ -641,7 +641,9 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                     }
                     else
                     {
-                        log.Info(string.Format("Key Entry `{0}` already exists, skipping update as key generation was expected.", change.Identifier));
+                        string msg = string.Format("Key Entry `{0}` already exists, skipping key generation update.", change.Identifier);
+                        log.Info(msg);
+                        OnUserMessageNotified(msg);
                     }
                 }
                 else

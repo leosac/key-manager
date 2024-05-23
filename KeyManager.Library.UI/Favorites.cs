@@ -56,15 +56,15 @@ namespace Leosac.KeyManager.Library.UI
             }
         }
 
-        public override void SaveToFile()
+        public override bool SaveToFile()
         {
             if (!string.IsNullOrEmpty(_settings?.FavoritesPath))
             {
-                SaveToFile(_settings.FavoritesPath);
+                return SaveToFile(_settings.FavoritesPath);
             }
             else
             {
-                base.SaveToFile();
+                return base.SaveToFile();
             }
         }
 
