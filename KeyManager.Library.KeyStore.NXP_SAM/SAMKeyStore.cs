@@ -322,37 +322,27 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         private static SAMSymmetricKeyEntry CreateKeyEntryFromKeyType(LibLogicalAccess.Card.SAMKeyType keyType)
         {
             var keyEntry = new SAMSymmetricKeyEntry();
-            if (keyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_DES)
-            {
-                keyEntry.SetVariant("DES");
-            }
-            else if (keyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES128)
-            {
-                keyEntry.SetVariant("AES128");
-            }
-            else if (keyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES192)
-            {
-                keyEntry.SetVariant("AES192");
-            }
-            else if (keyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES256)
-            {
-                keyEntry.SetVariant("AES256");
-            }
-            else if (keyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_MIFARE)
-            {
-                keyEntry.SetVariant("MIFARE");
-            }
-            else
-            {
-                keyEntry.SetVariant("TK3DES");
-            }
+            keyEntry.SetVariant(GetVariantName(keyType));
             return keyEntry;
+        }
+
+        public static string GetVariantName(LibLogicalAccess.Card.SAMKeyType keyType)
+        {
+            return keyType switch
+            {
+                LibLogicalAccess.Card.SAMKeyType.SAM_KEY_DES => "DES",
+                LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES128 => "AES128",
+                LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES192 => "AES192",
+                LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES256 => "AES256",
+                LibLogicalAccess.Card.SAMKeyType.SAM_KEY_MIFARE => "MIFARE",
+                _ => "TK3DES",
+            };
         }
 
         public override Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass)
         {
             log.Info(string.Format("Getting all key entries (class: `{0}`)...", keClass));
-            IList<KeyEntryId> entries = new List<KeyEntryId>();
+            IList<KeyEntryId> entries = [];
             if (keClass == null || keClass == KeyEntryClass.Symmetric)
             {
                 for (uint i = 0; i < SAM_AV2_MAX_SYMMETRIC_ENTRIES; ++i)
