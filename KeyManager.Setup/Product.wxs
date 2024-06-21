@@ -288,6 +288,12 @@
       <Component Id="Crc32NETComponent">
         <File Id="___var.Crc32.NET.dll_" Source="$(var.KeyManager.TargetDir)\Crc32.NET.dll" />
       </Component>
+      <Component Id="DeviceIdComponent">
+        <File Id="___var.DeviceId.dll_" Source="$(var.KeyManager.TargetDir)\DeviceId.dll" />
+      </Component>
+      <Component Id="DeviceIdWindowsComponent">
+        <File Id="___var.DeviceId.Windows.dll_" Source="$(var.KeyManager.TargetDir)\DeviceId.Windows.dll" />
+      </Component>
       <Component Id="log4netComponent">
         <File Id="___var.log4net.dll_" Source="$(var.KeyManager.TargetDir)\log4net.dll" />
       </Component>
