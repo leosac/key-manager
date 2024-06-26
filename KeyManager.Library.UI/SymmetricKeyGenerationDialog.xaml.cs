@@ -57,6 +57,14 @@ namespace Leosac.KeyManager.Library.UI
 
         public static readonly DependencyProperty SelectedWordIndexProperty = DependencyProperty.Register(nameof(SelectedWordIndex), typeof(int), typeof(SymmetricKeyGenerationDialog));
 
+        public bool KeyGenerated
+        {
+            get { return (bool)GetValue(KeyGeneratedProperty); }
+            set { SetValue(KeyGeneratedProperty, value); }
+        }
+
+        public static readonly DependencyProperty KeyGeneratedProperty = DependencyProperty.Register(nameof(KeyGenerated), typeof(bool), typeof(SymmetricKeyGenerationDialog));
+
         private void BtnRandom_Click(object sender, RoutedEventArgs e)
         {
             KeyValue = Convert.ToHexString(KeyGeneration.Random((uint)(KeySize > 0 ? KeySize : 16)));
@@ -138,7 +146,7 @@ namespace Leosac.KeyManager.Library.UI
 
         private void ShowKeyComputationConfirmation()
         {
-            SnackbarHelper.EnqueueMessage(keyGenSnackbar.MessageQueue, Properties.Resources.KeyComputationConfirmation);
+            KeyGenerated = true;
         }
     }
 }
