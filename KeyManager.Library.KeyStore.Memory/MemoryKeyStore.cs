@@ -27,9 +27,9 @@
             return Task.CompletedTask;
         }
 
-        public override Task Close()
+        public override Task Close(bool secretCleanup = true)
         {
-            return Task.CompletedTask;
+            return base.Close(secretCleanup);
         }
 
         public override Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)

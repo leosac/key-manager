@@ -112,7 +112,7 @@ namespace Leosac.KeyManager.Domain
 
         public void CloseKeyStore(bool navigate)
         {
-            KeyStore?.Close();
+            KeyStore?.Close(true);
             KeyStore = null;
             _keModels.Clear();
             Tabs.Clear();

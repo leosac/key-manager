@@ -104,7 +104,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                                 }
                                 finally
                                 {
-                                    await ks.Close();
+                                    await ks.Close(true);
                                 }
 
                                 log.Info("Link execution completed.");

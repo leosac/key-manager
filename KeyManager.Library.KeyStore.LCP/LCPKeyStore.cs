@@ -43,14 +43,14 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             return false;
         }
 
-        public override Task Close()
+        public override Task Close(bool secretCleanup = true)
         {
             log.Info("Closing the key store...");
 
             _authToken = null;
 
             log.Info("Key Store closed.");
-            return Task.CompletedTask;
+            return base.Close(secretCleanup);
         }
 
         public override async Task Create(IChangeKeyEntry change)

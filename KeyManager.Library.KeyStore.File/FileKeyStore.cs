@@ -55,11 +55,11 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             return Task.CompletedTask;
         }
 
-        public override Task Close()
+        public override Task Close(bool secretCleanup = true)
         {
             log.Info(string.Format("Closing the key store `{0}`...", GetFileProperties().Fullpath));
             log.Info("Key Store closed.");
-            return Task.CompletedTask;
+            return base.Close(secretCleanup);
         }
 
         protected string GetKeyEntryFile(KeyEntryId identifier, KeyEntryClass keClass)

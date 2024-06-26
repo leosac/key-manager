@@ -89,7 +89,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return Task.FromResult(handle != null);
         }
 
-        public override Task Close()
+        public override Task Close(bool secretCleanup = true)
         {
             log.Info("Closing the key store...");
             _session?.CloseSession();
@@ -104,7 +104,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                 _library = null;
             }
             log.Info("Key Store closed.");
-            return Task.CompletedTask;
+            return base.Close(secretCleanup);
         }
 
         public override async Task Create(IChangeKeyEntry change)

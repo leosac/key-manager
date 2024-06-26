@@ -138,7 +138,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             return Task.CompletedTask;
         }
 
-        public override Task Close()
+        public override Task Close(bool secretCleanup = true)
         {
             log.Info("Closing the key store...");
             if (ReaderUnit != null)
@@ -168,7 +168,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
             _unlocked = false;
             log.Info("Key Store closed.");
-            return Task.CompletedTask;
+            return base.Close(secretCleanup);
         }
 
         public override Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)

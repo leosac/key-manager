@@ -57,12 +57,12 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             return Task.FromResult(keyEntry != null);
         }
 
-        public override Task Close()
+        public override Task Close(bool secretCleanup = true)
         {
             int index = SAM_SEDll.FindSAM_SEByMac(GetFileProperties().SAM_SEMac);
             if (index != -1)
                 SAM_SEDll.DeselectSAM_SE((uint)index);
-            return Task.CompletedTask;
+            return base.Close(secretCleanup);
         }
 
         public override Task Open()

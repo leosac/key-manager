@@ -86,7 +86,22 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <summary>
         /// Close the key store.
         /// </summary>
-        public abstract Task Close();
+        public virtual Task Close(bool secretCleanup)
+        {
+            if (secretCleanup)
+            {
+                CleanupSecret();
+            }
+            return Task.CompletedTask;
+        }
+
+        protected void CleanupSecret()
+        {
+            if (!string.IsNullOrEmpty(Properties?.Secret) && !Properties.StoreSecret)
+            {
+                Properties.Secret = string.Empty;
+            }
+        }
 
         /// <summary>
         /// Check if a key entry exists.
@@ -280,104 +295,124 @@ namespace Leosac.KeyManager.Library.KeyStore
                     var resolveKeyLinks = (Options?.ResolveKeyLinks).GetValueOrDefault(true);
                     var resolveVariables = (Options?.ResolveVariables).GetValueOrDefault(true);
                     entry.Identifier = entry.Identifier.Clone(resolveVariables ? Attributes : null);
-                    if (entry.Link != null && entry.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(entry.Link.KeyStoreFavorite))
+                    var usedStores = new List<KeyStore>();
+                    try
                     {
-                        if (resolveKeyLinks)
+                        if (entry.Link != null && entry.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(entry.Link.KeyStoreFavorite))
                         {
-                            var cryptogram = new KeyEntryCryptogram
+                            if (resolveKeyLinks)
                             {
-                                Identifier = entry.Identifier
-                                // TODO: we may want to have a different wrapping key per Cryptogram later on
-                            };
-
-                            var ks = getFavoriteKeyStore(entry.Link.KeyStoreFavorite);
-                            if (ks != null)
-                            {
-                                if (askForKeyStoreSecretIfRequired != null)
+                                var cryptogram = new KeyEntryCryptogram
                                 {
-                                    var c = await askForKeyStoreSecretIfRequired(ks);
-                                    if (!c)
+                                    Identifier = entry.Identifier
+                                    // TODO: we may want to have a different wrapping key per Cryptogram later on
+                                };
+
+                                var ks = getFavoriteKeyStore(entry.Link.KeyStoreFavorite);
+                                if (ks != null)
+                                {
+                                    if (!usedStores.Contains(ks))
                                     {
-                                        throw new KeyStoreException("Missing secret for the linked key store.");
+                                        usedStores.Add(ks);
+                                    }
+                                    if (askForKeyStoreSecretIfRequired != null)
+                                    {
+                                        var c = await askForKeyStoreSecretIfRequired(ks);
+                                        if (!c)
+                                        {
+                                            throw new KeyStoreException("Missing secret for the linked key store.");
+                                        }
+                                    }
+                                    await ks.Open();
+                                    try
+                                    {
+                                        var divContext = new DivInput.DivInputContext
+                                        {
+                                            KeyStore = ks,
+                                            KeyEntry = entry
+                                        };
+                                        cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier.Clone(resolveVariables ? Attributes : null), keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKey);
+                                    }
+                                    finally
+                                    {
+                                        await ks.Close(false);
                                     }
                                 }
-                                await ks.Open();
-                                try
-                                {
-                                    var divContext = new DivInput.DivInputContext
-                                    {
-                                        KeyStore = ks,
-                                        KeyEntry = entry
-                                    };
-                                    cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier.Clone(resolveVariables ? Attributes : null), keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKey);
-                                }
-                                finally
-                                {
-                                    await ks.Close();
-                                }
+                                changes.Add(cryptogram);
                             }
-                            changes.Add(cryptogram);
+                            else
+                            {
+                                if (resolveVariables)
+                                {
+                                    entry.Link.KeyIdentifier = entry.Link.KeyIdentifier.Clone(Attributes);
+                                }
+                                changes.Add(entry);
+                            }
                         }
                         else
                         {
-                            if (resolveVariables)
+                            if (entry.Variant != null)
                             {
-                                entry.Link.KeyIdentifier = entry.Link.KeyIdentifier.Clone(Attributes);
+                                foreach (var kv in entry.Variant.KeyContainers)
+                                {
+                                    if (kv.Key.Link != null && kv.Key.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(kv.Key.Link.KeyStoreFavorite))
+                                    {
+                                        if (resolveKeyLinks)
+                                        {
+                                            var ks = getFavoriteKeyStore(kv.Key.Link.KeyStoreFavorite);
+                                            if (ks != null)
+                                            {
+                                                if (!usedStores.Contains(ks))
+                                                {
+                                                    usedStores.Add(ks);
+                                                }
+                                                if (askForKeyStoreSecretIfRequired != null)
+                                                {
+                                                    var c = await askForKeyStoreSecretIfRequired(ks);
+                                                    if (!c)
+                                                    {
+                                                        throw new KeyStoreException("Missing secret for the linked key store.");
+                                                    }
+                                                }
+                                                await ks.Open();
+                                                try
+                                                {
+                                                    var divContext = new DivInput.DivInputContext
+                                                    {
+                                                        KeyStore = ks,
+                                                        KeyEntry = entry,
+                                                        KeyContainer = kv
+                                                    };
+                                                    kv.Key.SetAggregatedValueAsString(await ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier.Clone(resolveVariables ? Attributes : null), keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
+                                                }
+                                                finally
+                                                {
+
+                                                    await ks.Close(false);
+                                                }
+                                            }
+                                            // We remove link information from the being pushed key entry
+                                            kv.Key.Link = new KeyLink();
+                                        }
+                                        else
+                                        {
+                                            if (resolveVariables)
+                                            {
+                                                kv.Key.Link.KeyIdentifier = kv.Key.Link.KeyIdentifier.Clone(Attributes);
+                                            }
+                                        }
+                                    }
+                                }
                             }
                             changes.Add(entry);
                         }
                     }
-                    else
+                    finally
                     {
-                        if (entry.Variant != null)
+                        foreach (var ks in usedStores)
                         {
-                            foreach (var kv in entry.Variant.KeyContainers)
-                            {
-                                if (kv.Key.Link != null && kv.Key.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(kv.Key.Link.KeyStoreFavorite))
-                                {
-                                    if (resolveKeyLinks)
-                                    {
-                                        var ks = getFavoriteKeyStore(kv.Key.Link.KeyStoreFavorite);
-                                        if (ks != null)
-                                        {
-                                            if (askForKeyStoreSecretIfRequired != null)
-                                            {
-                                                var c = await askForKeyStoreSecretIfRequired(ks);
-                                                if (!c)
-                                                {
-                                                    throw new KeyStoreException("Missing secret for the linked key store.");
-                                                }
-                                            }
-                                            await ks.Open();
-                                            try
-                                            {
-                                                var divContext = new DivInput.DivInputContext
-                                                {
-                                                    KeyStore = ks,
-                                                    KeyEntry = entry,
-                                                    KeyContainer = kv
-                                                };
-                                                kv.Key.SetAggregatedValueAsString(await ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier.Clone(resolveVariables ? Attributes : null), keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
-                                            }
-                                            finally
-                                            {
-                                                await ks.Close();
-                                            }
-                                        }
-                                        // We remove link information from the being pushed key entry
-                                        kv.Key.Link = new KeyLink();
-                                    }
-                                    else
-                                    {
-                                        if (resolveVariables)
-                                        {
-                                            kv.Key.Link.KeyIdentifier = kv.Key.Link.KeyIdentifier.Clone(Attributes);
-                                        }
-                                    }
-                                }
-                            }
+                            ks.CleanupSecret();
                         }
-                        changes.Add(entry);
                     }
                 }
             }
@@ -389,7 +424,7 @@ namespace Leosac.KeyManager.Library.KeyStore
             }
             finally
             {
-                await store.Close();
+                await store.Close(true);
             }
         }
 

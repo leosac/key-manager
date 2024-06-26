@@ -38,10 +38,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.ISLOG
             return Task.FromResult(_keyEntries.ContainsKey(id));
         }
 
-        public override Task Close()
+        public override Task Close(bool secretCleanup = true)
         {
             _keyEntries.Clear();
-            return Task.CompletedTask;
+            return base.Close(secretCleanup);
         }
 
         public override Task Create(IChangeKeyEntry keyEntry)
