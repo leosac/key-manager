@@ -44,6 +44,7 @@ namespace Leosac.KeyManager.Domain
                     if (KeyStoreCommand != null)
                     {
                         await KeyStoreCommand.ExecuteAsync(fav);
+                        SearchTerms = string.Empty;
                     }
                 });
             CreateFavoriteCommand = new AsyncRelayCommand(
