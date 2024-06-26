@@ -4,11 +4,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:libks="clr-namespace:Leosac.KeyManager.Library.KeyStore;assembly=KeyManager.Library"
              xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance {x:Type libks:KeyStore}}"
              d:DesignHeight="150" d:DesignWidth="390">
     <UserControl.Resources>
         <domain:HexStringLengthConverter x:Key="HexStringLengthConverter" />
@@ -19,7 +21,7 @@
             <WrapPanel DockPanel.Dock="Right" VerticalAlignment="Center">
                 <materialDesign:DialogHost Identifier="KeyGenerationDialog" DialogTheme="Inherit">
                     <materialDesign:DialogHost.DialogContent>
-                        <local:SymmetricKeyGenerationDialog KeySize="{Binding Path=Properties.SecretMaxLength, Mode=OneWay, Converter={StaticResource HexStringLengthConverter}, ElementName=favControl}" KeyValue="{Binding Properties.Secret, Mode=TwoWay, ElementName=favControl}" />
+                        <local:SymmetricKeyGenerationDialog KeySize="{Binding Path=Properties.SecretMaxLength, Mode=OneWay, Converter={StaticResource HexStringLengthConverter}}" KeyValue="{Binding Properties.Secret, Mode=TwoWay}" />
                     </materialDesign:DialogHost.DialogContent>
                     <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
                             Width="24" Height="24" Margin="2"
@@ -33,9 +35,9 @@
                  materialDesign:TextFieldAssist.HasClearButton="True" Margin="5"
                  materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
                  Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
-                 materialDesign:PasswordBoxAssist.Password="{Binding Properties.Secret, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ElementName=favControl}"
-                 MaxLength="{Binding Properties.SecretMaxLength, Mode=OneWay, ElementName=favControl}"
-                 Visibility="{Binding Properties.StoreSecret, Converter={StaticResource InverseBooleanToVisibilityConverter}, ElementName=favControl}"/>
+                 materialDesign:PasswordBoxAssist.Password="{Binding Properties.Secret, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 MaxLength="{Binding Properties.SecretMaxLength, Mode=OneWay}"
+                 Visibility="{Binding Properties.StoreSecret, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
         </DockPanel>
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
             <Button Margin="0,8,8,0" CommandParameter="{Binding}" Command="{Binding Command, ElementName=favControl}" Content="{x:Static properties:Resources.OK}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}" />

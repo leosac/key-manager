@@ -42,13 +42,5 @@ namespace Leosac.KeyManager.Library.UI
         }
 
         public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(nameof(Command), typeof(ICommand), typeof(OpenFavoriteControl));
-
-        public KeyStoreProperties? Properties
-        {
-            get { return (KeyStoreProperties?)GetValue(PropertiesProperty); }
-            set { SetValue(PropertiesProperty, value); }
-        }
-
-        public static readonly DependencyProperty PropertiesProperty = DependencyProperty.Register(nameof(Properties), typeof(KeyStoreProperties), typeof(OpenFavoriteControl));
     }
 }

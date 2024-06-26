@@ -149,7 +149,7 @@
                         <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
                             <materialDesign:DialogHost DialogTheme="Inherit">
                                 <materialDesign:DialogHost.DialogContent>
-                                    <kslib:OpenFavoriteControl Title="{x:Static properties:Resources.OpenFavorite}" Command="{Binding DataContext.OpenFavoriteCommand, ElementName=userControl}" Properties="{Binding Properties}" />
+                                    <kslib:OpenFavoriteControl Title="{x:Static properties:Resources.OpenFavorite}" Command="{Binding DataContext.OpenFavoriteCommand, ElementName=userControl}" />
                                 </materialDesign:DialogHost.DialogContent>
 
                                 <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" ToolTip="{x:Static properties:Resources.OpenFavorite}" Margin="3">
