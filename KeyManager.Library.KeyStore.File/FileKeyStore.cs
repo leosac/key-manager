@@ -195,16 +195,6 @@ namespace Leosac.KeyManager.Library.KeyStore.File
             return keyEntries;
         }
 
-        public override async Task Store(IList<IChangeKeyEntry> changes)
-        {
-            log.Info(string.Format("Storing `{0}` key entries...", changes.Count));
-            foreach (var change in changes)
-            {
-                await Update(change, true);
-            }
-            log.Info("Key Entries storing completed.");
-        }
-
         public override async Task Update(IChangeKeyEntry change, bool ignoreIfMissing)
         {
             log.Info(string.Format("Updating key entry `{0}`...", change.Identifier));

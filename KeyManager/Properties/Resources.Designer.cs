@@ -250,6 +250,15 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Import from another Key Store.
+        /// </summary>
+        public static string ImportKeyStore {
+            get {
+                return ResourceManager.GetString("ImportKeyStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Information.
         /// </summary>
         public static string Information {

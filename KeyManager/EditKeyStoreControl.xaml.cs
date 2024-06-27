@@ -78,6 +78,23 @@ namespace Leosac.KeyManager
             }
         }
 
+        private async void BtnImport_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is EditKeyStoreControlViewModel model)
+            {
+                var plan = MaintenancePlan.GetSingletonInstance();
+                if (!string.IsNullOrEmpty(plan.LicenseKey))
+                {
+                    await model.Import();
+                    await model.RefreshKeyEntries();
+                }
+                else
+                {
+                    MaintenancePlanHelper.OpenRegistration();
+                }
+            }
+        }
+
         private async void BtnDiff_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is EditKeyStoreControlViewModel model)

@@ -243,25 +243,6 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             log.Info("Key Store opened.");
         }
 
-        public override async Task Store(IList<IChangeKeyEntry> changes)
-        {
-            log.Info(string.Format("Storing `{0}` key entries...", changes.Count));
-
-            foreach (var change in changes)
-            {
-                if (await CheckKeyEntryExists(change.Identifier, change.KClass))
-                {
-                    await Update(change);
-                }
-                else
-                {
-                    await Create(change);
-                }
-            }
-
-            log.Info("Key Entries storing completed.");
-        }
-
         public override async Task Update(IChangeKeyEntry change, bool ignoreIfMissing)
         {
             log.Info(string.Format("Updating key entry `{0}`...", change.Identifier));

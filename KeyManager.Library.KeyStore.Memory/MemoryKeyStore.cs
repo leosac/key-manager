@@ -141,14 +141,6 @@
             }
         }
 
-        public override async Task Store(IList<IChangeKeyEntry> changes)
-        {
-            foreach (var change in changes)
-            {
-                await Update(change, true);
-            }
-        }
-
         public override async Task Update(IChangeKeyEntry change, bool ignoreIfMissing)
         {
             await Delete(change.Identifier, change.KClass, ignoreIfMissing);

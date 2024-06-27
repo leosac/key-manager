@@ -8,6 +8,14 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public PublishKeyStoreDialogViewModel()
         {
             _options = new StoreOptions();
+            _label = Properties.Resources.PublishKeyStore;
+        }
+
+        private string _label;
+        public string Label
+        {
+            get => _label;
+            set => SetProperty(ref _label, value);
         }
 
         private Favorite? _favorite;

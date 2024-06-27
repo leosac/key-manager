@@ -627,48 +627,6 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return Convert.ToHexString(attributes[0].GetValueAsByteArray());
         }
 
-        public override async Task Store(IList<IChangeKeyEntry> changes)
-        {
-            log.Info(string.Format("Storing `{0}` key entries...", changes.Count));
-
-            foreach (var change in changes)
-            {
-                if (await CheckKeyEntryExists(change.Identifier, change.KClass))
-                {
-                    if (!(Options?.GenerateKeys).GetValueOrDefault(false))
-                    {
-                        await Update(change);
-                    }
-                    else
-                    {
-                        string msg = string.Format("Key Entry `{0}` already exists, skipping key generation update.", change.Identifier);
-                        log.Info(msg);
-                        OnUserMessageNotified(msg);
-                    }
-                }
-                else
-                {
-                    if ((Options?.GenerateKeys).GetValueOrDefault(false))
-                    {
-                        if (change is KeyEntry ke)
-                        {
-                            await Generate(ke);
-                        }
-                        else
-                        {
-                            await Generate(change.Identifier, change.KClass);
-                        }
-                    }
-                    else
-                    {
-                        await Create(change);
-                    }
-                }
-            }
-
-            log.Info("Key Entries storing completed.");
-        }
-
         public override async Task Update(IChangeKeyEntry change, bool ignoreIfMissing)
         {
             log.Info(string.Format("Updating key entry `{0}`...", change.Identifier));

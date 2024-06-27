@@ -251,9 +251,13 @@ namespace Leosac.KeyManager.Domain
             return (ret != null);
         }
         
-        public async Task<bool> RunOnKeyStore(UserControl dialog, Func<KeyStore, Func<string, KeyStore?>, Func<KeyStore, Task<bool>>?, KeyEntryClass, IEnumerable<KeyEntryId>?, Action<KeyStore, KeyEntryClass, int>?, Task> action)
+        public async Task<bool> RunOnKeyStore(UserControl dialog, Func<KeyStore, Func<string, KeyStore?>, Func<KeyStore, Task<bool>>?, KeyEntryClass, IEnumerable<KeyEntryId>?, Action<KeyStore, KeyEntryClass, int>?, Task> action, string? label = null)
         {
             var model = new PublishKeyStoreDialogViewModel();
+            if (!string.IsNullOrEmpty(label))
+            {
+                model.Label = label;
+            }
             dialog.DataContext = model;
             object? ret = await DialogHost.Show(dialog, "RootDialog");
             if (ret != null && model.Favorite != null)
@@ -355,13 +359,36 @@ namespace Leosac.KeyManager.Domain
             }
         }
 
+        public async Task Import()
+        {
+            if (KeyStore != null)
+            {
+                try
+                {
+                    if (await RunOnKeyStore(new PublishKeyStoreDialog(), KeyStore.Import, Properties.Resources.ImportKeyStore))
+                    {
+                        SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "Key Entries have been successfully imported.");
+                    }
+                }
+                catch (KeyStoreException ex)
+                {
+                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex, "Key Store Error");
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Importing the Key Entries failed unexpected.", ex);
+                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
+                }
+            }
+        }
+
         public async Task Diff()
         {
             if (KeyStore != null)
             {
                 try
                 {
-                    if (await RunOnKeyStore(new DiffKeyStoreDialog(), KeyStore.Diff))
+                    if (await RunOnKeyStore(new DiffKeyStoreDialog(), KeyStore.Diff, Properties.Resources.DiffKeyStore))
                     {
                         SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "No differences found.");
                     }

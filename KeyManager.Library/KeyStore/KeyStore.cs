@@ -257,7 +257,47 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// Store a list of key entry changes.
         /// </summary>
         /// <param name="changes">The key entries details.</param>
-        public abstract Task Store(IList<IChangeKeyEntry> changes);
+        public virtual async Task Store(IList<IChangeKeyEntry> changes)
+        {
+            log.Info(string.Format("Storing `{0}` key entries...", changes.Count));
+
+            foreach (var change in changes)
+            {
+                if (await CheckKeyEntryExists(change.Identifier, change.KClass))
+                {
+                    if (!(Options?.GenerateKeys).GetValueOrDefault(false))
+                    {
+                        await Update(change);
+                    }
+                    else
+                    {
+                        string msg = string.Format("Key Entry `{0}` already exists, skipping key generation update.", change.Identifier);
+                        log.Info(msg);
+                        OnUserMessageNotified(msg);
+                    }
+                }
+                else
+                {
+                    if ((Options?.GenerateKeys).GetValueOrDefault(false))
+                    {
+                        if (change is KeyEntry ke)
+                        {
+                            await Generate(ke);
+                        }
+                        else
+                        {
+                            await Generate(change.Identifier, change.KClass);
+                        }
+                    }
+                    else
+                    {
+                        await Create(change);
+                    }
+                }
+            }
+
+            log.Info("Key Entries storing completed.");
+        }
 
         public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Func<KeyStore, Task<bool>>? askForKeyStoreSecretIfRequired, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
@@ -273,7 +313,7 @@ namespace Leosac.KeyManager.Library.KeyStore
             await Publish(store, getFavoriteKeyStore, askForKeyStoreSecretIfRequired, keClass, null, initCallback);
         }
 
-        protected virtual async Task KeyEntriesAction(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Func<KeyStore, Task<bool>>? askForKeyStoreSecretIfRequired, KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids, Action<KeyStore, KeyEntryClass, int>? initCallback, Func<KeyStore, List<IChangeKeyEntry>, Task> action)
+        protected virtual async Task KeyEntriesAction(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Func<KeyStore, Task<bool>>? askForKeyStoreSecretIfRequired, KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids, Action<KeyStore, KeyEntryClass, int>? initCallback, Func<KeyStore, List<IChangeKeyEntry>, Task> action, bool connectToStore = true)
         {
             var changes = new List<IChangeKeyEntry>();
             if (ids == null)
@@ -417,14 +457,20 @@ namespace Leosac.KeyManager.Library.KeyStore
                 }
             }
 
-            await store.Open();
+            if (connectToStore)
+            {
+                await store.Open();
+            }
             try
             {
                 await action(store, changes);
             }
             finally
             {
-                await store.Close(true);
+                if (connectToStore)
+                {
+                    await store.Close(true);
+                }
             }
         }
 
@@ -441,6 +487,29 @@ namespace Leosac.KeyManager.Library.KeyStore
                     log.Info("Dry Run, skipping the storage of key entries.");
                 }
             }));
+        }
+
+        public virtual Task Import(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Func<KeyStore, Task<bool>>? askForKeyStoreSecretIfRequired, KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids, Action<KeyStore, KeyEntryClass, int>? initCallback)
+        {
+            store.Open();
+            try
+            {
+                return store.KeyEntriesAction(this, getFavoriteKeyStore, askForKeyStoreSecretIfRequired, keClass, ids, initCallback, new Func<KeyStore, List<IChangeKeyEntry>, Task>(async (s, changes) =>
+                {
+                    if (!(Options?.DryRun).GetValueOrDefault(false))
+                    {
+                        await s.Store(changes);
+                    }
+                    else
+                    {
+                        log.Info("Dry Run, skipping the storage of key entries.");
+                    }
+                }), false);
+            }
+            finally
+            {
+                store.Close(true);
+            }
         }
 
         public virtual Task Diff(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Func<KeyStore, Task<bool>>? askForKeyStoreSecretIfRequired, KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids, Action<KeyStore, KeyEntryClass, int>? initCallback)
