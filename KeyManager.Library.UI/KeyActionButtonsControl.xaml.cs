@@ -72,21 +72,39 @@ namespace Leosac.KeyManager.Library.UI
         {
             var ofd = new OpenFileDialog
             {
-                CheckFileExists = true
+                CheckFileExists = true,
+                Filter = "Binary Files (*.bin)|*.bin|Text Files (*.txt)|*.txt"
             };
             if (ofd.ShowDialog() == true)
             {
-                var key = System.IO.File.ReadAllBytes(ofd.FileName);
-                Key.SetAggregatedValueAsString(Convert.ToHexString(key));
+                if (ofd.FilterIndex == 1)
+                {
+                    var key = System.IO.File.ReadAllBytes(ofd.FileName);
+                    Key.SetAggregatedValueAsString(Convert.ToHexString(key));
+                }
+                else
+                {
+                    Key.SetAggregatedValueAsString(System.IO.File.ReadAllText(ofd.FileName));
+                }
             }
         }
 
         private void BtnExport_Click(object sender, RoutedEventArgs e)
         {
-            var sfd = new SaveFileDialog();
+            var sfd = new SaveFileDialog
+            {
+                Filter = "Binary Files (*.bin)|*.bin|Text Files (*.txt)|*.txt"
+            };
             if (sfd.ShowDialog() == true)
             {
-                System.IO.File.WriteAllBytes(sfd.FileName, Convert.FromHexString(Key.GetAggregatedValueAsString() ?? ""));
+                if (sfd.FilterIndex == 1)
+                {
+                    System.IO.File.WriteAllBytes(sfd.FileName, Convert.FromHexString(Key.GetAggregatedValueAsString() ?? ""));
+                }
+                else
+                {
+                    System.IO.File.WriteAllText(sfd.FileName, Key.GetAggregatedValueAsString() ?? "");
+                }
             }
         }
 
