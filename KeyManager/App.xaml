@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Leosac.KeyManager"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             StartupUri="pack://application:,,,/WpfApp;component/MainWindow.xaml" Startup="Application_Startup">
+             StartupUri="pack://application:,,,/WpfApp;component/MainWindow.xaml"
+             Startup="Application_Startup"
+             Exit="Application_Exit">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

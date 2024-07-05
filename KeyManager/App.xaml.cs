@@ -44,5 +44,10 @@ namespace Leosac.KeyManager
                 LangHelper.ChangeLanguage(settings.Language);
             }
         }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            Clipboard.Clear();
+        }
     }
 }
