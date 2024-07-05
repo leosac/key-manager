@@ -95,7 +95,7 @@ namespace Leosac.KeyManager.Library.KeyStore
             return Task.CompletedTask;
         }
 
-        protected void CleanupSecret()
+        public void CleanupSecret()
         {
             if (!string.IsNullOrEmpty(Properties?.Secret) && !Properties.StoreSecret)
             {
@@ -327,17 +327,18 @@ namespace Leosac.KeyManager.Library.KeyStore
                 Attributes[ATTRIBUTE_HEXPUBVAR] = Convert.ToHexString(Encoding.UTF8.GetBytes(Options.PublishVariable));
             }
 
-            foreach (var id in ids)
+
+            var usedStores = new List<KeyStore>();
+            try
             {
-                var entry = await Get(id, keClass);
-                if (entry != null)
+                foreach (var id in ids)
                 {
-                    var resolveKeyLinks = (Options?.ResolveKeyLinks).GetValueOrDefault(true);
-                    var resolveVariables = (Options?.ResolveVariables).GetValueOrDefault(true);
-                    entry.Identifier = entry.Identifier.Clone(resolveVariables ? Attributes : null);
-                    var usedStores = new List<KeyStore>();
-                    try
+                    var entry = await Get(id, keClass);
+                    if (entry != null)
                     {
+                        var resolveKeyLinks = (Options?.ResolveKeyLinks).GetValueOrDefault(true);
+                        var resolveVariables = (Options?.ResolveVariables).GetValueOrDefault(true);
+                        entry.Identifier = entry.Identifier.Clone(resolveVariables ? Attributes : null);
                         if (entry.Link != null && entry.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(entry.Link.KeyStoreFavorite))
                         {
                             if (resolveKeyLinks)
@@ -447,13 +448,13 @@ namespace Leosac.KeyManager.Library.KeyStore
                             changes.Add(entry);
                         }
                     }
-                    finally
-                    {
-                        foreach (var ks in usedStores)
-                        {
-                            ks.CleanupSecret();
-                        }
-                    }
+                }
+            }
+            finally
+            {
+                foreach (var ks in usedStores)
+                {
+                    ks.CleanupSecret();
                 }
             }
 

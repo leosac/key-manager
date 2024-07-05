@@ -112,11 +112,13 @@ namespace Leosac.KeyManager.Library.UI.Domain
                             catch (KeyStoreException ex)
                             {
                                 LinkError = ex.Message;
+                                ks.CleanupSecret();
                             }
                             catch (Exception ex)
                             {
                                 log.Error(string.Format("Unexpected error when resolving the link: {0}", ex.Message));
                                 LinkError = string.Format("Unexpected error: {0}", ex.Message);
+                                ks.CleanupSecret();
                             }
                         }
                         else
