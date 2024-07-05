@@ -1,6 +1,7 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.UI.Domain;
 using Microsoft.Win32;
+using System.Speech.Synthesis;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -124,6 +125,27 @@ namespace Leosac.KeyManager.Library.UI
                 }
                 printDialog.PrintVisual(control, "Leosac Key Manager - Key Printing");
             }
+        }
+
+        private void BtnSpeech_Click(object sender, RoutedEventArgs e)
+        {
+            var key = Key.GetAggregatedValueAsString();
+            Task.Run(() =>
+            {
+                var promptBuilder = new PromptBuilder();
+                var promptStyle = new PromptStyle
+                {
+                    Volume = PromptVolume.Default,
+                    Rate = PromptRate.ExtraSlow
+                };
+                promptBuilder.StartStyle(promptStyle);
+                promptBuilder.AppendTextWithHint(key, SayAs.SpellOut);
+                promptBuilder.EndStyle();
+
+                using var synthesizer = new SpeechSynthesizer();
+                synthesizer.SetOutputToDefaultAudioDevice();
+                synthesizer.Speak(promptBuilder);
+            });
         }
     }
 }

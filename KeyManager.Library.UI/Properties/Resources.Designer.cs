@@ -835,6 +835,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Speech.
+        /// </summary>
+        public static string KeyExportSpeech {
+            get {
+                return ResourceManager.GetString("KeyExportSpeech", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Local Key Generation.
         /// </summary>
         public static string KeyGeneration {

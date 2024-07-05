@@ -324,6 +324,9 @@
       <Component Id="SkiaSharpComponent">
         <File Id="___var.SkiaSharp.dll_" Source="$(var.KeyManager.TargetDir)\SkiaSharp.dll" />
       </Component>
+      <Component Id="SystemSpeechComponent">
+        <File Id="___var.System.Speech.dll_" Source="$(var.KeyManager.TargetDir)\System.Speech.dll" />
+      </Component>
       <Component Id="WpfAppComponent">
         <File Id="___var.WpfApp.dll_" Source="$(var.KeyManager.TargetDir)\WpfApp.dll" />
       </Component>

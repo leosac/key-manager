@@ -375,6 +375,9 @@
   <data name="KeyExportPrint" xml:space="preserve">
     <value>Key Export / Print</value>
   </data>
+  <data name="KeyExportSpeech" xml:space="preserve">
+    <value>Speech</value>
+  </data>
   <data name="KeyGeneration" xml:space="preserve">
     <value>Local Key Generation</value>
   </data>
