@@ -47,6 +47,9 @@
                 <Button x:Name="btnPrint" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="BtnPrint_Click" Width="24" Height="24" ToolTip="{x:Static properties:Resources.KeyExportPrint}" Margin="3">
                     <materialDesign:PackIcon Kind="Printer" Height="16" Width="16"/>
                 </Button>
+                <Button x:Name="btnQrCode" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="BtnQrCode_Click" Width="24" Height="24" ToolTip="{x:Static properties:Resources.QrCode}" Margin="3">
+                    <materialDesign:PackIcon Kind="Qrcode" Height="16" Width="16"/>
+                </Button>
                 <Button x:Name="btnSpeech" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Click="BtnSpeech_Click" Width="24" Height="24" ToolTip="{x:Static properties:Resources.KeyExportSpeech}" Margin="3">
                     <materialDesign:PackIcon Kind="TextToSpeech" Height="16" Width="16"/>
                 </Button>

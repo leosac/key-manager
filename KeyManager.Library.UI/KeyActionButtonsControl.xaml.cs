@@ -1,5 +1,6 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.UI.Domain;
+using log4net;
 using Microsoft.Win32;
 using System.Speech.Synthesis;
 using System.Windows;
@@ -125,6 +126,13 @@ namespace Leosac.KeyManager.Library.UI
                 }
                 printDialog.PrintVisual(control, "Leosac Key Manager - Key Printing");
             }
+        }
+
+        private async void BtnQrCode_Click(object sender, RoutedEventArgs e)
+        {
+            var qrCode = new QrCodeControl();
+            qrCode.GenerateQrCode(Key.GetAggregatedValueAsString());
+            await DialogHelper.ForceShow(qrCode, "KeyEntryDialog");
         }
 
         private void BtnSpeech_Click(object sender, RoutedEventArgs e)
