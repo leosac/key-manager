@@ -231,7 +231,7 @@ namespace Leosac.KeyManager.Domain
             favorites.SaveToFile();
         }
 
-        public static async Task<bool> AskForKeyStoreSecretIfRequired(KeyStore ks)
+        public static async Task<bool> AskForKeyStoreSecretIfRequired(KeyStore ks, string? favoriteName)
         {
             if (ks.Properties != null && (ks.Properties.StoreSecret || !string.IsNullOrEmpty(ks.Properties.Secret)))
             {
@@ -241,7 +241,7 @@ namespace Leosac.KeyManager.Domain
             var dialog = new OpenFavoriteControl
             {
                 DataContext = ks,
-                Title = string.Format("{0} - {1}", Properties.Resources.OpenFavorite, ks.Name),
+                Title = string.Format("{0} - {1}", Properties.Resources.OpenFavorite, favoriteName ?? ks.Name),
                 Command = new RelayCommand(() =>
                 {
                     DialogHost.CloseDialogCommand.Execute(ks, null);
@@ -251,7 +251,7 @@ namespace Leosac.KeyManager.Domain
             return (ret != null);
         }
         
-        public async Task<bool> RunOnKeyStore(UserControl dialog, Func<KeyStore, Func<string, KeyStore?>, Func<KeyStore, Task<bool>>?, KeyEntryClass, IEnumerable<KeyEntryId>?, Action<KeyStore, KeyEntryClass, int>?, Task> action, string? label = null)
+        public async Task<bool> RunOnKeyStore(UserControl dialog, Func<KeyStore, Func<string, KeyStore?>, Func<KeyStore, string?, Task<bool>>?, KeyEntryClass, IEnumerable<KeyEntryId>?, Action<KeyStore, KeyEntryClass, int>?, Task> action, string? label = null)
         {
             var model = new PublishKeyStoreDialogViewModel();
             if (!string.IsNullOrEmpty(label))
