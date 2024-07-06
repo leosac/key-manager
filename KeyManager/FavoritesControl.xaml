@@ -143,6 +143,11 @@
             </WrapPanel>
         </DockPanel>
         <ListBox ItemsSource="{Binding FavoritesView}" HorizontalContentAlignment="Stretch">
+            <ListBox.Template>
+                <ControlTemplate>
+                    <ItemsPresenter />
+                </ControlTemplate>
+            </ListBox.Template>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="lib:Favorite">
                     <DockPanel LastChildFill="True">
