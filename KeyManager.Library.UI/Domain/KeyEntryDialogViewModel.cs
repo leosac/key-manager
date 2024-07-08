@@ -144,15 +144,14 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public void SetKeyEntry(KeyEntry? keyEntry)
         {
-            KeyEntry = keyEntry;
             if (keyEntry != null)
             {
-                var factory = KeyEntryUIFactory.GetFactoryFromPropertyType(KeyEntry!.Properties?.GetType());
+                var factory = KeyEntryUIFactory.GetFactoryFromPropertyType(keyEntry!.Properties?.GetType());
                 if (factory != null)
                 {
-                    var variant = KeyEntry.Variant;
+                    var variant = keyEntry.Variant;
                     SelectedFactoryItem = KeyEntryFactories.Where(item => item.Factory == factory).FirstOrDefault();
-                    SelectedFactoryItem!.DataContext!.Properties = KeyEntry.Properties;
+                    KeyEntry = keyEntry;
                     if (variant != null)
                     {
                         RefreshVariants();
@@ -165,6 +164,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
                         KeyEntry.Variant = variant;
                     }
                 }
+            }
+            else
+            {
+                KeyEntry = null;
             }
         }
 
