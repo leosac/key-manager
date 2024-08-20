@@ -23,5 +23,12 @@ namespace Leosac.KeyManager.Library.KeyStore
             get => _containerSelector;
             set => SetProperty(ref _containerSelector, value);
         }
+
+        public ushort? _changeCounter;
+        public ushort? ChangeCounter
+        {
+            get => _changeCounter;
+            set => SetProperty(ref _changeCounter, value);
+        }
     }
 }

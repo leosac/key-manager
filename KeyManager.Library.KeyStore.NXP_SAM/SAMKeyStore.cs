@@ -748,8 +748,33 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
         public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, WrappingKey? wrappingKey)
         {
-            // Will be supported with SAM AV3
-            throw new NotSupportedException();
+            log.Info(string.Format("Resolving key entry link with Key Entry Identifier `{0}` and Wrapping Key Entry Identifier `{1}`...", keyIdentifier, wrappingKey?.KeyId));
+            if (wrappingKey == null || !wrappingKey.KeyId.IsConfigured())
+            {
+                log.Error("Wrapping Key Entry Identifier parameter is expected.");
+                throw new KeyStoreException("Wrapping Key Entry Identifier parameter is expected.");
+            }
+
+            var cmd = Chip?.getCommands();
+            if (cmd is LibLogicalAccess.Reader.SAMAV3ISO7816Commands av3cmd)
+            {
+                if (!string.IsNullOrEmpty(GetSAMProperties().Secret) && !_unlocked)
+                {
+                    UnlockSAM(av3cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetValueAsString(Properties?.Secret, KeyValueStringFormat.HexStringWithSpace));
+                    _unlocked = true;
+                }
+
+                byte entry = byte.Parse(keyIdentifier.Id!);
+
+                var keyCipheredVector = av3cmd.encipherKeyEntry(entry, entry, wrappingKey.ChangeCounter ?? 0);
+                log.Info("Key link completed.");
+                return Task.FromResult<string?>(Convert.ToHexString(keyCipheredVector.ToArray()));
+            }
+            else
+            {
+                log.Error("Inserted SAM is not AV3.");
+                throw new KeyStoreException("Inserted SAM is not in AV3.");
+            }
         }
 
         public override async Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput)
