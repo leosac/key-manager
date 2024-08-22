@@ -407,23 +407,23 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         {
             log.Info(string.Format("Updating key entry `{0}`...", change.Identifier));
 
+            var key = new LibLogicalAccess.Card.DESFireKey();
+            key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
+            key.setKeyVersion(GetSAMProperties().AuthenticateKeyVersion);
+            if (!string.IsNullOrEmpty(Properties?.Secret))
+            {
+                key.fromString(KeyMaterial.GetValueAsString(Properties.Secret, KeyValueStringFormat.HexStringWithSpace));
+            }
+            else
+            {
+                key.fromString("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+            }
+
             if (change is SAMSymmetricKeyEntry samkey)
             {
                 var cmd = Chip?.getCommands();
                 if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
                 {
-                    var key = new LibLogicalAccess.Card.DESFireKey();
-                    key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
-                    key.setKeyVersion(GetSAMProperties().AuthenticateKeyVersion);
-                    if (!string.IsNullOrEmpty(Properties?.Secret))
-                    {
-                        key.fromString(KeyMaterial.GetValueAsString(Properties.Secret, KeyValueStringFormat.HexStringWithSpace));
-                    }
-                    else
-                    {
-                        key.fromString("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
-                    }
-
                     var natkey = new LibLogicalAccess.Card.AV2SAMKeyEntry();
                     var infoav2 = new LibLogicalAccess.Card.KeyEntryAV2Information();
 
@@ -559,6 +559,17 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 {
                     log.Error("Inserted SAM is not in AV2 mode, AV1 support has been deprecated, please check to option to auto switch to AV2 or manually perform a Switch.");
                     throw new KeyStoreException("Inserted SAM is not in AV2 mode, AV1 support has been deprecated, please check to option to auto switch to AV2 or manually perform a Switch.");
+                }
+            }
+            else if (change is KeyEntryCryptogram cryptogram)
+            {
+                var cmd = Chip?.getCommands();
+                if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
+                {
+                    av2cmd.authenticateHost(key, GetSAMProperties().AuthenticateKeyEntryIdentifier);
+                    //av2cmd.activateOfflineKey();
+                    //av2cmd.changeKeyEntryOffline();
+                    throw new NotImplementedException();
                 }
             }
             else
@@ -746,7 +757,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             log.Info(string.Format("Key usage counter `{0}` updated.", counter.Identifier));
         }
 
-        public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, WrappingKey? wrappingKey)
+        public override Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, WrappingKey? wrappingKey, KeyEntryId? targetKeyIdentifier)
         {
             log.Info(string.Format("Resolving key entry link with Key Entry Identifier `{0}` and Wrapping Key Entry Identifier `{1}`...", keyIdentifier, wrappingKey?.KeyId));
             if (wrappingKey == null || !wrappingKey.KeyId.IsConfigured())
@@ -765,8 +776,23 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 }
 
                 byte entry = byte.Parse(keyIdentifier.Id!);
+                byte targetEntry = entry;
+                if (targetKeyIdentifier != null)
+                {
+                    targetEntry = byte.Parse(targetKeyIdentifier.Id!);
+                }
 
-                var keyCipheredVector = av3cmd.encipherKeyEntry(entry, entry, wrappingKey.ChangeCounter ?? 0);
+                byte[] div;
+                if (!string.IsNullOrEmpty(divInput))
+                {
+                    div = Convert.FromHexString(divInput);
+                }
+                else
+                {
+                    div = Array.Empty<byte>();
+                }
+
+                var keyCipheredVector = av3cmd.encipherKeyEntry(entry, targetEntry, wrappingKey.ChangeCounter ?? 0, 0x00, [], new ByteVector(div));
                 log.Info("Key link completed.");
                 return Task.FromResult<string?>(Convert.ToHexString(keyCipheredVector.ToArray()));
             }

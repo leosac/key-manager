@@ -552,7 +552,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return Task.CompletedTask;
         }
 
-        public override async Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, WrappingKey? wrappingKey)
+        public override async Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, WrappingKey? wrappingKey, KeyEntryId? targetKeyIdentifier)
         {
             log.Info(string.Format("Resolving key entry link with Key Entry Identifier `{0}` and Wrapping Key Entry Identifier `{1}`...", keyIdentifier, wrappingKey?.KeyId));
             if (wrappingKey == null || !wrappingKey.KeyId.IsConfigured())

@@ -372,7 +372,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                                             KeyStore = ks,
                                             KeyEntry = entry
                                         };
-                                        cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier.Clone(resolveVariables ? Attributes : null), keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKey);
+                                        cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier.Clone(resolveVariables ? Attributes : null), keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKey, entry.Identifier);
                                     }
                                     finally
                                     {
@@ -685,8 +685,9 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <param name="keClass">The key entry class</param>
         /// <param name="divInput">The key div input (optional)</param>
         /// <param name="wrappingKey">The wrapping key for cryptogram computation (optional)</param>
+        /// <param name="targetKeyIdentifier">The key identifier on targeted key store (optional)</param>
         /// <returns>The change key entry cryptogram</returns>
-        public virtual async Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, WrappingKey? wrappingKey)
+        public virtual async Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, WrappingKey? wrappingKey, KeyEntryId? targetKeyIdentifier)
         {
             string? result = null;
             log.Info(string.Format("Resolving key entry link with Key Entry Identifier `{0}`, Div Input `{1}`...", keyIdentifier, divInput));

@@ -13,7 +13,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             if (KeyEntryLink != null)
             {
-                LinkResult = await ks.ResolveKeyEntryLink(KeyEntryLink.KeyIdentifier, Class, DivInputResult, KeyEntryLink.WrappingKey);
+                LinkResult = await ks.ResolveKeyEntryLink(KeyEntryLink.KeyIdentifier, Class, DivInputResult, KeyEntryLink.WrappingKey, null);
             }
         }
     }
