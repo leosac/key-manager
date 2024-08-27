@@ -1,3 +1,14 @@
+# v1.18.0 - 08/27/2024
+
+ - Add Key Value export as text file
+ - Improve secret cleanup on publish to avoid asking several times the same secret
+ - Clear clipboard on application exit
+ - Add key speech on key action buttons
+ - Add QrCode display of key value on key action buttons
+ - Add Favorite Name to Key Store secret prompt
+ - Fix favorites scrolling
+ - Fix Key Entry clone
+
 # v1.17.0 - 06/30/2024
  
  - Add Import from another key store feature
