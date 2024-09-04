@@ -105,14 +105,17 @@ namespace Leosac.KeyManager.Domain
 
         public RelayCommand SaveFavoriteCommand { get; }
 
-        public void CloseKeyStore()
+        public Task CloseKeyStore()
         {
-            CloseKeyStore(true);
+            return CloseKeyStore(true);
         }
 
-        public void CloseKeyStore(bool navigate)
+        public async Task CloseKeyStore(bool navigate)
         {
-            KeyStore?.Close(true);
+            if (KeyStore != null)
+            {
+                await KeyStore.Close(true);
+            }
             KeyStore = null;
             _keModels.Clear();
             Tabs.Clear();
