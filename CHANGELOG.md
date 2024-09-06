@@ -1,3 +1,7 @@
+# v1.18.1 - 09/06/2024
+
+ - Fix possible race condition on initialization cleanup when opening a key store
+
 # v1.18.0 - 08/27/2024
 
  - Add Key Value export as text file
