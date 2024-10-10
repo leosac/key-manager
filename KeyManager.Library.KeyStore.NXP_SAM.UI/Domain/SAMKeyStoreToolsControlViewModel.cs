@@ -372,19 +372,25 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                             throw new KeyStoreException("Cannot initialize the RFID Reader Unit.");
                         }
 
-                        if (!ru.connectToReader())
-                        {
-                            log.Error("Cannot connect to the RFID Reader Unit.");
-                            throw new KeyStoreException("Cannot connect to the RFID Reader Unit.");
-                        }
-
                         if (ru is not ISO7816ReaderUnit isoru)
                         {
                             throw new KeyStoreException("The RFID Reader Unit needs to implement ISO7816 interface.");
                         }
 
-                        isoru.setSAMReaderUnit(ks.ReaderUnit as ISO7816ReaderUnit);
-                        isoru.setSAMChip(ks.Chip as SAMChip);
+                        var ruconfig = isoru.getConfiguration() as ISO7816ReaderUnitConfiguration;
+                        if (ruconfig != null)
+                        {
+                            ruconfig.setSAMType("SAM_AV2");
+                            ruconfig.setSAMReaderName(ks.GetSAMProperties().ReaderUnit);
+                            ruconfig.setSAMUnlockKey(SAMKeyStore.CreateDESFireKey(ks.GetSAMProperties().AuthenticateKeyType, ks.GetSAMProperties().AuthenticateKeyVersion, ks.GetSAMProperties().Secret), ks.GetSAMProperties().AuthenticateKeyEntryIdentifier);
+                            isoru.setConfiguration(ruconfig);
+                        }
+
+                        if (!ru.connectToReader())
+                        {
+                            log.Error("Cannot connect to the RFID Reader Unit.");
+                            throw new KeyStoreException("Cannot connect to the RFID Reader Unit.");
+                        }
 
                         try
                         {
@@ -408,7 +414,6 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                             {
                                 throw new KeyStoreException("Unexpected commands type for the inserted RFID card.");
                             }
-
                             uint aid = (uint)(DESFireAID[0] << 16 | DESFireAID[1] << 8 | DESFireAID[2]);
                             ev1cmd.selectApplication(aid);
 
