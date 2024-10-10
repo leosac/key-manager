@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
+using Newtonsoft.Json.Linq;
 
 namespace Leosac.KeyManager.Library.UI
 {
@@ -9,6 +10,13 @@ namespace Leosac.KeyManager.Library.UI
     /// </summary>
     public partial class SymmetricKeyControl : UserControl
     {
+        static UIPreferences _uipref;
+
+        static SymmetricKeyControl()
+        {
+            _uipref = UIPreferences.LoadFromFile(true) ?? new UIPreferences();
+        }
+
         public SymmetricKeyControl()
         {
             InitializeComponent();
@@ -18,7 +26,11 @@ namespace Leosac.KeyManager.Library.UI
             KeyChecksumAlgorithms.Add(new KeyGen.CRC32Checksum());
             KeyChecksumAlgorithms.Add(new KeyGen.KCV());
             KeyChecksumAlgorithms.Add(new KeyGen.Sha256Checksum());
-            SelectedKeyChecksumAlgorithm = KeyChecksumAlgorithms[0];
+
+            if (_uipref.DefaultChecksumAlgorithm < KeyChecksumAlgorithms.Count)
+            {
+                SelectedKeyChecksumAlgorithm = KeyChecksumAlgorithms[_uipref.DefaultChecksumAlgorithm];
+            }
         }
 
         public Key Key
@@ -66,5 +78,18 @@ namespace Leosac.KeyManager.Library.UI
             new FrameworkPropertyMetadata(true));
 
         public ObservableCollection<KeyGen.KeyChecksum> KeyChecksumAlgorithms { get; set; } = new ObservableCollection<KeyGen.KeyChecksum>();
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SelectedKeyChecksumAlgorithm != null)
+            {
+                var index = KeyChecksumAlgorithms.IndexOf(SelectedKeyChecksumAlgorithm);
+                if (index != _uipref.DefaultChecksumAlgorithm)
+                {
+                    _uipref.DefaultChecksumAlgorithm = index;
+                    _uipref.SaveToFile();
+                }
+            }
+        }
     }
 }

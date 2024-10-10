@@ -68,10 +68,11 @@
                                 </TextBox>
                                 <ComboBox Grid.Column="1" Margin="0,5,0,5"
                                           ItemsSource="{Binding Path=KeyChecksumAlgorithms, Mode=OneWay, ElementName=keyControl}"
-                                          SelectedItem="{Binding Path=SelectedKeyChecksumAlgorithm, Mode=TwoWay, ElementName=keyControl}"
+                                          SelectedItem="{Binding Path=SelectedKeyChecksumAlgorithm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ElementName=keyControl}"
                                           Visibility="{Binding ShowKCV, ElementName=keyControl, Converter={StaticResource BooleanToVisibilityConverter}}"
                                           materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KCVAlgorithmHelper}"
-                                          materialDesign:HintAssist.Hint="{x:Static properties:Resources.KCVAlgorithm}">
+                                          materialDesign:HintAssist.Hint="{x:Static properties:Resources.KCVAlgorithm}"
+                                          SelectionChanged="ComboBox_SelectionChanged">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Name}" />
