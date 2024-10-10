@@ -7,12 +7,19 @@ namespace Leosac.KeyManager.Library
     {
         public Favorite()
         {
+            _identifier = Guid.NewGuid().ToString();
             _name = string.Empty;
             DefaultKeyEntries = new Dictionary<KeyEntryClass, KeyEntry?>();
         }
 
-        private string _name;
+        private string _identifier;
+        public string Identifier
+        {
+            get => _identifier;
+            set => SetProperty(ref _identifier, value);
+        }
 
+        private string _name;
         public string Name
         {
             get => _name;
@@ -59,7 +66,7 @@ namespace Leosac.KeyManager.Library
                 return false;
             }
 
-            return (Name == p.Name) && (Properties!.Equals(p.Properties));
+            return (Identifier == p.Identifier) && (Name == p.Name) && (Properties!.Equals(p.Properties));
         }
 
         public override int GetHashCode() => (Name, Properties).GetHashCode();

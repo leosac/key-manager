@@ -70,6 +70,21 @@ namespace Leosac.KeyManager.Library.UI
 
         public ObservableCollection<Favorite> KeyStores { get; set; } = new ObservableCollection<Favorite>();
 
+        public Favorite? Get(string favoriteIdOrName)
+        {
+            Favorite? fav = null;
+            var key = favoriteIdOrName?.ToLowerInvariant();
+            if (!string.IsNullOrEmpty(key))
+            {
+                fav = KeyStores.FirstOrDefault(k => k.Identifier.ToLowerInvariant() == key);
+                if (fav == null)
+                {
+                    fav = KeyStores.FirstOrDefault(k => k.Name.ToLowerInvariant() == key);
+                }
+            }
+            return fav;
+        }
+
         public Favorite CreateFromKeyStore(KeyStore.KeyStore store)
         {
             return CreateFromKeyStore(store, true);

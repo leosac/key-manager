@@ -89,7 +89,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 var favorites = Favorites.GetSingletonInstance();
                 if (favorites != null)
                 {
-                    var fav = favorites.KeyStores.Where(f => f.Name.ToLower() == Link.KeyStoreFavorite.ToLower()).FirstOrDefault();
+                    var fav = favorites.Get(Link.KeyStoreFavorite);
                     if (fav != null)
                     {
                         var ks = fav.CreateKeyStore();

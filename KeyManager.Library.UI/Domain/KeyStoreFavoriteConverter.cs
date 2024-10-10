@@ -16,7 +16,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             if (_favorites != null && value != null && value is string v)
             {
-                return _favorites.KeyStores.Where(ks => ks.Name == v).FirstOrDefault();
+                return _favorites.Get(v);
             }
 
             return null;
@@ -26,7 +26,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             if (value != null && value is Favorite v)
             {
-                return v.Name;
+                return v.Identifier;
             }
 
             return null;

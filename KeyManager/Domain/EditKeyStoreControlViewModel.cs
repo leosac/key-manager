@@ -294,7 +294,7 @@ namespace Leosac.KeyManager.Domain
                                     var favorites = Favorites.GetSingletonInstance();
                                     if (favorites != null)
                                     {
-                                        var fav = favorites.KeyStores.Where(ks => ks.Name.ToLowerInvariant() == favoriteName.ToLowerInvariant()).SingleOrDefault();
+                                        var fav = favorites.Get(favoriteName);
                                         if (fav != null)
                                         {
                                             return fav.CreateKeyStore();
