@@ -97,6 +97,15 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change.
+        /// </summary>
+        public static string Change {
+            get {
+                return ResourceManager.GetString("Change", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clear.
         /// </summary>
         public static string Clear {
@@ -168,6 +177,46 @@ namespace Leosac.KeyManager.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Elevation Code.
+        /// </summary>
+        public static string ElevationCode {
+            get {
+                return ResourceManager.GetString("ElevationCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Elevation Code.
+        /// </summary>
+        public static string ElevationCodeHelper {
+            get {
+                return ResourceManager.GetString("ElevationCodeHelper", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Encryption Type.
+        /// </summary>
+        public static string EncryptionType
+        {
+            get
+            {
+                return ResourceManager.GetString("EncryptionType", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Encryption Type.
+        /// </summary>
+        public static string EncryptionTypeHelper
+        {
+            get
+            {
+                return ResourceManager.GetString("EncryptionTypeHelper", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>

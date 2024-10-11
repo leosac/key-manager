@@ -91,7 +91,7 @@ namespace Leosac.KeyManager.Domain
                 {
                     if (!string.IsNullOrEmpty(NewMasterKey))
                     {
-                        EncryptJsonConverter.ChangeMasterKey(NewMasterKey);
+                        EncryptJsonConverter.ChangeEncryption(StoredSecretEncryptionType.CustomKey, NewMasterKey);
                         NewMasterKey = null;
                     }
                     else
@@ -107,6 +107,7 @@ namespace Leosac.KeyManager.Domain
 
         public void RefreshMasterKeyState()
         {
+            DisplayMasterKey = (EncryptJsonConverter.EncryptionType == StoredSecretEncryptionType.CustomKey);
             IsDefaultMasterKey = EncryptJsonConverter.IsDefaultMasterKey();
         }
 
@@ -121,15 +122,20 @@ namespace Leosac.KeyManager.Domain
         }
 
         private bool _isLoadingFavorites;
-
         public bool IsLoadingFavorites
         {
             get => _isLoadingFavorites;
             set => SetProperty(ref _isLoadingFavorites, value);
         }
 
-        private bool _isDefaultMasterKey;
+        private bool _displayMasterKey;
+        public bool DisplayMasterKey
+        {
+            get => _displayMasterKey;
+            set => SetProperty(ref _displayMasterKey, value);
+        }
 
+        private bool _isDefaultMasterKey;
         public bool IsDefaultMasterKey
         {
             get => _isDefaultMasterKey;
@@ -137,7 +143,6 @@ namespace Leosac.KeyManager.Domain
         }
 
         private string? _newMasterKey;
-
         public string? NewMasterKey
         {
             get => _newMasterKey;

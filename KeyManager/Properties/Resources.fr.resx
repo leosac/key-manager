@@ -240,4 +240,19 @@
   <data name="SecretHelper" xml:space="preserve">
     <value>Le secret du magasin</value>
   </data>
+  <data name="ElevationCode" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="ElevationCodeHelper" xml:space="preserve">
+    <value>Code d'administration</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>Changer</value>
+  </data>
+  <data name="EncryptionType" xml:space="preserve">
+    <value>Méthode de chiffrement</value>
+  </data>
+  <data name="EncryptionTypeHelper" xml:space="preserve">
+    <value>Méthode de chiffrement des secrets</value>
+  </data>
 </root>

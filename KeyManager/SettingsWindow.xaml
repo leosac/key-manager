@@ -17,6 +17,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Title="Settings" Height="450" Width="800"
+        x:Name="window"
         Closing="Window_Closing">
     <DockPanel LastChildFill="True">
         <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="5,5,50,5">
@@ -32,6 +33,18 @@
                                      materialDesign:HintAssist.HelperText="{x:Static properties:Resources.FavoritesPathHelper}"
                                      materialDesign:HintAssist.Hint="{x:Static properties:Resources.FavoritesPath}"/>
                         </DockPanel>
+                        <DockPanel LastChildFill="True">
+                            <Button Content="{x:Static properties:Resources.Change}" Click="ChangeCode_Click" DockPanel.Dock="Right" Margin="5" />
+                            <PasswordBox materialDesign:PasswordBoxAssist.Password="{Binding ElevationCodePlain, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         materialDesign:TextFieldAssist.HasClearButton="True" Margin="5"
+                                         materialDesign:HintAssist.HelperText="{x:Static properties:Resources.ElevationCodeHelper}"
+                                         materialDesign:HintAssist.Hint="{x:Static properties:Resources.ElevationCode}" />
+                        </DockPanel>
+                        <ComboBox ItemsSource="{Binding EncryptionTypes, ElementName=window}"
+                                  SelectedItem="{Binding EncryptionType}"
+                                  materialDesign:HintAssist.HelperText="{x:Static properties:Resources.EncryptionTypeHelper}"
+                                  materialDesign:HintAssist.Hint="{x:Static properties:Resources.EncryptionType}"
+                                  Margin="5,15,5,15"/>
                     </StackPanel>
                 </TabItem>
             </TabControl>

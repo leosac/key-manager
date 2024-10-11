@@ -246,4 +246,19 @@
   <data name="SecretHelper" xml:space="preserve">
     <value>The key store secret</value>
   </data>
+  <data name="ElevationCode" xml:space="preserve">
+    <value>Elevation Code</value>
+  </data>
+  <data name="ElevationCodeHelper" xml:space="preserve">
+    <value>Elevation Code</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="EncryptionType" xml:space="preserve">
+    <value>Encryption Type</value>
+  </data>
+  <data name="EncryptionTypeHelper" xml:space="preserve">
+    <value>Encryption Type for secrets</value>
+  </data>
 </root>

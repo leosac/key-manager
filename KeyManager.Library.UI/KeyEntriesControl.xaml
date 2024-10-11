@@ -29,7 +29,7 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <WrapPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
+                <WrapPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" IsEnabled="{x:Static local:UIPreferences.IsUserElevated}">
                     <materialDesign:PopupBox
                         PlacementMode="BottomAndAlignCentres"
                         ToolTip="{x:Static properties:Resources.NewKeyEntry}" Margin="5"
@@ -147,7 +147,7 @@
                                 </Grid.ColumnDefinitions>
                                 <CheckBox Grid.Column="0" VerticalAlignment="Center" IsChecked="{Binding Selected}" Visibility="{Binding DataContext.ShowSelection, ElementName=keyStoreControl, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                 <DockPanel Grid.Column="1" LastChildFill="True">
-                                    <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                    <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal" IsEnabled="{x:Static local:UIPreferences.IsUserElevated}">
                                         <Button x:Name="btnEditKeyEntry" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.EditKeyEntryCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.EditKeyEntry}" Margin="3">
                                             <materialDesign:PackIcon Kind="Edit" Height="24" Width="24" Cursor="Hand" />
                                         </Button>

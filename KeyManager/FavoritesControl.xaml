@@ -60,6 +60,7 @@
                     </materialDesign:DialogHost.DialogContent>
                     <Button ToolTip="{x:Static properties:Resources.MasterKey}"
                             Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                            Visibility="{Binding DisplayMasterKey, Converter={StaticResource BooleanToVisibilityConverter}}"
                             Margin="5">
                         <Button.Content>
                             <Grid>
@@ -115,10 +116,12 @@
                 </materialDesign:DialogHost>
                 <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
                         Command="{Binding CreateFavoriteCommand}"
+                        IsEnabled="{x:Static kslib:UIPreferences.IsUserElevated}"
                         ToolTip="{x:Static properties:Resources.NewFavorite}" Margin="5">
                     <materialDesign:PackIcon Kind="StarAdd" Height="24" Width="24" Cursor="Hand" />
                 </Button>
-                <materialDesign:PopupBox PlacementMode="BottomAndAlignCentres" ToolTipService.Placement="Right" Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}">
+                <materialDesign:PopupBox PlacementMode="BottomAndAlignCentres" ToolTipService.Placement="Right" Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
+                                         IsEnabled="{x:Static kslib:UIPreferences.IsUserElevated}">
                     <materialDesign:PopupBox.ToggleContent>
                         <materialDesign:PackIcon Kind="DotsVertical" Height="24" Width="24" Cursor="Hand" />
                     </materialDesign:PopupBox.ToggleContent>
@@ -161,7 +164,8 @@
                                     <materialDesign:PackIcon Kind="FolderOpen" Height="24" Width="24" Cursor="Hand" />
                                 </Button>
                             </materialDesign:DialogHost>
-                            <Button Command="{Binding Path=DataContext.EditFavoriteCommand, ElementName=userControl}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="{x:Static properties:Resources.EditFavorite}" Margin="3">
+                            <Button Command="{Binding Path=DataContext.EditFavoriteCommand, ElementName=userControl}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="{x:Static properties:Resources.EditFavorite}"
+                                    IsEnabled="{x:Static kslib:UIPreferences.IsUserElevated}" Margin="3">
                                 <materialDesign:PackIcon Kind="FolderEdit" Height="24" Width="24" Cursor="Hand" />
                             </Button>
                             <materialDesign:DialogHost DialogTheme="Inherit">
@@ -176,7 +180,8 @@
                                     </StackPanel>
                                 </materialDesign:DialogHost.DialogContent>
 
-                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" ToolTip="{x:Static properties:Resources.DeleteFavorite}" Margin="3">
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" ToolTip="{x:Static properties:Resources.DeleteFavorite}"
+                                        IsEnabled="{x:Static kslib:UIPreferences.IsUserElevated}" Margin="3">
                                     <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" Cursor="Hand" />
                                 </Button>
                             </materialDesign:DialogHost>

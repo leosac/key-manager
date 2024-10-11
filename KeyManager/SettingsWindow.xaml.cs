@@ -1,6 +1,8 @@
-﻿using Leosac.KeyManager.Library.UI;
+﻿using Leosac.KeyManager.Library;
+using Leosac.KeyManager.Library.UI;
 using Microsoft.Win32;
 using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace Leosac.KeyManager
@@ -12,8 +14,11 @@ namespace Leosac.KeyManager
     {
         public SettingsWindow()
         {
+            EncryptionTypes = new ObservableCollection<StoredSecretEncryptionType>(Enum.GetValues<StoredSecretEncryptionType>());
             InitializeComponent();
         }
+
+        public ObservableCollection<StoredSecretEncryptionType> EncryptionTypes { get; private set; }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -39,6 +44,14 @@ namespace Leosac.KeyManager
             if (ofd.ShowDialog() == true && DataContext is KMSettings settings)
             {
                 settings.FavoritesPath = ofd.FileName;
+            }
+        }
+
+        private void ChangeCode_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is KMSettings settings)
+            {
+                settings.ElevationCode = KMSettings.ComputeCodeHash(settings.ElevationCodePlain);
             }
         }
     }

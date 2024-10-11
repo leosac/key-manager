@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:domain="clr-namespace:Leosac.KeyManager.Domain"
+             xmlns:libui="clr-namespace:Leosac.KeyManager.Library.UI;assembly=KeyManager.Library.UI"
              xmlns:local="clr-namespace:Leosac.KeyManager"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Properties"
@@ -11,25 +12,52 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance domain:HomeControlViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
-    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <WrapPanel.Resources>
-            <Style TargetType="{x:Type materialDesign:Card}">
-                <Setter Property="Margin" Value="30,0" />
-                <Setter Property="Padding" Value="5,5" />
-            </Style>
-        </WrapPanel.Resources>
-        <materialDesign:Card x:Name="openKeyStore" HorizontalAlignment="Center" VerticalAlignment="Center" Height="175" Width="175" Cursor="Hand" MouseDown="OpenKeyStore_MouseDown">
-            <StackPanel HorizontalAlignment="Center">
-                <Label Content="{x:Static properties:Resources.OpenKeyStore}" HorizontalAlignment="Center" Margin="0,24,0,0" VerticalAlignment="Top"/>
-                <materialDesign:PackIcon  Kind="FolderOpen" Height="87" Width="132"/>
-            </StackPanel>
-        </materialDesign:Card>
-        <materialDesign:Card x:Name="favoritesKeyStore" HorizontalAlignment="Left" VerticalAlignment="Center" Height="175" Width="175" Cursor="Hand" MouseDown="FavoritesKeyStore_MouseDown">
-            <StackPanel HorizontalAlignment="Center">
-                <Label Content="{x:Static properties:Resources.Favorites}" HorizontalAlignment="Center" Margin="0,24,0,0" VerticalAlignment="Top"/>
-                <materialDesign:PackIcon  Kind="Star" Height="87" Width="132"/>
-            </StackPanel>
-        </materialDesign:Card>
+    <DockPanel LastChildFill="True">
+        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Bottom" Visibility="{Binding Converter={StaticResource InverseBooleanToVisibilityConverter},Source={x:Static libui:UIPreferences.IsUserElevated}}">
+            <materialDesign:DialogHost DialogTheme="Inherit">
+                <materialDesign:DialogHost.DialogContent>
+                    <StackPanel Margin="16">
+                        <WrapPanel>
+                            <PasswordBox materialDesign:HintAssist.HelperText="{x:Static properties:Resources.ElevationCodeHelper}"
+                             materialDesign:HintAssist.Hint="{x:Static properties:Resources.ElevationCode}"
+                             materialDesign:TextFieldAssist.HasClearButton="True"
+                             Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
+                             materialDesign:PasswordBoxAssist.Password="{Binding ElevationCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Width="300" Margin="3" />
+                        </WrapPanel>
+                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0 15 0 0">
+                            <Button Margin="0,8,8,0" Content="{x:Static properties:Resources.OK}" Command="{Binding ElevateCommand}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}" />
+                            <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />
+                        </StackPanel>
+                    </StackPanel>
+                </materialDesign:DialogHost.DialogContent>
+                <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" Margin="5">
+                    <Button.Content>
+                        <materialDesign:PackIcon Kind="UserUnlocked" Width="24" Height="24" />
+                    </Button.Content>
+                </Button>
+            </materialDesign:DialogHost>
+        </WrapPanel>
+        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <WrapPanel.Resources>
+                <Style TargetType="{x:Type materialDesign:Card}">
+                    <Setter Property="Margin" Value="30,0" />
+                    <Setter Property="Padding" Value="5,5" />
+                </Style>
+            </WrapPanel.Resources>
+            <materialDesign:Card x:Name="openKeyStore" HorizontalAlignment="Center" VerticalAlignment="Center" Height="175" Width="175" Cursor="Hand" MouseDown="OpenKeyStore_MouseDown">
+                <StackPanel HorizontalAlignment="Center">
+                    <Label Content="{x:Static properties:Resources.OpenKeyStore}" HorizontalAlignment="Center" Margin="0,24,0,0" VerticalAlignment="Top"/>
+                    <materialDesign:PackIcon  Kind="FolderOpen" Height="87" Width="132"/>
+                </StackPanel>
+            </materialDesign:Card>
+            <materialDesign:Card x:Name="favoritesKeyStore" HorizontalAlignment="Left" VerticalAlignment="Center" Height="175" Width="175" Cursor="Hand" MouseDown="FavoritesKeyStore_MouseDown">
+                <StackPanel HorizontalAlignment="Center">
+                    <Label Content="{x:Static properties:Resources.Favorites}" HorizontalAlignment="Center" Margin="0,24,0,0" VerticalAlignment="Top"/>
+                    <materialDesign:PackIcon  Kind="Star" Height="87" Width="132"/>
+                </StackPanel>
+            </materialDesign:Card>
 
-    </WrapPanel>
+        </WrapPanel>
+    </DockPanel>
 </UserControl>
