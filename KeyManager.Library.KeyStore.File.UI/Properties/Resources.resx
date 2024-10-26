@@ -156,4 +156,10 @@
   <data name="ResetEncryptionKey" xml:space="preserve">
     <value>Reset Encryption Key</value>
   </data>
+  <data name="OrderById" xml:space="preserve">
+    <value>Order by Id</value>
+  </data>
+  <data name="OrderByName" xml:space="preserve">
+    <value>Order by Name</value>
+  </data>
 </root>

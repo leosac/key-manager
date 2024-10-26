@@ -156,4 +156,10 @@
   <data name="ResetEncryptionKey" xml:space="preserve">
     <value>Réinitialiser la clé de chiffrement</value>
   </data>
+  <data name="OrderById" xml:space="preserve">
+    <value>Trier par Id</value>
+  </data>
+  <data name="OrderByName" xml:space="preserve">
+    <value>Trier par nom</value>
+  </data>
 </root>

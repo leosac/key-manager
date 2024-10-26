@@ -192,6 +192,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     }
                 });
 
+            OrderingCommand = new RelayCommand<string>(Ordering);
+
             _identifiersView = CollectionViewSource.GetDefaultView(Identifiers);
             _identifiersView.Filter = KeyEntryIdentifiersFilter;
         }
@@ -508,6 +510,27 @@ namespace Leosac.KeyManager.Library.UI.Domain
             foreach (var identifier in Identifiers)
             {
                 identifier.Selected = selected;
+            }
+        }
+
+        public RelayCommand<string> OrderingCommand { get; }
+        private void Ordering(string? order)
+        {
+            _identifiersView.SortDescriptions.Clear();
+            switch (order)
+            {
+                case "ByIdAsc":
+                    _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.Id", ListSortDirection.Ascending));
+                    break;
+                case "ByIdDesc":
+                    _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.Id", ListSortDirection.Descending));
+                    break;
+                case "ByLabelAsc":
+                    _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.Label", ListSortDirection.Ascending));
+                    break;
+                case "ByLabelDesc":
+                    _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.Label", ListSortDirection.Descending));
+                    break;
             }
         }
 

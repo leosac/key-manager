@@ -579,4 +579,13 @@
   <data name="WrappingKey" xml:space="preserve">
     <value>Clé de Wrapping</value>
   </data>
+  <data name="Ordering" xml:space="preserve">
+    <value>Tri</value>
+  </data>
+  <data name="OrderById" xml:space="preserve">
+    <value>Trier par Id</value>
+  </data>
+  <data name="OrderByLabel" xml:space="preserve">
+    <value>Trier par libellé</value>
+  </data>
 </root>

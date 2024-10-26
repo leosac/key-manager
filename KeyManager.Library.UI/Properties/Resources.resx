@@ -579,4 +579,13 @@
   <data name="WrappingKey" xml:space="preserve">
     <value>Wrapping Key</value>
   </data>
+  <data name="Ordering" xml:space="preserve">
+    <value>Ordering</value>
+  </data>
+  <data name="OrderById" xml:space="preserve">
+    <value>Order by Id</value>
+  </data>
+  <data name="OrderByLabel" xml:space="preserve">
+    <value>Order by Label</value>
+  </data>
 </root>

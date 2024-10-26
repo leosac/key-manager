@@ -128,9 +128,45 @@
                     </WrapPanel>
                 </WrapPanel>
                 <DockPanel LastChildFill="True" Grid.Column="1">
-                    <Button DockPanel.Dock="Right" x:Name="btnSearch" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="24" Height="24" Margin="3" ToolTip="{x:Static properties:Resources.Search}" Click="btnSearch_Click">
-                        <materialDesign:PackIcon Kind="Search" Height="16" Width="16"/>
-                    </Button>
+                    <WrapPanel DockPanel.Dock="Right" Orientation="Vertical" VerticalAlignment="Center">
+                        <Button x:Name="btnSearch" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="24" Height="24" Margin="3" ToolTip="{x:Static properties:Resources.Search}" Click="btnSearch_Click">
+                            <materialDesign:PackIcon Kind="Search" Height="16" Width="16"/>
+                        </Button>
+                        <materialDesign:PopupBox PlacementMode="BottomAndAlignCentres"
+                                                 HorizontalAlignment="Center"
+                                                 ToolTip="{x:Static properties:Resources.Ordering}" Margin="3" Width="16" Height="16"
+                                                 Style="{StaticResource MaterialDesignMultiFloatingActionLightPopupBox}">
+                            <materialDesign:PopupBox.ToggleContent>
+                                <materialDesign:PackIcon Kind="OrderBoolAscending" Height="8" Width="8" />
+                            </materialDesign:PopupBox.ToggleContent>
+                            <StackPanel Orientation="Vertical">
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                                        Command="{Binding OrderingCommand}"
+                                        CommandParameter="ByIdAsc"
+                                        ToolTip="{x:Static properties:Resources.OrderById}" Margin="3">
+                                    <materialDesign:PackIcon Kind="OrderNumericAscending" Height="16" Width="16" Cursor="Hand" />
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                                        Command="{Binding OrderingCommand}"
+                                        CommandParameter="ByIdDesc"
+                                        ToolTip="{x:Static properties:Resources.OrderById}" Margin="3">
+                                    <materialDesign:PackIcon Kind="OrderNumericDescending" Height="16" Width="16" Cursor="Hand" />
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                                        Command="{Binding OrderingCommand}"
+                                        CommandParameter="ByLabelAsc"
+                                        ToolTip="{x:Static properties:Resources.OrderByLabel}" Margin="3">
+                                    <materialDesign:PackIcon Kind="OrderAlphabeticalAscending" Height="16" Width="16" Cursor="Hand" />
+                                </Button>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                                        Command="{Binding OrderingCommand}"
+                                        CommandParameter="ByLabelDesc"
+                                        ToolTip="{x:Static properties:Resources.OrderByLabel}" Margin="3">
+                                    <materialDesign:PackIcon Kind="OrderAlphabeticalDescending" Height="16" Width="16" Cursor="Hand" />
+                                </Button>
+                            </StackPanel>
+                        </materialDesign:PopupBox>
+                    </WrapPanel>
                     <TextBox TextWrapping="Wrap" x:Name="SearchTerms" KeyDown="SearchTerms_KeyDown" Margin="3"
                                          materialDesign:HintAssist.Hint="{x:Static properties:Resources.SearchTerms}"
                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>

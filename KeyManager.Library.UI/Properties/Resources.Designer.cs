@@ -1105,6 +1105,33 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Order by Id.
+        /// </summary>
+        public static string OrderById {
+            get {
+                return ResourceManager.GetString("OrderById", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Order by Label.
+        /// </summary>
+        public static string OrderByLabel {
+            get {
+                return ResourceManager.GetString("OrderByLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ordering.
+        /// </summary>
+        public static string Ordering {
+            get {
+                return ResourceManager.GetString("Ordering", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Byte.
         /// </summary>
         public static string PadByte {

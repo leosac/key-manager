@@ -1,3 +1,13 @@
+# v1.19.0 - 26/10/2024
+ - Add KCV variants
+ - Add KCV selection auto saving
+ - Add key entries Sort feature
+ - Add secret key change on File key store
+ - Add support for secrets encryption per machine
+ - Add optional Elevated/Restricted user feature
+ - Add Identifier to Favorite and use it instead of Name for the favorite links
+ - Fix DESFire reading test on SAM AV2/AV3 key store
+
 # v1.18.1 - 09/06/2024
 
  - Fix possible race condition on initialization cleanup when opening a key store
