@@ -299,7 +299,7 @@ namespace Leosac.KeyManager.Library.KeyStore
             log.Info("Key Entries storing completed.");
         }
 
-        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, Action<KeyStore, KeyEntryClass, int>? initCallback)
+        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?>? getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
             var classes = SupportedClasses;
             foreach (var keClass in classes)
@@ -308,12 +308,12 @@ namespace Leosac.KeyManager.Library.KeyStore
             }
         }
 
-        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, KeyEntryClass keClass, Action<KeyStore, KeyEntryClass, int>? initCallback)
+        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?>? getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, KeyEntryClass keClass, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
             await Publish(store, getFavoriteKeyStore, askForKeyStoreSecretIfRequired, keClass, null, initCallback);
         }
 
-        protected virtual async Task KeyEntriesAction(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids, Action<KeyStore, KeyEntryClass, int>? initCallback, Func<KeyStore, List<IChangeKeyEntry>, Task> action, bool connectToStore = true)
+        protected virtual async Task KeyEntriesAction(KeyStore store, Func<string, KeyStore?>? getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids, Action<KeyStore, KeyEntryClass, int>? initCallback, Func<KeyStore, List<IChangeKeyEntry>, Task> action, bool connectToStore = true)
         {
             var changes = new List<IChangeKeyEntry>();
             if (ids == null)
@@ -343,6 +343,11 @@ namespace Leosac.KeyManager.Library.KeyStore
                         {
                             if (resolveKeyLinks)
                             {
+                                if (getFavoriteKeyStore == null)
+                                {
+                                    throw new KeyStoreException("Missing getFavoriteKeyStore callback to resolve key entry link favorite.");
+                                }
+
                                 var cryptogram = new KeyEntryCryptogram
                                 {
                                     Identifier = entry.Identifier
@@ -400,6 +405,11 @@ namespace Leosac.KeyManager.Library.KeyStore
                                     {
                                         if (resolveKeyLinks)
                                         {
+                                            if (getFavoriteKeyStore == null)
+                                            {
+                                                throw new KeyStoreException("Missing getFavoriteKeyStore callback to resolve key link favorite.");
+                                            }
+
                                             var ks = getFavoriteKeyStore(kv.Key.Link.KeyStoreFavorite);
                                             if (ks != null)
                                             {
@@ -475,7 +485,7 @@ namespace Leosac.KeyManager.Library.KeyStore
             }
         }
 
-        public virtual Task Publish(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids, Action<KeyStore, KeyEntryClass, int>? initCallback)
+        public virtual Task Publish(KeyStore store, Func<string, KeyStore?>? getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
             return KeyEntriesAction(store, getFavoriteKeyStore, askForKeyStoreSecretIfRequired, keClass, ids, initCallback, new Func<KeyStore, List<IChangeKeyEntry>, Task>(async (s, changes) =>
             {

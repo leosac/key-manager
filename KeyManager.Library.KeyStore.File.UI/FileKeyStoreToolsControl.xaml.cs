@@ -6,13 +6,13 @@ namespace Leosac.KeyManager.Library.KeyStore.File.UI
     /// <summary>
     /// Interaction logic for FileKeyStoreImportExportControl.xaml
     /// </summary>
-    public partial class FileKeyStoreImportExportControl : UserControl
+    public partial class FileKeyStoreToolsControl : UserControl
     {
-        public FileKeyStoreImportExportControl()
+        public FileKeyStoreToolsControl()
         {
-            InitializeComponent();
+            DataContext = new FileKeyStoreToolsControlViewModel();
 
-            DataContext = new FileKeyStoreImportExportControlViewModel();
+            InitializeComponent();
         }
     }
 }

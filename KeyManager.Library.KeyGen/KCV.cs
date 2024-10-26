@@ -10,6 +10,8 @@ namespace Leosac.KeyManager.Library.KeyGen
     /// </summary>
     public class KCV : KeyChecksum
     {
+        protected byte _paddedByte;
+
         public override string Name => "KCV";
 
         public override byte[] ComputeKCV(Key key, byte[]? iv)
@@ -19,10 +21,9 @@ namespace Leosac.KeyManager.Library.KeyGen
             var paddediv = new byte[KeyHelper.GetBlockSize(key.Tags)];
             if (key.Tags.Contains("AES"))
             {
-                // For AES, GlobalPlatform specification is using a default byte value set to 0x01 and not 0x00
                 for (var i = 0; i < paddediv.Length; i++)
                 {
-                    paddediv[i] = 0x01;
+                    paddediv[i] = _paddedByte;
                 }
             }
             if (iv != null)

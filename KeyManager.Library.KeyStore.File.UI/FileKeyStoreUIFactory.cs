@@ -33,7 +33,7 @@ namespace Leosac.KeyManager.Library.KeyStore.File.UI
         {
             return new Dictionary<string, UserControl>
             {
-                { Properties.Resources.ImportExport, new FileKeyStoreImportExportControl() }
+                { Properties.Resources.Tools, new FileKeyStoreToolsControl() }
             };
         }
     }

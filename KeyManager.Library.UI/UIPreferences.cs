@@ -22,6 +22,11 @@ namespace Leosac.KeyManager.Library.UI
             }
         }
 
+        public UIPreferences()
+        {
+            IsUserConfiguration = true;
+        }
+
         private int _defaultChecksumAlgorithm;
         public int DefaultChecksumAlgorithm
         {

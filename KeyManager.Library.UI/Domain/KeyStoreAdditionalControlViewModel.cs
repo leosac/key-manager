@@ -9,7 +9,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
     {
         private KeyStore.KeyStore? _keyStore;
 
-        public KeyStore.KeyStore? KeyStore
+        public virtual KeyStore.KeyStore? KeyStore
         {
             get => _keyStore;
             set => SetProperty(ref _keyStore, value);

@@ -6,7 +6,7 @@ namespace Leosac.KeyManager.Library.KeyStore
     /// <summary>
     /// The base class for a Key Store Properties implementation.
     /// </summary>
-    public abstract class KeyStoreProperties : ObservableObject
+    public abstract class KeyStoreProperties : ObservableObject, ICloneable
     {
         private string? _secret;
         /// <summary>
@@ -34,6 +34,11 @@ namespace Leosac.KeyManager.Library.KeyStore
         {
             get => _storeSecret ? _secret : null;
             set => SetProperty(ref _secret, value);
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }

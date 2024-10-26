@@ -14,7 +14,7 @@ namespace Leosac.KeyManager.Library.UI
 
         static SymmetricKeyControl()
         {
-            _uipref = UIPreferences.LoadFromFile(true) ?? new UIPreferences();
+            _uipref = UIPreferences.GetSingletonInstance(false) ?? new UIPreferences();
         }
 
         public SymmetricKeyControl()
@@ -25,6 +25,9 @@ namespace Leosac.KeyManager.Library.UI
 
             KeyChecksumAlgorithms.Add(new KeyGen.CRC32Checksum());
             KeyChecksumAlgorithms.Add(new KeyGen.KCV());
+            KeyChecksumAlgorithms.Add(new KeyGen.KCVGlobalPlatform());
+            KeyChecksumAlgorithms.Add(new KeyGen.Sha1Checksum());
+            KeyChecksumAlgorithms.Add(new KeyGen.Sha1KCVChecksum());
             KeyChecksumAlgorithms.Add(new KeyGen.Sha256Checksum());
 
             if (_uipref.DefaultChecksumAlgorithm < KeyChecksumAlgorithms.Count)

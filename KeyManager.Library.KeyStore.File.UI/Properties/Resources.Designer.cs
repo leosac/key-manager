@@ -151,11 +151,29 @@ namespace Leosac.KeyManager.Library.KeyStore.File.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset Encryption Key.
+        /// </summary>
+        public static string ResetEncryptionKey {
+            get {
+                return ResourceManager.GetString("ResetEncryptionKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string StoreSecret {
             get {
                 return ResourceManager.GetString("StoreSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tools.
+        /// </summary>
+        public static string Tools {
+            get {
+                return ResourceManager.GetString("Tools", resourceCulture);
             }
         }
     }

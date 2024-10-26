@@ -144,10 +144,16 @@
   <data name="Import" xml:space="preserve">
     <value>Import</value>
   </data>
-  <data name="ImportExport" xml:space="preserve">
-    <value>Import / Export</value>
+  <data name="Tools" xml:space="preserve">
+    <value>Outils</value>
   </data>
   <data name="StoreSecret" xml:space="preserve">
     <value>Enregistrer</value>
+  </data>
+  <data name="ImportExport" xml:space="preserve">
+    <value>Importer / Exporter</value>
+  </data>
+  <data name="ResetEncryptionKey" xml:space="preserve">
+    <value>Réinitialiser la clé de chiffrement</value>
   </data>
 </root>
