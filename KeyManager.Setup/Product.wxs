@@ -339,7 +339,7 @@
     </ComponentGroup>
     <ComponentGroup Id="WinRuntimeComponents" Directory="RUNTIMEWINLIBNET8">
       <Component Id="SystemSpeech_winxComponent">
-        <File Id="___var.System.Speech.dll_" Source="$(var.KeyManager.TargetDir)\runtimes\win\lib\net8.0\System.Speech.dll" />
+        <File Id="___var.System.Speech.dllWin_" Source="$(var.KeyManager.TargetDir)\runtimes\win\lib\net8.0\System.Speech.dll" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="NativeWinx64RuntimeComponents" Directory="RUNTIMEWINX64NATIVE">
