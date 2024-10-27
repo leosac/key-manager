@@ -84,19 +84,27 @@ namespace Leosac.KeyManager.Library.UI
                 {
                     IsReunification = false
                 };
-                var fragments = SelectedSecretSharing.CreateFragments(Convert.FromHexString(KeyValue), Fragments);
-                if (fragments != null)
+                try
                 {
-                    foreach (var fragment in fragments)
+                    var fragments = SelectedSecretSharing.CreateFragments(Convert.FromHexString(KeyValue), Fragments);
+                    if (fragments != null)
                     {
-                        model.Fragments.Add(fragment);
-                    }
+                        foreach (var fragment in fragments)
+                        {
+                            model.Fragments.Add(fragment);
+                        }
 
-                    var dialog = new KeyCeremonyDialog
-                    {
-                        DataContext = model
-                    };
-                    dialog.ShowDialog();
+                        var dialog = new KeyCeremonyDialog
+                        {
+                            DataContext = model
+                        };
+                        dialog.ShowDialog();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    log.Error("Error during the key ceremony.", ex);
+                    MessageBox.Show(ex.Message, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
