@@ -35,8 +35,7 @@
                 <local:DivInputTestControl DivInput="{Binding Link.DivInput}" DivInputResult="{Binding DivInputResult}" />
                 <StackPanel Margin="15" HorizontalAlignment="Center" Orientation="Horizontal">
                     <Button Margin="5" VerticalAlignment="Center"
-                            Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}"
-                            CommandParameter="{x:Static Dock.Bottom}"
+                            Command="{Binding ImportResultCommand}"
                             Content="IMPORT NOW"
                             Style="{StaticResource MaterialDesignFlatLightButton}" 
                             Visibility="{Binding AllowImport, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding LinkResult, Converter={StaticResource NullToBooleanConverter}}" />

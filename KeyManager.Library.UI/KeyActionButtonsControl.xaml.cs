@@ -66,7 +66,11 @@ namespace Leosac.KeyManager.Library.UI
                     DataContext = model
                 };
 
-                await DialogHelper.ForceShow(dialog, "KeyEntryDialog");
+                var ret = await DialogHelper.ForceShow(dialog, "KeyEntryDialog");
+                if (ret != null && !string.IsNullOrEmpty(model.LinkResult))
+                {
+                    Key.SetAggregatedValueAsString(model.LinkResult);
+                }
             }
         }
 
