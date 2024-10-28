@@ -25,6 +25,21 @@ namespace Leosac.KeyManager.Library.KeyStore
             set => SetProperty(ref _id, value);
         }
 
+        public long? NumericId
+        {
+            get
+            {
+                if (Id != null)
+                {
+                    if (long.TryParse(Id, out long id))
+                    {
+                        return id;
+                    }
+                }
+                return null;
+            }
+        }
+
         public string? Label
         {
             get => _label;

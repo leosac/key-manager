@@ -31,6 +31,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
         public override bool CanDefineKeyEntryLabel => false;
 
+        public override bool IsNumericKeyId => true;
+
         public override IEnumerable<KeyEntryClass> SupportedClasses
         {
             get => new KeyEntryClass[] { KeyEntryClass.Symmetric };

@@ -58,6 +58,11 @@ namespace Leosac.KeyManager.Library.KeyStore
         public virtual bool CanDefineKeyEntryLabel => true;
 
         /// <summary>
+        /// True if key identifier are numeric, false otherwise.
+        /// </summary>
+        public virtual bool IsNumericKeyId => false;
+
+        /// <summary>
         /// Get the supported key entry classes.
         /// </summary>
         public abstract IEnumerable<KeyEntryClass> SupportedClasses { get; }

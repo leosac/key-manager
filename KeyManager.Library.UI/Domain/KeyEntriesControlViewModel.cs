@@ -517,13 +517,23 @@ namespace Leosac.KeyManager.Library.UI.Domain
         private void Ordering(string? order)
         {
             _identifiersView.SortDescriptions.Clear();
+            string idProperty = ((KeyStore?.IsNumericKeyId).GetValueOrDefault(false)) ? "KeyEntryId.NumericId" : "KeyEntryId.Id";
             switch (order)
             {
                 case "ByIdAsc":
-                    _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.Id", ListSortDirection.Ascending));
+                    // Even if key id is not enforced to be numeric, we try to order in numeric order first
+                    if (!(KeyStore?.IsNumericKeyId).GetValueOrDefault(false))
+                    {
+                        _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.NumericId", ListSortDirection.Ascending));
+                    }
+                    _identifiersView.SortDescriptions.Add(new SortDescription(idProperty, ListSortDirection.Ascending));
                     break;
                 case "ByIdDesc":
-                    _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.Id", ListSortDirection.Descending));
+                    if (!(KeyStore?.IsNumericKeyId).GetValueOrDefault(false))
+                    {
+                        _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.NumericId", ListSortDirection.Descending));
+                    }
+                    _identifiersView.SortDescriptions.Add(new SortDescription(idProperty, ListSortDirection.Descending));
                     break;
                 case "ByLabelAsc":
                     _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.Label", ListSortDirection.Ascending));
