@@ -13,6 +13,8 @@ namespace Leosac.KeyManager.Library.UI
     /// </summary>
     public partial class KeyActionButtonsControl : UserControl
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
+
         public KeyActionButtonsControl()
         {
             InitializeComponent();
@@ -128,7 +130,14 @@ namespace Leosac.KeyManager.Library.UI
                     var kcv = new KeyGen.KCV();
                     control.KeyChecksum = kcv.ComputeKCV(Key.Tags, Key.GetAggregatedValueAsString() ?? "", null);
                 }
-                printDialog.PrintVisual(control, "Leosac Key Manager - Key Printing");
+                try
+                {
+                    printDialog.PrintVisual(control, "Leosac Key Manager - Key Printing");
+                }
+                catch(Exception ex)
+                {
+                    log.Error("Key printing error.", ex);
+                }
             }
         }
 
