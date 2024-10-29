@@ -180,6 +180,11 @@ namespace Leosac.KeyManager.Library.KeyStore
             return keyEntry.Identifier;
         }
 
+        public virtual Task<byte[]?> GenerateBytes(byte size)
+        {
+            return Task.FromResult<byte[]?>(KeyGeneration.Random(size));
+        }
+
         /// <summary>
         /// Get a key entry.
         /// </summary>

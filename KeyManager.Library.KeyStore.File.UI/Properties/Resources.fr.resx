@@ -162,4 +162,7 @@
   <data name="OrderByName" xml:space="preserve">
     <value>Trier par nom</value>
   </data>
+  <data name="RandomGenerator" xml:space="preserve">
+    <value>Générateur de nombres aléatoires</value>
+  </data>
 </root>

@@ -214,6 +214,30 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             throw new KeyStoreException("A SAM key entry cannot be deleted, only updated.");
         }
 
+        public override Task<byte[]?> GenerateBytes(byte size)
+        {
+            var cmd = Chip?.getCommands();
+            if (cmd == null)
+            {
+                log.Error("No Command associated with the SAM chip.");
+                throw new KeyStoreException("No Command associated with the SAM chip.");
+            }
+
+            if (cmd is not LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
+            {
+                log.Error("Unexpected Command associated with the SAM chip.");
+                throw new KeyStoreException("Unexpected Command associated with the SAM chip.");
+            }
+
+            if (!_unlocked)
+            {
+                UnlockSAM(av2cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetValueAsString(Properties?.Secret, KeyValueStringFormat.HexStringWithSpace));
+                _unlocked = true;
+            }
+
+            return Task.FromResult<byte[]?>(av2cmd.getRandom(size).ToArray());
+        }
+
         public override async Task<KeyEntry?> Get(KeyEntryId identifier, KeyEntryClass keClass)
         {
             log.Info(string.Format("Getting key entry `{0}`...", identifier));

@@ -1238,7 +1238,18 @@ namespace Leosac.KeyManager.Library.UI.Properties {
                 return ResourceManager.GetString("Random", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Random Number Generator.
+        /// </summary>
+        public static string RandomGenerator
+        {
+            get
+            {
+                return ResourceManager.GetString("RandomGenerator", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Random Length.
         /// </summary>

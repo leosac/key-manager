@@ -1,4 +1,5 @@
-﻿using Leosac.WpfApp;
+﻿using Leosac.KeyManager.Library.KeyStore;
+using Leosac.WpfApp;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,6 +16,7 @@ namespace Leosac.KeyManager.Library.UI
         {
             MnemonicLanguages = new ObservableCollection<KeyGen.Mnemonic.WordlistLang>(Enum.GetValues<KeyGen.Mnemonic.WordlistLang>());
             MnemonicWords = new ObservableCollection<string>();
+            RandomGenerators = Favorites.GetSingletonInstance()?.KeyStores ?? new ObservableCollection<Favorite>();
 
             InitializeComponent();
         }
@@ -29,6 +31,17 @@ namespace Leosac.KeyManager.Library.UI
 
         public static readonly DependencyProperty SelectedMnemonicLanguageProperty = DependencyProperty.Register(nameof(SelectedMnemonicLanguage), typeof(KeyGen.Mnemonic.WordlistLang), typeof(SymmetricKeyGenerationDialog),
             new FrameworkPropertyMetadata(KeyGen.Mnemonic.WordlistLang.English));
+
+        public ObservableCollection<Favorite> RandomGenerators { get; set; }
+
+        public Favorite? SelectedRandomGenerator
+        {
+            get { return (Favorite?)GetValue(SelectedRandomGeneratorProperty); }
+            set { SetValue(SelectedRandomGeneratorProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedRandomGeneratorProperty = DependencyProperty.Register(nameof(SelectedRandomGenerator), typeof(Favorite), typeof(SymmetricKeyGenerationDialog),
+            new FrameworkPropertyMetadata(null));
 
         public int KeySize
         {
@@ -65,10 +78,37 @@ namespace Leosac.KeyManager.Library.UI
 
         public static readonly DependencyProperty KeyGeneratedProperty = DependencyProperty.Register(nameof(KeyGenerated), typeof(bool), typeof(SymmetricKeyGenerationDialog));
 
-        private void BtnRandom_Click(object sender, RoutedEventArgs e)
+        private async void BtnRandom_Click(object sender, RoutedEventArgs e)
         {
-            KeyValue = Convert.ToHexString(KeyGeneration.Random((uint)(KeySize > 0 ? KeySize : 16)));
-            ShowKeyComputationConfirmation();
+            var keySize = (byte)(KeySize > 0 ? KeySize : 16);
+            byte[]? bytes = null;
+            if (SelectedRandomGenerator != null)
+            {
+                var ks = SelectedRandomGenerator.CreateKeyStore();
+                if (ks != null)
+                {
+                    try
+                    {
+                        await ks.Open();
+                        bytes = await ks.GenerateBytes(keySize);
+                        await ks.Close(true);
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                bytes = KeyGeneration.Random(keySize);
+            }
+
+            if (bytes != null)
+            {
+                KeyValue = Convert.ToHexString(bytes);
+                ShowKeyComputationConfirmation();
+            }
         }
 
         private void BtnPassword_Click(object sender, RoutedEventArgs e)

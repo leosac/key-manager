@@ -588,4 +588,7 @@
   <data name="OrderByLabel" xml:space="preserve">
     <value>Trier par libellé</value>
   </data>
+  <data name="RandomGenerator" xml:space="preserve">
+    <value>Générateur de nombres aléatoires</value>
+  </data>
 </root>
