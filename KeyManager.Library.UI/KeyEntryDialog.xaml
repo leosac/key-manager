@@ -114,6 +114,11 @@
                                     </materialDesign:Card>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
                         </ListBox>
                     </ScrollViewer>
                 </TabItem>
