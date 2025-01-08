@@ -1,3 +1,11 @@
+# v1.20.0 - 08/01/2025
+ - Add random number generator feature to Key Store and allow to use an existing favorite as a random number generator for local key generation
+ - Add support for numeric sort on key entry id
+ - Improve key versions listing UI
+ - Fix "import now" on key link
+ - Fix uncatched exception during key ceremony generation
+ - Fix potential crash during key printing
+
 # v1.19.0 - 26/10/2024
  - Add KCV variants
  - Add KCV selection auto saving
