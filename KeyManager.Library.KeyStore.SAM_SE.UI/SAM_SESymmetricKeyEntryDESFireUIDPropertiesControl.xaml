@@ -1,0 +1,103 @@
+﻿<UserControl x:Class="Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.SAM_SESymmetricKeyEntryDESFireUIDPropertiesControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:domain="clr-namespace:Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Domain"
+             xmlns:local="clr-namespace:Leosac.KeyManager.Library.KeyStore.SAM_SE.UI"
+             xmlns:libuidomain="clr-namespace:Leosac.KeyManager.Library.UI.Domain;assembly=KeyManager.Library.UI"
+             xmlns:libui="clr-namespace:Leosac.KeyManager.Library.UI;assembly=KeyManager.Library.UI"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties"
+             xmlns:wpfappctrls="clr-namespace:Leosac.WpfApp.Controls;assembly=WpfApp"
+             xmlns:wpfappdomain="clr-namespace:Leosac.WpfApp.Domain;assembly=WpfApp"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance domain:SAM_SESymmetricKeyEntryDESFireUIDPropertiesControlViewModel}"
+             d:DesignHeight="800" d:DesignWidth="500">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <libuidomain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+    </UserControl.Resources>
+    <StackPanel>
+        <materialDesign:Card>
+            <StackPanel>
+                <Expander HorizontalAlignment="Stretch" Header="{x:Static properties:Resources.KeyEntryPolicies}">
+                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                        <Grid Focusable="False" IsHitTestVisible="False">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <ComboBox Grid.Row="0" Grid.ColumnSpan="2" Margin="5,5,5,10" IsEnabled="False"
+                                ItemsSource="{Binding SAM_SE_Key_Entry_Types}" DisplayMemberPath="Value"
+                                SelectedValue="{Binding SAM_SEDESFireUIDProperties.KeyEntryType}" SelectedValuePath="Key"
+                                materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryTypeHelper}"
+                                materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryType}"/>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.Politics.Read}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.KeyEntryPoliciesRead}" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.Politics.Write}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.KeyEntryPoliciesWrite}" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.Politics.Import}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.KeyEntryPoliciesImport}" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="4" Grid.Column="0" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.Politics.Wrap}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.KeyEntryPoliciesWrap}" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.Politics.Encrypt}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.KeyEntryPoliciesEncrypt}" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.Politics.Decrypt}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.KeyEntryPoliciesDecrypt}" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.Politics.AuthDESFire}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.KeyEntryPoliciesAuthDESFire}" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.Politics.SessionKeyDESFire}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.KeyEntryPoliciesSessionKeyDESFire}" Padding="3" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </materialDesign:Card>
+        <materialDesign:Card>
+            <StackPanel>
+                <Expander HorizontalAlignment="Stretch" IsExpanded="True" Header="{x:Static properties:Resources.KeyEntryDESFireRid}">
+                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Grid.Column="0" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                Content="{x:Static properties:Resources.KeyEntryDESFireUidActive}"
+                                IsChecked="{Binding SAM_SEDESFireUIDProperties.Enable, Mode=TwoWay}"/>
+                            <wpfappctrls:NumericUpDownControl Grid.Column="1"
+                                MinValue="0" MaxValue="255" 
+                                CurrentValue="{Binding SAM_SEDESFireUIDProperties.KeyNum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Hint="{x:Static properties:Resources.KeyEntryDESFireUidKeyNum}"
+                                IsEnabled="{Binding SAM_SEDESFireUIDProperties.Enable, Mode=TwoWay}"/>
+                        </Grid>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </materialDesign:Card>
+    </StackPanel>
+</UserControl>

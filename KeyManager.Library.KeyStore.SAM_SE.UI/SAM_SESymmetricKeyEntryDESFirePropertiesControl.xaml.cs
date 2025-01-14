@@ -1,8 +1,8 @@
 ﻿/*
-** File Name: SAM_SESymmetricKeyEntryPropertiesControl.cs
+** File Name: SAM_SESymmetricKeyEntryDESFirePropertiesControl.cs
 ** Author: s_eva
-** Creation date: January 2024
-** Description: This file corresponds of the .cs hidden behind SAM_SESymmetricKeyEntryPropertiesControl.xaml.
+** Creation date: March 2024
+** Description: This file corresponds of the .cs hidden behind SAM_SESymmetricKeyEntryDESFirePropertiesControl.xaml.
 ** Licence: LGPLv3
 ** Copyright (c) 2023-Present Synchronic
 */
@@ -15,15 +15,15 @@ using System.Windows.Input;
 namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI
 {
     /// <summary>
-    /// Interaction logic for SAMSymmetricKeyEntryPropertiesControl.xaml
+    /// Interaction logic for SAMSymmetricKeyEntryDESFirePropertiesControl.xaml
     /// </summary>
-    public partial class SAM_SESymmetricKeyEntryPropertiesControl : UserControl
+    public partial class SAM_SESymmetricKeyEntryDESFirePropertiesControl : UserControl
     {
-        public SAM_SESymmetricKeyEntryPropertiesControl()
+        public SAM_SESymmetricKeyEntryDESFirePropertiesControl()
         {
             InitializeComponent();
 
-            DataContext = new SAM_SESymmetricKeyEntryPropertiesControlViewModel();
+            DataContext = new SAM_SESymmetricKeyEntryDESFirePropertiesControlViewModel();
         }
 
         [GeneratedRegex("[a-fA-F0-9]")]

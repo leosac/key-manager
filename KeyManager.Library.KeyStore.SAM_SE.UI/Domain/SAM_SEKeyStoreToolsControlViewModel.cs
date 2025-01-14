@@ -48,7 +48,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Domain
         }
 
         public uint LockedMin { get; set; } = 0;
-        public uint LockedMax { get; set; } = (uint)SAM_SEDllCard.SAM_SELockLevel.LOCK_LVL_NB_MAX - 1;
+        public uint LockedMax { get; set; } = (uint)SAM_SELockLevel.LOCK_LVL_NB_MAX - 1;
 
         private string configuration1 = Resources.DESFireModeUid;
         public string Configuration1
@@ -176,7 +176,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Domain
             try
             {
                 var ks = (KeyStore as SAM_SEKeyStore);
-                ks?.GetSAM_SEDll()!.GetCurrentSAM_SE()!.SetDefaultConfigurationFile();
+                ks?.GetSAM_SEDll()!.GetCurrentProgrammingStation()!.SAM_SE.SetDefaultConfigurationFile();
                 await ks!.GetAll();
                 SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, Resources.ToolsConfFileDefaultOk);
                 DefaultExpanderExpanded = false;
@@ -198,14 +198,14 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Domain
             var ks = (KeyStore as SAM_SEKeyStore);
             try
             {
-                ks?.GetSAM_SEDll()!.GetCurrentSAM_SE()!.SetLockLevel(ks!.GetFileProperties().LockedLevel);
+                ks?.GetSAM_SEDll()!.GetCurrentProgrammingStation()!.SAM_SE.SetLockLevel(ks!.GetFileProperties().LockedLevel);
                 SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, Resources.ToolsLockLevelOk);
             }
             catch (Exception ex)
             {
                 log.Error("Changing lock level failed.", ex);
                 SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
-                ks!.GetFileProperties().LockedLevel = ks!.GetSAM_SEDll()!.GetCurrentSAM_SE()!.GetLockLevel();
+                ks!.GetFileProperties().LockedLevel = ks!.GetSAM_SEDll()!.GetCurrentProgrammingStation()!.SAM_SE.GetLockLevel();
                 DefaultExpanderExpanded = true;
             }
             finally

@@ -1,8 +1,8 @@
 ﻿/*
-** File Name: SAM_SESymmetricKeyEntryPropertiesControlViewModel.cs
+** File Name: SAM_SESymmetricKeyEntryAuthenticationPropertiesControlViewModel.cs
 ** Author: s_eva
-** Creation date: January 2024
-** Description: This file is the MVVM component of the KeyEntry Properties.
+** Creation date: March 2024
+** Description: This file is the MVVM component of the Authentication KeyEntry Properties.
 ** Licence: LGPLv3
 ** Copyright (c) 2023-Present Synchronic
 */
@@ -12,16 +12,16 @@ using Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties;
 
 namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Domain
 {
-    public class SAM_SESymmetricKeyEntryPropertiesControlViewModel : KeyEntryPropertiesControlViewModel
+    public class SAM_SESymmetricKeyEntryAuthenticationPropertiesControlViewModel : KeyEntryPropertiesControlViewModel
     {
-        public SAM_SESymmetricKeyEntryPropertiesControlViewModel()
+        public SAM_SESymmetricKeyEntryAuthenticationPropertiesControlViewModel()
         {
-            Properties = new SAM_SESymmetricKeyEntryProperties();
+            Properties = new SAM_SESymmetricKeyEntryAuthenticationProperties();
         }
 
-        public SAM_SESymmetricKeyEntryProperties? SAM_SEProperties
+        public SAM_SESymmetricKeyEntryAuthenticationProperties? SAM_SEAuthenticationProperties
         {
-            get { return Properties as SAM_SESymmetricKeyEntryProperties; }
+            get { return Properties as SAM_SESymmetricKeyEntryAuthenticationProperties; }
         }
 
         public Dictionary<SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType, string> SAM_SE_Key_Entry_Types { get; } =

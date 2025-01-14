@@ -11,11 +11,11 @@ using System.Runtime.InteropServices;
 
 namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
 {
-    public class SAM_SEDllDESFire(UIntPtr ctx, string stringId, uint id, SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType type, SAM_SEDllErrorHandler errorHandler) : SAM_SEDllObject(ctx, stringId, id, type, errorHandler)
+    public class SAM_SEDllDESFire(UIntPtr ctx, string stringId, uint id, SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType type) : SAM_SEDllObject(ctx, stringId, id, type)
     {
-        public SAM_SESymmetricKeyEntryPropertiesDESFire.SAM_SEDESFireMode GetReadingMode()
+        public SAM_SESymmetricKeyEntryDESFireProperties.SAM_SEDESFireMode GetReadingMode()
         {
-            return (SAM_SESymmetricKeyEntryPropertiesDESFire.SAM_SEDESFireMode)GetMetadataByte(SAM_SEMetadataIndex.META_BYTE_DES_MODE);
+            return (SAM_SESymmetricKeyEntryDESFireProperties.SAM_SEDESFireMode)GetMetadataByte(SAM_SEMetadataIndex.META_BYTE_DES_MODE);
         }
 
         public bool GetMsb()
@@ -48,14 +48,14 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
             return GetMetadataByte(SAM_SEMetadataIndex.META_BYTE_DES_IDSIZE);
         }
 
-        public SAM_SESymmetricKeyEntryPropertiesDESFire.SAM_SEDESFireEncryptMode GetEncryption()
+        public SAM_SESymmetricKeyEntryDESFireProperties.SAM_SEDESFireEncryptMode GetEncryption()
         {
-            return (SAM_SESymmetricKeyEntryPropertiesDESFire.SAM_SEDESFireEncryptMode)GetMetadataByte(SAM_SEMetadataIndex.META_BYTE_DES_ENC);
+            return (SAM_SESymmetricKeyEntryDESFireProperties.SAM_SEDESFireEncryptMode)GetMetadataByte(SAM_SEMetadataIndex.META_BYTE_DES_ENC);
         }
 
-        public SAM_SESymmetricKeyEntryPropertiesDESFire.SAM_SEDESFireCommunicationMode GetCommunication()
+        public SAM_SESymmetricKeyEntryDESFireProperties.SAM_SEDESFireCommunicationMode GetCommunication()
         {
-            return (SAM_SESymmetricKeyEntryPropertiesDESFire.SAM_SEDESFireCommunicationMode)GetMetadataByte(SAM_SEMetadataIndex.META_BYTE_DES_COMM);
+            return (SAM_SESymmetricKeyEntryDESFireProperties.SAM_SEDESFireCommunicationMode)GetMetadataByte(SAM_SEMetadataIndex.META_BYTE_DES_COMM);
         }
 
         public bool GetEv0()
@@ -93,6 +93,11 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
             return GetMetadataBool(SAM_SEMetadataIndex.META_BOOL_DES_JCOP);
         }
 
+        public bool GetJcopEv3()
+        {
+            return GetMetadataBool(SAM_SEMetadataIndex.META_BOOL_DES_JCOP_EV3);
+        }
+
         public bool GetDivEnable()
         {
             return GetMetadataBool(SAM_SEMetadataIndex.META_BOOL_DIV_ACTIVE);
@@ -113,7 +118,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
             return GetMetadataBool(SAM_SEMetadataIndex.META_BOOL_DIV_INCKEYSI);
         }
 
-        public void SetReadingMode(SAM_SESymmetricKeyEntryPropertiesDESFire.SAM_SEDESFireMode value)
+        public void SetReadingMode(SAM_SESymmetricKeyEntryDESFireProperties.SAM_SEDESFireMode value)
         {
             SetMetadataByte(SAM_SEMetadataIndex.META_BYTE_DES_MODE, (byte)value);
         }
@@ -148,12 +153,12 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
             SetMetadataByte(SAM_SEMetadataIndex.META_BYTE_DES_IDSIZE, value);
         }
 
-        public void SetEncryption(SAM_SESymmetricKeyEntryPropertiesDESFire.SAM_SEDESFireEncryptMode value)
+        public void SetEncryption(SAM_SESymmetricKeyEntryDESFireProperties.SAM_SEDESFireEncryptMode value)
         {
             SetMetadataByte(SAM_SEMetadataIndex.META_BYTE_DES_ENC, (byte)value);
         }
 
-        public void SetCommunication(SAM_SESymmetricKeyEntryPropertiesDESFire.SAM_SEDESFireCommunicationMode value)
+        public void SetCommunication(SAM_SESymmetricKeyEntryDESFireProperties.SAM_SEDESFireCommunicationMode value)
         {
             SetMetadataByte(SAM_SEMetadataIndex.META_BYTE_DES_COMM, (byte)value);
         }
@@ -193,9 +198,9 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
             SetMetadataBool(SAM_SEMetadataIndex.META_BOOL_DES_JCOP, value);
         }
 
-        public void SetDivAidInv(bool value)
+        public void SetJcopEv3(bool value)
         {
-            SetMetadataBool(SAM_SEMetadataIndex.META_BOOL_DIV_INVAID, value);
+            SetMetadataBool(SAM_SEMetadataIndex.META_BOOL_DES_JCOP_EV3, value);
         }
 
         public void SetDivEnable(bool value)
@@ -203,11 +208,16 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
             SetMetadataBool(SAM_SEMetadataIndex.META_BOOL_DIV_ACTIVE, value);
         }
 
-        [DllImport(SAM_SEDllProgrammingStation.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
+        public void SetDivAidInv(bool value)
+        {
+            SetMetadataBool(SAM_SEMetadataIndex.META_BOOL_DIV_INVAID, value);
+        }
+
+        [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
         private static extern int spse_setMetaDivSysId(UIntPtr context, uint keyId, byte[] Si, int size, bool incKeySi, byte keySi);
         private void SetMetaDivSysId(byte[] value, bool incKeySi, byte keySi)
         {
-            ErrorHandler.HandlingError(spse_setMetaDivSysId(Context, Id, value, value.Length, incKeySi, keySi));
+            SAM_SEDllConstants.ErrorHandler.HandlingError(spse_setMetaDivSysId(Context, Id, value, value.Length, incKeySi, keySi));
         }
 
         public void SetDivSi(byte[] Si, bool keyInc, byte keyNum)

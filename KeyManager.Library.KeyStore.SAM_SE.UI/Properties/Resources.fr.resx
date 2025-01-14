@@ -165,6 +165,14 @@
     <value>UID</value>
     <comment>Unused, keep</comment>
   </data>
+  <data name="JcopEv1ToolTip" xml:space="preserve">
+    <value>DESFire EV1</value>
+    <comment>Used</comment>
+  </data>
+  <data name="JcopEv3ToolTip" xml:space="preserve">
+    <value>DESFire EV3</value>
+    <comment>Used</comment>
+  </data>
   <data name="KeyEntryDESFireAdvancedSecurity" xml:space="preserve">
     <value>Sécurité avancée</value>
     <comment>Used</comment>
@@ -230,7 +238,11 @@
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireJcop" xml:space="preserve">
-    <value>JCOP</value>
+    <value>JCOP 3</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyEntryDESFireJcopEv3" xml:space="preserve">
+    <value>JCOP 4.5</value>
     <comment>Used</comment>
   </data>
   <data name="KeyEntryDESFireKeyNumber" xml:space="preserve">
@@ -345,6 +357,22 @@
     <value>Type de clé SAM-SE</value>
     <comment>Used</comment>
   </data>
+  <data name="KeyStoreAutoLock" xml:space="preserve">
+    <value>Mise à jour du niveau de verrouillage</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyStoreAutoUpdate" xml:space="preserve">
+    <value>Mise à jour du fichier de configuration SAM-SE s'il n'est pas à jour</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyStoreCheckStation" xml:space="preserve">
+    <value>Vérifier que la led de la station de programmation sélectionnée clignote</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyStoreConnexionOptions" xml:space="preserve">
+    <value>Options de connexion</value>
+    <comment>Used</comment>
+  </data>
   <data name="KeyStoreDefaultKey" xml:space="preserve">
     <value>SAM-SE en clé par défaut</value>
     <comment>Used</comment>
@@ -358,7 +386,7 @@
     <comment>Used</comment>
   </data>
   <data name="KeyStoreReadersHelper" xml:space="preserve">
-    <value>SAM-SE		MAC		Version</value>
+    <value>Station de programmation : Type - Mac - Version</value>
     <comment>Used</comment>
   </data>
   <data name="KeyStoreReadersProvider" xml:space="preserve">
@@ -446,7 +474,7 @@
     <comment>Used</comment>
   </data>
   <data name="ToolsWarningDefaultFile" xml:space="preserve">
-    <value>Attention : Mettre à jour le fichier de configuration avec les valeurs par défaut vas effacer les métadonnées de chaque objet</value>
+    <value>Attention : Mettre à jour le fichier de configuration avec les valeurs par défaut va effacer les métadonnées de chaque objet</value>
     <comment>Used</comment>
   </data>
   <data name="Update" xml:space="preserve">

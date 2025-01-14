@@ -61,6 +61,15 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Absent.
+        /// </summary>
+        public static string Absent {
+            get {
+                return ResourceManager.GetString("Absent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à The AID can&apos;t store this value.
         /// </summary>
         public static string AidNotValid {
@@ -259,11 +268,20 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à No programming station is selected.
+        ///   Recherche une chaîne localisée semblable à The version of the SPSEDLL.dll is not matching the expected version.
         /// </summary>
-        public static string ProgrammingStationMissing {
+        public static string SAM_SEDllVersionError {
             get {
-                return ResourceManager.GetString("ProgrammingStationMissing", resourceCulture);
+                return ResourceManager.GetString("SAM_SEDllVersionError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The version of the SPSEDLL.dll doesn&apos;t contain digit.
+        /// </summary>
+        public static string SAM_SEDllVersionErrorNotDigit {
+            get {
+                return ResourceManager.GetString("SAM_SEDllVersionErrorNotDigit", resourceCulture);
             }
         }
         
@@ -286,16 +304,25 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à No SAM-SE is connected.
+        ///   Recherche une chaîne localisée semblable à The file&apos;s structure doesn&apos;t allow this action.
         /// </summary>
-        public static string SAM_SEErrorNoSAM_SE {
+        public static string SAM_SEErrorIllogicalAction {
             get {
-                return ResourceManager.GetString("SAM_SEErrorNoSAM_SE", resourceCulture);
+                return ResourceManager.GetString("SAM_SEErrorIllogicalAction", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Version of configuration file is not up to date.
+        ///   Recherche une chaîne localisée semblable à Programming station is not connected.
+        /// </summary>
+        public static string SAM_SEErrorNoSPSE {
+            get {
+                return ResourceManager.GetString("SAM_SEErrorNoSPSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Version of configuration file is not up to date. Changes may not be taken into account.
         /// </summary>
         public static string SAM_SEErrorOldVersion {
             get {
@@ -363,6 +390,15 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties {
         public static string SAM_SEErrorWrongSize {
             get {
                 return ResourceManager.GetString("SAM_SEErrorWrongSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à No SAM-SE is connected to the selected programming station.
+        /// </summary>
+        public static string SAM_SEMissing {
+            get {
+                return ResourceManager.GetString("SAM_SEMissing", resourceCulture);
             }
         }
         

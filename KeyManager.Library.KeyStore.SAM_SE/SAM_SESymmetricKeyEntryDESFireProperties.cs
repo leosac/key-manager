@@ -1,19 +1,21 @@
 ﻿/*
-** File Name: SAM_SESymmetricKeyEntryPropertiesDESFire.cs
+** File Name: SAM_SESymmetricKeyEntryDESFireProperties.cs
 ** Author: s_eva
-** Creation date: January 2024
-** Description: This file regroups all properties of a DESFire SAM-SE Key Entry.
+** Creation date: March 2024
+** Description: This file regroups all properties of a SAM-SE DESFire Key Entry.
 ** Licence: LGPLv3
 ** Copyright (c) 2023-Present Synchronic
 */
 
-using CommunityToolkit.Mvvm.ComponentModel;
-using System.Text;
-
 namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
 {
-    public class SAM_SESymmetricKeyEntryPropertiesDESFire : ObservableValidator
+    public class SAM_SESymmetricKeyEntryDESFireProperties : SAM_SESymmetricKeyEntryProperties
     {
+        public SAM_SESymmetricKeyEntryDESFireProperties() : base()
+        {
+            KeyEntryType = SAM_SEKeyEntryType.DESFire;
+        }
+
         public enum SAM_SEDESFireMode : byte
         {
             Disable = 0x00,
@@ -33,13 +35,14 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             Encrypted = 0x01,
         }
 
-        public SAM_SESymmetricKeyEntryPropertiesDESFireDiv Div { get; set; } = new();
+        public SAM_SESymmetricKeyEntryDESFireDivProperties Div { get; set; } = new();
 
         private SAM_SEDESFireMode mode = SAM_SEDESFireMode.IDP;
         private SAM_SEDESFireEncryptMode encrypt = SAM_SEDESFireEncryptMode.AES;
         private SAM_SEDESFireCommunicationMode comm = SAM_SEDESFireCommunicationMode.Encrypted;
         private bool ev2 = true;
         private bool ev3 = true;
+        private bool jcopev3 = true;
         private bool authEv2 = true;
         private bool authEv2Enable = true;
         private bool proximityCheckEnable = true;
@@ -53,7 +56,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
         private bool warning = false;
         private bool paramEnable = true;
         private bool paramTechnoEnable = true;
-        private bool previousConfEnable = false;
+        private bool previousConfEnable = true;
 
         public bool Ev2
         {
@@ -70,6 +73,15 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             set
             {
                 if (SetProperty(ref ev3, value))
+                    UpdateAuthEv2Enable();
+            }
+        }
+        public bool JcopEv3
+        {
+            get { return jcopev3; }
+            set
+            {
+                if (SetProperty(ref jcopev3, value))
                     UpdateAuthEv2Enable();
             }
         }
@@ -128,7 +140,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
         public SAM_SEDESFireEncryptMode EncryptType
         {
             get { return encrypt; }
-            set 
+            set
             {
                 if (value == SAM_SEDESFireEncryptMode.DES)
                 {
@@ -175,7 +187,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
                     UpdateDivActive();
                 }
             }
-        }        
+        }
         public bool ParamTechnoEnable
         {
             get { return paramTechnoEnable; }
@@ -231,7 +243,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
 
         private string? aidString = "F54130";
         public string? AidString
-        { 
+        {
             get => aidString;
             set
             {
@@ -267,8 +279,8 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
         }
 
         private bool warningAid = false;
-        public bool WarningAid 
-        { 
+        public bool WarningAid
+        {
             get => warningAid;
             set
             {
@@ -294,7 +306,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
 
         private void UpdateDivActive()
         {
-            if(ParamEnable == false)
+            if (ParamEnable == false)
             {
                 Div.Enable = false;
             }
@@ -312,7 +324,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
         }
         private void UpdateAuthEv2Enable()
         {
-            if ((Ev2 == true || Ev3 == true) && ParamEnable == true)
+            if ((Ev2 == true || Ev3 == true || JcopEv3 == true) && ParamEnable == true)
             {
                 AuthEv2Enable = true;
             }
@@ -340,7 +352,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
         }
         private void UpdateOffset()
         {
-            if(Offset > OffsetMax)
+            if (Offset > OffsetMax)
                 Offset = OffsetMax;
         }
         private void UpdateWarning()
