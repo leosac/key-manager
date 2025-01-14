@@ -14,81 +14,47 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
 {
     public class SAM_SEDllCard
     {
+
         //Pointer to the SAM-SE context to be given to functions working on a SAM-SE
-        private UIntPtr context;
-        //Object used to manage DLL errors
-        private SAM_SEDllErrorHandler errorHandler;
+        public readonly UIntPtr Context;
         //List of objects in the SAM-SE
         private readonly static List<SAM_SEDllObject> keys = [];
-        //String with MAC of SAM-SE
-        public string Mac;
-        //String with type of SAM-SE
-        public string Type;
-        //String with version of SAM-SE
-        public string Version;
 
-        //Enum to list the differents lock level of SAM-SE
-        //This enum comes from the DLL, do not modify without any knowledge of the DLL
-        public enum SAM_SELockLevel
+        public SAM_SEDllCard(UIntPtr ctx)
         {
-            LOCK_LVL_KEYS = 0,      /*<! Minimal lock, only secrets keys are locked (only for Synchronic software not KML) */
-            LOCK_LVL_FILE,          /*<! Intermediate lock, keys and files are locked for Synchronic Hardware */
-            LOCK_LVL_READONLY,      /*<! Advanced lock, keys and files are locked for Synchronic Hardware, configuration file in read only mode for Synchronic software */
-            //Add enum above this comment ; LOCK_LVL_NB_MAX is used as the maximum value not assignable
-            LOCK_LVL_NB_MAX,
+            Context = ctx;
         }
 
-        public SAM_SEDllCard(UIntPtr ctx, string mac, string type, string version, SAM_SEDllErrorHandler errorHandler)
-        {
-            context = ctx;
-            Mac = mac;
-            Type = type;
-            Version = version;
-            this.errorHandler = errorHandler;
-        }
-
-        //Method to set a context to the object, used for favourites
-        public void SetContext(UIntPtr ctx)
-        { 
-            context = ctx;
-        }
-
-        //Method to set an error context to the object, used for favourites
-        public void SetErrorHandler(SAM_SEDllErrorHandler errorHandler)
-        {
-            this.errorHandler = errorHandler;
-        }
-
-        [DllImport(SAM_SEDllProgrammingStation.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
         private static extern int spse_blinkLed(UIntPtr currentSAM_SE, uint state);
         public int BlinkLed(uint state)
         {
-            int ret = spse_blinkLed(context, state);
-            ret = errorHandler.HandlingError(ret);
+            int ret = spse_blinkLed(Context, state);
+            ret = SAM_SEDllConstants.ErrorHandler.HandlingError(ret);
             return ret;
         }
 
-        [DllImport(SAM_SEDllProgrammingStation.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
         private static extern int spse_connectToSamSe(UIntPtr currentSAM_SE, string? password, uint pswdLen);
         public int ConnectToSAM_SE(string? password, uint pswdLen)
         {
-            int ret = spse_connectToSamSe(context, password, pswdLen);
-            ret = errorHandler.HandlingError(ret);
+            int ret = spse_connectToSamSe(Context, password, pswdLen);
+            ret = SAM_SEDllConstants.ErrorHandler.HandlingError(ret);
             BlinkLed(1);
             return ret;
         }
 
-        [DllImport(SAM_SEDllProgrammingStation.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
         private static extern int spse_uploadMetadatas(UIntPtr currentSAM_SE);
         public int UploadMetadata()
         {
-            int ret = spse_uploadMetadatas(context);
-            ret = errorHandler.HandlingError(ret);
+            int ret = spse_uploadMetadatas(Context);
+            ret = SAM_SEDllConstants.ErrorHandler.HandlingError(ret);
             BlinkLed(1);
             return ret;
         }
 
-        [DllImport(SAM_SEDllProgrammingStation.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
         private static extern void spse_getKeysList(ref IntPtr listKeys, ref uint nbKeys);
         public void GetKeysList(IList<KeyEntryId> keyId)
         {
@@ -121,53 +87,46 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
             BlinkLed(1);
         }
 
-        [DllImport(SAM_SEDllProgrammingStation.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
-        private static extern void spse_freeSpse(UIntPtr currentSAM_SE);
-        public void Deinit()
-        {
-            spse_freeSpse(context);
-        }
-
-        [DllImport(SAM_SEDllProgrammingStation.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
         private static extern uint spse_getLockLvl(UIntPtr currentSAM_SE);
         public SAM_SELockLevel GetLockLevel()
         {
-            SAM_SELockLevel ret = (SAM_SELockLevel)spse_getLockLvl(context);
+            SAM_SELockLevel ret = (SAM_SELockLevel)spse_getLockLvl(Context);
             BlinkLed(1);
             return ret;
         }
 
-        [DllImport(SAM_SEDllProgrammingStation.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
         private static extern int spse_setLockLvl(UIntPtr currentSAM_SE, uint lvl);
         public int SetLockLevel(SAM_SELockLevel lvl)
         {
-            int ret = spse_setLockLvl(context, (uint)lvl);
-            ret = errorHandler.HandlingError(ret);
+            int ret = spse_setLockLvl(Context, (uint)lvl);
+            ret = SAM_SEDllConstants.ErrorHandler.HandlingError(ret);
             BlinkLed(1);
             return ret;
         }
 
-        [DllImport(SAM_SEDllProgrammingStation.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
         private static extern int spse_writeDefFile(UIntPtr currentSAM_SE);
         public int SetDefaultConfigurationFile()
         {
-            int ret = spse_writeDefFile(context);
-            ret = errorHandler.HandlingError(ret);
+            int ret = spse_writeDefFile(Context);
+            ret = SAM_SEDllConstants.ErrorHandler.HandlingError(ret);
             BlinkLed(1);
             return ret;
         }
 
-        [DllImport(SAM_SEDllProgrammingStation.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
         private static extern int spse_downloadMetadatas(UIntPtr currentSAM_SE);
         public int DownloadMetadatas()
         {
-            int ret = spse_downloadMetadatas(context);
-            ret = errorHandler.HandlingError(ret);
+            int ret = spse_downloadMetadatas(Context);
+            ret = SAM_SEDllConstants.ErrorHandler.HandlingError(ret);
             BlinkLed(1);
             return ret;
         }
 
-        [DllImport(SAM_SEDllProgrammingStation.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
         private static extern byte spse_getKeyType(uint keyID);
         private SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType GetKeyType(uint id)
         {
@@ -209,17 +168,17 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
             switch (type)
             {
                 case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.Authenticate:
-                    temp = new SAM_SEDllAuthenticate(context, stringId, id, type, errorHandler);
+                    temp = new SAM_SEDllAuthenticate(Context, stringId, id, type);
                     break;
                 case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.DESFire:
-                    temp = new SAM_SEDllDESFire(context, stringId, id, type, errorHandler);
+                    temp = new SAM_SEDllDESFire(Context, stringId, id, type);
                     break;
                 case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.DESFireUID:
-                    temp = new SAM_SEDllDESFireUid(context, stringId, id, type, errorHandler);
+                    temp = new SAM_SEDllDESFireUid(Context, stringId, id, type);
                     break;
                 default:
                 case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.Default:
-                    temp = new(context, stringId, id, SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.Default, errorHandler);
+                    temp = new(Context, stringId, id, SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.Default);
                     break;
             }
             keys.Add(temp);

@@ -20,12 +20,12 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
         }
 
         //Dictionnary to link a lock level value to a string in FR/EN
-        public static Dictionary<SAM_SEDllCard.SAM_SELockLevel, string> SAM_SELockLvl { get; } =
-            new Dictionary<SAM_SEDllCard.SAM_SELockLevel, string>()
+        public static Dictionary<SAM_SELockLevel, string> SAM_SELockLvl { get; } =
+            new Dictionary<SAM_SELockLevel, string>()
             {
-                {SAM_SEDllCard.SAM_SELockLevel.LOCK_LVL_KEYS, Resources.LockKey},
-                {SAM_SEDllCard.SAM_SELockLevel.LOCK_LVL_FILE, Resources.LockDefault},
-                {SAM_SEDllCard.SAM_SELockLevel.LOCK_LVL_READONLY, Resources.LockReadOnly},
+                {SAM_SELockLevel.LOCK_LVL_KEYS, Resources.LockKey},
+                {SAM_SELockLevel.LOCK_LVL_FILE, Resources.LockDefault},
+                {SAM_SELockLevel.LOCK_LVL_READONLY, Resources.LockReadOnly},
             };
 
         private string lockedLevelString = Resources.LockDefault;
@@ -35,10 +35,10 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             set { SetProperty(ref lockedLevelString, value); }
         }
 
-        public string SAM_SEMac { get; set; } = string.Empty;
+        public string ProgrammingStationPath {  get; set; } = string.Empty;
 
-        private SAM_SEDllCard.SAM_SELockLevel lockedLevel = SAM_SEDllCard.SAM_SELockLevel.LOCK_LVL_FILE;
-        public SAM_SEDllCard.SAM_SELockLevel LockedLevel
+        private SAM_SELockLevel lockedLevel = SAM_SELockLevel.LOCK_LVL_FILE;
+        public SAM_SELockLevel LockedLevel
         { 
             get => lockedLevel;
             set
@@ -51,14 +51,14 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             }
         }
 
-        private uint locked = (uint)SAM_SEDllCard.SAM_SELockLevel.LOCK_LVL_FILE;
+        private uint locked = (uint)SAM_SELockLevel.LOCK_LVL_FILE;
         public uint Locked
         {
             get => locked;
             set
             {
                 if (SetProperty(ref locked, value))
-                    LockedLevel = (SAM_SEDllCard.SAM_SELockLevel)value;
+                    LockedLevel = (SAM_SELockLevel)value;
             }
         }
 
@@ -66,7 +66,27 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
         public bool DefaultKey
         {
             get => defaultKey;
-            set => SetProperty(ref defaultKey, value);
+            set
+            {
+                if (SetProperty(ref defaultKey, value))
+                {
+                    Secret = string.Empty;
+                }
+            }
+        }
+
+        private bool autoUpdate = false;
+        public bool AutoUpdate
+        {
+            get => autoUpdate;
+            set => SetProperty(ref autoUpdate, value);
+        }
+
+        private bool autoLock = false;
+        public bool AutoLock
+        {
+            get => autoLock;
+            set => SetProperty(ref autoLock, value);
         }
 
         public override bool Equals(object? obj)
@@ -85,10 +105,10 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             if (this.GetType() != p.GetType())
                 return false;
 
-            return (SAM_SEMac == p.SAM_SEMac);
+            return (ProgrammingStationPath == p.ProgrammingStationPath);
         }
 
-        public override int GetHashCode() => (SAM_SEMac).GetHashCode();
+        public override int GetHashCode() => (ProgrammingStationPath).GetHashCode();
 
         public static bool operator ==(SAM_SEKeyStoreProperties? lhs, SAM_SEKeyStoreProperties? rhs)
         {

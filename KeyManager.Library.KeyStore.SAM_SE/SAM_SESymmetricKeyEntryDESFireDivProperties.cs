@@ -11,7 +11,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
 {
-    public class SAM_SESymmetricKeyEntryPropertiesDESFireDiv : ObservableValidator
+    public class SAM_SESymmetricKeyEntryDESFireDivProperties : ObservableValidator
     {
         public bool UidLinkEnable { get; set; } = false;
         public uint UidLinkKeyNum { get; set; } = 0;
@@ -62,7 +62,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             }
         }
 
-        private byte[] si = [];
+        private byte[] si = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
         public byte[] Si
         {
             get => si;
@@ -72,7 +72,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             }
         }
 
-        private string siString = string.Empty;
+        private string siString = "0000000000000000000000000000000000000000";
         public string SiString
         {
             get => siString;
@@ -127,6 +127,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             if (!KeyInc)
             {
                 SiLenMax = 42;
+                SiString += "00";
             }
             else
             {
@@ -134,9 +135,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             }
             if (Si.Length*2 > SiLenMax)
             {
-                byte[] temp = Enumerable.Repeat((byte)0x00, SiLenMax/2).ToArray();
-                Array.Copy(Si, temp, temp.Length);
-                Si = temp;
+                SiString = SiString.Substring(0, SiLenMax);
             }
         }
     }

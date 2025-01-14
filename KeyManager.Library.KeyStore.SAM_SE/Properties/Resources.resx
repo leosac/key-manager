@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Absent" xml:space="preserve">
+    <value>Absent</value>
+  </data>
   <data name="AidNotValid" xml:space="preserve">
     <value>The AID can't store this value</value>
   </data>
@@ -183,8 +186,11 @@
   <data name="PasswordErrorLetter" xml:space="preserve">
     <value>Password do not contains a letter</value>
   </data>
-  <data name="ProgrammingStationMissing" xml:space="preserve">
-    <value>No programming station is selected</value>
+  <data name="SAM_SEDllVersionError" xml:space="preserve">
+    <value>The version of the SPSEDLL.dll is not matching the expected version</value>
+  </data>
+  <data name="SAM_SEDllVersionErrorNotDigit" xml:space="preserve">
+    <value>The version of the SPSEDLL.dll doesn't contain digit</value>
   </data>
   <data name="SAM_SEErrorBadConditions" xml:space="preserve">
     <value>Communication with SAM-SE is disturbed</value>
@@ -192,11 +198,14 @@
   <data name="SAM_SEErrorDone" xml:space="preserve">
     <value>SAM-SE action done</value>
   </data>
-  <data name="SAM_SEErrorNoSAM_SE" xml:space="preserve">
-    <value>No SAM-SE is connected</value>
+  <data name="SAM_SEErrorIllogicalAction" xml:space="preserve">
+    <value>The file's structure doesn't allow this action</value>
+  </data>
+  <data name="SAM_SEErrorNoSPSE" xml:space="preserve">
+    <value>Programming station is not connected</value>
   </data>
   <data name="SAM_SEErrorOldVersion" xml:space="preserve">
-    <value>Version of configuration file is not up to date</value>
+    <value>Version of configuration file is not up to date. Changes may not be taken into account</value>
   </data>
   <data name="SAM_SEErrorOnError" xml:space="preserve">
     <value>SAM-SE generic error, a 'get_last_error' should have been called</value>
@@ -218,6 +227,9 @@
   </data>
   <data name="SAM_SEErrorWrongSize" xml:space="preserve">
     <value>SAM-SE function size argument is wrong</value>
+  </data>
+  <data name="SAM_SEMissing" xml:space="preserve">
+    <value>No SAM-SE is connected to the selected programming station</value>
   </data>
   <data name="SAM_SEUnknownError" xml:space="preserve">
     <value>SAM-SE error is unknown : </value>

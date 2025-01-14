@@ -1,39 +1,30 @@
 ﻿/*
-** File Name: SAM_SESymmetricKeyEntry.cs
+** File Name: SAM_SESymmetricKeyEntryAuthentication.cs
 ** Author: s_eva
 ** Creation date: March 2024
-** Description: This file generate a generic Key Entry, an objet inherited from Key Manager.
+** Description: This file generate a Key Entry for Authentication, an objet inherited from Key Manager.
 ** Licence: LGPLv3
 ** Copyright (c) 2023-Present Synchronic
 */
 
 using Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties;
 using Newtonsoft.Json;
-using static Leosac.KeyManager.Library.KeyStore.SAM_SE.SAM_SESymmetricKeyEntryProperties;
 
 namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
 {
-    public class SAM_SESymmetricKeyEntry : KeyEntry
+    public class SAM_SESymmetricKeyEntryAuthentication : SAM_SESymmetricKeyEntry
     {
-        public SAM_SESymmetricKeyEntry() : base()
+        public SAM_SESymmetricKeyEntryAuthentication() : base()
         {
-            Identifier.Id = "XXXX";
-            Properties = new SAM_SESymmetricKeyEntryProperties();
-            Variant = new KeyEntryVariant() { Name = "AES128" };
-        }
-
-        public SAM_SESymmetricKeyEntry(SAM_SEKeyEntryType type) : base()
-        {
-            Identifier.Id = "XXXX";
-            Properties = new SAM_SESymmetricKeyEntryProperties();
-            SAM_SEProperties!.KeyEntryType = type;
+            Identifier.Id = "SCP3";
+            Properties = new SAM_SESymmetricKeyEntryAuthenticationProperties();
             Variant = new KeyEntryVariant() { Name = "AES128" };
         }
 
         [JsonIgnore]
-        public SAM_SESymmetricKeyEntryProperties? SAM_SEProperties
+        public SAM_SESymmetricKeyEntryAuthenticationProperties? SAM_SEAuthenticationProperties
         {
-            get { return Properties as SAM_SESymmetricKeyEntryProperties; }
+            get { return Properties as SAM_SESymmetricKeyEntryAuthenticationProperties; }
         }
 
         public override KeyEntryClass KClass => KeyEntryClass.Symmetric;

@@ -169,6 +169,24 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à DESFire EV1.
+        /// </summary>
+        public static string JcopEv1ToolTip {
+            get {
+                return ResourceManager.GetString("JcopEv1ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à DESFire EV3.
+        /// </summary>
+        public static string JcopEv3ToolTip {
+            get {
+                return ResourceManager.GetString("JcopEv3ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Advanced security.
         /// </summary>
         public static string KeyEntryDESFireAdvancedSecurity {
@@ -313,11 +331,20 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à JCOP.
+        ///   Recherche une chaîne localisée semblable à JCOP 3.
         /// </summary>
         public static string KeyEntryDESFireJcop {
             get {
                 return ResourceManager.GetString("KeyEntryDESFireJcop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à JCOP 4.5.
+        /// </summary>
+        public static string KeyEntryDESFireJcopEv3 {
+            get {
+                return ResourceManager.GetString("KeyEntryDESFireJcopEv3", resourceCulture);
             }
         }
         
@@ -574,6 +601,42 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Updating the SAM-SE lock level.
+        /// </summary>
+        public static string KeyStoreAutoLock {
+            get {
+                return ResourceManager.GetString("KeyStoreAutoLock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Updating the SAM-SE configuration file if it is not up to date.
+        /// </summary>
+        public static string KeyStoreAutoUpdate {
+            get {
+                return ResourceManager.GetString("KeyStoreAutoUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Check that the LED of the selected programming station flashes.
+        /// </summary>
+        public static string KeyStoreCheckStation {
+            get {
+                return ResourceManager.GetString("KeyStoreCheckStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Connection options.
+        /// </summary>
+        public static string KeyStoreConnexionOptions {
+            get {
+                return ResourceManager.GetString("KeyStoreConnexionOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à SAM-SE default key.
         /// </summary>
         public static string KeyStoreDefaultKey {
@@ -601,7 +664,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à SAM-SE		MAC		Version.
+        ///   Recherche une chaîne localisée semblable à Programming Station : Type - Mac - Version.
         /// </summary>
         public static string KeyStoreReadersHelper {
             get {

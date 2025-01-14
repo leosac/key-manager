@@ -11,7 +11,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
 {
-    public class SAM_SESymmetricKeyEntryPropertiesPolicies : ObservableValidator
+    public class SAM_SESymmetricKeyEntryPoliciesProperties : ObservableValidator
     {
         private bool read = false;
         public bool Read

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Absent" xml:space="preserve">
+    <value>Absent</value>
+  </data>
   <data name="AidNotValid" xml:space="preserve">
     <value>L'AID ne peut pas contenir cette valeur</value>
   </data>
@@ -166,13 +169,13 @@
     <value>Objet inconnu</value>
   </data>
   <data name="LockDefault" xml:space="preserve">
-    <value>Verouillage par défaut : clés et fichiers verrouillés dans les UTPs</value>
+    <value>Verrouillage par défaut : clés et fichiers verrouillés dans les UTPs</value>
   </data>
   <data name="LockKey" xml:space="preserve">
-    <value>Verouillage minimal : seules les clés secrètes sont verrouillées</value>
+    <value>Verrouillage minimal : seules les clés secrètes sont verrouillées</value>
   </data>
   <data name="LockReadOnly" xml:space="preserve">
-    <value>Verouillage avancé : clés et fichiers verrouillés dans les UTPs et lecture seule via les logiciels Synchronic</value>
+    <value>Verrouillage avancé : clés et fichiers verrouillés dans les UTPs et lecture seule via les logiciels Synchronic</value>
   </data>
   <data name="PasswordErrorDigit" xml:space="preserve">
     <value>Le mot de passe ne contient pas de chiffre</value>
@@ -183,8 +186,11 @@
   <data name="PasswordErrorLetter" xml:space="preserve">
     <value>Le mot de passe ne contient pas de lettre</value>
   </data>
-  <data name="ProgrammingStationMissing" xml:space="preserve">
-    <value>Aucune station de programmation sélectionnée</value>
+  <data name="SAM_SEDllVersionError" xml:space="preserve">
+    <value>La version de SPSEDLL.dll ne correspond pas à la version attendue</value>
+  </data>
+  <data name="SAM_SEDllVersionErrorNotDigit" xml:space="preserve">
+    <value>La version de SPSEDLL.dll ne contient pas de chiffre</value>
   </data>
   <data name="SAM_SEErrorBadConditions" xml:space="preserve">
     <value>La communication avec le SAM-SE est perturbée</value>
@@ -192,11 +198,14 @@
   <data name="SAM_SEErrorDone" xml:space="preserve">
     <value>L'action du SAM-SE est effectuée</value>
   </data>
-  <data name="SAM_SEErrorNoSAM_SE" xml:space="preserve">
-    <value>Il n'y a pas de SAM-SE connecté</value>
+  <data name="SAM_SEErrorIllogicalAction" xml:space="preserve">
+    <value>La structure du fichier ne permet pas cette action</value>
+  </data>
+  <data name="SAM_SEErrorNoSPSE" xml:space="preserve">
+    <value>Station de programmation non connectée</value>
   </data>
   <data name="SAM_SEErrorOldVersion" xml:space="preserve">
-    <value>La version du fichier de configuration n'est pas à jour</value>
+    <value>La version du fichier de configuration n'est pas à jour. Les modifications peuvent ne pas être prise en compte</value>
   </data>
   <data name="SAM_SEErrorOnError" xml:space="preserve">
     <value>Erreur générique SAM-SE, 'get_last_error' aurait du être appelé</value>
@@ -218,6 +227,9 @@
   </data>
   <data name="SAM_SEErrorWrongSize" xml:space="preserve">
     <value>L'argument 'size' de la fonction SAM-SE est faux</value>
+  </data>
+  <data name="SAM_SEMissing" xml:space="preserve">
+    <value>Il n'y a pas de SAM-SE connecté à la station de programmation sélectionnée</value>
   </data>
   <data name="SAM_SEUnknownError" xml:space="preserve">
     <value>L'erreur du SAM-SE est inconnue : </value>
