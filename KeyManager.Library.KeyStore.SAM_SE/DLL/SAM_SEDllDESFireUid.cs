@@ -9,9 +9,9 @@
 
 namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
 {
-    public class SAM_SEDllDESFireUid(UIntPtr ctx, string stringId, uint id, SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType type, SAM_SEDllErrorHandler errorHandler) : SAM_SEDllObject(ctx, stringId, id, type, errorHandler)
+    public class SAM_SEDllDESFireUid(UIntPtr ctx, string stringId, uint id, SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType type) : SAM_SEDllObject(ctx, stringId, id, type)
     {
-        public bool GetUidActive()
+        public bool GetUidEnable()
         {
             return GetMetadataBool(SAM_SEMetadataIndex.META_BOOL_UID_ACTIVE);
         }

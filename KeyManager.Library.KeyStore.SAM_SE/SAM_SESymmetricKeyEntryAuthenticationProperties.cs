@@ -1,18 +1,21 @@
 ﻿/*
-** File Name: SAM_SESymmetricKeyEntryPropertiesAuthenticate.cs
+** File Name: SAM_SESymmetricKeyEntryAuthenticationProperties.cs
 ** Author: s_eva
-** Creation date: January 2024
-** Description: This file regroups all properties of an Authenticate SAM-SE Key Entry.
+** Creation date: March 2024
+** Description: This file regroups all properties of a SAM-SE Authentication Key Entry.
 ** Licence: LGPLv3
 ** Copyright (c) 2023-Present Synchronic
 */
 
-using CommunityToolkit.Mvvm.ComponentModel;
-
 namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
 {
-    public class SAM_SESymmetricKeyEntryPropertiesAuthenticate : ObservableValidator
+    public class SAM_SESymmetricKeyEntryAuthenticationProperties : SAM_SESymmetricKeyEntryProperties
     {
+        public SAM_SESymmetricKeyEntryAuthenticationProperties() : base()
+        {
+            KeyEntryType = SAM_SEKeyEntryType.Authenticate;
+        }
+
         private string password = string.Empty;
         private string passwordConfirmation = string.Empty;
         private bool passwordValid = false;
@@ -47,7 +50,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
                 SetProperty(ref passwordValid, value);
                 PasswordNotValid = !passwordValid;
             }
-        }        
+        }
         public bool PasswordNotValid
         {
             get => passwordNotValid;
@@ -73,7 +76,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             {
                 SetProperty(ref passwordNotMatch, value);
             }
-        }        
+        }
         public bool ToolTipEnable
         {
             get => toolTipEnable;

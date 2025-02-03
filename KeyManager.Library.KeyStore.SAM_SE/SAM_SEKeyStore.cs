@@ -9,6 +9,7 @@
 
 using Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL;
 using Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties;
+using static Leosac.KeyManager.Library.KeyStore.SAM_SE.SAM_SESymmetricKeyEntryDESFireProperties;
 
 namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
 {
@@ -16,9 +17,10 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
-        private readonly IList<SAM_SESymmetricKeyEntry> _keyEntries = new List<SAM_SESymmetricKeyEntry>();
+        private readonly IList<KeyEntryId> _keyEntriesId = [];
+        private readonly Dictionary<string,bool> _keyEntriesActive = [];
 
-        public SAM_SEDllProgrammingStation SAM_SEDll = new();
+        public SAM_SEDllEntryPoint SAM_SEDll = new();
 
         public SAM_SEKeyStoreProperties GetFileProperties()
         {
@@ -28,7 +30,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             return p;
         }
 
-        public SAM_SEDllProgrammingStation? GetSAM_SEDll()
+        public SAM_SEDllEntryPoint? GetSAM_SEDll()
         {
             return SAM_SEDll;
         }
@@ -48,20 +50,19 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
 
         public override Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
         {
-            return CheckKeyEntryExists(identifier, keClass, out _);
-        }
-
-        protected Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass, out KeyEntry? keyEntry)
-        {
-            keyEntry = _keyEntries.Where(k => k.Identifier == identifier && k.KClass == keClass).SingleOrDefault();
-            return Task.FromResult(keyEntry != null);
+            if(identifier.Id != null && _keyEntriesId.Where(k => k.Id == identifier.Id).ToList().Count == 1)
+            {
+                if (keClass == KeyEntryClass.Symmetric)
+                {
+                    return Task.FromResult(true);
+                }
+            }
+            return Task.FromResult(false);
         }
 
         public override Task Close(bool secretCleanup = true)
         {
-            int index = SAM_SEDll.FindSAM_SEByMac(GetFileProperties().SAM_SEMac);
-            if (index != -1)
-                SAM_SEDll.DeselectSAM_SE((uint)index);
+            SAM_SEDll.DeselectProgrammingStation(GetFileProperties().ProgrammingStationPath);
             return base.Close(secretCleanup);
         }
 
@@ -69,31 +70,50 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
         {
             log.Info("Opening SAM-SE KeyStore ...");
 
-            SAM_SEDll.DetectSAM_SEBlocking();
-
-            int index = SAM_SEDll.FindSAM_SEByMac(GetFileProperties().SAM_SEMac);
-
-            if (index == -1)
-            {
-                throw new KeyStoreException(Resources.ProgrammingStationMissing);
-            }
-
-            //Opening DLL
-            SAM_SEDll.SelectSAM_SE((uint)index);
+            SAM_SEDll.SelectProgrammingStation(GetFileProperties().ProgrammingStationPath);
 
             int ret;
 
             //Depending on GUI, we connect with default secret or not
-            if (GetFileProperties().DefaultKey == true && GetFileProperties().Secret!.Length == 0)
+            if (GetFileProperties().DefaultKey == true)
             {
-                ret = SAM_SEDll.GetCurrentSAM_SE()!.ConnectToSAM_SE(null, 0);
+                if (GetFileProperties().Secret!.Length != 0)
+                    log.Warn("A password have been typed but it's not used");
+                ret = SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.ConnectToSAM_SE(null, 0);
             }
             else
             {
-                ret = SAM_SEDll.GetCurrentSAM_SE()!.ConnectToSAM_SE(GetFileProperties().Secret!, Convert.ToUInt16(GetFileProperties().Secret!.Length));
+                ret = SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.ConnectToSAM_SE(GetFileProperties().Secret!, Convert.ToUInt16(GetFileProperties().Secret!.Length));
             }
 
-            if(ret != 0)
+            //Auto update SAM-SE
+            if (GetFileProperties().AutoUpdate)
+            {
+                SAM_SELockLevel lockLvl = SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.GetLockLevel();
+                //We try a command that we know will throw a Warning about file not being up to date
+                try
+                {
+                    SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.SetLockLevel(lockLvl);
+                }
+                catch (KeyStoreException ex)
+                {
+                    //If this is the warning we search about
+                    if (ex.Message == Resources.SAM_SEErrorOldVersion)
+                    {
+                        //Then we call the method to update the configuration file
+                        SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.SetDefaultConfigurationFile();
+                    }
+                }
+            }
+
+            //Auto lock SAM-SE
+            if (GetFileProperties().AutoLock)
+            {
+                SAM_SELockLevel lockLvl = (SAM_SELockLevel)GetFileProperties().Locked;
+                SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.SetLockLevel(lockLvl);
+            }
+
+            if (ret != 0)
                 log.Error(String.Format("Error {0} while connecting", ret));
 
             log.Info("SAM-SE KeyStore opened");
@@ -114,83 +134,89 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
 
         public override async Task<KeyEntry?> Get(KeyEntryId identifier, KeyEntryClass keClass)
         {
-            if (!await CheckKeyEntryExists(identifier, keClass, out KeyEntry? keyEntry))
+            if (!await CheckKeyEntryExists(identifier, keClass))
             {
+                log.Error(string.Format("The key entry `{0}` do not exists.", identifier));
                 throw new KeyStoreException(Resources.KeyStoreKeyEntryMissing);
             }
+
+            //For each key inside the SAM-SE, we create an object
+            SAM_SEDllObject? DllKey = SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.GetKey(identifier.Id!);
+            if (DllKey == null)
+            {
+                log.Error(string.Format("The DLL doesn't know the key entry `{0}`.", identifier));
+                throw new KeyStoreException(Resources.KeyStoreKeyEntryMissing);
+            }
+
+            SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType type = DllKey.GetKeyType();
+
+            SAM_SESymmetricKeyEntry? keyEntry;
+            switch (type)
+            {
+                case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.Authenticate:
+                    keyEntry = new SAM_SESymmetricKeyEntryAuthentication();
+                    break;
+                case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.DESFire:
+                    keyEntry = new SAM_SESymmetricKeyEntryDESFire(identifier.Id!, DllKey.GetUidKeyLinked()!, _keyEntriesActive[identifier.Id!]);
+                    break;
+                case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.DESFireUID:
+                    keyEntry = new SAM_SESymmetricKeyEntryDESFireUID(identifier.Id!);
+                    break;
+                default:
+                case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.Default:
+                    keyEntry = null;
+                    return keyEntry;
+            }
+
+            //Keeping track of Label
+            keyEntry.Identifier.Label = identifier.Label;
+
+            //Getting metadatas of every object
+            GetMetadataKeyEntry(keyEntry);
+            GetPolitics(keyEntry);
+
+            //If the key entry is a DESFire one, it will have a UID link
+            if (keyEntry is SAM_SESymmetricKeyEntryDESFire des)
+            {
+                //We get the linked key
+                KeyEntry? keyEntryUID = GetFromId(des.SAM_SEDESFireProperties!.Div.UidLinkId!, KeyEntryClass.Symmetric);
+                if (keyEntryUID != null && keyEntryUID is SAM_SESymmetricKeyEntryDESFireUID desUid)
+                {
+                    //And we assign the values from DESFire UID to DESFire so we can display them
+                    des.SAM_SEDESFireProperties!.Div.UidLinkKeyNum = desUid.SAM_SEDESFireUIDProperties!.KeyNum;
+                    des.SAM_SEDESFireProperties!.Div.UidLinkEnable = desUid.SAM_SEDESFireUIDProperties!.Enable;
+                }
+            }
             return keyEntry;
+        }
+
+        public KeyEntry? GetFromId(string id, KeyEntryClass keClass)
+        {
+            if (id == null)
+                return null;
+
+            return Get(new KeyEntryId(id),keClass).Result;
         }
 
         public override Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass = null)
         {
             log.Info(String.Format("Getting all key entries (class: `{0}`)...", keClass));
-            IList<KeyEntryId> entries = new List<KeyEntryId>();
+            _keyEntriesId.Clear();
 
             //Extracting informations from the configuration file inside the SAM-SE
-            SAM_SEDll.GetCurrentSAM_SE()!.DownloadMetadatas();
+            SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.DownloadMetadatas();
 
             //Getting the lock level of the SAM-SE
-            GetFileProperties().LockedLevel = SAM_SEDll.GetCurrentSAM_SE()!.GetLockLevel();
+            GetFileProperties().LockedLevel = SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.GetLockLevel();
             log.Info(String.Format("Lock Level : {0}", GetFileProperties().LockedLevel));
 
-            //Getting list Id from DLL, and clean the old one
-            SAM_SEDll.GetCurrentSAM_SE()!.GetKeysList(entries);
-            _keyEntries.Clear();
+            //Getting list Id from DLL
+            SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.GetKeysList(_keyEntriesId);
 
-            if (keClass == null || keClass == KeyEntryClass.Symmetric)
-            {
-                //We check every key that is symmetric
-                foreach (KeyEntryId ele in entries)
-                {
-                    //For each key inside the SAM-SE, we create an object
-                    SAM_SEDllObject? temp = SAM_SEDll.GetCurrentSAM_SE()!.GetKey(ele.Id!);
-                    //At this point it's a generic object
-                    SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType type = SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.Default;
-                    if (temp != null)
-                    {
-                        type = temp.GetKeyType();
-                        //Adding keyEntries inside key list
-                        _keyEntries.Add(new(ele, type));
-                        //Getting link between DESFire and DESFire UID ; if it exists
-                        _keyEntries.Last().SAM_SEProperties!.DESFire.Div.UidLinkId = temp.GetUidKeyLinked();
-                    }
-                }
-                foreach (SAM_SESymmetricKeyEntry keyEntry in _keyEntries)
-                {
-                    //Getting metadatas of every object
-                    GetMetadataKeyEntry(keyEntry);
-                    GetPolitics(keyEntry);
-                }
-                foreach (SAM_SESymmetricKeyEntry keyEntry in _keyEntries)
-                {
-                    //If there is a link between DESFire and DESFire UID
-                    if (keyEntry.SAM_SEProperties!.DESFire.Div.UidLinkId != null)
-                    {
-                        //We get the linked key
-                        SAM_SESymmetricKeyEntry? keyEntryUID = GetKeyEntry(keyEntry.SAM_SEProperties!.DESFire.Div.UidLinkId, KeyEntryClass.Symmetric);
-                        if (keyEntryUID != null)
-                        {
-                            //And we assign the values from DESFire UID to DESFire so we can display them
-                            keyEntry.SAM_SEProperties!.DESFire.Div.UidLinkKeyNum = keyEntryUID.SAM_SEProperties!.DESFireUID.KeyNum;
-                            keyEntry.SAM_SEProperties!.DESFire.Div.UidLinkEnable = keyEntryUID.SAM_SEProperties!.DESFireUID.Enable;
-                        }
-                    }
-                }
-                try
-                {
-                    //Update enabled conf depending on the linked objects
-                    UpdateConfEnabled();
-                }
-                catch (KeyStoreException)
-                {
-                    //Do nothing. This try catch is just here to not throw an error when the user opens
-                    //KeyManager with a not up-to-date SAM-SE (v1.6.0) and gets an error right away ...
-                }
+            InitConfigurationActive(_keyEntriesId);
 
-            }
-
-            log.Info(String.Format("{0} key entries returned.", entries.Count));
-            return Task.FromResult(entries);
+            log.Info(String.Format("{0} key entries returned.", _keyEntriesId.Count));
+            return Task.FromResult(_keyEntriesId);
         }
 
         public override Task Store(IList<IChangeKeyEntry> changes)
@@ -209,80 +235,42 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
         public override Task Update(IChangeKeyEntry change, bool ignoreIfMissing = false)
         {
             log.Info(String.Format("Updating key entry `{0}`...", change.Identifier));
-            int ret = 0;
 
             //Getting object using informations from arguments
-            SAM_SESymmetricKeyEntry? keyEntry = GetKeyEntry(change.Identifier.Id!, change.KClass) ?? throw new KeyStoreException(Resources.KeyStoreKeyEntryMissing);
+            KeyEntry? keyEntry = GetFromId(change.Identifier.Id!, change.KClass) ?? throw new KeyStoreException(Resources.KeyStoreKeyEntryMissing);
 
             if (change is SAM_SESymmetricKeyEntry keyEntryModification)
             {
                 //We need to update the Identifier, cause the Label may have changed
                 keyEntry.Identifier = keyEntryModification.Identifier;
 
-                //Updating differently depending on the key type
-                switch (keyEntry.SAM_SEProperties!.KeyEntryType)
+                if (keyEntryModification is SAM_SESymmetricKeyEntryAuthentication)
                 {
-                    case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.Authenticate:
-                        //Authenticate Key, not much to do
-                        UpdatePassword(keyEntryModification);
-                        break;
-                    case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.DESFireUID:
-                        //Getting the DESFire Object linked to the UID one
-                        SAM_SEDllObject? keyDESFireLinked = null;
-                        foreach (SAM_SESymmetricKeyEntry key in _keyEntries)
-                        {
-                            if (key.SAM_SEProperties!.DESFire.Div.UidLinkId != null)
-                            {
-                                keyDESFireLinked = SAM_SEDll.GetCurrentSAM_SE()!.GetKey(key.Identifier.Id!);
-                                break;
-                            }
-                        }
-                        //If we get it, we duplicate the informations
-                        if (keyDESFireLinked != null && keyDESFireLinked.LinkedObject != null)
-                        {
-                            SAM_SESymmetricKeyEntry? keyEntryDESFire = GetKeyEntry(keyDESFireLinked.StringId, keyEntryModification.KClass);
-                            if (keyEntryDESFire != null)
-                            {
-                                //Updating values inside the DESFire object
-                                keyEntryDESFire.SAM_SEProperties!.DESFire.Div.UidLinkKeyNum = keyEntry.SAM_SEProperties!.DESFireUID.KeyNum;
-                                keyEntryDESFire.SAM_SEProperties!.DESFire.Div.UidLinkEnable = keyEntry.SAM_SEProperties!.DESFireUID.Enable;
-                            }
-                        }
-                        //Updating the object
-                        ret = UpdateObject(keyEntryModification);
-                        if (ret != 0)
-                        {
-                            log.Error(String.Format("Error while updating the secret of key entry `{0}`.", keyEntryModification.Identifier));
-                        }
-                        //Updating the metadatas of the object
-                        ret = SetMetadataKeyEntry(keyEntryModification);
-                        if (ret != 0)
-                        {
-                            log.Error(String.Format("Error while updating DESFire metadata of key entry `{0}`.", keyEntryModification.Identifier));
-                        }
-                        break;
-                    case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.DESFire:
-                        //Updating the object
-                        ret = UpdateObject(keyEntryModification);
-                        if (ret != 0)
-                        {
-                            log.Error(String.Format("Error while updating the secret of key entry `{0}`.", keyEntryModification.Identifier));
-                        }
-                        //Updating its metadatas
-                        ret = SetMetadataKeyEntry(keyEntryModification);
-                        if (ret != 0)
-                        {
-                            log.Error(String.Format("Error while updating DESFire metadata of key entry `{0}`.", keyEntryModification.Identifier));
-                        }
-                        break;
-                    case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.Default:
-                    default:
-                        //That's not supposed to happen
-                        throw new KeyStoreException(Resources.KeyStoreKeyEntryTypeMissing);
+                    //Authenticate Key, not much to do
+                    UpdatePassword(keyEntryModification);
                 }
-
-                //Update enabled conf depending on the linked objects
-                UpdateConfEnabled();
+                else if (keyEntryModification is SAM_SESymmetricKeyEntryDESFire || 
+                         keyEntryModification is SAM_SESymmetricKeyEntryDESFireUID)
+                {
+                    if (keyEntryModification is SAM_SESymmetricKeyEntryDESFire keyEntryModificationDESFire)
+                    {
+                        UpdateConfigurationActive(keyEntryModificationDESFire.Identifier, keyEntryModificationDESFire.SAM_SEDESFireProperties!.ReadingMode == SAM_SEDESFireMode.IDP);
+                    }
+                    //Updating the object
+                    if (UpdateObject(keyEntryModification) != 0)
+                    {
+                        log.Error(String.Format("Error while updating the secret of key entry `{0}`.", keyEntryModification.Identifier));
+                    }
+                    //Updating the metadatas of the object
+                    if (SetMetadataKeyEntry(keyEntryModification) != 0)
+                    {
+                        log.Error(String.Format("Error while updating DESFire metadata of key entry `{0}`.", keyEntryModification.Identifier));
+                    }
+                }
+                else
+                {
+                    throw new KeyStoreException(Resources.KeyStoreKeyEntryTypeMissing);
+                }
 
                 //Notifying the KML that we updated a Key Entry
                 OnKeyEntryUpdated(change);
@@ -299,11 +287,93 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             return Task.CompletedTask;
         }
 
-        //Method to get a key entry from its id
-        private SAM_SESymmetricKeyEntry? GetKeyEntry (string id, KeyEntryClass kClass)
+        //This method updates the activation/deactivation of configuration based on the previous one :
+        //Activation Ex :   Conf 1 = Private ID ; Conf 2 is active but disabled
+        //                  Conf 2 is modified to Private ID ; Then Conf 3 needs to be activated ; and so on
+        //Deactivation Ex : Conf 1 = Private ID ; Conf 2 = Private ID ; Conf 3 = Private ID ; Conf 4 = Private ID
+        //                  Conf 2 is modified to Disabled ; Then Conf 3 and 4 need to be deactivated
+        //The exception is for "BIOA", biometric conf which is enabled if Conf 1 is Private ID
+        private void UpdateConfigurationActive(KeyEntryId changeKeyEntryId, bool nextConfActive)
         {
-            SAM_SESymmetricKeyEntry? keyEntry = _keyEntries.Where(k => k.Identifier.Id == id && k.KClass == kClass).SingleOrDefault();
-            return keyEntry;
+            bool start = false;
+            foreach (KeyEntryId keyEntryId in _keyEntriesId)
+            {
+                //We find the modified key entry
+                if (keyEntryId.Id == changeKeyEntryId.Id)
+                {
+                    start = true;
+                }
+                //We wait one lap to modify the next key entry
+                else if (start)
+                {
+                    //We modify the dictionnary which contains the active or not info
+                    if (keyEntryId.Id!.StartsWith("DF"))
+                        _keyEntriesActive[keyEntryId.Id!] = nextConfActive;
+                    //Specific case of "BIOA" which is active if "DF1A" is not Disabled
+                    if (changeKeyEntryId.Id == "DF1A")
+                        _keyEntriesActive["BIOA"] = nextConfActive;
+                    //If the next conf is active, then we need to stop
+                    if (nextConfActive)
+                    {
+                        break;
+                    }
+                    //If the conf is inactive
+                    else
+                    {
+                        //Then we need to loop on every DESFire Key entry after the one to put them to disabled
+                        if (SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.GetKey(keyEntryId.Id!) is SAM_SEDllDESFire desfire)
+                        {
+                            //If the key is a "DFXX" one, then we follow the same way as others
+                            //But if it's "BIOA" we need to know if the inactive comes from "DF1A" to apply it
+                            if (keyEntryId.Id!.StartsWith("DF") ||
+                                keyEntryId.Id! == "BIOA" && changeKeyEntryId.Id! == "DF1A")
+                                desfire.SetReadingMode(SAM_SEDESFireMode.Disable);
+                        }
+                    }
+                }
+            }
+            if (!nextConfActive)
+                SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.UploadMetadata();
+        }
+
+        //This method uses the informations from DLL to update the list which handles which conf is active or not
+        private void InitConfigurationActive(IList<KeyEntryId> keyEntries)
+        {
+            //We start at true, cause the first DESFire configuration must be active
+            bool active = true;
+            //We make a loop on every key entry
+            foreach (KeyEntryId keyEntry in keyEntries)
+            {
+                //The ones who starts with DF are the ones we want to explore
+                if (keyEntry.Id!.StartsWith("DF"))
+                {
+                    //The first conf we encounter is the DF1A, so we can say it's active
+                    _keyEntriesActive[keyEntry.Id!] = active;
+                    //Then we get the key on the dll
+                    SAM_SEDllObject? temp = SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.GetKey(keyEntry.Id!);
+                    //Making sure it's a DESFire one
+                    if (temp is SAM_SEDllDESFire des)
+                    {
+                        //Then we get the reading mode information, and if it's IDP, then we put true in active
+                        active = des.GetReadingMode() == SAM_SEDESFireMode.IDP;
+                    }
+                }
+                //The other ones are not active or not, we just put false inside
+                else
+                    _keyEntriesActive[keyEntry.Id!] = false;
+            }
+
+            //Now we handle the specific case, it has been created with false as parameter
+            if (_keyEntriesActive.ContainsKey("BIOA"))
+            {
+                //To activate the BIOA conf, we want to check that at least DF1A to be IDP
+                SAM_SEDllObject? temp = SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.GetKey("DF1A");
+                if (temp is SAM_SEDllDESFire des)
+                {
+                    //We check this info and set it inside the dictionnary
+                    _keyEntriesActive["BIOA"] = des.GetReadingMode() == SAM_SEDESFireMode.IDP;
+                }
+            }
         }
 
         //Method to update the key of an object
@@ -315,7 +385,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             {
                 return 0;
             }
-            ret = SAM_SEDll.GetCurrentSAM_SE()!.GetKey(keyEntry.Identifier.Id!)!.UploadKey(key);
+            ret = SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.GetKey(keyEntry.Identifier.Id!)!.UploadKey(key);
             if (ret != 0)
             {
                 log.Error(String.Format("Error {0} modifying object.", ret));
@@ -326,115 +396,102 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
         //Method to update the password used to connect to the SAM-SE
         private void UpdatePassword(SAM_SESymmetricKeyEntry keyEntry)
         {
-            //No password in GUI, so no need to change the password
-            if (keyEntry.SAM_SEProperties!.Authenticate.Password == string.Empty)
+            if (keyEntry is SAM_SESymmetricKeyEntryAuthentication keyAuth)
             {
-                log.Info("There is no password to modify.");
-                return;
-            }
-            //If we're here, then there is a password to update
-            log.Info("Modifying password...");
-
-            //Checking the validity of the new password
-            if (!keyEntry.SAM_SEProperties!.Authenticate.PasswordValid)
-                throw new KeyStoreException(Resources.KeyStorePasswordInvalid);
-            if(!keyEntry.SAM_SEProperties!.Authenticate.PasswordMatch)
-                throw new KeyStoreException(Resources.KeyStorePasswordNotMatching);
-
-            //Here, the password is valid, so we can update it
-            //First we make sure the object is the right type
-            if(SAM_SEDll.GetCurrentSAM_SE()!.GetKey("SCP3") is SAM_SEDllAuthenticate temp)
-            {
-                //Then we call the DLL method to update the password
-                int ret = temp.ChangePassword(keyEntry.SAM_SEProperties!.Authenticate.Password, Convert.ToUInt16(keyEntry.SAM_SEProperties.Authenticate.Password.Length));
-                if (ret != 0)
+                //No password in GUI, so no need to change the password
+                if (keyAuth.SAM_SEAuthenticationProperties!.Password == string.Empty)
                 {
-                    log.Error(String.Format("Error {0} modifying password.", ret));
+                    log.Info("There is no password to modify.");
+                    return;
                 }
-                log.Info("Password modified.");
+                //If we're here, then there is a password to update
+                log.Info("Modifying password...");
+
+                //Checking the validity of the new password
+                if (!keyAuth.SAM_SEAuthenticationProperties!.PasswordValid)
+                    throw new KeyStoreException(Resources.KeyStorePasswordInvalid);
+                if (!keyAuth.SAM_SEAuthenticationProperties!.PasswordMatch)
+                    throw new KeyStoreException(Resources.KeyStorePasswordNotMatching);
+
+                //Here, the password is valid, so we can update it
+                //First we make sure the object is the right type
+                if (SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.GetKey("SCP3") is SAM_SEDllAuthenticate temp)
+                {
+                    //Then we call the DLL method to update the password
+                    int ret = temp.ChangePassword(keyAuth.SAM_SEAuthenticationProperties!.Password, Convert.ToUInt16(keyAuth.SAM_SEAuthenticationProperties!.Password.Length));
+                    if (ret != 0)
+                    {
+                        log.Error(String.Format("Error {0} modifying password.", ret));
+                    }
+                    log.Info("Password modified.");
+                    return;
+                }
+                else
+                {
+                    log.Info("The key is not an Authenticate type.");
+                    return;
+                }
+            }
+            else
+            {
+                log.Info("The key is not an Authenticate type.");
                 return;
             }
-            log.Info("The key is not an Authenticate type.");
-            return;
         }
 
         //Method used to clear the informations from the password
         private static void ClearPassword(SAM_SESymmetricKeyEntry keyEntry)
         {
-            //On efface le MDP modifié une fois le changement effectué ou pas
-            keyEntry.SAM_SEProperties!.Authenticate.Password = string.Empty;
-            keyEntry.SAM_SEProperties!.Authenticate.PasswordConfirmation = string.Empty;
-        }
-
-        //Method to update DESFire Configuration depending on its N-1 enabled or not
-        private void UpdateConfEnabled()
-        {
-            //We start at "True" cause the first configuration will always be active
-            bool previousConfEnabled = true;
-            bool firstConfEnabled = false;
-            foreach (SAM_SESymmetricKeyEntry keyEntry in _keyEntries)
+            if (keyEntry is SAM_SESymmetricKeyEntryAuthentication keyAuth)
             {
-                //Getting only key that stats with "DF" --> DESFire object
-                if (keyEntry.Identifier.Id!.StartsWith("DF"))
-                {
-                    //Récupération de l'information de 
-                    if (keyEntry.Identifier.Id! == "DF1A")
-                        firstConfEnabled = keyEntry.SAM_SEProperties!.DESFire.ReadingMode == SAM_SESymmetricKeyEntryPropertiesDESFire.SAM_SEDESFireMode.IDP;
-                    //Storing information of enabled from the previous conf in the actual one
-                    keyEntry.SAM_SEProperties!.DESFire.PreviousConfEnable = previousConfEnabled;
-                    //Then, we get the information if this conf is active or not
-                    previousConfEnabled = keyEntry.SAM_SEProperties!.DESFire.ReadingMode != SAM_SESymmetricKeyEntryPropertiesDESFire.SAM_SEDESFireMode.Disable;
-                    //We update the reading mode DESFire since it may have been updated by modifying PreviousConfEnable
-                    SAM_SEDllDESFire? desfire = (SAM_SEDllDESFire?)SAM_SEDll.GetCurrentSAM_SE()!.GetKey(keyEntry.Identifier.Id!);
-                    desfire?.SetReadingMode(keyEntry.SAM_SEProperties!.DESFire.ReadingMode);
-                }
-                else if (keyEntry.Identifier.Id!.StartsWith("BIO"))
-                {
-                    keyEntry.SAM_SEProperties!.DESFire.PreviousConfEnable = firstConfEnabled;
-                }
+                //We clear the password modified once the modification is done, or not
+                keyAuth.SAM_SEAuthenticationProperties!.Password = string.Empty;
+                keyAuth.SAM_SEAuthenticationProperties!.PasswordConfirmation = string.Empty;
             }
-            //Update only once of Metadatas since its global to all metadatas objects
-            SAM_SEDll.GetCurrentSAM_SE()!.UploadMetadata();
         }
 
         //Method to regroup all the call of metadatas getters methods inside only method
         private void GetMetadataKeyEntry(SAM_SESymmetricKeyEntry keyEntry)
         {
             log.Info(String.Format("Getting key entry `{0}` metadatas...", keyEntry.Identifier.Id));
-            SAM_SEDllObject? temp = SAM_SEDll.GetCurrentSAM_SE()!.GetKey(keyEntry.Identifier.Id!);
-            if (temp is SAM_SEDllDESFire desfire)
+            SAM_SEDllObject? temp = SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.GetKey(keyEntry.Identifier.Id!);
+            if (temp is SAM_SEDllDESFire desfire && keyEntry is SAM_SESymmetricKeyEntryDESFire des)
             {
-                keyEntry.SAM_SEProperties!.DESFire.ReadingMode = desfire.GetReadingMode();
-                if (keyEntry.SAM_SEProperties!.DESFire.ReadingMode == SAM_SESymmetricKeyEntryPropertiesDESFire.SAM_SEDESFireMode.IDP)
+                des.SAM_SEDESFireProperties!.ReadingMode = desfire.GetReadingMode();
+                if (des.SAM_SEDESFireProperties!.ReadingMode == SAM_SEDESFireMode.IDP)
                 {
-                    keyEntry.SAM_SEProperties!.DESFire.Msb = desfire.GetMsb();
-                    keyEntry.SAM_SEProperties!.DESFire.Ev0 = desfire.GetEv0();
-                    keyEntry.SAM_SEProperties!.DESFire.Ev1 = desfire.GetEv1();
-                    keyEntry.SAM_SEProperties!.DESFire.Ev2 = desfire.GetEv2();
-                    keyEntry.SAM_SEProperties!.DESFire.Ev3 = desfire.GetEv3();
-                    keyEntry.SAM_SEProperties!.DESFire.Jcop = desfire.GetJcop();
-                    keyEntry.SAM_SEProperties!.DESFire.AuthEv2 = desfire.GetAuthEv2();
-                    keyEntry.SAM_SEProperties!.DESFire.ProximityCheck = desfire.GetProximityCheck();
-                    keyEntry.SAM_SEProperties!.DESFire.AidString = BitConverter.ToString(desfire.GetAid()).Replace("-", "");
-                    keyEntry.SAM_SEProperties!.DESFire.KeyNum = desfire.GetKeyNumber();
-                    keyEntry.SAM_SEProperties!.DESFire.FileNum = desfire.GetFileNumber();
-                    keyEntry.SAM_SEProperties!.DESFire.Offset = desfire.GetOffset();
-                    keyEntry.SAM_SEProperties!.DESFire.Size = desfire.GetSize();
-                    keyEntry.SAM_SEProperties!.DESFire.EncryptType = desfire.GetEncryption();
-                    keyEntry.SAM_SEProperties!.DESFire.Communication = desfire.GetCommunication();
-                    keyEntry.SAM_SEProperties!.DESFire.Div.Enable = desfire.GetDivEnable();
-                    if (keyEntry.SAM_SEProperties!.DESFire.Div.Enable == true)
+                    des.SAM_SEDESFireProperties!.Msb = desfire.GetMsb();
+                    des.SAM_SEDESFireProperties!.Ev0 = desfire.GetEv0();
+                    des.SAM_SEDESFireProperties!.Ev1 = desfire.GetEv1();
+                    des.SAM_SEDESFireProperties!.Ev2 = desfire.GetEv2();
+                    des.SAM_SEDESFireProperties!.Ev3 = desfire.GetEv3();
+                    des.SAM_SEDESFireProperties!.Jcop = desfire.GetJcop();
+                    des.SAM_SEDESFireProperties!.Jcop = desfire.GetJcopEv3();
+                    des.SAM_SEDESFireProperties!.AuthEv2 = desfire.GetAuthEv2();
+                    des.SAM_SEDESFireProperties!.ProximityCheck = desfire.GetProximityCheck();
+                    des.SAM_SEDESFireProperties!.AidString = BitConverter.ToString(desfire.GetAid()).Replace("-", "");
+                    des.SAM_SEDESFireProperties!.KeyNum = desfire.GetKeyNumber();
+                    des.SAM_SEDESFireProperties!.FileNum = desfire.GetFileNumber();
+                    des.SAM_SEDESFireProperties!.Offset = desfire.GetOffset();
+                    des.SAM_SEDESFireProperties!.Size = desfire.GetSize();
+                    des.SAM_SEDESFireProperties!.EncryptType = desfire.GetEncryption();
+                    des.SAM_SEDESFireProperties!.Communication = desfire.GetCommunication();
+                    des.SAM_SEDESFireProperties!.Div.Enable = desfire.GetDivEnable();
+                    if (des.SAM_SEDESFireProperties!.Div.Enable == true)
                     {
-                        keyEntry.SAM_SEProperties!.DESFire.Div.AidInverted = desfire.GetDivAidInv();
-                        keyEntry.SAM_SEProperties!.DESFire.Div.KeyInc = desfire.GetDivKeyEnable();
-                        keyEntry.SAM_SEProperties!.DESFire.Div.SiString = BitConverter.ToString(desfire.GetDivSi()).Replace("-", "");
+                        des.SAM_SEDESFireProperties!.Div.AidInverted = desfire.GetDivAidInv();
+                        des.SAM_SEDESFireProperties!.Div.KeyInc = desfire.GetDivKeyEnable();
+                        des.SAM_SEDESFireProperties!.Div.SiString = BitConverter.ToString(desfire.GetDivSi()).Replace("-", "");
                     }
                 }
             }
-            else if (temp is SAM_SEDllDESFireUid desfireUID)
+            else if (temp is SAM_SEDllDESFireUid desfireUID && keyEntry is SAM_SESymmetricKeyEntryDESFireUID desUid)
             {
-                keyEntry.SAM_SEProperties!.DESFireUID.Enable = desfireUID.GetUidActive();
-                keyEntry.SAM_SEProperties!.DESFireUID.KeyNum = desfireUID.GetUidKeyNumber();
+                desUid.SAM_SEDESFireUIDProperties!.Enable = desfireUID.GetUidEnable();
+                if (desUid.SAM_SEDESFireUIDProperties!.Enable == true)
+                {
+                    desUid.SAM_SEDESFireUIDProperties!.KeyNum = desfireUID.GetUidKeyNumber();
+                }
             }
             else
             {
@@ -447,60 +504,61 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
         private int SetMetadataKeyEntry(SAM_SESymmetricKeyEntry keyEntry)
         {
             log.Info(String.Format("Setting key entry `{0}` metadatas...",keyEntry.Identifier.Id));
-            //On retire les warnings, car on part du principe qu'ils ne seront plus là
-            keyEntry.SAM_SEProperties!.DESFire.CommunicationWarning = false;
-            keyEntry.SAM_SEProperties!.DESFire.EncryptTypeWarning = false;
-            keyEntry.SAM_SEProperties!.DESFire.ReadingModeWarning = false;
 
             //Récupération de l'objet, de type objet car on ne sait pas encore son type
-            SAM_SEDllObject? temp = SAM_SEDll.GetCurrentSAM_SE()!.GetKey(keyEntry.Identifier.Id!);
-            if (temp is SAM_SEDllDESFire desfire)
+            SAM_SEDllObject? temp = SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.GetKey(keyEntry.Identifier.Id!);
+            if (temp is SAM_SEDllDESFire desfire && keyEntry is SAM_SESymmetricKeyEntryDESFire des)
             {
-                if (keyEntry.SAM_SEProperties!.DESFire.Aid == null)
+                //On retire les warnings, car on part du principe qu'ils ne seront plus là
+                des.SAM_SEDESFireProperties!.CommunicationWarning = false;
+                des.SAM_SEDESFireProperties!.EncryptTypeWarning = false;
+                des.SAM_SEDESFireProperties!.ReadingModeWarning = false;
+                if (des.SAM_SEDESFireProperties!.Aid == null)
                     throw new KeyStoreException(Resources.AidNotValid);
-                if (keyEntry.SAM_SEProperties!.DESFire.Div.SiString.Length %2 != 0)
+                if (des.SAM_SEDESFireProperties!.Div.SiString.Length %2 != 0)
                     throw new KeyStoreException(Resources.SiNotValid);
-                desfire.SetMsb(keyEntry.SAM_SEProperties!.DESFire.Msb);
-                desfire.SetEv0(keyEntry.SAM_SEProperties!.DESFire.Ev0);
-                desfire.SetEv1(keyEntry.SAM_SEProperties!.DESFire.Ev1);
-                desfire.SetEv2(keyEntry.SAM_SEProperties!.DESFire.Ev2);
-                desfire.SetEv3(keyEntry.SAM_SEProperties!.DESFire.Ev3);
-                desfire.SetJcop(keyEntry.SAM_SEProperties!.DESFire.Jcop);
-                desfire.SetAuthEv2(keyEntry.SAM_SEProperties!.DESFire.AuthEv2);
-                desfire.SetProximityCheck(keyEntry.SAM_SEProperties!.DESFire.ProximityCheck);
-                desfire.SetAid(keyEntry.SAM_SEProperties!.DESFire.Aid!);
-                desfire.SetKeyNumber(keyEntry.SAM_SEProperties!.DESFire.KeyNum);
-                desfire.SetFileNumber(keyEntry.SAM_SEProperties!.DESFire.FileNum);
-                desfire.SetOffset(keyEntry.SAM_SEProperties!.DESFire.Offset);
-                desfire.SetSize(keyEntry.SAM_SEProperties!.DESFire.Size);
-                desfire.SetEncryption(keyEntry.SAM_SEProperties!.DESFire.EncryptType);
-                desfire.SetCommunication(keyEntry.SAM_SEProperties!.DESFire.Communication);
-                desfire.SetReadingMode(keyEntry.SAM_SEProperties!.DESFire.ReadingMode);
-                desfire.SetDivEnable(keyEntry.SAM_SEProperties!.DESFire.Div.Enable);
-                if(keyEntry.SAM_SEProperties!.DESFire.Div.Enable)
+                desfire.SetMsb(des.SAM_SEDESFireProperties!.Msb);
+                desfire.SetEv0(des.SAM_SEDESFireProperties!.Ev0);
+                desfire.SetEv1(des.SAM_SEDESFireProperties!.Ev1);
+                desfire.SetEv2(des.SAM_SEDESFireProperties!.Ev2);
+                desfire.SetEv3(des.SAM_SEDESFireProperties!.Ev3);
+                desfire.SetJcop(des.SAM_SEDESFireProperties!.Jcop);
+                desfire.SetJcopEv3(des.SAM_SEDESFireProperties!.JcopEv3);
+                desfire.SetAuthEv2(des.SAM_SEDESFireProperties!.AuthEv2);
+                desfire.SetProximityCheck(des.SAM_SEDESFireProperties!.ProximityCheck);
+                desfire.SetAid(des.SAM_SEDESFireProperties!.Aid!);
+                desfire.SetKeyNumber(des.SAM_SEDESFireProperties!.KeyNum);
+                desfire.SetFileNumber(des.SAM_SEDESFireProperties!.FileNum);
+                desfire.SetOffset(des.SAM_SEDESFireProperties!.Offset);
+                desfire.SetSize(des.SAM_SEDESFireProperties!.Size);
+                desfire.SetEncryption(des.SAM_SEDESFireProperties!.EncryptType);
+                desfire.SetCommunication(des.SAM_SEDESFireProperties!.Communication);
+                desfire.SetReadingMode(des.SAM_SEDESFireProperties!.ReadingMode);
+                desfire.SetDivEnable(des.SAM_SEDESFireProperties!.Div.Enable);
+                if(des.SAM_SEDESFireProperties!.Div.Enable)
                 {
-                    desfire.SetDivAidInv(keyEntry.SAM_SEProperties!.DESFire.Div.AidInverted);
-                    desfire.SetDivSi(keyEntry.SAM_SEProperties!.DESFire.Div.Si, keyEntry.SAM_SEProperties!.DESFire.Div.KeyInc, keyEntry.SAM_SEProperties!.DESFire.KeyNum);
+                    desfire.SetDivAidInv(des.SAM_SEDESFireProperties!.Div.AidInverted);
+                    desfire.SetDivSi(des.SAM_SEDESFireProperties!.Div.Si, des.SAM_SEDESFireProperties!.Div.KeyInc, des.SAM_SEDESFireProperties!.KeyNum);
                 }
             }
-            else if (temp is SAM_SEDllDESFireUid desfireUID)
+            else if (temp is SAM_SEDllDESFireUid desfireUID && keyEntry is SAM_SESymmetricKeyEntryDESFireUID desUid)
             {
-                desfireUID.SetUidEnable(keyEntry.SAM_SEProperties!.DESFireUID.Enable);
-                desfireUID.SetUidKeyNumber(keyEntry.SAM_SEProperties!.DESFireUID.KeyNum);
+                desfireUID.SetUidEnable(desUid.SAM_SEDESFireUIDProperties!.Enable);
+                desfireUID.SetUidKeyNumber(desUid.SAM_SEDESFireUIDProperties!.KeyNum);
             }
             else
             {
                 //Nothing to do
             }
             log.Info(String.Format("Key entry `{0}` metadatas updated.", keyEntry.Identifier.Id));
-            return SAM_SEDll.GetCurrentSAM_SE()!.UploadMetadata();
+            return SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.UploadMetadata();
         }
 
         //Method to regroup all the call of policies getters methods inside only method
         private void GetPolitics(SAM_SESymmetricKeyEntry keyEntry)
         {
             log.Info(String.Format("Getting key entry `{0}` policy...", keyEntry.Identifier.Id));
-            SAM_SEDllObject? temp = SAM_SEDll.GetCurrentSAM_SE()!.GetKey(keyEntry.Identifier.Id!);
+            SAM_SEDllObject? temp = SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.GetKey(keyEntry.Identifier.Id!);
             if (temp != null)
             {
                 keyEntry.SAM_SEProperties!.Politics.Read = temp.GetPolicyReadable();

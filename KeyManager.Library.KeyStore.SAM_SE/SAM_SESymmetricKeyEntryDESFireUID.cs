@@ -1,39 +1,39 @@
 ﻿/*
-** File Name: SAM_SESymmetricKeyEntry.cs
+** File Name: SAM_SESymmetricKeyEntryDESFireUID.cs
 ** Author: s_eva
 ** Creation date: March 2024
-** Description: This file generate a generic Key Entry, an objet inherited from Key Manager.
+** Description: This file generate a Key Entry for DESFire UID, an objet inherited from Key Manager.
 ** Licence: LGPLv3
 ** Copyright (c) 2023-Present Synchronic
 */
 
 using Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties;
 using Newtonsoft.Json;
-using static Leosac.KeyManager.Library.KeyStore.SAM_SE.SAM_SESymmetricKeyEntryProperties;
 
 namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
 {
-    public class SAM_SESymmetricKeyEntry : KeyEntry
+    public class SAM_SESymmetricKeyEntryDESFireUID : SAM_SESymmetricKeyEntry
     {
-        public SAM_SESymmetricKeyEntry() : base()
+        public SAM_SESymmetricKeyEntryDESFireUID() : base()
         {
-            Identifier.Id = "XXXX";
-            Properties = new SAM_SESymmetricKeyEntryProperties();
+            Identifier.Id = "UIDX";
+            Properties = new SAM_SESymmetricKeyEntryDESFireUIDProperties();
             Variant = new KeyEntryVariant() { Name = "AES128" };
+            Variant.KeyContainers.Add(new KeyContainer(Resources.KeyValue, new Key(["AES", KeyEntryClass.Symmetric.ToString()], 16)));
         }
 
-        public SAM_SESymmetricKeyEntry(SAM_SEKeyEntryType type) : base()
+        public SAM_SESymmetricKeyEntryDESFireUID(string id) : base()
         {
-            Identifier.Id = "XXXX";
-            Properties = new SAM_SESymmetricKeyEntryProperties();
-            SAM_SEProperties!.KeyEntryType = type;
+            Identifier.Id = id;
+            Properties = new SAM_SESymmetricKeyEntryDESFireUIDProperties();
             Variant = new KeyEntryVariant() { Name = "AES128" };
+            Variant.KeyContainers.Add(new KeyContainer(Resources.KeyValue, new Key(["AES", KeyEntryClass.Symmetric.ToString()], 16)));
         }
 
         [JsonIgnore]
-        public SAM_SESymmetricKeyEntryProperties? SAM_SEProperties
+        public SAM_SESymmetricKeyEntryDESFireUIDProperties? SAM_SEDESFireUIDProperties
         {
-            get { return Properties as SAM_SESymmetricKeyEntryProperties; }
+            get { return Properties as SAM_SESymmetricKeyEntryDESFireUIDProperties; }
         }
 
         public override KeyEntryClass KClass => KeyEntryClass.Symmetric;
