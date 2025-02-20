@@ -20,7 +20,7 @@
         <domain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
         <domain:KeyStoreFavoriteConverter x:Key="KeyStoreFavoriteConverter" />
     </UserControl.Resources>
-    <materialDesign:DrawerHost x:Name="DrawerHost" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="2">
+    <materialDesign:DrawerHost x:Name="DrawerHost" BorderBrush="{DynamicResource MaterialDesign.Brush.TextBox.HoverBackground}" BorderThickness="2">
         <materialDesign:DrawerHost.BottomDrawerContent>
             <StackPanel Orientation="Vertical">
                 <TextBlock Text="{x:Static properties:Resources.LinkSuccess}" Margin="5" Visibility="{Binding LinkError, Converter={StaticResource ReverseNullableToVisibilityConverter}}" />

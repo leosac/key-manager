@@ -75,9 +75,7 @@
                                         <DataTrigger.EnterActions>
                                             <BeginStoryboard>
                                                 <Storyboard>
-                                                    <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
-                                                        FillBehavior="Stop" 
-                                                        To="Red" Duration="0:0:2" />
+                                                    <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" FillBehavior="Stop" To="Red" Duration="0:0:2" />
                                                 </Storyboard>
                                             </BeginStoryboard>
                                         </DataTrigger.EnterActions>
