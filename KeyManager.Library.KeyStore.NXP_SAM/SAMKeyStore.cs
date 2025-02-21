@@ -35,7 +35,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
         public override IEnumerable<KeyEntryClass> SupportedClasses
         {
-            get => new KeyEntryClass[] { KeyEntryClass.Symmetric };
+            get => [KeyEntryClass.Symmetric];
         }
 
         public override Task Open()
@@ -231,7 +231,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
             if (!_unlocked)
             {
-                UnlockSAM(av2cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetValueAsString(Properties?.Secret, KeyValueStringFormat.HexStringWithSpace));
+                UnlockSAM(av2cmd, GetSAMProperties().AuthenticationMode, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetValueAsString(Properties?.Secret, KeyValueStringFormat.HexStringWithSpace));
                 _unlocked = true;
             }
 
@@ -576,7 +576,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                         natkey.setSET(set);
                     }
                     natkey.setSETKeyTypeFromKeyType();
-
+                    // We don't take care of AuthenticationMode here as key entry update always requires Host Authentication
                     av2cmd.authenticateHost(key, GetSAMProperties().AuthenticateKeyEntryIdentifier);
                     natkey.setUpdateSettings(updateSettings); // Or call setUpdateMask
                     av2cmd.changeKeyEntry((byte)Convert.ToDecimal(samkey.Identifier.Id), natkey, key);
@@ -688,14 +688,21 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             log.Info("Mifare SAM features activation completed.");
         }
 
-        public static void UnlockSAM(LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd, byte keyEntry, byte keyVersion, string? keyValue)
+        public static void UnlockSAM(LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd, SAMAuthenticationMode mode, byte keyEntry, byte keyVersion, string? keyValue)
         {
             log.Info("Unlocking SAM...");
             var key = new LibLogicalAccess.Card.DESFireKey();
             key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
             key.setKeyVersion(keyVersion);
             key.fromString(keyValue ?? "");
-            av2cmd.lockUnlock(key, LibLogicalAccess.Card.SAMLockUnlock.Unlock, keyEntry, 0, 0);
+            if (mode == SAMAuthenticationMode.AuthenticateHost)
+            {
+                av2cmd.authenticateHost(key, keyEntry);
+            }
+            else
+            {
+                av2cmd.lockUnlock(key, LibLogicalAccess.Card.SAMLockUnlock.Unlock, keyEntry, 0, 0);
+            }
             log.Info("SAM unlocked.");
         }
 
@@ -797,7 +804,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             {
                 if (!string.IsNullOrEmpty(GetSAMProperties().Secret) && !_unlocked)
                 {
-                    UnlockSAM(av3cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetValueAsString(Properties?.Secret, KeyValueStringFormat.HexStringWithSpace));
+                    UnlockSAM(av3cmd, GetSAMProperties().AuthenticationMode, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetValueAsString(Properties?.Secret, KeyValueStringFormat.HexStringWithSpace));
                     _unlocked = true;
                 }
 
@@ -855,7 +862,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             {
                 if (!string.IsNullOrEmpty(GetSAMProperties().Secret) && !_unlocked)
                 {
-                    UnlockSAM(av2cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetValueAsString(Properties?.Secret, KeyValueStringFormat.HexStringWithSpace));
+                    UnlockSAM(av2cmd, GetSAMProperties().AuthenticationMode, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetValueAsString(Properties?.Secret, KeyValueStringFormat.HexStringWithSpace));
                     _unlocked = true;
                 }
 

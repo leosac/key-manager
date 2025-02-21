@@ -12,6 +12,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             _authenticateKeyEntryIdentifier = 0;
             _authenticateKeyType = DESFireKeyType.DF_KEY_AES;
             _authenticateKeyVersion = 0;
+            _authenticationMode = SAMAuthenticationMode.Unlock;
         }
 
         private string _readerProvider;
@@ -40,7 +41,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
         private byte _authenticateKeyEntryIdentifier;
 
-        // Can be the Host Authentication key or the Unlock key depending the context
+        // Can be the Host Authentication key or the Unlock key depending the Authentication Mode or context
         public byte AuthenticateKeyEntryIdentifier
         {
             get => _authenticateKeyEntryIdentifier;
@@ -61,6 +62,13 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         {
             get => _authenticateKeyVersion;
             set => SetProperty(ref _authenticateKeyVersion, value);
+        }
+
+        private SAMAuthenticationMode _authenticationMode;
+        public SAMAuthenticationMode AuthenticationMode
+        {
+            get => _authenticationMode;
+            set => SetProperty(ref _authenticationMode, value);
         }
 
         private string? _forceCardType;
@@ -96,10 +104,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
             return (ReaderProvider == p.ReaderProvider) && (ReaderUnit == p.ReaderUnit) && (AutoSwitchToAV2 == p.AutoSwitchToAV2) &&
                 (AuthenticateKeyEntryIdentifier == p.AuthenticateKeyEntryIdentifier) && (_authenticateKeyVersion == p._authenticateKeyVersion) &&
-                (ForceCardType == p.ForceCardType);
+                (ForceCardType == p.ForceCardType) && (AuthenticationMode == p.AuthenticationMode);
         }
 
-        public override int GetHashCode() => (ReaderProvider, ReaderUnit, AutoSwitchToAV2, AuthenticateKeyEntryIdentifier, AuthenticateKeyVersion, ForceCardType).GetHashCode();
+        public override int GetHashCode() => (ReaderProvider, ReaderUnit, AutoSwitchToAV2, AuthenticateKeyEntryIdentifier, AuthenticateKeyVersion, ForceCardType, AuthenticationMode).GetHashCode();
 
         public static bool operator ==(SAMKeyStoreProperties? lhs, SAMKeyStoreProperties? rhs)
         {

@@ -16,6 +16,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 "SAM_AV2",
                 "SAM_AV3"
             });
+            AuthenticationModes = new ObservableCollection<SAMAuthenticationMode>(Enum.GetValues<SAMAuthenticationMode>());
         }
 
         public SAMKeyStoreProperties? SAMProperties
@@ -26,5 +27,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
         public ObservableCollection<DESFireKeyType> KeyTypes { get; set; }
 
         public ObservableCollection<string> CardTypes { get; set; }
+
+        public ObservableCollection<SAMAuthenticationMode> AuthenticationModes { get; set; }
     }
 }

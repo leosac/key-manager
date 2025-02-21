@@ -383,6 +383,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                             ruconfig.setSAMType("SAM_AV2");
                             ruconfig.setSAMReaderName(ks.GetSAMProperties().ReaderUnit);
                             ruconfig.setSAMUnlockKey(SAMKeyStore.CreateDESFireKey(ks.GetSAMProperties().AuthenticateKeyType, ks.GetSAMProperties().AuthenticateKeyVersion, ks.GetSAMProperties().Secret), ks.GetSAMProperties().AuthenticateKeyEntryIdentifier);
+                            ruconfig.setUseSAMAuthenticateHost(ks.GetSAMProperties().AuthenticationMode == SAMAuthenticationMode.AuthenticateHost);
                             isoru.setConfiguration(ruconfig);
                         }
 

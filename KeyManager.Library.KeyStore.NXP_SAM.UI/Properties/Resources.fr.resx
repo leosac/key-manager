@@ -141,6 +141,12 @@
   <data name="AuthenticateKey" xml:space="preserve">
     <value>Clé d'authentification</value>
   </data>
+  <data name="AuthenticationMode" xml:space="preserve">
+    <value>Mode d'authentification</value>
+  </data>
+  <data name="AuthenticationModeHelper" xml:space="preserve">
+    <value>Le mode d'authentification à la SAM</value>
+  </data>
   <data name="AutoSwitchToAV2" xml:space="preserve">
     <value>Basculer automatiquement la SAM vers le mode AV2 si nécessaire lors de modifications</value>
   </data>

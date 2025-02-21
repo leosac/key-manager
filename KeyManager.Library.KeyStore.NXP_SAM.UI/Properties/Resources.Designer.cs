@@ -133,6 +133,24 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authentication Mode.
+        /// </summary>
+        public static string AuthenticationMode {
+            get {
+                return ResourceManager.GetString("AuthenticationMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The SAM authentication mode.
+        /// </summary>
+        public static string AuthenticationModeHelper {
+            get {
+                return ResourceManager.GetString("AuthenticationModeHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Automatically switch the SAM to AV2 mode if required when performing updates.
         /// </summary>
         public static string AutoSwitchToAV2 {
