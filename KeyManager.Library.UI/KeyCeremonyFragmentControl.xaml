@@ -16,6 +16,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Flipper.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <materialDesign:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed" />
+            <materialDesign:BooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" TrueValue="Collapsed" FalseValue="Visible" />
+            <materialDesign:InvertBooleanConverter x:Key="InvertBooleanConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -24,7 +27,7 @@
             <TextBlock Text="{Binding Fragment}" FontSize="18" Margin="0,5,5,5" />
         </WrapPanel>
         <WrapPanel Orientation="Horizontal">
-            <materialDesign:Flipper Style="{StaticResource MaterialDesignCardFlipper}" Margin="3">
+            <materialDesign:Flipper Margin="3">
                 <materialDesign:Flipper.FrontContent>
                     <Button Width="200" MinHeight="100" Margin="8" Command="{x:Static materialDesign:Flipper.FlipCommand}" Style="{StaticResource MaterialDesignFlatButton}">
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center">
@@ -71,7 +74,7 @@
                     </StackPanel>
                 </Button>
             </materialDesign:Card>
-            <materialDesign:Flipper Style="{StaticResource MaterialDesignCardFlipper}" Visibility="{Binding IsReunification, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Margin="3">
+            <materialDesign:Flipper Visibility="{Binding IsReunification, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Margin="3">
                 <materialDesign:Flipper.FrontContent>
                     <Button Width="200" MinHeight="100" Margin="8" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding GenerateQrCodeCommand}">
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center">

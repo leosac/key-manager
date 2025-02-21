@@ -16,6 +16,8 @@
     <UserControl.Resources>
         <s:Boolean x:Key="True">True</s:Boolean>
         <s:Boolean x:Key="False">False</s:Boolean>
+        <materialDesign:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <materialDesign:NullableToVisibilityConverter x:Key="NullableToVisibilityConverter" />
         <materialDesign:NullableToVisibilityConverter x:Key="ReverseNullableToVisibilityConverter" NullValue="Visible" NotNullValue="Collapsed" />
         <domain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
         <domain:KeyStoreFavoriteConverter x:Key="KeyStoreFavoriteConverter" />

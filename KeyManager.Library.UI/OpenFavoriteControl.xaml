@@ -13,6 +13,8 @@
              d:DataContext="{d:DesignInstance {x:Type libks:KeyStore}}"
              d:DesignHeight="150" d:DesignWidth="390">
     <UserControl.Resources>
+        <materialDesign:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <materialDesign:BooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" TrueValue="Collapsed" FalseValue="Visible" />
         <domain:HexStringLengthConverter x:Key="HexStringLengthConverter" />
     </UserControl.Resources>
     <StackPanel Margin="16" Width="350">

@@ -12,6 +12,10 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance domain:HomeControlViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <materialDesign:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed" />
+        <materialDesign:BooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" TrueValue="Collapsed" FalseValue="Visible" />
+    </UserControl.Resources>
     <DockPanel LastChildFill="True">
         <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Bottom" Visibility="{Binding Converter={StaticResource InverseBooleanToVisibilityConverter},Source={x:Static libui:UIPreferences.IsUserElevated}}">
             <materialDesign:DialogHost DialogTheme="Inherit">

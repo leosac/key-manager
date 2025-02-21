@@ -14,8 +14,8 @@
         x:Name="window"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance domain:SAMAccessControlWizardWindowViewModel}"
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+        Background="{DynamicResource MaterialDesign.Brush.Background}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Title="{x:Static properties:Resources.AccessControlWizard}" Height="600" Width="800" WindowStartupLocation="CenterOwner">
     <Window.Resources>

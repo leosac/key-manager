@@ -18,6 +18,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <materialDesign:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <materialDesign:NullableToVisibilityConverter x:Key="NullableToVisibilityConverter" />
             <s:Boolean x:Key="True">True</s:Boolean>
             <s:Boolean x:Key="False">False</s:Boolean>
         </ResourceDictionary>

@@ -14,9 +14,12 @@
              MinWidth="300"
              d:DesignHeight="350" d:DesignWidth="500">
     <UserControl.Resources>
-        <s:Boolean x:Key="True">True</s:Boolean>
-        <s:Boolean x:Key="False">False</s:Boolean>
-        <domain:KeyStoreFavoriteConverter x:Key="KeyStoreFavoriteConverter" />
+        <ResourceDictionary>
+            <s:Boolean x:Key="True">True</s:Boolean>
+            <s:Boolean x:Key="False">False</s:Boolean>
+            <materialDesign:NullableToVisibilityConverter x:Key="NullableToVisibilityConverter" />
+            <domain:KeyStoreFavoriteConverter x:Key="KeyStoreFavoriteConverter" />
+        </ResourceDictionary>
     </UserControl.Resources>
     <materialDesign:DrawerHost x:Name="DrawerHost" BorderBrush="{DynamicResource MaterialDesign.Brush.TextBox.HoverBackground}" BorderThickness="2">
         <materialDesign:DrawerHost.BottomDrawerContent>
@@ -71,7 +74,7 @@
                 <materialDesign:Card Grid.Row="3" Margin="5">
                     <StackPanel>
                         <Expander HorizontalAlignment="Stretch" Header="{x:Static properties:Resources.WrappingKey}">
-                            <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                            <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="24,8,24,16">
                                 <local:KeyEntryIdControl KeyEntryId="{Binding KeyEntryLink.WrappingKey.KeyId, Mode=TwoWay}" />
                                 <TextBox Text="{Binding KeyEntryLink.WrappingKey.ContainerSelector, Mode=TwoWay}" Margin="5"
                                          materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyVersionHelper}"

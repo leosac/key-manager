@@ -32,7 +32,7 @@ namespace Leosac.KeyManager.Domain
             SaveFavoriteCommand = new RelayCommand(
                 () =>
                 {
-                    Flipper.FlipCommand.Execute(null, null);
+                    DialogHost.CloseDialogCommand.Execute(null, null);
                     var favorites = Favorites.GetSingletonInstance();
                     favorites?.SaveToFile();
                 });

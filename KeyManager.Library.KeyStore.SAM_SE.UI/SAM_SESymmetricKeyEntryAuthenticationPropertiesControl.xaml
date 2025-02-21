@@ -22,7 +22,7 @@
         <materialDesign:Card>
             <StackPanel>
                 <Expander HorizontalAlignment="Stretch" Header="{x:Static properties:Resources.KeyEntryPolicies}">
-                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="24,8,24,16">
                         <Grid Focusable="False" IsHitTestVisible="False">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
@@ -80,7 +80,7 @@
         <materialDesign:Card>
             <StackPanel>
                 <Expander HorizontalAlignment="Stretch" IsExpanded="True" Header="{x:Static properties:Resources.Password}">
-                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,0,24,24">
+                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="24,0,24,24">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="90*"/>

@@ -18,6 +18,8 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <materialDesign:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed" />
+            <materialDesign:BooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" TrueValue="Collapsed" FalseValue="Visible" />
             <wpfappdomain:ByteLengthToCharLengthConverter x:Key="ByteLengthToCharLengthConverter" />
             <domain:KeyChecksumConverter x:Key="KeyChecksumConverter" />
             <domain:NullToBooleanConverter x:Key="NullToBooleanConverter" />

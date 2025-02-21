@@ -14,8 +14,8 @@
              d:DesignHeight="550" d:DesignWidth="800"
              Height="550" Width="800"
              DataContextChanged="UserControl_DataContextChanged"
-             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-             Background="{DynamicResource MaterialDesignPaper}"
+             TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+             Background="{DynamicResource MaterialDesign.Brush.Background}"
              FontFamily="{DynamicResource MaterialDesignFont}">
     <Window.Resources>
         <s:Boolean x:Key="True">True</s:Boolean>

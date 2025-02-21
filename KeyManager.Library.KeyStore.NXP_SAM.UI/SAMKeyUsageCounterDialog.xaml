@@ -26,7 +26,7 @@
             <materialDesign:Card Margin="5,15,5,5">
                 <StackPanel>
                     <Expander HorizontalAlignment="Stretch" Header="Counter" IsExpanded="True">
-                        <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                        <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="24,8,24,16">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition />

@@ -19,6 +19,7 @@
     <UserControl.Resources>
         <s:Boolean x:Key="True">True</s:Boolean>
         <s:Boolean x:Key="False">False</s:Boolean>
+        <materialDesign:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <domain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
     </UserControl.Resources>
     <materialDesign:DialogHost DialogTheme="Inherit"
@@ -106,7 +107,7 @@
                                     <materialDesign:Card Grid.Row="3" Grid.ColumnSpan="2">
                                         <StackPanel>
                                             <Expander HorizontalAlignment="Stretch" Header="{Binding Name}">
-                                                <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
+                                                <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="24,8,24,16">
                                                     <local:KeyContainerControl ShowKeyMaterials="{Binding DataContext.ShowKeyMaterials, ElementName=userControl}" />
                                                 </StackPanel>
                                             </Expander>

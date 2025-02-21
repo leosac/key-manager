@@ -11,9 +11,12 @@
         d:DataContext="{d:DesignInstance domain:FolderBrowserDialogViewModel}"
         mc:Ignorable="d"
         Title="{x:Static properties:Resources.SelectTargetFolder}" Height="450" Width="800" Loaded="Window_Loaded"
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+        Background="{DynamicResource MaterialDesign.Brush.Background}"
         FontFamily="{DynamicResource MaterialDesignFont}">
+    <Window.Resources>
+        <materialDesign:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Window.Resources>
     <Grid>
         <DockPanel LastChildFill="True">
             <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,5">
