@@ -40,8 +40,6 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
                         providers.Add(current.pszName);
                     }
                 }
-
-                NCryptFreeBuffer(ppProviderList);
             }
 
             return (providers.Count > 0) ? [.. providers] : ["", "Microsoft Software Key Storage Provider", "Microsoft Smart Card Key Storage Provider", "Microsoft Platform Crypto Provider"];
