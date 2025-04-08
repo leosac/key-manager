@@ -5,6 +5,7 @@
         public CNGKeyStoreProperties()
         {
             _storageProvider = "";
+            _scope = CNGScope.CurrentUser;
         }
 
         private string _storageProvider;
@@ -12,6 +13,13 @@
         {
             get => _storageProvider;
             set => SetProperty(ref _storageProvider, value);
+        }
+
+        private CNGScope _scope;
+        public CNGScope Scope
+        {
+            get => _scope;
+            set => SetProperty(ref _scope, value);
         }
 
         public override bool Equals(object? obj)

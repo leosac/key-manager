@@ -8,7 +8,7 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG.UI.Domain
         public CNGKeyStorePropertiesControlViewModel()
         {
             _properties = new CNGKeyStoreProperties();
-            StorageProviders = new ObservableCollection<string>(["", "Microsoft Software Key Storage Provider", "Microsoft Smart Card Key Storage Provider", "Microsoft Platform Crypto Provider"]);
+            StorageProviders = [.. CNGKeyStore.GetExistingProviders()];
         }
 
         public CNGKeyStoreProperties? CNGProperties
