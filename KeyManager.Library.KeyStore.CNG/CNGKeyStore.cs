@@ -1,4 +1,10 @@
-﻿using System.Security.Cryptography;
+﻿using Microsoft.Win32.SafeHandles;
+using System.ComponentModel;
+using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
+using Vanara.InteropServices;
 using Vanara.PInvoke;
 using static Vanara.PInvoke.NCrypt;
 
@@ -10,6 +16,25 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         SafeNCRYPT_PROV_HANDLE _phProvider = SafeNCRYPT_PROV_HANDLE.Null;
+
+        private static byte[] s_cipherKeyBlobPrefix = {
+            // NCRYPT_KEY_BLOB_HEADER.cbSize (16)
+            0x10, 0x00, 0x00, 0x00,
+            // NCRYPT_KEY_BLOB_HEADER.dwMagic (NCRYPT_CIPHER_KEY_BLOB_MAGIC (0x52485043))
+            0x43, 0x50, 0x48, 0x52,
+            // NCRYPT_KEY_BLOB_HEADER.cbAlgName (8)
+            0x08, 0x00, 0x00, 0x00,
+            // NCRYPT_KEY_BLOB_HEADER.cbKeyData (to be determined)
+            0x00, 0x00, 0x00, 0x00,
+            // UTF16-LE "AES\0"
+            0x41, 0x00, 0x45, 0x00, 0x53, 0x00, 0x00, 0x00,
+            // BCRYPT_KEY_DATA_BLOB_HEADER.dwMagic (BCRYPT_KEY_DATA_BLOB_MAGIC (0x4D42444B))
+            0x4B, 0x44, 0x42, 0x4D,
+            // BCRYPT_KEY_DATA_BLOB_HEADER.dwVersion (1)
+            0x01, 0x00, 0x00, 0x00,
+            // BCRYPT_KEY_DATA_BLOB_HEADER.cbKeyData (to be determined)
+            0x00, 0x00, 0x00, 0x00
+        };
 
         public override string Name => "CNG";
 
@@ -135,8 +160,7 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
 
             if (change is KeyEntry entry && entry.Variant != null && entry.Variant.KeyContainers.Count > 0)
             {
-                throw new NotImplementedException();
-                //var r = NCryptImportKey(_phProvider, null, , , )
+                ImportKeyValue(entry.Identifier, entry.Variant.KeyContainers[0].Key.GetAggregatedValueAsBinary());
             }
             else if (change is KeyEntryCryptogram cryptogram)
             {
@@ -145,22 +169,55 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
                 {
                     wrappingKey = Options?.WrappingKey;
                 }
-                if (wrappingKey == null || !wrappingKey.KeyId.IsConfigured())
+
+                SafeNCRYPT_KEY_HANDLE phWrappingKey = SafeNCRYPT_KEY_HANDLE.Null;
+                if (wrappingKey != null && wrappingKey.KeyId.IsConfigured())
                 {
-                    log.Error("Wrapping Key Entry Identifier parameter is expected.");
-                    throw new KeyStoreException("Wrapping Key Entry Identifier parameter is expected.");
+                    if (!await CheckKeyEntryExists(wrappingKey.KeyId, change.KClass, out phWrappingKey))
+                    {
+                        log.Error(string.Format("The key entry `{0}` doesn't exist.", wrappingKey.KeyId));
+                        throw new KeyStoreException("The key entry doesn't exist.");
+                    }
                 }
 
-                if (!await CheckKeyEntryExists(wrappingKey.KeyId, change.KClass))
+                if (string.IsNullOrEmpty(cryptogram.Value))
                 {
-                    log.Error(string.Format("The key entry `{0}` doesn't exist.", wrappingKey.KeyId));
-                    throw new KeyStoreException("The key entry doesn't exist.");
+                    throw new KeyStoreException("The cryptogram value is empty.");
                 }
 
-                throw new NotSupportedException();
+                _NCryptImportKey(change.Identifier.Id, phWrappingKey, "CipherKeyBlob", Convert.FromHexString(cryptogram.Value));
             }
 
             log.Info(string.Format("Key entry `{0}` created.", change.Identifier));
+        }
+
+        private void ImportKeyValue(KeyEntryId entryId, byte[]? key)
+        {
+            if (!string.IsNullOrEmpty(entryId.Id) && key != null)
+            {
+                byte[] blob = new byte[s_cipherKeyBlobPrefix.Length + key.Length];
+                Buffer.BlockCopy(s_cipherKeyBlobPrefix, 0, blob, 0, s_cipherKeyBlobPrefix.Length);
+                blob[12] = (byte)(12 /* sizeof(BCRYPT_KEY_DATA_BLOB_HEADER) */ + key.Length);
+                blob[32] = (byte)key.Length;
+                Buffer.BlockCopy(key, 0, blob, s_cipherKeyBlobPrefix.Length, key.Length);
+
+                _NCryptImportKey(entryId.Id, IntPtr.Zero, "CipherKeyBlob", blob);
+            }
+        }
+
+        private unsafe void _NCryptImportKey(string keyName, NCRYPT_KEY_HANDLE hImportKey, string pszBlobType, byte[] blob)
+        {
+            var nameBuf = new NCryptBuffer(KeyDerivationBufferType.NCRYPTBUFFER_PKCS_KEY_NAME, keyName);
+            var bufferDesc = new NCryptBufferDesc(nameBuf);
+
+            fixed (byte* blobPtr = blob)
+            {
+                var r = NCryptImportKey(_phProvider, hImportKey, pszBlobType, bufferDesc, out SafeNCRYPT_KEY_HANDLE hKey, (IntPtr)blobPtr, (uint)blob.Length);
+                if (r != HRESULT.S_OK)
+                {
+                    throw new KeyStoreException(string.Format("NCryptImportKey failed with code: {0}", r));
+                }
+            }
         }
 
         public override Task<KeyEntryId> Generate(KeyEntryId? identifier, KeyEntryClass keClass)
@@ -246,10 +303,32 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
             }
         }
 
-        private byte[]? NCryptGetProperty(SafeNCRYPT_KEY_HANDLE phKey, string propertyName)
+
+
+        private unsafe byte[]? _NCryptGetProperty(SafeNCRYPT_KEY_HANDLE phKey, string propertyName)
         {
-            throw new NotImplementedException();
-            //NCryptGetProperty(phKey, propertyName, 0, 0, out pcbResult, GetPropertyFlags.NCRYPT_SILENT_FLAG);
+            uint pcbResult = 0;
+            var r = NCryptGetProperty(phKey, propertyName, 0, 0, out pcbResult, GetPropertyFlags.NCRYPT_SILENT_FLAG);
+            if (r != HRESULT.S_OK)
+            {
+                log.Error(string.Format("NCryptGetProperty for `{0}` failed with code: {1}", propertyName, r));
+            }
+
+            if (pcbResult > 0)
+            {
+                var output = new byte[pcbResult];
+                fixed (byte* pbOutput = output)
+                {
+                    r = NCryptGetProperty(phKey, propertyName, (IntPtr)pbOutput, pcbResult, out pcbResult, GetPropertyFlags.NCRYPT_SILENT_FLAG);
+                    if (r != HRESULT.S_OK)
+                    {
+                        log.Error(string.Format("NCryptGetProperty for `{0}` failed with code: {1}", propertyName, r));
+                    }
+                    return output;
+                }
+            }
+
+            return null;
         }
 
         public override async Task<KeyEntry?> Get(KeyEntryId identifier, KeyEntryClass keClass)
@@ -266,7 +345,19 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
 
             try
             {
-                NCryptGetProperty(phKey, PropertyName.NCRYPT_ALGORITHM_PROPERTY);
+                var rawalgo = _NCryptGetProperty(phKey, PropertyName.NCRYPT_ALGORITHM_PROPERTY);
+                if (rawalgo == null)
+                {
+                    throw new KeyStoreException(string.Format("Cannot retrieve the algorithm for key `{0}`.", identifier.Id));
+                }
+                var algo = Encoding.Unicode.GetString(rawalgo);
+                var keyEntry = new CNGKeyEntry(keClass);
+                var variant = keyEntry.GetAllVariants(keClass).Where(v => v.Name.ToUpperInvariant() == algo.ToUpperInvariant()).FirstOrDefault();
+                if (variant == null)
+                {
+                    throw new KeyStoreException(string.Format("Cannot resolve algorithm `{0}` to a known key variant.", algo));
+                }
+                keyEntry.Variant = variant;
             }
             finally
             {
@@ -350,16 +441,7 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
                 throw new KeyStoreException("The key entry doesn't exist.");
             }
 
-            if (change is KeyEntry entry)
-            {
-                throw new NotImplementedException();
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-
-            log.Info(string.Format("Key entry `{0}` updated.", change.Identifier));
+            throw new NotSupportedException();
         }
 
         public override KeyEntry? GetDefaultKeyEntry(KeyEntryClass keClass)

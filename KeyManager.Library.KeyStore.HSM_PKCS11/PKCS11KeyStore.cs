@@ -653,7 +653,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             }
             else
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
 
             log.Info(string.Format("Key entry `{0}` updated.", change.Identifier));
