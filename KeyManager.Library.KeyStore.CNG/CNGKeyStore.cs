@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata;
-using System.Runtime.Remoting;
+﻿using System.Security.Cryptography;
 using Vanara.PInvoke;
 using static Vanara.PInvoke.NCrypt;
 
@@ -16,7 +15,11 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
 
         public override bool CanCreateKeyEntries => true;
 
+        public override bool CanUpdateKeyEntries => false;
+
         public override bool CanDeleteKeyEntries => true;
+
+        public override bool CanDefineKeyEntryLabel => false;
 
         public override IEnumerable<KeyEntryClass> SupportedClasses
         {
@@ -81,7 +84,7 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
 
             if (!string.IsNullOrEmpty(identifier.Id))
             {
-                var r = NCryptOpenKey(_phProvider, out phKey, identifier.Id, 0, GetCNGProperties().Scope == CNGScope.Machine ? OpenKeyFlags.NCRYPT_MACHINE_KEY_FLAG : 0);
+                var r = NCryptOpenKey(_phProvider, out phKey, identifier.Id, 0, GetOpenKeyFlagScope());
                 if (r != HRESULT.S_OK)
                 {
                     log.Error(string.Format("NCryptOpenKey failed with code: {0}", r));
@@ -91,6 +94,16 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
 
             phKey = SafeNCRYPT_KEY_HANDLE.Null;
             return Task.FromResult(false);
+        }
+
+        private OpenKeyFlags GetOpenKeyFlagScope()
+        {
+            return GetCNGProperties().Scope == CNGScope.Machine ? OpenKeyFlags.NCRYPT_MACHINE_KEY_FLAG : 0;
+        }
+
+        private CreatePersistedFlags GetCreateKeyFlagScope()
+        {
+            return GetCNGProperties().Scope == CNGScope.Machine ? CreatePersistedFlags.NCRYPT_MACHINE_KEY_FLAG : 0;
         }
 
         public override Task Close(bool secretCleanup = true)
@@ -115,9 +128,15 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
         {
             log.Info(string.Format("Creating key entry `{0}`...", change.Identifier));
 
+            if (_phProvider.IsInvalid || _phProvider.IsClosed)
+            {
+                throw new KeyStoreException("Invalid key storage provider handle.");
+            }
+
             if (change is KeyEntry entry && entry.Variant != null && entry.Variant.KeyContainers.Count > 0)
             {
                 throw new NotImplementedException();
+                //var r = NCryptImportKey(_phProvider, null, , , )
             }
             else if (change is KeyEntryCryptogram cryptogram)
             {
@@ -158,7 +177,7 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
 
             if (keClass == KeyEntryClass.Symmetric)
             {
-                keyEntry.Variant = keyEntry.GetAllVariants(keClass).FirstOrDefault(v => v.Name == "AES128");
+                keyEntry.Variant = keyEntry.GetAllVariants(keClass).FirstOrDefault(v => v.Name == "AES");
             }
             else
             {
@@ -168,10 +187,39 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
             return Generate(keyEntry);
         }
 
+        public override Task<KeyEntryId> Generate(KeyEntry entry)
+        {
+            if (_phProvider.IsInvalid || _phProvider.IsClosed)
+            {
+                throw new KeyStoreException("Invalid key storage provider handle.");
+            }
+
+            if (entry.Variant == null)
+            {
+                throw new KeyStoreException("A variant is required.");
+            }
+
+            SafeNCRYPT_KEY_HANDLE phKey;
+            var r = NCryptCreatePersistedKey(_phProvider, out phKey, entry.Variant.Name, entry.Identifier.Id, 0, GetCreateKeyFlagScope());
+            if (r != HRESULT.S_OK)
+            {
+                throw new KeyStoreException(string.Format("NCryptCreatePersistedKey failed with code: {0}", r));
+            }
+            r = NCryptFinalizeKey(phKey);
+            if (r != HRESULT.S_OK)
+            {
+                throw new KeyStoreException(string.Format("NCryptFinalizeKey failed with code: {0}", r));
+            }
+
+            log.Info(string.Format("Key entry `{0}` generated.", entry.Identifier));
+            return Task.FromResult(entry.Identifier);
+        }
+
         public override async Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing)
         {
             log.Info(string.Format("Deleting key entry `{0}`...", identifier));
-            var exists = await CheckKeyEntryExists(identifier, keClass);
+            SafeNCRYPT_KEY_HANDLE phKey;
+            var exists = await CheckKeyEntryExists(identifier, keClass, out phKey);
             if (!exists && !ignoreIfMissing)
             {
                 log.Error(string.Format("The key entry `{0}` doesn't exist.", identifier));
@@ -180,9 +228,28 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
 
             if (exists)
             {
-                throw new NotImplementedException();
-                log.Info(string.Format("Key entry `{0}` deleted.", identifier));
+                try
+                {
+                    var r = NCryptDeleteKey(phKey);
+                    if (r != HRESULT.S_OK)
+                    {
+                        log.Error(string.Format("NCryptDeleteKey failed with code: {0}", r));
+                        throw new KeyStoreException(string.Format("NCryptDeleteKey failed with code: {0}", r));
+                    }
+
+                    log.Info(string.Format("Key entry `{0}` deleted.", identifier));
+                }
+                finally
+                {
+                    NCryptFreeObject(phKey.DangerousGetHandle());
+                }
             }
+        }
+
+        private byte[]? NCryptGetProperty(SafeNCRYPT_KEY_HANDLE phKey, string propertyName)
+        {
+            throw new NotImplementedException();
+            //NCryptGetProperty(phKey, propertyName, 0, 0, out pcbResult, GetPropertyFlags.NCRYPT_SILENT_FLAG);
         }
 
         public override async Task<KeyEntry?> Get(KeyEntryId identifier, KeyEntryClass keClass)
@@ -190,9 +257,20 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
             log.Info(string.Format("Getting key entry `{0}`...", identifier));
             CNGKeyEntry? ke = null;
 
-            if (!string.IsNullOrEmpty(identifier.Id))
+            SafeNCRYPT_KEY_HANDLE phKey;
+            if (!await CheckKeyEntryExists(identifier, keClass, out phKey))
             {
-                throw new NotImplementedException();
+                log.Error(string.Format("The key entry `{0}` doesn't exist.", identifier));
+                throw new KeyStoreException("The key entry doesn't exist.");
+            }
+
+            try
+            {
+                NCryptGetProperty(phKey, PropertyName.NCRYPT_ALGORITHM_PROPERTY);
+            }
+            finally
+            {
+                NCryptFreeObject(phKey.DangerousGetHandle());
             }
 
             return ke;
@@ -203,7 +281,37 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
             log.Info(string.Format("Getting all key entries (class: `{0}`)...", keClass));
             var entries = new List<KeyEntryId>();
 
-            throw new NotImplementedException();
+            if (_phProvider.IsInvalid || _phProvider.IsClosed)
+            {
+                throw new KeyStoreException("Invalid key storage provider handle.");
+            }
+
+            nint ppEnumState = 0;
+            SafeNCryptBuffer ppKeyName;
+            HRESULT r = HRESULT.S_OK;
+            do
+            {
+                r = NCryptEnumKeys(_phProvider, null, out ppKeyName, ref ppEnumState, GetOpenKeyFlagScope());
+                if (r == HRESULT.S_OK)
+                {
+                    var keyName = ppKeyName.ToStructure<NCryptKeyName>();
+                    var keyClass = CNGKeyEntry.GetKeyEntryClassFromAlgId(keyName.pszAlgId);
+                    if (keClass == null || keClass == keyClass)
+                    {
+                        entries.Add(new KeyEntryId
+                        {
+                            Id = keyName.pszName
+                        });
+                    }
+                }
+                else
+                {
+                    if (r != HRESULT.NTE_NO_MORE_ITEMS)
+                    {
+                        throw new KeyStoreException(string.Format("NCryptEnumKeys failed with code: {0}", r));
+                    }
+                }
+            } while (r == HRESULT.S_OK);
 
             log.Info(string.Format("{0} key entries returned.", entries.Count));
             return entries;
