@@ -9,6 +9,7 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG.UI.Domain
         {
             _properties = new CNGKeyStoreProperties();
             StorageProviders = [.. CNGKeyStore.GetExistingProviders()];
+            Scopes = [.. Enum.GetValues<CNGScope>()];
         }
 
         public CNGKeyStoreProperties? CNGProperties
@@ -17,5 +18,7 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG.UI.Domain
         }
 
         public ObservableCollection<string> StorageProviders { get; private set; }
+
+        public ObservableCollection<CNGScope> Scopes { get; private set; }
     }
 }

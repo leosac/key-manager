@@ -123,6 +123,12 @@
   <data name="PasswordHelper" xml:space="preserve">
     <value>Mot de passe</value>
   </data>
+  <data name="Scope" xml:space="preserve">
+    <value>Périmètre</value>
+  </data>
+  <data name="ScopeHelper" xml:space="preserve">
+    <value>Périmètre des clés</value>
+  </data>
   <data name="StorageProvider" xml:space="preserve">
     <value>Fournisseur de stockage de clés</value>
   </data>

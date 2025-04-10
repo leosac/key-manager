@@ -79,6 +79,24 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scope.
+        /// </summary>
+        public static string Scope {
+            get {
+                return ResourceManager.GetString("Scope", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key scope.
+        /// </summary>
+        public static string ScopeHelper {
+            get {
+                return ResourceManager.GetString("ScopeHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Key Storage Provider.
         /// </summary>
         public static string StorageProvider {

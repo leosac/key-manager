@@ -123,6 +123,12 @@
   <data name="PasswordHelper" xml:space="preserve">
     <value>Password</value>
   </data>
+  <data name="Scope" xml:space="preserve">
+    <value>Scope</value>
+  </data>
+  <data name="ScopeHelper" xml:space="preserve">
+    <value>Key scope</value>
+  </data>
   <data name="StorageProvider" xml:space="preserve">
     <value>Key Storage Provider</value>
   </data>

@@ -262,6 +262,15 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
             {
                 throw new KeyStoreException(string.Format("NCryptCreatePersistedKey failed with code: {0}", r));
             }
+
+            /*int keyUsage = 0;
+            var v = BitConverter.GetBytes(keyUsage);
+            r = NCryptSetProperty(phKey, PropertyName.NCRYPT_KEY_USAGE_PROPERTY, v, (uint)v.Length, SetPropFlags.NCRYPT_PERSIST_FLAG | SetPropFlags.NCRYPT_SILENT_FLAG);
+            if (r != HRESULT.S_OK)
+            {
+                log.Error(string.Format("NCryptSetProperty for property `{0}` failed with code: {1}", PropertyName.NCRYPT_VERSION_PROPERTY, r));
+            }*/
+
             r = NCryptFinalizeKey(phKey);
             if (r != HRESULT.S_OK)
             {
@@ -346,18 +355,20 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
             try
             {
                 var rawalgo = _NCryptGetProperty(phKey, PropertyName.NCRYPT_ALGORITHM_PROPERTY);
-                if (rawalgo == null)
+                if (rawalgo == null || rawalgo.Length < 2)
                 {
                     throw new KeyStoreException(string.Format("Cannot retrieve the algorithm for key `{0}`.", identifier.Id));
                 }
-                var algo = Encoding.Unicode.GetString(rawalgo);
-                var keyEntry = new CNGKeyEntry(keClass);
-                var variant = keyEntry.GetAllVariants(keClass).Where(v => v.Name.ToUpperInvariant() == algo.ToUpperInvariant()).FirstOrDefault();
-                if (variant == null)
+                var algo = Encoding.Unicode.GetString(rawalgo, 0, rawalgo.Length - 2).ToUpperInvariant();
+                ke = new CNGKeyEntry(keClass);
+                ke.Identifier = identifier;
+                ke.SetVariant(algo);
+
+                var v = _NCryptGetProperty(phKey, PropertyName.NCRYPT_KEY_USAGE_PROPERTY);
+                if (v != null && v.Length > 0)
                 {
-                    throw new KeyStoreException(string.Format("Cannot resolve algorithm `{0}` to a known key variant.", algo));
+                    var usages = BitConverter.ToInt32(v);
                 }
-                keyEntry.Variant = variant;
             }
             finally
             {
