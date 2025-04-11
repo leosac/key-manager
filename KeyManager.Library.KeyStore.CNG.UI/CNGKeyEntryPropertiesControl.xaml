@@ -12,7 +12,78 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance domain:CNGKeyEntryPropertiesControlViewModel}"
              d:DesignHeight="100" d:DesignWidth="500">
-    <Grid>
-        
-    </Grid>
+    <UserControl.Resources>
+        <materialDesign:InvertBooleanConverter x:Key="InvertBooleanConverter" />
+    </UserControl.Resources>
+    <StackPanel>
+        <materialDesign:Card>
+            <Expander HorizontalAlignment="Stretch" Header="{x:Static properties:Resources.KeyUsage}" IsExpanded="True">
+                <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="24,8,24,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2" Margin="5">
+                            <ToggleButton IsChecked="{Binding Properties.UsageAllowAll}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                            <TextBlock Text="{x:Static properties:Resources.UsageAllowAll}" ToolTip="{x:Static properties:Resources.UsageAllowAllHelper}" Padding="3" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="5" IsEnabled="{Binding Properties.UsageAllowAll, Converter={StaticResource InvertBooleanConverter}}">
+                            <ToggleButton IsChecked="{Binding Properties.UsageAllowDecrypt}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                            <TextBlock Text="{x:Static properties:Resources.UsageAllowDecrypt}" ToolTip="{x:Static properties:Resources.UsageAllowDecryptHelper}" Padding="3" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Margin="5" IsEnabled="{Binding Properties.UsageAllowAll, Converter={StaticResource InvertBooleanConverter}}">
+                            <ToggleButton IsChecked="{Binding Properties.UsageAllowSigning}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                            <TextBlock Text="{x:Static properties:Resources.UsageAllowSigning}" ToolTip="{x:Static properties:Resources.UsageAllowSigningHelper}" Padding="3" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Margin="5" IsEnabled="{Binding Properties.UsageAllowAll, Converter={StaticResource InvertBooleanConverter}}">
+                            <ToggleButton IsChecked="{Binding Properties.UsageAllowKeyAgreement}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                            <TextBlock Text="{x:Static properties:Resources.UsageAllowKeyAgreement}" ToolTip="{x:Static properties:Resources.UsageAllowKeyAgreementHelper}" Padding="3" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="5" IsEnabled="{Binding Properties.UsageAllowAll, Converter={StaticResource InvertBooleanConverter}}">
+                            <ToggleButton IsChecked="{Binding Properties.UsageAllowKeyAttestation}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                            <TextBlock Text="{x:Static properties:Resources.UsageAllowKeyAttestation}" ToolTip="{x:Static properties:Resources.UsageAllowKeyAttestationHelper}" Padding="3" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Expander>
+        </materialDesign:Card>
+        <materialDesign:Card>
+            <Expander HorizontalAlignment="Stretch" Header="{x:Static properties:Resources.ExportPolicy}" IsExpanded="True">
+                <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="24,8,24,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Margin="5">
+                            <ToggleButton IsChecked="{Binding Properties.ExportAllowExport}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                            <TextBlock Text="{x:Static properties:Resources.ExportAllowExport}" ToolTip="{x:Static properties:Resources.ExportAllowExportHelper}" Padding="3" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" Margin="5">
+                            <ToggleButton IsChecked="{Binding Properties.ExportAllowPlainExport}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                            <TextBlock Text="{x:Static properties:Resources.ExportAllowPlainExport}" ToolTip="{x:Static properties:Resources.ExportAllowPlainExportHelper}" Padding="3" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="5">
+                            <ToggleButton IsChecked="{Binding Properties.ExportAllowArchiving}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                            <TextBlock Text="{x:Static properties:Resources.ExportAllowArchiving}" ToolTip="{x:Static properties:Resources.ExportAllowArchivingHelper}" Padding="3" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Margin="5">
+                            <ToggleButton IsChecked="{Binding Properties.ExportAllowPlainArchiving}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                            <TextBlock Text="{x:Static properties:Resources.ExportAllowPlainArchiving}" ToolTip="{x:Static properties:Resources.ExportAllowPlainArchivingHelper}" Padding="3" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Expander>
+        </materialDesign:Card>
+    </StackPanel>
 </UserControl>

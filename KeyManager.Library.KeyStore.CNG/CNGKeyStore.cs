@@ -160,7 +160,7 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
 
             if (change is KeyEntry entry && entry.Variant != null && entry.Variant.KeyContainers.Count > 0)
             {
-                ImportKeyValue(entry.Identifier, entry.Variant.KeyContainers[0].Key.GetAggregatedValueAsBinary());
+                ImportKeyValue(entry.Identifier, entry.Variant.KeyContainers[0].Key.GetAggregatedValueAsBinary(), entry.Properties as CNGKeyEntryProperties);
             }
             else if (change is KeyEntryCryptogram cryptogram)
             {
@@ -185,13 +185,13 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
                     throw new KeyStoreException("The cryptogram value is empty.");
                 }
 
-                _NCryptImportKey(change.Identifier.Id, phWrappingKey, "CipherKeyBlob", Convert.FromHexString(cryptogram.Value));
+                _NCryptImportKey(change.Identifier.Id, phWrappingKey, "CipherKeyBlob", Convert.FromHexString(cryptogram.Value), null);
             }
 
             log.Info(string.Format("Key entry `{0}` created.", change.Identifier));
         }
 
-        private void ImportKeyValue(KeyEntryId entryId, byte[]? key)
+        private void ImportKeyValue(KeyEntryId entryId, byte[]? key, CNGKeyEntryProperties? properties)
         {
             if (!string.IsNullOrEmpty(entryId.Id) && key != null)
             {
@@ -201,11 +201,11 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
                 blob[32] = (byte)key.Length;
                 Buffer.BlockCopy(key, 0, blob, s_cipherKeyBlobPrefix.Length, key.Length);
 
-                _NCryptImportKey(entryId.Id, IntPtr.Zero, "CipherKeyBlob", blob);
+                _NCryptImportKey(entryId.Id, IntPtr.Zero, "CipherKeyBlob", blob, properties);
             }
         }
 
-        private unsafe void _NCryptImportKey(string keyName, NCRYPT_KEY_HANDLE hImportKey, string pszBlobType, byte[] blob)
+        private unsafe void _NCryptImportKey(string keyName, NCRYPT_KEY_HANDLE hImportKey, string pszBlobType, byte[] blob, CNGKeyEntryProperties? properties)
         {
             var nameBuf = new NCryptBuffer(KeyDerivationBufferType.NCRYPTBUFFER_PKCS_KEY_NAME, keyName);
             var bufferDesc = new NCryptBufferDesc(nameBuf);
@@ -217,6 +217,43 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
                 {
                     throw new KeyStoreException(string.Format("NCryptImportKey failed with code: {0}", r));
                 }
+                SetKeyPropertiesAndFinalize(hKey, properties);
+            }
+        }
+
+        private void SetKeyPropertiesAndFinalize(SafeNCRYPT_KEY_HANDLE phKey, CNGKeyEntryProperties? properties)
+        {
+            HRESULT r;
+            if (properties != null)
+            {
+                int keyUsage = (properties.UsageAllowAll ? (int)KeyUsage.NCRYPT_ALLOW_ALL_USAGES : 0) |
+                               (properties.UsageAllowDecrypt ? (int)KeyUsage.NCRYPT_ALLOW_DECRYPT_FLAG : 0) |
+                               (properties.UsageAllowSigning ? (int)KeyUsage.NCRYPT_ALLOW_SIGNING_FLAG : 0) |
+                               (properties.UsageAllowKeyAgreement ? (int)KeyUsage.NCRYPT_ALLOW_KEY_AGREEMENT_FLAG : 0) |
+                               (properties.UsageAllowKeyAttestation ? 0x10 /* NCRYPT_ALLOW_KEY_ATTESTATION_FLAG */ : 0);
+                var v = BitConverter.GetBytes(keyUsage);
+                r = NCryptSetProperty(phKey, PropertyName.NCRYPT_KEY_USAGE_PROPERTY, v, (uint)v.Length, SetPropFlags.NCRYPT_PERSIST_FLAG | SetPropFlags.NCRYPT_SILENT_FLAG);
+                if (r != HRESULT.S_OK)
+                {
+                    log.Error(string.Format("NCryptSetProperty for property `{0}` failed with code: {1}", PropertyName.NCRYPT_KEY_USAGE_PROPERTY, r));
+                }
+
+                int exportPolicy = (properties.ExportAllowExport ? (int)ExportPolicy.NCRYPT_ALLOW_EXPORT_FLAG : 0) |
+                               (properties.ExportAllowPlainExport ? (int)ExportPolicy.NCRYPT_ALLOW_PLAINTEXT_EXPORT_FLAG : 0) |
+                               (properties.ExportAllowArchiving ? (int)ExportPolicy.NCRYPT_ALLOW_ARCHIVING_FLAG : 0) |
+                               (properties.ExportAllowPlainArchiving ? (int)ExportPolicy.NCRYPT_ALLOW_PLAINTEXT_ARCHIVING_FLAG : 0);
+                v = BitConverter.GetBytes(exportPolicy);
+                r = NCryptSetProperty(phKey, PropertyName.NCRYPT_EXPORT_POLICY_PROPERTY, v, (uint)v.Length, SetPropFlags.NCRYPT_PERSIST_FLAG | SetPropFlags.NCRYPT_SILENT_FLAG);
+                if (r != HRESULT.S_OK)
+                {
+                    log.Error(string.Format("NCryptSetProperty for property `{0}` failed with code: {1}", PropertyName.NCRYPT_EXPORT_POLICY_PROPERTY, r));
+                }
+            }
+
+            r = NCryptFinalizeKey(phKey);
+            if (r != HRESULT.S_OK)
+            {
+                throw new KeyStoreException(string.Format("NCryptFinalizeKey failed with code: {0}", r));
             }
         }
 
@@ -263,19 +300,7 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
                 throw new KeyStoreException(string.Format("NCryptCreatePersistedKey failed with code: {0}", r));
             }
 
-            /*int keyUsage = 0;
-            var v = BitConverter.GetBytes(keyUsage);
-            r = NCryptSetProperty(phKey, PropertyName.NCRYPT_KEY_USAGE_PROPERTY, v, (uint)v.Length, SetPropFlags.NCRYPT_PERSIST_FLAG | SetPropFlags.NCRYPT_SILENT_FLAG);
-            if (r != HRESULT.S_OK)
-            {
-                log.Error(string.Format("NCryptSetProperty for property `{0}` failed with code: {1}", PropertyName.NCRYPT_VERSION_PROPERTY, r));
-            }*/
-
-            r = NCryptFinalizeKey(phKey);
-            if (r != HRESULT.S_OK)
-            {
-                throw new KeyStoreException(string.Format("NCryptFinalizeKey failed with code: {0}", r));
-            }
+            SetKeyPropertiesAndFinalize(phKey, entry.Properties as CNGKeyEntryProperties);
 
             log.Info(string.Format("Key entry `{0}` generated.", entry.Identifier));
             return Task.FromResult(entry.Identifier);
@@ -364,10 +389,27 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
                 ke.Identifier = identifier;
                 ke.SetVariant(algo);
 
-                var v = _NCryptGetProperty(phKey, PropertyName.NCRYPT_KEY_USAGE_PROPERTY);
-                if (v != null && v.Length > 0)
+                if (ke.CNGProperties != null)
                 {
-                    var usages = BitConverter.ToInt32(v);
+                    var v = _NCryptGetProperty(phKey, PropertyName.NCRYPT_KEY_USAGE_PROPERTY);
+                    if (v != null && v.Length > 0)
+                    {
+                        var usages = BitConverter.ToInt32(v);
+                        ke.CNGProperties.UsageAllowAll = (usages == (int)KeyUsage.NCRYPT_ALLOW_ALL_USAGES);
+                        ke.CNGProperties.UsageAllowDecrypt = ((usages & (int)KeyUsage.NCRYPT_ALLOW_DECRYPT_FLAG) == (int)KeyUsage.NCRYPT_ALLOW_DECRYPT_FLAG);
+                        ke.CNGProperties.UsageAllowSigning = ((usages & (int)KeyUsage.NCRYPT_ALLOW_SIGNING_FLAG) == (int)KeyUsage.NCRYPT_ALLOW_SIGNING_FLAG);
+                        ke.CNGProperties.UsageAllowKeyAgreement = ((usages & (int)KeyUsage.NCRYPT_ALLOW_KEY_AGREEMENT_FLAG) == (int)KeyUsage.NCRYPT_ALLOW_KEY_AGREEMENT_FLAG);
+                        ke.CNGProperties.UsageAllowKeyAttestation = ((usages & 0x10 /* NCRYPT_ALLOW_KEY_ATTESTATION */) == 0x10);
+                    }
+                    v = _NCryptGetProperty(phKey, PropertyName.NCRYPT_EXPORT_POLICY_PROPERTY);
+                    if (v != null && v.Length > 0)
+                    {
+                        var exportPolicy = BitConverter.ToInt32(v);
+                        ke.CNGProperties.ExportAllowExport = ((exportPolicy & (int)ExportPolicy.NCRYPT_ALLOW_EXPORT_FLAG) == (int)ExportPolicy.NCRYPT_ALLOW_EXPORT_FLAG);
+                        ke.CNGProperties.ExportAllowPlainExport = ((exportPolicy & (int)ExportPolicy.NCRYPT_ALLOW_PLAINTEXT_EXPORT_FLAG) == (int)ExportPolicy.NCRYPT_ALLOW_PLAINTEXT_EXPORT_FLAG);
+                        ke.CNGProperties.ExportAllowArchiving = ((exportPolicy & (int)ExportPolicy.NCRYPT_ALLOW_ARCHIVING_FLAG) == (int)ExportPolicy.NCRYPT_ALLOW_ARCHIVING_FLAG);
+                        ke.CNGProperties.ExportAllowPlainArchiving = ((exportPolicy & (int)ExportPolicy.NCRYPT_ALLOW_PLAINTEXT_ARCHIVING_FLAG) == (int)ExportPolicy.NCRYPT_ALLOW_PLAINTEXT_ARCHIVING_FLAG);
+                    }
                 }
             }
             finally

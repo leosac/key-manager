@@ -61,6 +61,96 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow Archiving.
+        /// </summary>
+        public static string ExportAllowArchiving {
+            get {
+                return ResourceManager.GetString("ExportAllowArchiving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The private key can be exported once for archiving purposes..
+        /// </summary>
+        public static string ExportAllowArchivingHelper {
+            get {
+                return ResourceManager.GetString("ExportAllowArchivingHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow Export.
+        /// </summary>
+        public static string ExportAllowExport {
+            get {
+                return ResourceManager.GetString("ExportAllowExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The private key can be exported..
+        /// </summary>
+        public static string ExportAllowExportHelper {
+            get {
+                return ResourceManager.GetString("ExportAllowExportHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow Plain Archiving.
+        /// </summary>
+        public static string ExportAllowPlainArchiving {
+            get {
+                return ResourceManager.GetString("ExportAllowPlainArchiving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The private key can be exported once in plaintext form for archiving purposes..
+        /// </summary>
+        public static string ExportAllowPlainArchivingHelper {
+            get {
+                return ResourceManager.GetString("ExportAllowPlainArchivingHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow Plain Export.
+        /// </summary>
+        public static string ExportAllowPlainExport {
+            get {
+                return ResourceManager.GetString("ExportAllowPlainExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The private key can be exported in plaintext form..
+        /// </summary>
+        public static string ExportAllowPlainExportHelper {
+            get {
+                return ResourceManager.GetString("ExportAllowPlainExportHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export Policy.
+        /// </summary>
+        public static string ExportPolicy {
+            get {
+                return ResourceManager.GetString("ExportPolicy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key Usage.
+        /// </summary>
+        public static string KeyUsage {
+            get {
+                return ResourceManager.GetString("KeyUsage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
         public static string Password {
@@ -120,6 +210,96 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG.UI.Properties {
         public static string StoreSecret {
             get {
                 return ResourceManager.GetString("StoreSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow All.
+        /// </summary>
+        public static string UsageAllowAll {
+            get {
+                return ResourceManager.GetString("UsageAllowAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The key can be used for any purpose..
+        /// </summary>
+        public static string UsageAllowAllHelper {
+            get {
+                return ResourceManager.GetString("UsageAllowAllHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow Decrypt.
+        /// </summary>
+        public static string UsageAllowDecrypt {
+            get {
+                return ResourceManager.GetString("UsageAllowDecrypt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The key can be used for decryption..
+        /// </summary>
+        public static string UsageAllowDecryptHelper {
+            get {
+                return ResourceManager.GetString("UsageAllowDecryptHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow Key Agreement.
+        /// </summary>
+        public static string UsageAllowKeyAgreement {
+            get {
+                return ResourceManager.GetString("UsageAllowKeyAgreement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The key can be used for secret agreement encryption..
+        /// </summary>
+        public static string UsageAllowKeyAgreementHelper {
+            get {
+                return ResourceManager.GetString("UsageAllowKeyAgreementHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow Key Attestation.
+        /// </summary>
+        public static string UsageAllowKeyAttestation {
+            get {
+                return ResourceManager.GetString("UsageAllowKeyAttestation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indicates the key is a key with attestation..
+        /// </summary>
+        public static string UsageAllowKeyAttestationHelper {
+            get {
+                return ResourceManager.GetString("UsageAllowKeyAttestationHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow Signing.
+        /// </summary>
+        public static string UsageAllowSigning {
+            get {
+                return ResourceManager.GetString("UsageAllowSigning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The key can be used for signing..
+        /// </summary>
+        public static string UsageAllowSigningHelper {
+            get {
+                return ResourceManager.GetString("UsageAllowSigningHelper", resourceCulture);
             }
         }
     }

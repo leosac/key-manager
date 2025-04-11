@@ -138,4 +138,64 @@
   <data name="StoreSecret" xml:space="preserve">
     <value>Save</value>
   </data>
+  <data name="UsageAllowAll" xml:space="preserve">
+    <value>Allow All</value>
+  </data>
+  <data name="UsageAllowAllHelper" xml:space="preserve">
+    <value>The key can be used for any purpose.</value>
+  </data>
+  <data name="UsageAllowDecrypt" xml:space="preserve">
+    <value>Allow Decrypt</value>
+  </data>
+  <data name="UsageAllowDecryptHelper" xml:space="preserve">
+    <value>The key can be used for decryption.</value>
+  </data>
+  <data name="UsageAllowSigning" xml:space="preserve">
+    <value>Allow Signing</value>
+  </data>
+  <data name="UsageAllowSigningHelper" xml:space="preserve">
+    <value>The key can be used for signing.</value>
+  </data>
+  <data name="UsageAllowKeyAgreementHelper" xml:space="preserve">
+    <value>The key can be used for secret agreement encryption.</value>
+  </data>
+  <data name="UsageAllowKeyAgreement" xml:space="preserve">
+    <value>Allow Key Agreement</value>
+  </data>
+  <data name="UsageAllowKeyAttestation" xml:space="preserve">
+    <value>Allow Key Attestation</value>
+  </data>
+  <data name="UsageAllowKeyAttestationHelper" xml:space="preserve">
+    <value>Indicates the key is a key with attestation.</value>
+  </data>
+  <data name="KeyUsage" xml:space="preserve">
+    <value>Key Usage</value>
+  </data>
+  <data name="ExportPolicy" xml:space="preserve">
+    <value>Export Policy</value>
+  </data>
+  <data name="ExportAllowExport" xml:space="preserve">
+    <value>Allow Export</value>
+  </data>
+  <data name="ExportAllowExportHelper" xml:space="preserve">
+    <value>The private key can be exported.</value>
+  </data>
+  <data name="ExportAllowPlainExport" xml:space="preserve">
+    <value>Allow Plain Export</value>
+  </data>
+  <data name="ExportAllowPlainExportHelper" xml:space="preserve">
+    <value>The private key can be exported in plaintext form.</value>
+  </data>
+  <data name="ExportAllowArchiving" xml:space="preserve">
+    <value>Allow Archiving</value>
+  </data>
+  <data name="ExportAllowArchivingHelper" xml:space="preserve">
+    <value>The private key can be exported once for archiving purposes.</value>
+  </data>
+  <data name="ExportAllowPlainArchiving" xml:space="preserve">
+    <value>Allow Plain Archiving</value>
+  </data>
+  <data name="ExportAllowPlainArchivingHelper" xml:space="preserve">
+    <value>The private key can be exported once in plaintext form for archiving purposes.</value>
+  </data>
 </root>

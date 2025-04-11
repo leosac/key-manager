@@ -138,4 +138,64 @@
   <data name="StoreSecret" xml:space="preserve">
     <value>Enregistrer</value>
   </data>
+  <data name="UsageAllowAll" xml:space="preserve">
+    <value>Tout autoriser</value>
+  </data>
+  <data name="UsageAllowAllHelper" xml:space="preserve">
+    <value>La clé peut être utilisée pour tous les usages.</value>
+  </data>
+  <data name="UsageAllowDecrypt" xml:space="preserve">
+    <value>Autoriser le déchiffrement</value>
+  </data>
+  <data name="UsageAllowDecryptHelper" xml:space="preserve">
+    <value>La clé peut être utilisée pour le déchiffrement de données.</value>
+  </data>
+  <data name="UsageAllowSigning" xml:space="preserve">
+    <value>Autoriser la signature</value>
+  </data>
+  <data name="UsageAllowSigningHelper" xml:space="preserve">
+    <value>La clé peut être utilisée pour la signature de données.</value>
+  </data>
+  <data name="UsageAllowKeyAgreementHelper" xml:space="preserve">
+    <value>La clé peut être utilisée pour le chiffrement d'accords secrets.</value>
+  </data>
+  <data name="UsageAllowKeyAgreement" xml:space="preserve">
+    <value>Autoriser l'accord de clé</value>
+  </data>
+  <data name="UsageAllowKeyAttestation" xml:space="preserve">
+    <value>Autoriser l'attestation de clé</value>
+  </data>
+  <data name="UsageAllowKeyAttestationHelper" xml:space="preserve">
+    <value>Indique que la clé est une clé avec attestation.</value>
+  </data>
+  <data name="KeyUsage" xml:space="preserve">
+    <value>Usage de la clé</value>
+  </data>
+  <data name="ExportPolicy" xml:space="preserve">
+    <value>Politique d'export</value>
+  </data>
+  <data name="ExportAllowExport" xml:space="preserve">
+    <value>Autoriser l'export</value>
+  </data>
+  <data name="ExportAllowExportHelper" xml:space="preserve">
+    <value>La clé privée peut être exportée.</value>
+  </data>
+  <data name="ExportAllowPlainExport" xml:space="preserve">
+    <value>Autoriser l'export en clair</value>
+  </data>
+  <data name="ExportAllowPlainExportHelper" xml:space="preserve">
+    <value>La clé privée peut être exportée en clair.</value>
+  </data>
+  <data name="ExportAllowArchiving" xml:space="preserve">
+    <value>Autoriser l'archivage</value>
+  </data>
+  <data name="ExportAllowArchivingHelper" xml:space="preserve">
+    <value>La clé privée peut être utilisée pour des usages d'archivage.</value>
+  </data>
+  <data name="ExportAllowPlainArchiving" xml:space="preserve">
+    <value>Autoriser l'archivage en clair</value>
+  </data>
+  <data name="ExportAllowPlainArchivingHelper" xml:space="preserve">
+    <value>La clé privée peut être utilisée pour des usages d'archivage en clair.</value>
+  </data>
 </root>
