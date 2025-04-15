@@ -261,7 +261,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
                     if (key != null)
                     {
                         // We should already have only one key material during an update
-                        await _keyAPI!.Update(key.Id, key);
+                        await _keyAPI!.Update(key);
                     }
                 }
             }

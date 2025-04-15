@@ -95,7 +95,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             {
                 algo = keyType;
             }
-            return CreateVariantFromAlgo(algo, keySize);
+            return CreateVariantFromAlgo<KeyVersion>(algo, keySize);
         }
 
         public static string GetKeyTypeFromVariant(KeyEntryVariant variant)

@@ -73,7 +73,7 @@ namespace Leosac.KeyManager.Library.KeyStore
             return kclass;
         }
 
-        protected KeyEntryVariant CreateVariantFromAlgo(string algo, uint keySize)
+        protected KeyEntryVariant CreateVariantFromAlgo<T>(string algo, uint keySize) where T : KeyContainer, new()
         {
             var variant = new KeyEntryVariant { Name = algo };
             var tags = new[]
@@ -81,7 +81,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                     algo,
                     KClass.ToString()
             };
-            variant.KeyContainers.Add(new KeyContainer("Key", new Key(tags, keySize)));
+            variant.KeyContainers.Add(new T { Name = "Key", Key = new Key(tags, keySize) });
             return variant;
         }
 

@@ -56,7 +56,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
         public KeyEntryVariant CreateVariantFromCKK(CKK ckk)
         {
             var algo = ckk.ToString().Remove(0, 4);
-            return CreateVariantFromAlgo(algo, GetKeySize(ckk));
+            return CreateVariantFromAlgo<KeyContainer>(algo, GetKeySize(ckk));
         }
 
         private static uint GetKeySize(CKK ckk)
