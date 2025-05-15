@@ -31,11 +31,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Leosac.WpfApp" Version="1.24.0" />
+    <PackageReference Include="Leosac.WpfApp" Version="1.25.0" />
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
     <PackageReference Include="Net.Codecrete.QrCodeGenerator" Version="2.0.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="SkiaSharp" Version="3.116.1" />
+    <PackageReference Include="SkiaSharp" Version="3.119.0" />
     <PackageReference Include="System.Speech" Version="8.0.0" />
   </ItemGroup>
 

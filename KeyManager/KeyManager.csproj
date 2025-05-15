@@ -25,8 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Leosac.WpfApp" Version="1.24.0" />
-    <PackageReference Include="log4net" Version="3.0.4" />
+    <PackageReference Include="Leosac.WpfApp" Version="1.25.0" />
+    <PackageReference Include="log4net" Version="3.1.0" />
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
