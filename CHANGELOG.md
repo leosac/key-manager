@@ -1,4 +1,10 @@
-# v1.20.0 - 08/01/2025
+# v1.21.0 - 06/11/2025
+ - Add new CryptoNG Key Store
+ - Add an option on NXP SAM key store properties to define the authentication mode (Unlock / AuthenticateHost)
+ - Fix LCP key store opening
+ - Enhance Synchronic SAM-SE key store (details on a06dedc9734942b7e3e36a8deada9465d9a1e3e6)
+
+# v1.20.0 - 01/08/2025
  - Add random number generator feature to Key Store and allow to use an existing favorite as a random number generator for local key generation
  - Add support for numeric sort on key entry id
  - Improve key versions listing UI
@@ -6,7 +12,7 @@
  - Fix uncatched exception during key ceremony generation
  - Fix potential crash during key printing
 
-# v1.19.0 - 26/10/2024
+# v1.19.0 - 10/26/2024
  - Add KCV variants
  - Add KCV selection auto saving
  - Add key entries Sort feature

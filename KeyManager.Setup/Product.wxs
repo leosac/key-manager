@@ -21,6 +21,7 @@
       <ComponentGroupRef Id="DependenciesComponents" />
       <ComponentGroupRef Id="HSM_PKCS11PluginDependenciesComponents" />
       <ComponentGroupRef Id="LCPPluginDependenciesComponents" />
+	  <ComponentGroupRef Id="NXP_SAMPluginDependenciesComponents" />
       <ComponentGroupRef Id="CNGPluginDependenciesComponents" />
 		</Feature>
     <Feature Id="AdditionalPluginsFeature" Title="!(loc.AdditionalPlugins)" Description="!(loc.AdditionalPluginsDescr)" Level="1">
@@ -426,7 +427,7 @@
       <Component Id="VanaraPInvokeCryptographyComponent">
         <File Id="___var.Vanara.PInvoke.Cryptography.dll_" Source="$(var.KeyManager.Library.KeyStore.CNG.TargetDir)\Vanara.PInvoke.Cryptography.dll" />
       </Component>
-      <Component Id="VanaraCoreComponent">
+      <Component Id="VanaraPInvokeSharedComponent">
         <File Id="___var.Vanara.PInvoke.Shared.dll_" Source="$(var.KeyManager.Library.KeyStore.CNG.TargetDir)\Vanara.PInvoke.Shared.dll" />
       </Component>
     </ComponentGroup>
