@@ -14,13 +14,14 @@
       <ComponentGroupRef Id="LCPPluginComponents" />
       <ComponentGroupRef Id="MemoryPluginComponents" />
       <ComponentGroupRef Id="NXP_SAMPluginComponents" />
+      <ComponentGroupRef Id="CNGPluginComponents" />
       <ComponentGroupRef Id="WinRuntimeComponents" />
       <ComponentGroupRef Id="NativeWinx64RuntimeComponents" />
       <ComponentGroupRef Id="NativeWinx86RuntimeComponents" />
       <ComponentGroupRef Id="DependenciesComponents" />
       <ComponentGroupRef Id="HSM_PKCS11PluginDependenciesComponents" />
       <ComponentGroupRef Id="LCPPluginDependenciesComponents" />
-      <ComponentGroupRef Id="NXP_SAMPluginDependenciesComponents" />
+      <ComponentGroupRef Id="CNGPluginDependenciesComponents" />
 		</Feature>
     <Feature Id="AdditionalPluginsFeature" Title="!(loc.AdditionalPlugins)" Description="!(loc.AdditionalPluginsDescr)" Level="1">
       <Feature Id="SAM_SEFeature" Title="!(loc.SAM_SEFeature)" Description="!(loc.SAM_SEFeatureDescr)" Level="1" AllowAbsent="yes">
@@ -39,6 +40,7 @@
         <ComponentGroupRef Id="HSM_PKCS11PluginResourcesFR" />
         <ComponentGroupRef Id="LCPPluginResourcesFR" />
         <ComponentGroupRef Id="NXP_SAMPluginResourcesFR" />
+        <ComponentGroupRef Id="CNGPluginResourcesFR" />
       </Feature>
       <Feature Id="SAM_SEFeatureFrench" Title="!(loc.SAM_SEFrenchFeature)" Description="!(loc.SAM_SEFrenchFeatureDescr)" Level="1" AllowAbsent="yes">
         <ComponentGroupRef Id="SAM_SEPluginResourcesFR" />
@@ -113,6 +115,9 @@
               </Directory>
               <Directory Id="SAM_SEPLUGIN" Name="SAM_SE">
                 <Directory Id="SAM_SEPLUGINFR" Name="fr" />
+              </Directory>
+              <Directory Id="CNGPLUGIN" Name="CNG">
+                <Directory Id="CNGPLUGINFR" Name="fr" />
               </Directory>
             </Directory>
             <Directory Id="APPRUNTIMES" Name="runtimes">
@@ -234,6 +239,14 @@
         <File Id="___var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.UI.TargetPath)" />
       </Component>
     </ComponentGroup>
+    <ComponentGroup Id="CNGPluginComponents" Directory="CNGPLUGIN">
+      <Component Id="KeyManagerLibraryCNGComponent">
+        <File Id="___var.KeyManager.Library.KeyStore.CNG.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.CNG.TargetPath)" />
+      </Component>
+      <Component Id="KeyManagerLibraryCNGUIComponent">
+        <File Id="___var.KeyManager.Library.KeyStore.CNG.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.CNG.UI.TargetPath)" />
+      </Component>
+    </ComponentGroup>
     <ComponentGroup Id="SAM_SEPluginComponents" Directory="SAM_SEPLUGIN">
       <Component Id="KeyManagerLibraryKeyStoreSAM_SEComponent">
         <File Id="___var.KeyManager.Library.KeyStore.SAM_SE.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.SAM_SE.TargetPath)" />
@@ -275,6 +288,11 @@
     <ComponentGroup Id="SAM_SEPluginResourcesFR" Directory="SAM_SEPLUGINFR">
       <Component Id="KeyManagerLibraryKeyStoreSAM_SEUIResourcesFRComponent">
         <File Id="___var.KeyManager.Library.KeyStore.SAM_SE.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.SAM_SE.UI.TargetDir)\fr\KeyManager.Library.KeyStore.SAM_SE.UI.resources.dll" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="CNGPluginResourcesFR" Directory="CNGPLUGINFR">
+      <Component Id="KeyManagerLibraryKeyStoreCNGUIResourcesFRComponent">
+        <File Id="___var.KeyManager.Library.KeyStore.CNG.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.CNG.UI.TargetDir)\fr\KeyManager.Library.KeyStore.CNG.UI.resources.dll" />
       </Component>
     </ComponentGroup>
 
@@ -399,6 +417,17 @@
     <ComponentGroup Id="NXP_SAMPluginDependenciesComponents" Directory="NXP_SAMPLUGIN">
       <Component Id="LibLogicalAccessNetCEComponent">
         <File Id="___var.LibLogicalAccessNetCE.dll_" Source="$(var.KeyManager.Library.KeyStore.NXP_SAM.TargetDir)\LibLogicalAccessNetCE.dll" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="CNGPluginDependenciesComponents" Directory="CNGPLUGIN">
+      <Component Id="VanaraCoreComponent">
+        <File Id="___var.Vanara.Core.dll_" Source="$(var.KeyManager.Library.KeyStore.CNG.TargetDir)\Vanara.Core.dll" />
+      </Component>
+      <Component Id="VanaraPInvokeCryptographyComponent">
+        <File Id="___var.Vanara.PInvoke.Cryptography.dll_" Source="$(var.KeyManager.Library.KeyStore.CNG.TargetDir)\Vanara.PInvoke.Cryptography.dll" />
+      </Component>
+      <Component Id="VanaraCoreComponent">
+        <File Id="___var.Vanara.PInvoke.Shared.dll_" Source="$(var.KeyManager.Library.KeyStore.CNG.TargetDir)\Vanara.PInvoke.Shared.dll" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="SAM_SEPluginDependenciesComponents" Directory="SAM_SEPLUGIN">
