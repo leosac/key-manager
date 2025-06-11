@@ -355,8 +355,6 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
             }
         }
 
-
-
         private unsafe byte[]? _NCryptGetProperty(SafeNCRYPT_KEY_HANDLE phKey, string propertyName)
         {
             uint pcbResult = 0;
@@ -436,6 +434,73 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
             }
 
             return ke;
+        }
+
+        protected async Task<byte[]> _ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, WrappingKey? wrappingKey)
+        {
+            SafeNCRYPT_KEY_HANDLE phKey;
+            if (!await CheckKeyEntryExists(keyIdentifier, keClass, out phKey))
+            {
+                log.Error(string.Format("The key entry `{0}` doesn't exist.", keyIdentifier));
+                throw new KeyStoreException("The key entry doesn't exist.");
+            }
+
+            SafeNCRYPT_KEY_HANDLE? phExportKey = null;
+            if (wrappingKey != null && wrappingKey.KeyId.IsConfigured())
+            {
+                if (!await CheckKeyEntryExists(wrappingKey.KeyId, keClass, out phExportKey))
+                {
+                    log.Error(string.Format("The key entry `{0}` doesn't exist.", keyIdentifier));
+                    throw new KeyStoreException("The key entry doesn't exist.");
+                }
+            }
+
+            SafeAllocatedMemoryHandle pbOutput;
+            HRESULT r = NCryptExportKey(phKey, phExportKey != null ? phExportKey : IntPtr.Zero, "CipherKeyBlob", out pbOutput);
+            if (r != HRESULT.S_OK)
+            {
+                throw new KeyStoreException(string.Format("NCryptExportKey failed with code: {0}", r));
+            }
+
+            return pbOutput.GetBytes();
+        }
+
+        public override async Task<string?> ResolveKeyEntryLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? divInput, WrappingKey? wrappingKey, KeyEntryId? targetKeyIdentifier)
+        {
+            log.Info(string.Format("Resolving key entry link with Key Entry Identifier `{0}` and Wrapping Key Entry Identifier `{1}`...", keyIdentifier, wrappingKey?.KeyId));
+            if (!string.IsNullOrEmpty(divInput))
+            {
+                throw new KeyStoreException("Div input is not supported by the CNG key store.");
+            }
+
+            return Convert.ToHexString(await _ResolveKeyEntryLink(keyIdentifier, keClass, wrappingKey));
+        }
+
+        public override async Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput)
+        {
+            log.Info(string.Format("Resolving key link with Key Entry Identifier `{0}`, Key Version `{1}`, Div Input `{2}`...", keyIdentifier, containerSelector, divInput));
+            if (!string.IsNullOrEmpty(divInput))
+            {
+                throw new KeyStoreException("Div input is not supported by the CNG key store.");
+            }
+
+            var keLink = await _ResolveKeyEntryLink(keyIdentifier, keClass, null);
+            if (keLink.Length < 12)
+            {
+                throw new KeyStoreException("Unexpected key buffer length.");
+            }
+            var algolen = (keLink[11] << 24) | (keLink[10] << 16) | (keLink[9] << 8) | keLink[8];
+            if (keLink.Length < 28 + algolen)
+            {
+                throw new KeyStoreException("Unexpected key buffer length.");
+            }
+            var keylen = (keLink[27 + algolen] << 24) | (keLink[26 + algolen] << 16) | (keLink[25 + algolen] << 8) | keLink[24 + algolen];
+            var p = s_cipherKeyBlobPrefixP1.Length + algolen + s_cipherKeyBlobPrefixP2.Length;
+            if (keLink.Length < p + keylen)
+            {
+                throw new KeyStoreException("Unexpected key buffer length.");
+            }
+            return Convert.ToHexString(keLink[p..(p+keylen)]);
         }
 
         public override async Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass)
