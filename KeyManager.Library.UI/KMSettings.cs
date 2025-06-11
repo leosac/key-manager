@@ -26,6 +26,13 @@ namespace Leosac.KeyManager.Library.UI
 
         public StoredSecretEncryptionType EncryptionType { get; set; } = StoredSecretEncryptionType.CustomKey;
 
+        private string? _defaultFavoriteLink;
+        public string? DefaultFavoriteLink
+        {
+            get => _defaultFavoriteLink;
+            set => SetProperty(ref _defaultFavoriteLink, value);
+        }
+
         public static string? ComputeCodeHash(string? code)
         {
             if (string.IsNullOrEmpty(code))

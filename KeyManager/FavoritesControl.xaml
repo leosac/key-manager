@@ -187,7 +187,21 @@
                             </materialDesign:DialogHost>
                         </WrapPanel>
                         <TextBlock DockPanel.Dock="Right" Text="{Binding CreationDate}" Grid.Column="1" Margin="5" VerticalAlignment="Center" />
-                        <TextBlock FontSize="18" FontWeight="Bold" Text="{Binding Name}" Grid.Column="0" Margin="5" VerticalAlignment="Center" />
+                        <WrapPanel>
+                            <TextBlock FontSize="18" FontWeight="Bold" Text="{Binding Name}" Margin="5" VerticalAlignment="Center" />
+                            <ListBox ItemsSource="{Binding Tags}" >
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Padding" Value="0" />
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <materialDesign:Chip Content="{Binding}" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </WrapPanel>
                     </DockPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

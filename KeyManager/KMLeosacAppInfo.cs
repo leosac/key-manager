@@ -47,6 +47,10 @@ namespace Leosac.KeyManager
                 UIPreferences.IsUserElevated = string.IsNullOrEmpty(settings?.ElevationCode);
             }
             EncryptJsonConverter.ChangeEncryption((settings?.EncryptionType).GetValueOrDefault(StoredSecretEncryptionType.CustomKey));
+            if (!string.IsNullOrEmpty(settings?.DefaultFavoriteLink))
+            {
+                Link.StorePlaceholder = settings.DefaultFavoriteLink;
+            }
 
             var HomeCommand = new RelayCommand(
                 () =>

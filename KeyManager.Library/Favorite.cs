@@ -44,6 +44,13 @@ namespace Leosac.KeyManager.Library
             set => SetProperty(ref _creationDate, value);
         }
 
+        private string[] _tags = [];
+        public string[] Tags
+        {
+            get => _tags;
+            set => SetProperty(ref _tags, value);
+        }
+
         public override bool Equals(object? obj)
         {
             return this.Equals(obj as Favorite);

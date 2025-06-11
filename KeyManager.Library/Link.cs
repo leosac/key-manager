@@ -7,7 +7,7 @@ namespace Leosac.KeyManager.Library
 {
     public class Link : ObservableObject
     {
-        public static string StorePlaceholder => "Key Store Placeholder";
+        public static string StorePlaceholder { get; set; } = "Key Store Placeholder";
 
         public Link()
         {
