@@ -285,6 +285,7 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             {
                 key.Id = Guid.Parse(identifier.Id);
             }
+            key.Name = identifier.Label ?? "New Key";
 
             if (variant != null)
             {
