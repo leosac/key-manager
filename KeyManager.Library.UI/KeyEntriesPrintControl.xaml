@@ -9,7 +9,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="800">
+             d:DesignHeight="800" d:DesignWidth="800">
     <StackPanel>
         <materialDesign:ColorZone Padding="16"
                                     materialDesign:ElevationAssist.Elevation="Dp4"
@@ -25,7 +25,7 @@
             </DockPanel>
         </materialDesign:ColorZone>
 
-        <ListView ItemsSource="{Binding KeyEntries, ElementName=userControl}" HorizontalAlignment="Stretch" MinHeight="375">
+        <ListView ItemsSource="{Binding KeyEntries, ElementName=userControl}" HorizontalAlignment="Stretch" MinHeight="475">
             <ListView.Background>
                 <ImageBrush ImageSource="pack://application:,,,/KeyManager.Library.UI;component/images/confidential.png" Stretch="UniformToFill" Opacity="0.2" />
             </ListView.Background>
@@ -37,6 +37,20 @@
                 </GridView>
             </ListView.View>
         </ListView>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Border Grid.Row="0" Grid.Column="0" BorderBrush="Black" BorderThickness="1" />
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static properties:Resources.Note}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
+            <Border Grid.Row="0" Grid.Column="1" BorderBrush="Black" BorderThickness="1" />
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Note, ElementName=userControl}" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" />
+        </Grid>
 
         <materialDesign:ColorZone Padding="16"
                                     materialDesign:ElevationAssist.Elevation="Dp4"
