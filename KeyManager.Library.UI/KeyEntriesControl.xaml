@@ -117,6 +117,11 @@
                                             <materialDesign:PackIcon Kind="CheckAll" Height="24" Width="24" Cursor="Hand" />
                                         </materialDesign:Badged>
                                     </Button>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
+                                            Command="{Binding PrintSelectionCommand}"
+                                            ToolTip="{x:Static properties:Resources.PrintSelection}" Margin="5">
+                                        <materialDesign:PackIcon Kind="Printer" Height="24" Width="24" Cursor="Hand" />
+                                    </Button>
                                     <Button x:Name="btnDeleteKeyEntry" Style="{StaticResource MaterialDesignFloatingActionButton}"
                                             Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
                                             ToolTip="{x:Static properties:Resources.DeleteKeyEntry}"

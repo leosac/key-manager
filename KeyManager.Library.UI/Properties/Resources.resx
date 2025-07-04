@@ -591,4 +591,10 @@
   <data name="RandomGenerator" xml:space="preserve">
     <value>Random Number Generator</value>
   </data>
+  <data name="PrintSelection" xml:space="preserve">
+    <value>View as Printable List</value>
+  </data>
+  <data name="KeyEntriesExportPrint" xml:space="preserve">
+    <value>Key Entries Export/Print</value>
+  </data>
 </root>

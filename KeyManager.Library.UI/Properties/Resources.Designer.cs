@@ -673,6 +673,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Key Entries Export/Print.
+        /// </summary>
+        public static string KeyEntriesExportPrint {
+            get {
+                return ResourceManager.GetString("KeyEntriesExportPrint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Key Entry.
         /// </summary>
         public static string KeyEntry {
@@ -1195,6 +1204,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View as Printable List.
+        /// </summary>
+        public static string PrintSelection {
+            get {
+                return ResourceManager.GetString("PrintSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish to another Key Store.
         /// </summary>
         public static string PublishKeyStore {
@@ -1238,18 +1256,16 @@ namespace Leosac.KeyManager.Library.UI.Properties {
                 return ResourceManager.GetString("Random", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Random Number Generator.
         /// </summary>
-        public static string RandomGenerator
-        {
-            get
-            {
+        public static string RandomGenerator {
+            get {
                 return ResourceManager.GetString("RandomGenerator", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Random Length.
         /// </summary>

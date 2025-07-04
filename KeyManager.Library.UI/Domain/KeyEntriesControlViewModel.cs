@@ -1,12 +1,14 @@
-﻿using Leosac.KeyManager.Library.KeyStore;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin.UI;
 using Leosac.WpfApp;
 using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
 
 namespace Leosac.KeyManager.Library.UI.Domain
@@ -191,6 +193,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
                         ToggleAllSelection(!Identifiers[0].Selected);
                     }
                 });
+
+            PrintSelectionCommand = new AsyncRelayCommand(PrintSelection);
 
             OrderingCommand = new RelayCommand<string>(Ordering);
 
@@ -505,11 +509,43 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public RelayCommand ToggleSelectionCommand { get; }
 
+        public AsyncRelayCommand PrintSelectionCommand { get; }
+
         private void ToggleAllSelection(bool selected)
         {
             foreach (var identifier in Identifiers)
             {
                 identifier.Selected = selected;
+            }
+        }
+
+        private async Task PrintSelection()
+        {
+            var printDialog = new PrintDialog();
+            var control = new KeyEntriesPrintControl();
+            foreach (var identifier in Identifiers)
+            {
+                if (identifier.Selected && identifier.KeyEntryId != null && KeyStore != null)
+                {
+                    var ke = await KeyStore.Get(identifier.KeyEntryId, KeyEntryClass);
+                    if (ke != null)
+                    {
+                        control.KeyEntries.Add(ke);
+                    }
+                }
+            }
+
+            if (control.KeyEntries.Count > 0 && printDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    // TODO: print a FlowDocument instead, as PrintVisual needs control to match 1 page
+                    printDialog.PrintVisual(control, "Leosac Key Manager - Key Entries Printing");
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Key entries printing error.", ex);
+                }
             }
         }
 
