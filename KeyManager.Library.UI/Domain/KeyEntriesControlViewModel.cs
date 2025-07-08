@@ -1,15 +1,20 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Leosac.KeyManager.Library.KeyGen;
 using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin.UI;
 using Leosac.WpfApp;
 using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Leosac.KeyManager.Library.UI.Domain
 {
@@ -519,34 +524,226 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
+        private string ConvertPropertyNameToHumanFriendlyName(string propertyName)
+        {
+            return Regex.Replace(Regex.Replace(propertyName, @"(\P{Ll})(\P{Ll}\p{Ll})", "$1 $2"), @"(\p{Ll})(\P{Ll})", "$1 $2");
+        }
+
         private async Task PrintSelection()
         {
             var printDialog = new PrintDialog();
-            var control = new KeyEntriesPrintControl();
-            foreach (var identifier in Identifiers)
+
+            var flow = new FlowDocument();
+            var header = new Section() { Background = Brushes.Orange };
+            header.Blocks.Add(new Paragraph(new Run(Properties.Resources.KeyEntriesExportPrint) { FontSize = 20, FontWeight = FontWeights.Bold }));
+            flow.Blocks.Add(header);
+            var content = new Section();
+            var table = new Table();
+            table.Columns.Add(new TableColumn());
+            table.Columns.Add(new TableColumn());
+            table.Columns.Add(new TableColumn());
+            var tableHeader = new TableRowGroup();
+            tableHeader.Rows.Add(new TableRow
             {
-                if (identifier.Selected && identifier.KeyEntryId != null && KeyStore != null)
+                Background = Brushes.LightGray,
+                FontWeight = FontWeights.Bold,
+                Cells =
+                {
+                    new TableCell(new Paragraph(new Run(Properties.Resources.KeyEntryIdentifier))),
+                    new TableCell(new Paragraph(new Run(Properties.Resources.KeyEntryLabel))),
+                    new TableCell(new Paragraph(new Run(Properties.Resources.KeyEntryVariant))),
+                    new TableCell(new Paragraph(new Run(Properties.Resources.KeyValue))),
+                    new TableCell(new Paragraph(new Run(Properties.Resources.KeyEntryProperties)))
+                }
+            });
+            table.RowGroups.Add(tableHeader);
+            var tableRows = new TableRowGroup();
+            foreach (var identifier in GetSelectedIdentifiers() ?? Identifiers)
+            {
+                if (identifier.KeyEntryId != null && KeyStore != null)
                 {
                     var ke = await KeyStore.Get(identifier.KeyEntryId, KeyEntryClass);
                     if (ke != null)
                     {
-                        control.KeyEntries.Add(ke);
+                        var border = new Thickness(0, 1, 0, 0);
+                        var vcell = new TableCell() { BorderBrush = Brushes.Black, BorderThickness = border };
+                        var pcell = new TableCell() { BorderBrush = Brushes.Black, BorderThickness = border };
+                        tableHeader.Rows.Add(new TableRow
+                        {
+                            Cells =
+                            {
+                                new TableCell(new Paragraph(new Run(ke.Identifier.Id))) { BorderBrush = Brushes.Black, BorderThickness = border },
+                                new TableCell(new Paragraph(new Run(ke.Identifier.Label))) { BorderBrush = Brushes.Black, BorderThickness = border },
+                                new TableCell(new Paragraph(new Run(ke.Variant?.Name))) { BorderBrush = Brushes.Black, BorderThickness = border },
+                                vcell,
+                                pcell,
+                            }
+                        });
+                        if (ke.Properties != null)
+                        {
+                            var l = new List() { FontSize = 12, Margin = new Thickness(0) };
+                            var t = ke.Properties.GetType();
+                            var props = t.GetProperties();
+                            foreach (var p in props)
+                            {
+                                if (p.CanRead && p.CanWrite)
+                                {
+                                    bool include = false;
+                                    var v = p.GetValue(ke.Properties);
+                                    if (v != null)
+                                    {
+                                        if (p.PropertyType == typeof(string) || p.PropertyType.IsEnum)
+                                        {
+                                            include = !string.IsNullOrWhiteSpace(v.ToString());
+                                        }
+                                        else if (p.PropertyType == typeof(bool))
+                                        {
+                                            include = (bool)v;
+                                        }
+                                    }
+                                    if (include)
+                                    {
+                                        l.ListItems.Add(new ListItem(new Paragraph(new Run(ConvertPropertyNameToHumanFriendlyName(p.Name) + ": " + v))));
+                                    }
+                                }
+                            }
+                            pcell.Blocks.Add(l);
+                        }
+                        if (ke.Variant != null)
+                        {
+                            var p = new Paragraph() { FontSize = 12 };
+                            foreach (var kc in ke.Variant.KeyContainers)
+                            {
+                                if (p.Inlines.Count > 0)
+                                {
+                                    p.Inlines.Add(new LineBreak());
+                                }
+                                if (kc is KeyVersion kv)
+                                {
+                                    p.Inlines.Add(new Run(kv.Version + ": "));
+                                }
+                                string? c = null;
+                                if (ke.KClass == KeyEntryClass.Symmetric)
+                                {
+                                    var v = kc.Key.GetAggregatedValueAsString();
+                                    if (!string.IsNullOrEmpty(v))
+                                    {
+                                        var kcv = new KCV();
+                                        c = kcv.ComputeKCV(kc.Key);
+                                    }
+                                }
+
+                                if (!string.IsNullOrEmpty(c))
+                                {
+                                    p.Inlines.Add(new Run(c));
+                                }
+                                else
+                                {
+                                    p.Inlines.Add(new Run("-"));
+                                }
+                            }
+                            vcell.Blocks.Add(p);
+                        }
                     }
                 }
             }
+            table.RowGroups.Add(tableRows);
+            content.Blocks.Add(table);
+            flow.Blocks.Add(content);
 
-            if (control.KeyEntries.Count > 0 && printDialog.ShowDialog() == true)
+            var sign = new Section();
+            var stable = new Table()
+            {
+                Columns =
+                {
+                    new TableColumn(),
+                    new TableColumn() { Width = new GridLength(300) }
+                }
+            };
+            stable.RowGroups.Add(new TableRowGroup()
+            {
+                Rows =
+                {
+                    new TableRow()
+                    {
+                        Cells =
+                        {
+                            new TableCell(new Paragraph()
+                            {
+                                Inlines =
+                                {
+                                    new Run(Properties.Resources.Notes + ":") { FontWeight = FontWeights.Bold },
+                                    new LineBreak(),
+                                    new LineBreak(),
+                                    new LineBreak(),
+                                    new LineBreak(),
+                                    new LineBreak()
+                                }
+                            })
+                            {
+                                BorderBrush = Brushes.Black,
+                                BorderThickness = new Thickness(1)
+                            },
+                            new TableCell(new Section()
+                            {
+                                Blocks =
+                                {
+                                    new Paragraph(new Run(Properties.Resources.Date + ": " + DateTime.Now.ToShortDateString()))
+                                },
+                                Margin = new Thickness(5)
+                            })
+                        }
+                    }
+                }
+            });
+            sign.Blocks.Add(stable);
+            flow.Blocks.Add(sign);
+
+            var footer = new Section() { Background = Brushes.Orange };
+            var fp = new Paragraph(new Run(Properties.Resources.DocumentGenerated)) { Margin = new Thickness(5) };
+            fp.Inlines.Add(new Run(" Leosac Key Manager ") { FontWeight = FontWeights.Bold });
+            fp.Inlines.Add(new Run(" - "));
+            fp.Inlines.Add(new Hyperlink(new Run("www.leosac.com")) { NavigateUri = new Uri("https://www.leosac.com") });
+            footer.Blocks.Add(fp);
+            flow.Blocks.Add(footer);
+
+            printDialog.PrintTicket.PageOrientation = System.Printing.PageOrientation.Landscape;
+            if (printDialog.ShowDialog() == true)
             {
                 try
                 {
-                    // TODO: print a FlowDocument instead, as PrintVisual needs control to match 1 page
-                    printDialog.PrintVisual(control, "Leosac Key Manager - Key Entries Printing");
+                    flow.PageHeight = printDialog.PrintableAreaHeight;
+                    flow.PageWidth = printDialog.PrintableAreaWidth;
+                    flow.ColumnGap = 0;
+                    flow.ColumnWidth = double.MaxValue;
+
+                    var idocument = flow as IDocumentPaginatorSource;
+                    printDialog.PrintDocument(idocument.DocumentPaginator, "Leosac Key Manager - Key Entries Printing");
                 }
                 catch (Exception ex)
                 {
                     log.Error("Key entries printing error.", ex);
                 }
             }
+        }
+
+        private IEnumerable<SelectableKeyEntryId>? GetSelectedIdentifiers()
+        {
+            if (!ShowSelection)
+                return null;
+
+            var identifiers = new List<SelectableKeyEntryId>();
+            foreach (var obj in _identifiersView)
+            {
+                if (obj is SelectableKeyEntryId identifier)
+                {
+                    if (identifier.Selected && identifier.KeyEntryId != null)
+                    {
+                        identifiers.Add(identifier);
+                    }
+                }
+            }
+            return identifiers;
         }
 
         public RelayCommand<string> OrderingCommand { get; }

@@ -597,4 +597,10 @@
   <data name="KeyEntriesExportPrint" xml:space="preserve">
     <value>Export / Impression d'une liste d'enregistrements de clés</value>
   </data>
+  <data name="Notes" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
 </root>

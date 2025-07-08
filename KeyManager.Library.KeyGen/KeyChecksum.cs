@@ -34,7 +34,7 @@
             return Convert.ToHexString(ComputeKCV(new Key(tags, keySize, key), ivb));
         }
 
-        public string ComputeKCV(Key key, string? iv)
+        public string ComputeKCV(Key key, string? iv = null)
         {
             byte[]? ivb = null;
             if (!string.IsNullOrEmpty(iv))
