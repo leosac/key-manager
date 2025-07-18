@@ -34,6 +34,13 @@ namespace Leosac.KeyManager.Library.UI
             set { SetProperty(ref _defaultChecksumAlgorithm, value); }
         }
 
+        private string? _defaultOrdering;
+        public string? DefaultOrdering
+        {
+            get { return _defaultOrdering; }
+            set { SetProperty(ref _defaultOrdering, value); }
+        }
+
         [JsonIgnore]
         public static bool IsUserElevated { get; set; }
     }

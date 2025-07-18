@@ -205,6 +205,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
             _identifiersView = CollectionViewSource.GetDefaultView(Identifiers);
             _identifiersView.Filter = KeyEntryIdentifiersFilter;
+
+            var uipref = UIPreferences.GetSingletonInstance(false);
+            if (!string.IsNullOrEmpty(uipref?.DefaultOrdering))
+            {
+                Ordering(uipref.DefaultOrdering);
+            }
         }
 
         protected ISnackbarMessageQueue _snackbarMessageQueue;
@@ -774,6 +780,13 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 case "ByLabelDesc":
                     _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.Label", ListSortDirection.Descending));
                     break;
+            }
+
+            var uipref = UIPreferences.GetSingletonInstance(false) ?? new UIPreferences();
+            if (order != uipref.DefaultOrdering)
+            {
+                uipref.DefaultOrdering = order;
+                uipref.SaveToFile();
             }
         }
 
