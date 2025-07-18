@@ -1,3 +1,10 @@
+# v1.22.0 - xx/xx/2025
+ - Add feature to print list of key entries (for summaries)
+ - Save key entries ordering user choice
+
+# v1.21.1 - 06/19/2025
+ - Fix LCP key entry name definition
+
 # v1.21.0 - 06/11/2025
  - Add new CryptoNG Key Store
  - Add an option on NXP SAM key store properties to define the authentication mode (Unlock / AuthenticateHost)
