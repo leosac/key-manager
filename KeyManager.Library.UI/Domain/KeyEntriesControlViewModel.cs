@@ -755,6 +755,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public RelayCommand<string> OrderingCommand { get; }
         private void Ordering(string? order)
         {
+            Mouse.OverrideCursor = Cursors.Wait;
             _identifiersView.SortDescriptions.Clear();
             string idProperty = ((KeyStore?.IsNumericKeyId).GetValueOrDefault(false)) ? "KeyEntryId.NumericId" : "KeyEntryId.Id";
             switch (order)
@@ -788,6 +789,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 uipref.DefaultOrdering = order;
                 uipref.SaveToFile();
             }
+            Mouse.OverrideCursor = null;
         }
 
         public async Task RefreshKeyEntries()
@@ -827,7 +829,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public void RefreshKeyEntriesView()
         {
+            Mouse.OverrideCursor = Cursors.Wait;
             _identifiersView.Refresh();
+            Mouse.OverrideCursor = null;
         }
 
         private bool KeyEntryIdentifiersFilter(object obj)
