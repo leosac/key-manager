@@ -199,7 +199,7 @@
     <value>Désactiver la génération du MAC à partir d'une carte PICC</value>
   </data>
   <data name="DisableKeyEntry" xml:space="preserve">
-    <value>Désactiver l'enregistrement de clés</value>
+    <value>Désactiver la clé</value>
   </data>
   <data name="DisableVerifyMACFromPICC" xml:space="preserve">
     <value>Désactiver la vérification du MAC à partir d'une carte PICC</value>

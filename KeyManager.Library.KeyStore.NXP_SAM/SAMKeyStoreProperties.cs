@@ -1,4 +1,6 @@
-﻿using LibLogicalAccess.Card;
+﻿using Leosac.KeyManager.Library.DivInput;
+using LibLogicalAccess.Card;
+using System.Collections.ObjectModel;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 {
@@ -13,6 +15,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             _authenticateKeyType = DESFireKeyType.DF_KEY_AES;
             _authenticateKeyVersion = 0;
             _authenticationMode = SAMAuthenticationMode.Unlock;
+            AuthenticationDivInput = new ObservableCollection<DivInputFragment>();
         }
 
         private string _readerProvider;
@@ -70,6 +73,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             get => _authenticationMode;
             set => SetProperty(ref _authenticationMode, value);
         }
+
+        public ObservableCollection<DivInputFragment> AuthenticationDivInput { get; set; }
 
         private string? _forceCardType;
         public string? ForceCardType

@@ -706,6 +706,17 @@ namespace Leosac.KeyManager.Library.UI.Domain
             flow.Blocks.Add(sign);
 
             var footer = new Section() { Background = Brushes.Orange };
+            footer.Blocks.Add(new Paragraph()
+            {
+                Inlines =
+                {
+                    new Run(Properties.Resources.KeyExportDisclaimer1),
+                    new LineBreak(),
+                    new Run(Properties.Resources.KeyExportDisclaimer2)
+                },
+                TextAlignment = TextAlignment.Center,
+                FontSize = 12
+            });
             var fp = new Paragraph(new Run(Properties.Resources.DocumentGenerated)) { Margin = new Thickness(5) };
             fp.Inlines.Add(new Run(" Leosac Key Manager ") { FontWeight = FontWeights.Bold });
             fp.Inlines.Add(new Run(" - "));

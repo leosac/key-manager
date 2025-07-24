@@ -600,7 +600,7 @@ namespace Leosac.KeyManager.Library.KeyStore
             }));
         }
 
-        private static string? ComputeDivInput(DivInputContext divContext, IList<DivInputFragment> divInput)
+        protected static string? ComputeDivInput(DivInputContext divContext, IList<DivInputFragment> divInput)
         {
             divContext.CurrentDivInput = null;
             if (divInput != null && divInput.Count > 0)

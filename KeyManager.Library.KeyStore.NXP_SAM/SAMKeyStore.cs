@@ -231,7 +231,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
             if (!_unlocked)
             {
-                UnlockSAM(av2cmd, GetSAMProperties().AuthenticationMode, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetValueAsString(Properties?.Secret, KeyValueStringFormat.HexStringWithSpace));
+                UnlockSAM(av2cmd, GetSAMProperties().AuthenticationMode, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetAuthenticationKey());
                 _unlocked = true;
             }
 
@@ -432,19 +432,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         public override Task Update(IChangeKeyEntry change, bool ignoreIfMissing)
         {
             log.Info(string.Format("Updating key entry `{0}`...", change.Identifier));
-
-            var key = new LibLogicalAccess.Card.DESFireKey();
-            key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
-            key.setKeyVersion(GetSAMProperties().AuthenticateKeyVersion);
-            if (!string.IsNullOrEmpty(Properties?.Secret))
-            {
-                key.fromString(KeyMaterial.GetValueAsString(Properties.Secret, KeyValueStringFormat.HexStringWithSpace));
-            }
-            else
-            {
-                key.fromString("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
-            }
-
+            var key = GetAuthenticationKey();
             if (change is SAMSymmetricKeyEntry samkey)
             {
                 var cmd = Chip?.getCommands();
@@ -674,9 +662,39 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             return key;
         }
 
+        public LibLogicalAccess.Card.DESFireKey GetAuthenticationKey()
+        {
+            var key = new LibLogicalAccess.Card.DESFireKey();
+            key.setKeyType(GetSAMProperties().AuthenticateKeyType);
+            key.setKeyVersion(GetSAMProperties().AuthenticateKeyVersion);
+            if (!string.IsNullOrEmpty(Properties?.Secret))
+            {
+                key.fromString(KeyMaterial.GetValueAsString(Properties.Secret, KeyValueStringFormat.HexStringWithSpace));
+            }
+            else
+            {
+                key.fromString("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+            }
+            if (GetSAMProperties().AuthenticationDivInput.Count > 0)
+            {
+                var divContext = new DivInput.DivInputContext
+                {
+                    KeyStore = this
+                };
+                var div = new LibLogicalAccess.Card.NXPAV2KeyDiversification();
+                var input = ComputeDivInput(divContext, GetSAMProperties().AuthenticationDivInput);
+                if (!string.IsNullOrEmpty(input))
+                {
+                    div.setDivInput([.. Convert.FromHexString(input)]);
+                    key.setKeyDiversification(div);
+                }
+            }
+            return key;
+        }
+
         public void ActivateMifareSAM(LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
         {
-            ActivateMifareSAM(av2cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyType, GetSAMProperties().AuthenticateKeyVersion, Properties?.Secret);
+            ActivateMifareSAM(av2cmd, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetAuthenticationKey());
             Close();
             Open();
         }
@@ -684,17 +702,32 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         public static void ActivateMifareSAM(LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd, byte keyno, LibLogicalAccess.Card.DESFireKeyType keyType, byte keyVersion, string? keyValue)
         {
             var key = CreateDESFireKey(keyType, keyVersion, keyValue);
+            ActivateMifareSAM(av2cmd, keyno, key);
+        }
+
+        public static void ActivateMifareSAM(LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd, byte keyno, LibLogicalAccess.Card.DESFireKey key)
+        {
             av2cmd.lockUnlock(key, LibLogicalAccess.Card.SAMLockUnlock.SwitchAV2Mode /* AV3 = Active Mifare SAM */, keyno, 0, 0);
             log.Info("Mifare SAM features activation completed.");
         }
 
         public static void UnlockSAM(LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd, SAMAuthenticationMode mode, byte keyEntry, byte keyVersion, string? keyValue)
         {
-            log.Info("Unlocking SAM...");
             var key = new LibLogicalAccess.Card.DESFireKey();
             key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
             key.setKeyVersion(keyVersion);
             key.fromString(keyValue ?? "");
+            UnlockSAM(av2cmd, mode, keyEntry, key);
+        }
+
+        public void UnlockSAM(LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
+        {
+            UnlockSAM(av2cmd, GetSAMProperties().AuthenticationMode, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetAuthenticationKey());
+        }
+
+        public static void UnlockSAM(LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd, SAMAuthenticationMode mode, byte keyEntry, LibLogicalAccess.Card.DESFireKey key)
+        {
+            log.Info("Unlocking SAM...");
             if (mode == SAMAuthenticationMode.AuthenticateHost)
             {
                 av2cmd.authenticateHost(key, keyEntry);
@@ -756,18 +789,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             var cmd = Chip?.getCommands();
             if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
             {
-                var key = new LibLogicalAccess.Card.DESFireKey();
-                key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
-                key.setKeyVersion(GetSAMProperties().AuthenticateKeyVersion);
-                if (!string.IsNullOrEmpty(Properties?.Secret))
-                {
-                    key.fromString(KeyMaterial.GetValueAsString(Properties.Secret, KeyValueStringFormat.HexStringWithSpace));
-                }
-                else
-                {
-                    key.fromString("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
-                }
-
+                var key = GetAuthenticationKey();
                 var kucEntry = new LibLogicalAccess.Card.SAMKucEntry();
                 var entry = kucEntry.getKucEntryStruct();
 
@@ -804,7 +826,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             {
                 if (!string.IsNullOrEmpty(GetSAMProperties().Secret) && !_unlocked)
                 {
-                    UnlockSAM(av3cmd, GetSAMProperties().AuthenticationMode, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetValueAsString(Properties?.Secret, KeyValueStringFormat.HexStringWithSpace));
+                    UnlockSAM(av3cmd);
                     _unlocked = true;
                 }
 
@@ -862,7 +884,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             {
                 if (!string.IsNullOrEmpty(GetSAMProperties().Secret) && !_unlocked)
                 {
-                    UnlockSAM(av2cmd, GetSAMProperties().AuthenticationMode, GetSAMProperties().AuthenticateKeyEntryIdentifier, GetSAMProperties().AuthenticateKeyVersion, KeyMaterial.GetValueAsString(Properties?.Secret, KeyValueStringFormat.HexStringWithSpace));
+                    UnlockSAM(av2cmd);
                     _unlocked = true;
                 }
 
