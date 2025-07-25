@@ -1,8 +1,9 @@
-﻿using Leosac.KeyManager.Library.DivInput;
+﻿using Leosac.KeyManager.Library.Crypto;
+using Leosac.KeyManager.Library.DivInput;
 using Newtonsoft.Json;
 using System.Text;
-using static System.Formats.Asn1.AsnWriter;
 using System.Threading;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
@@ -688,14 +689,14 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         public async Task<string?> GetKeyValue(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? keyContainerSelector, string? divInput)
         {
-            if (!string.IsNullOrEmpty(divInput))
-            {
-                log.Error("Div Input parameter is not yet supported.");
-                throw new KeyStoreException("Div Input parameter is not yet supported.");
-            }
-
             var key = await GetKey(keyIdentifier, keClass, keyContainerSelector);
-            return key?.GetAggregatedValueAsString();
+            var kv = key?.GetAggregatedValueAsString();
+            if (!string.IsNullOrEmpty(kv) && !string.IsNullOrEmpty(divInput))
+            {
+                // TODO: the key diversification algorithm should be an user choice
+                kv = AN10922KeyDiversification.Diversify(kv, divInput);
+            }
+            return kv;            
         }
 
         /// <summary>
