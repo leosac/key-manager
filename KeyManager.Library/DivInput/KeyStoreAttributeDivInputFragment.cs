@@ -26,12 +26,16 @@
 
         public override string GetFragment(DivInputContext context)
         {
-            if (context.KeyStore != null && context.KeyStore.Attributes.ContainsKey(Attribute))
+            var a = Attribute.ToLowerInvariant();
+            if (context.KeyStore == null || !context.KeyStore.Attributes.ContainsKey(a))
             {
-                return context.KeyStore.Attributes[Attribute];
+                if (context.AdditionalKeyStoreAttributes != null && context.AdditionalKeyStoreAttributes.ContainsKey(a))
+                    return context.AdditionalKeyStoreAttributes[a];
+
+                throw new Exception("Missing Key Store attribute on div input context.");
             }
 
-            return string.Empty;
+            return context.KeyStore.Attributes[a];
         }
     }
 }

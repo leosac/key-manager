@@ -338,153 +338,152 @@ namespace Leosac.KeyManager.Library.KeyStore
                 Attributes[ATTRIBUTE_HEXPUBVAR] = Convert.ToHexString(Encoding.UTF8.GetBytes(Options.PublishVariable));
             }
 
-
-            var usedStores = new List<KeyStore>();
             try
             {
-                foreach (var id in ids)
+                if (connectToStore)
                 {
-                    var entry = await Get(id, keClass);
-                    if (entry != null)
+                    await store.Open();
+                }
+
+                var usedStores = new List<KeyStore>();
+                try
+                {
+                    foreach (var id in ids)
                     {
-                        var resolveKeyLinks = (Options?.ResolveKeyLinks).GetValueOrDefault(true);
-                        var resolveVariables = (Options?.ResolveVariables).GetValueOrDefault(true);
-                        entry.Identifier = entry.Identifier.Clone(resolveVariables ? Attributes : null);
-                        if (entry.Link != null && entry.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(entry.Link.KeyStoreFavorite))
+                        var entry = await Get(id, keClass);
+                        if (entry != null)
                         {
-                            if (resolveKeyLinks)
+                            var resolveKeyLinks = (Options?.ResolveKeyLinks).GetValueOrDefault(true);
+                            var resolveVariables = (Options?.ResolveVariables).GetValueOrDefault(true);
+                            entry.Identifier = entry.Identifier.Clone(resolveVariables ? Attributes : null);
+                            if (entry.Link != null && entry.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(entry.Link.KeyStoreFavorite))
                             {
-                                if (getFavoriteKeyStore == null)
+                                if (resolveKeyLinks)
                                 {
-                                    throw new KeyStoreException("Missing getFavoriteKeyStore callback to resolve key entry link favorite.");
-                                }
-
-                                var cryptogram = new KeyEntryCryptogram
-                                {
-                                    Identifier = entry.Identifier
-                                    // TODO: we may want to have a different wrapping key per Cryptogram later on
-                                };
-
-                                var ks = getFavoriteKeyStore(entry.Link.KeyStoreFavorite);
-                                if (ks != null)
-                                {
-                                    if (!usedStores.Contains(ks))
+                                    if (getFavoriteKeyStore == null)
                                     {
-                                        usedStores.Add(ks);
+                                        throw new KeyStoreException("Missing getFavoriteKeyStore callback to resolve key entry link favorite.");
                                     }
-                                    if (askForKeyStoreSecretIfRequired != null)
+
+                                    var cryptogram = new KeyEntryCryptogram
                                     {
-                                        var c = await askForKeyStoreSecretIfRequired(ks, entry.Link.KeyStoreFavorite);
-                                        if (!c)
+                                        Identifier = entry.Identifier
+                                        // TODO: we may want to have a different wrapping key per Cryptogram later on
+                                    };
+
+                                    var ks = getFavoriteKeyStore(entry.Link.KeyStoreFavorite);
+                                    if (ks != null)
+                                    {
+                                        if (!usedStores.Contains(ks))
                                         {
-                                            throw new KeyStoreException("Missing secret for the linked key store.");
+                                            usedStores.Add(ks);
+                                        }
+                                        if (askForKeyStoreSecretIfRequired != null)
+                                        {
+                                            var c = await askForKeyStoreSecretIfRequired(ks, entry.Link.KeyStoreFavorite);
+                                            if (!c)
+                                            {
+                                                throw new KeyStoreException("Missing secret for the linked key store.");
+                                            }
+                                        }
+                                        await ks.Open();
+                                        try
+                                        {
+                                            var divContext = new DivInput.DivInputContext
+                                            {
+                                                KeyStore = store,
+                                                KeyEntry = entry
+                                            };
+                                            cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier.Clone(resolveVariables ? Attributes : null), keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKey, entry.Identifier);
+                                        }
+                                        finally
+                                        {
+                                            await ks.Close(false);
                                         }
                                     }
-                                    await ks.Open();
-                                    try
-                                    {
-                                        var divContext = new DivInput.DivInputContext
-                                        {
-                                            KeyStore = ks,
-                                            KeyEntry = entry
-                                        };
-                                        cryptogram.Value = await ks.ResolveKeyEntryLink(entry.Link.KeyIdentifier.Clone(resolveVariables ? Attributes : null), keClass, ComputeDivInput(divContext, entry.Link.DivInput), entry.Link.WrappingKey, entry.Identifier);
-                                    }
-                                    finally
-                                    {
-                                        await ks.Close(false);
-                                    }
+                                    changes.Add(cryptogram);
                                 }
-                                changes.Add(cryptogram);
+                                else
+                                {
+                                    if (resolveVariables)
+                                    {
+                                        entry.Link.KeyIdentifier = entry.Link.KeyIdentifier.Clone(Attributes);
+                                    }
+                                    changes.Add(entry);
+                                }
                             }
                             else
                             {
-                                if (resolveVariables)
+                                if (entry.Variant != null)
                                 {
-                                    entry.Link.KeyIdentifier = entry.Link.KeyIdentifier.Clone(Attributes);
+                                    foreach (var kv in entry.Variant.KeyContainers)
+                                    {
+                                        if (kv.Key.Link != null && kv.Key.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(kv.Key.Link.KeyStoreFavorite))
+                                        {
+                                            if (resolveKeyLinks)
+                                            {
+                                                if (getFavoriteKeyStore == null)
+                                                {
+                                                    throw new KeyStoreException("Missing getFavoriteKeyStore callback to resolve key link favorite.");
+                                                }
+
+                                                var ks = getFavoriteKeyStore(kv.Key.Link.KeyStoreFavorite);
+                                                if (ks != null)
+                                                {
+                                                    if (!usedStores.Contains(ks))
+                                                    {
+                                                        usedStores.Add(ks);
+                                                    }
+                                                    if (askForKeyStoreSecretIfRequired != null)
+                                                    {
+                                                        var c = await askForKeyStoreSecretIfRequired(ks, kv.Key.Link.KeyStoreFavorite);
+                                                        if (!c)
+                                                        {
+                                                            throw new KeyStoreException("Missing secret for the linked key store.");
+                                                        }
+                                                    }
+                                                    await ks.Open();
+                                                    try
+                                                    {
+                                                        var divContext = new DivInput.DivInputContext
+                                                        {
+                                                            KeyStore = store,
+                                                            KeyEntry = entry,
+                                                            KeyContainer = kv
+                                                        };
+                                                        kv.Key.SetAggregatedValueAsString(await ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier.Clone(resolveVariables ? Attributes : null), keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
+                                                    }
+                                                    finally
+                                                    {
+
+                                                        await ks.Close(false);
+                                                    }
+                                                }
+                                                // We remove link information from the being pushed key entry
+                                                kv.Key.Link = new KeyLink();
+                                            }
+                                            else
+                                            {
+                                                if (resolveVariables)
+                                                {
+                                                    kv.Key.Link.KeyIdentifier = kv.Key.Link.KeyIdentifier.Clone(Attributes);
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                                 changes.Add(entry);
                             }
                         }
-                        else
-                        {
-                            if (entry.Variant != null)
-                            {
-                                foreach (var kv in entry.Variant.KeyContainers)
-                                {
-                                    if (kv.Key.Link != null && kv.Key.Link.KeyIdentifier.IsConfigured() && !string.IsNullOrEmpty(kv.Key.Link.KeyStoreFavorite))
-                                    {
-                                        if (resolveKeyLinks)
-                                        {
-                                            if (getFavoriteKeyStore == null)
-                                            {
-                                                throw new KeyStoreException("Missing getFavoriteKeyStore callback to resolve key link favorite.");
-                                            }
-
-                                            var ks = getFavoriteKeyStore(kv.Key.Link.KeyStoreFavorite);
-                                            if (ks != null)
-                                            {
-                                                if (!usedStores.Contains(ks))
-                                                {
-                                                    usedStores.Add(ks);
-                                                }
-                                                if (askForKeyStoreSecretIfRequired != null)
-                                                {
-                                                    var c = await askForKeyStoreSecretIfRequired(ks, kv.Key.Link.KeyStoreFavorite);
-                                                    if (!c)
-                                                    {
-                                                        throw new KeyStoreException("Missing secret for the linked key store.");
-                                                    }
-                                                }
-                                                await ks.Open();
-                                                try
-                                                {
-                                                    var divContext = new DivInput.DivInputContext
-                                                    {
-                                                        KeyStore = ks,
-                                                        KeyEntry = entry,
-                                                        KeyContainer = kv
-                                                    };
-                                                    kv.Key.SetAggregatedValueAsString(await ks.ResolveKeyLink(kv.Key.Link.KeyIdentifier.Clone(resolveVariables ? Attributes : null), keClass, kv.Key.Link.ContainerSelector, ComputeDivInput(divContext, kv.Key.Link.DivInput)));
-                                                }
-                                                finally
-                                                {
-
-                                                    await ks.Close(false);
-                                                }
-                                            }
-                                            // We remove link information from the being pushed key entry
-                                            kv.Key.Link = new KeyLink();
-                                        }
-                                        else
-                                        {
-                                            if (resolveVariables)
-                                            {
-                                                kv.Key.Link.KeyIdentifier = kv.Key.Link.KeyIdentifier.Clone(Attributes);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            changes.Add(entry);
-                        }
                     }
                 }
-            }
-            finally
-            {
-                foreach (var ks in usedStores)
+                finally
                 {
-                    ks.CleanupSecret();
+                    foreach (var ks in usedStores)
+                    {
+                        ks.CleanupSecret();
+                    }
                 }
-            }
-
-            if (connectToStore)
-            {
-                await store.Open();
-            }
-            try
-            {
                 await action(store, changes);
             }
             finally
@@ -601,7 +600,7 @@ namespace Leosac.KeyManager.Library.KeyStore
             }));
         }
 
-        protected static string? ComputeDivInput(DivInputContext divContext, IList<DivInputFragment> divInput)
+        public static string? ComputeDivInput(DivInputContext divContext, IList<DivInputFragment> divInput)
         {
             divContext.CurrentDivInput = null;
             if (divInput != null && divInput.Count > 0)

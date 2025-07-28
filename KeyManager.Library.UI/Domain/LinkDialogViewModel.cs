@@ -29,6 +29,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
             _class = KeyEntryClass.Symmetric;
         }
 
+        public static IDictionary<string, string>? KeyStoreAttributes { get; set; }
+
         private Link? _link;
         public Link? Link
 
@@ -57,13 +59,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             get => _linkError;
             set => SetProperty(ref _linkError, value);
-        }
-
-        private string? _divInputResult;
-        public string? DivInputResult
-        {
-            get => _divInputResult;
-            set => SetProperty(ref _divInputResult, value);
         }
 
         private bool _allowImport;

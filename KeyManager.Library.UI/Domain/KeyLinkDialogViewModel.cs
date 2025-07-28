@@ -26,7 +26,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             if (KeyLink != null)
             {
-                LinkResult = await ks.ResolveKeyLink(KeyLink.KeyIdentifier, Class, KeyLink.ContainerSelector, DivInputResult);
+                var divContext = new DivInput.DivInputContext
+                {
+                    AdditionalKeyStoreAttributes = KeyStoreAttributes
+                };
+                LinkResult = await ks.ResolveKeyLink(KeyLink.KeyIdentifier, Class, KeyLink.ContainerSelector, KeyStore.KeyStore.ComputeDivInput(divContext, KeyLink.DivInput));
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using LibLogicalAccess;
+﻿using Leosac.KeyManager.Library.Crypto;
+using LibLogicalAccess;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 {
@@ -669,25 +670,24 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             key.setKeyVersion(GetSAMProperties().AuthenticateKeyVersion);
             if (!string.IsNullOrEmpty(Properties?.Secret))
             {
-                key.fromString(KeyMaterial.GetValueAsString(Properties.Secret, KeyValueStringFormat.HexStringWithSpace));
+                var kv = Properties.Secret;
+                if (GetSAMProperties().AuthenticationDivInput.Count > 0)
+                {
+                    var divContext = new DivInput.DivInputContext
+                    {
+                        KeyStore = this
+                    };
+                    var input = ComputeDivInput(divContext, GetSAMProperties().AuthenticationDivInput);
+                    if (!string.IsNullOrEmpty(input))
+                    {
+                        kv = AN10922KeyDiversification.Diversify(kv, input);
+                    }
+                }
+                key.fromString(KeyMaterial.GetValueAsString(kv, KeyValueStringFormat.HexStringWithSpace));
             }
             else
             {
                 key.fromString("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
-            }
-            if (GetSAMProperties().AuthenticationDivInput.Count > 0)
-            {
-                var divContext = new DivInput.DivInputContext
-                {
-                    KeyStore = this
-                };
-                var div = new LibLogicalAccess.Card.NXPAV2KeyDiversification();
-                var input = ComputeDivInput(divContext, GetSAMProperties().AuthenticationDivInput);
-                if (!string.IsNullOrEmpty(input))
-                {
-                    div.setDivInput([.. Convert.FromHexString(input)]);
-                    key.setKeyDiversification(div);
-                }
             }
             return key;
         }

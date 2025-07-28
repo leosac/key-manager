@@ -234,6 +234,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
         protected KeyEntryDialogViewModel CreateKeyEntryDialogViewModel(bool keClone)
         {
             var model = new KeyEntryDialogViewModel(KeyEntryClass);
+            if (_keyStore != null)
+            {
+                LinkDialogViewModel.KeyStoreAttributes = _keyStore.Attributes;
+            }
             model.SetKeyEntry(KeyStore?.GetDefaultKeyEntry(KeyEntryClass, keClone));
             model.ShowKeyEntryLabel = (KeyStore?.CanDefineKeyEntryLabel).GetValueOrDefault(true);
             return model;

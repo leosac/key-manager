@@ -34,7 +34,6 @@
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="{x:Static properties:Resources.LinkError}" />
                     <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding LinkError}" />
                 </WrapPanel>
-                <local:DivInputTestControl DivInput="{Binding Link.DivInput}" DivInputResult="{Binding DivInputResult}" />
                 <StackPanel Margin="15" HorizontalAlignment="Center" Orientation="Horizontal">
                     <Button Margin="5" VerticalAlignment="Center"
                             Command="{Binding ImportResultCommand}"
