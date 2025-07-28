@@ -1,6 +1,7 @@
-# v1.22.0 - xx/xx/2025
+# v1.22.0 - 28/07/2025
  - Add feature to print list of key entries (for summaries)
  - Save key entries ordering user choice
+ - Fix Div Input on Key Links
 
 # v1.21.1 - 06/19/2025
  - Fix LCP key entry name definition
