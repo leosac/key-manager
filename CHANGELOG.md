@@ -1,4 +1,4 @@
-# v1.22.0 - 28/07/2025
+# v1.22.0 - 07/28/2025
  - Add feature to print list of key entries (for summaries)
  - Save key entries ordering user choice
  - Fix Div Input on Key Links
