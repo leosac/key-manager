@@ -380,7 +380,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                         var ruconfig = isoru.getConfiguration() as ISO7816ReaderUnitConfiguration;
                         if (ruconfig != null)
                         {
-                            ruconfig.setSAMType("SAM_AV2");
+                            ruconfig.setSAMType("SAM_AUTO");
                             ruconfig.setSAMReaderName(ks.GetSAMProperties().ReaderUnit);
                             ruconfig.setSAMUnlockKey(SAMKeyStore.CreateDESFireKey(ks.GetSAMProperties().AuthenticateKeyType, ks.GetSAMProperties().AuthenticateKeyVersion, ks.GetSAMProperties().Secret), ks.GetSAMProperties().AuthenticateKeyEntryIdentifier);
                             ruconfig.setUseSAMAuthenticateHost(ks.GetSAMProperties().AuthenticationMode == SAMAuthenticationMode.AuthenticateHost);
