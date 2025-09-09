@@ -732,7 +732,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             {
                 av2cmd.authenticateHost(key, keyEntry);
             }
-            else
+            else if (mode == SAMAuthenticationMode.Unlock)
             {
                 av2cmd.lockUnlock(key, LibLogicalAccess.Card.SAMLockUnlock.Unlock, keyEntry, 0, 0);
             }

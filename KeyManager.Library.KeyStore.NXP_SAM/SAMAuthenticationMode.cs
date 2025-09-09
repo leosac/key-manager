@@ -3,6 +3,7 @@
     public enum SAMAuthenticationMode
     {
         Unlock,
-        AuthenticateHost
+        AuthenticateHost,
+        None,
     }
 }

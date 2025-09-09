@@ -1,3 +1,7 @@
+# v1.23.0 - 09/dd/2025
+ - Add None option on SAM AV2/AV3 authentication mode
+ - Set SAM type to Auto on DESFire authentication test with SAM AV2/AV3
+
 # v1.22.0 - 07/28/2025
  - Add feature to print list of key entries (for summaries)
  - Save key entries ordering user choice
