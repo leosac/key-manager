@@ -1,4 +1,4 @@
-# v1.23.0 - 09/dd/2025
+# v1.23.0 - 09/10/2025
  - Add None option on SAM AV2/AV3 authentication mode
  - Set SAM type to Auto on DESFire authentication test with SAM AV2/AV3
 
