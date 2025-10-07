@@ -16,6 +16,11 @@ namespace Leosac.KeyManager
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
+        static KMLeosacAppInfo()
+        {
+            SharedServices.MaintenancePlan.AllowedProductCodes = ["29512", "29511", "29465", "29463", "29461", "29462", "29464", "29466"];
+        }
+
         public KMLeosacAppInfo()
         {
             ApplicationName = "Key Manager";
