@@ -28,11 +28,19 @@ namespace Leosac.KeyManager.Library.UI.Domain
             CreateFolderCommand = new RelayCommand<string>(
                 newFolder =>
                 {
+                    IOError = null;
                     DialogHost.CloseDialogCommand.Execute(null, null);
                     if (SelectedDirectory != null && !string.IsNullOrEmpty(newFolder))
                     {
                         var newFolderFullpath = Path.Combine(SelectedDirectory.FullName, newFolder);
-                        SelectedDirectory = Directory.CreateDirectory(newFolderFullpath);
+                        try
+                        {
+                            SelectedDirectory = Directory.CreateDirectory(newFolderFullpath);
+                        }
+                        catch(Exception ex)
+                        {
+                            IOError = ex.Message;
+                        }
                     }
                 }
             );
