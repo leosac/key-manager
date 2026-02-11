@@ -1,3 +1,6 @@
+# v1.23.1 - 02/11/2026
+ - Add cancel button for Random Number Generator (generator option selection)
+
 # v1.23.0 - 09/10/2025
  - Add None option on SAM AV2/AV3 authentication mode
  - Set SAM type to Auto on DESFire authentication test with SAM AV2/AV3
