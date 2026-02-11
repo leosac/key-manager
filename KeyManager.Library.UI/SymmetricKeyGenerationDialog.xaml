@@ -62,7 +62,8 @@
                         <ComboBox DockPanel.Dock="Right" ItemsSource="{Binding RandomGenerators, ElementName=userControl}"
                                   SelectedItem="{Binding SelectedRandomGenerator, ElementName=userControl}"
                                   materialDesign:HintAssist.HelperText="{x:Static properties:Resources.RandomGenerator}"
-                                  materialDesign:HintAssist.Hint="{x:Static properties:Resources.RandomGenerator}" Margin="10">
+                                  materialDesign:HintAssist.Hint="{x:Static properties:Resources.RandomGenerator}" Margin="10"
+                                  materialDesign:TextFieldAssist.HasClearButton="True">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Name}" />
