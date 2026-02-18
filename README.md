@@ -12,6 +12,7 @@ Leosac Key Manager is a standalone application to generate, manage and re-deploy
 -   Leosac Credential Provisioning Server Key Store
 -   ISLOG :tm: SAM Manager template Key Store (read only)
 -   Synchronic SAM SE Key Store
+-   KeePass Key Store
 
 ## Key Generation
 -   Random

@@ -6,7 +6,7 @@ using KeePassLib.Serialization;
 
 namespace Leosac.KeyManager.Library.KeyStore.KeePass
 {
-    public class KeePassStore : KeyStore
+    public class KeePassKeyStore : KeyStore
     {
         public override string Name => "KeePass";
         private const string GroupName = "Credential";
