@@ -1,9 +1,5 @@
 ﻿using Leosac.KeyManager.Library.Plugin;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Leosac.KeyManager.Library.KeyStore.KeePass
 {
@@ -13,22 +9,21 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
 
         public override KeyStore CreateKeyStore()
         {
-            throw new NotImplementedException();
+            return new KeePassKeyStore();
         }
-
+        public override Type? GetPropertiesType()
+        {
+            return typeof(KeePassKeyStoreProperties);
+        }
         public override KeyStoreProperties CreateKeyStoreProperties()
         {
-            throw new NotImplementedException();
+            return new KeePassKeyStoreProperties();
         }
 
         public override KeyStoreProperties? CreateKeyStoreProperties(string serialized)
         {
-            throw new NotImplementedException();
+            return JsonConvert.DeserializeObject<KeePassKeyStoreProperties>(serialized);
         }
 
-        public override Type? GetPropertiesType()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
