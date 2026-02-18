@@ -30,18 +30,24 @@
             {
                 foreach (var factory in RegisteredFactories)
                 {
-                    var t = factory.GetPropertiesType();
-                    if (t != null)
+                    if (factory == null)
+                        continue;
+                    try
                     {
-                        if (t.FullName == type.FullName)
+                        var t = factory.GetPropertiesType();
+                        if (t != null && type.FullName != null && t.FullName != null && type.FullName.Equals(t.FullName, StringComparison.Ordinal))
                         {
                             return factory;
                         }
                     }
+                    catch
+                    {
+                        continue;
+                    }
                 }
             }
-
             return null;
+            
         }
     }
 }
