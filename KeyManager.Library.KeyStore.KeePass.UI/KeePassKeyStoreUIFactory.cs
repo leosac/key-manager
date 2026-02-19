@@ -1,36 +1,37 @@
-﻿using Leosac.KeyManager.Library.Plugin;
+﻿using KeyManager.Library.KeyStore.KeePass.UI;
+using Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain;
+using Leosac.KeyManager.Library.Plugin;
 using Leosac.KeyManager.Library.Plugin.UI.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI
 {
     public class KeePassKeyStoreUIFactory : KeyStoreUIFactory
     {
-        public override string Name => "KeePass Key Store";
-
-        public override IDictionary<string, UserControl> CreateKeyStoreAdditionalControls()
+        public KeePassKeyStoreUIFactory()
         {
-            throw new NotImplementedException();
+            targetFactory = new KeePassKeyStoreFactory();
         }
 
+        public override string Name => "KeePass Key Store";
+
+        public override Type? GetPropertiesType()
+        {
+            return typeof(KeePassKeyStoreProperties);
+        }
         public override UserControl CreateKeyStorePropertiesControl()
         {
-            throw new NotImplementedException();
+            return new KeePassKeyStorePropertiesControl();
         }
 
         public override KeyStorePropertiesControlViewModel? CreateKeyStorePropertiesControlViewModel()
         {
-            throw new NotImplementedException();
+            return new KeePassKeyStorePropertiesControlViewModel();
         }
 
-        public override Type? GetPropertiesType()
+        public override IDictionary<string, UserControl> CreateKeyStoreAdditionalControls()
         {
-            throw new NotImplementedException();
+            return new Dictionary<string, UserControl>();
         }
     }
 }

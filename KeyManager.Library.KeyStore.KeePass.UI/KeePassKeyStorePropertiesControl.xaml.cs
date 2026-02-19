@@ -6,9 +6,9 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class KeePassKeyStoreControl : UserControl
+    public partial class KeePassKeyStorePropertiesControl : UserControl
     {
-        public KeePassKeyStoreControl()
+        public KeePassKeyStorePropertiesControl()
         {
             InitializeComponent();
         }
