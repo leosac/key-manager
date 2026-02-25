@@ -19,6 +19,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
     {
         private static readonly TimeSpan OPEN_TIMEOUT = TimeSpan.FromSeconds(30);
         private const string CUSTOM_KEYDATA_FIELD = "KeyData_Leosac";
+        private const string CUSTOM_MODIFICATION_FIELD = "LastModification_Leosac"; //Last modification from LKM
 
         public override string Name => "KeePass";
         private PwDatabase? _database;
@@ -32,7 +33,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         public override bool CanDeleteKeyEntries => true;
         public override bool CanUpdateKeyEntries => true;
 
-        public new event EventHandler<IChangeKeyEntry>? KeyEntryUpdated;
+        new event EventHandler<IChangeKeyEntry>? KeyEntryUpdated;
 
         public KeePassKeyStore()
         {
@@ -41,7 +42,6 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
 
         public override IEnumerable<KeyEntryClass> SupportedClasses =>
             [KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric];
-
 
         public override async Task Open()
         {
@@ -79,8 +79,8 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         public override async Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass)
         {
             await CheckOpen().ConfigureAwait(false);
-            log.Info(string.Format("Getting all key entries (class: `{0}`)...", keClass));
-            IList<KeyEntryId> keyEntries = new List<KeyEntryId>();
+            log.Info(string.Format("Getting all key entries (class : `{0}`)...", keClass));
+            var keyEntries = new List<KeyEntryId>();
             if (_folder?.Entries == null)
                 return keyEntries;
             foreach (var entry in _folder.Entries)
@@ -91,7 +91,6 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
                 var keyEntryId = new KeyEntryId { Id = id };
                 if (GetLabel(entry, out var label) && !string.IsNullOrWhiteSpace(label))
                     keyEntryId.Label = label;
-
                 keyEntries.Add(keyEntryId);
             }
             log.Info(string.Format("{0} key entries returned.", keyEntries.Count));
@@ -113,7 +112,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             var entry = CreateKeePassEntry(keyEntry);
             _folder.AddEntry(entry, true);
             SaveDatabase();
-            log.Info($"Created key entry: {keyEntry.Identifier.Id}");
+            log.Info($"Created key entry : {keyEntry.Identifier.Id}");
         }
 
         public override async Task<KeyEntry?> Get(KeyEntryId identifier, KeyEntryClass keClass)
@@ -125,7 +124,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             var keyData = GetSafeString(entry, CUSTOM_KEYDATA_FIELD);
             if (string.IsNullOrEmpty(keyData))
             {
-                log.Warn($"No key data found for entry: {identifier.Id}");
+                log.Warn($"No key data found for entry : {identifier.Id}");
                 return null;
             }
             try
@@ -134,7 +133,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
                 var _kclass = obj["KClass"]?.ToString();
                 if (!Enum.TryParse<KeyEntryClass>(_kclass, out var kclass) || kclass != keClass)
                 {
-                    log.Warn($"KClass mismatch for {identifier.Id}: expected {keClass}, got {_kclass}");
+                    log.Warn($"KClass mismatch for {identifier.Id} : expected {keClass}, got {_kclass}");
                     return null;
                 }
                 KeyEntry? keyEntry = CreateFromJson(obj, kclass, identifier);
@@ -151,17 +150,17 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             }
             catch (Exception ex)
             {
-                log.Warn($"Failure when deserializing key entry {identifier.Id}: {ex.Message}", ex);
+                log.Warn($"Failure when deserializing key entry {identifier.Id} : {ex.Message}", ex);
                 return null;
             }
         }
 
-        private KeyEntry? CreateFromJson(JObject obj, KeyEntryClass kclass, KeyEntryId identifier)
+        private static KeyEntry? CreateFromJson(JObject obj, KeyEntryClass kclass, KeyEntryId identifier)
         {
             if (obj["Properties"]?["$type"] is JToken typeToken)
             {
-                var propsTypeStr = typeToken.ToString();
-                var keyEntryType = MapToKeyEntry(propsTypeStr, kclass);
+                var propType = typeToken.ToString();
+                var keyEntryType = MapToKeyEntry(propType);
                 if (keyEntryType != null)
                 {
                     var keyEntry = (KeyEntry?)Activator.CreateInstance(keyEntryType);
@@ -177,7 +176,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             };
         }
 
-        private static Type? MapToKeyEntry(string prop, KeyEntryClass kclass) =>
+        private static Type? MapToKeyEntry(string prop) =>
             prop switch
             {
                 var t when t.Contains("CNGKeyEntryProperties") => typeof(CNGKeyEntry),
@@ -209,11 +208,11 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             SetVariant(keyEntry, obj["Variant"] as JObject, settings);
         }
 
-        private static void SetProperties(KeyEntry keyEntry, JObject? pJobj, JsonSerializerSettings settings)
+        private static void SetProperties(KeyEntry keyEntry, JObject? obj, JsonSerializerSettings settings)
         {
-            if (pJobj == null)
+            if (obj == null)
                 return;
-            var json = pJobj.ToString(Formatting.None);
+            var json = obj.ToString(Formatting.None);
             var prop = JsonConvert.DeserializeObject<KeyEntryProperties>(json, settings);
             if (prop == null)
                 return;
@@ -260,7 +259,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             if (existing == null)
             {
                 if (ignoreIfMissing) return;
-                throw new KeyNotFoundException($"Key entry not found: {change.Identifier}");
+                throw new KeyNotFoundException($"Key entry not found : {change.Identifier}");
             }
             UpdateKeePassEntry(existing, change);
             SaveDatabase();
@@ -268,35 +267,140 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             log.Info($"Key entry `{change.Identifier}` updated.");
         }
 
-        private PwEntry CreateKeePassEntry(IChangeKeyEntry keyEntry)
+        private static PwEntry CreateKeePassEntry(IChangeKeyEntry keyEntry)
         {
             ArgumentNullException.ThrowIfNull(keyEntry);
-            if (keyEntry is not KeyEntry concrete)
-                throw new ArgumentException("Only concrete KeyEntry supported", nameof(keyEntry));
+            if (keyEntry is not KeyEntry keyEntryInstance)
+                throw new ArgumentException("KeyEntry instance not supported", nameof(keyEntry));
             var entry = new PwEntry(true, true) { Uuid = new PwUuid(true) };
-            UpdateKeePassEntry(entry, concrete);
+            UpdateKeePassEntry(entry, keyEntryInstance);
             return entry;
         }
 
-        private void UpdateKeePassEntry(PwEntry entry, IChangeKeyEntry keyEntry)
+        private static void UpdateKeePassEntry(PwEntry entry, IChangeKeyEntry keyEntry)
         {
             ArgumentNullException.ThrowIfNull(keyEntry);
+            if (keyEntry is not KeyEntry keyEntryInstance)
+                throw new ArgumentException("KeyEntry instance not supported.", nameof(keyEntry));
             var settings = KeyEntry.CreateJsonSerializerSettings();
-            if (keyEntry is KeyEntry concreteEntry)
+            var serializable = new
             {
-                var serializable = new
-                {
-                    concreteEntry.KClass,
-                    concreteEntry.Identifier,
-                    Properties = concreteEntry.Properties,
-                    Variant = concreteEntry.Variant
-                };
-                var json = JsonConvert.SerializeObject(serializable, concreteEntry.GetType(), settings);
-                entry.Strings.Set(CUSTOM_KEYDATA_FIELD, new ProtectedString(true, json));
+                keyEntryInstance.KClass,
+                keyEntryInstance.Identifier,
+                keyEntryInstance.Properties,
+                keyEntryInstance.Variant
+            };
+            var json = JsonConvert.SerializeObject(serializable, keyEntryInstance.GetType(), settings);
+            entry.Strings.Set(CUSTOM_KEYDATA_FIELD, new ProtectedString(true, json));
+            var firstKeyValue = ExtractKey(keyEntryInstance.Variant);
+            if (!string.IsNullOrEmpty(firstKeyValue))
+            {
+                entry.Strings.Set(PwDefs.PasswordField, new ProtectedString(true, firstKeyValue));
+                log.Debug($"Password field set with first key material ({firstKeyValue.Length} chars)");
             }
             entry.Strings.Set(PwDefs.TitleField, new ProtectedString(true, keyEntry.Identifier.Id!));
-            if (keyEntry.Identifier.Label is { } label && !string.IsNullOrWhiteSpace(label))
-                entry.Strings.Set(PwDefs.UserNameField, new ProtectedString(true, label));
+            if (!string.IsNullOrWhiteSpace(keyEntry.Identifier.Label))
+                entry.Strings.Set(PwDefs.UserNameField, new ProtectedString(true, keyEntry.Identifier.Label));
+            var notes = BuildNotes(keyEntryInstance);
+            if (!string.IsNullOrEmpty(notes))
+                entry.Strings.Set(PwDefs.NotesField, new ProtectedString(false, notes));
+            entry.Strings.Set(PwDefs.UrlField, new ProtectedString(false, $"key://{keyEntry.Identifier.Id}"));
+            SetEntryIcon(entry, keyEntryInstance);
+            try //Last modification from LKM
+            {
+                entry.Strings.Set(CUSTOM_MODIFICATION_FIELD, new ProtectedString(false, DateTime.UtcNow.ToString("G")));
+            }
+            catch (Exception ex)
+            {
+                log.Warn($"Failed to set modification timestamp : {ex.Message}");
+            }
+            log.Info($"KeePass entry updated for key : {keyEntry.Identifier.Id}");
+        }
+
+        private static string? ExtractKey(KeyEntryVariant? variant)
+        {
+            if (variant?.KeyContainers == null || !variant.KeyContainers.Any())
+                return null;
+            foreach (var container in variant.KeyContainers)
+                if (container.Key?.Materials != null)
+                    foreach (var material in container.Key.Materials)
+                        if (material.IsRealKeyMateriel && !string.IsNullOrEmpty(material.Value))
+                            return material.Value;
+            return null;
+        }
+
+        private static string BuildNotes(KeyEntry concreteEntry)
+        {
+            var variant = concreteEntry.Variant;
+            var prop = concreteEntry.Properties;
+            var lines = new List<string>
+            {
+                $"Key Type : {variant?.Name ?? "Unknown"}",
+                $"Class : {concreteEntry.KClass}",
+                $"Size : {GetKeySize(variant)} bits"
+            };
+            var firstContainer = variant?.KeyContainers?.FirstOrDefault();
+            if (firstContainer?.Key?.Tags != null && firstContainer.Key.Tags.Any())
+            {
+                var tags = string.Join(", ", firstContainer.Key.Tags);
+                lines.Add($"Tags : {tags}");
+            }
+            var storeType = ExtractStoreType(prop);
+            lines.Add($"Store : {storeType}");
+            if (variant?.KeyContainers?.Count > 1)
+                lines.Add($"Versions : {variant.KeyContainers.Count}");
+            return string.Join("\n", lines);
+        }
+
+        private static string ExtractStoreType(object? prop)
+        {
+            try
+            {
+                var type = prop?.GetType().GetProperty("$type")?.GetValue(prop)?.ToString() ?? prop?.ToString()?.Split(',')[0];
+                if (!string.IsNullOrEmpty(type))
+                {
+                    return type.Split('.').LastOrDefault()?.Replace("Properties", "", StringComparison.OrdinalIgnoreCase) ?? "Unknown";
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Warn(ex.Message);
+            }
+            return "Unknown";
+        }
+
+        private static int GetKeySize(KeyEntryVariant? variant)
+        {
+            try
+            {
+                var firstContainer = variant?.KeyContainers?.FirstOrDefault();
+                if (firstContainer?.Key != null)
+                {
+                    var firstMaterial = firstContainer.Key.Materials?.FirstOrDefault();
+                    if (!string.IsNullOrEmpty(firstMaterial?.Value))
+                        return (int)(firstContainer.Key.KeySize * 8u);
+                    if (firstMaterial?.OverrideSize > 0)
+                        return (int)(firstMaterial.OverrideSize * 8u);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            return 0;
+        }
+
+        private static void SetEntryIcon(PwEntry entry, KeyEntry concreteEntry)
+        {
+            var variantName = concreteEntry.Variant?.Name?.ToLowerInvariant();
+            entry.IconId = variantName switch
+            {
+                "des" => PwIcon.Key,
+                "aes" => PwIcon.TerminalEncrypted,
+                "rsa" or "ecc" or "asymmetric" => PwIcon.Certificate,
+                _ when concreteEntry.KClass == KeyEntryClass.Symmetric => PwIcon.Key,
+                _ => PwIcon.Console
+            };
         }
 
         public override async Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing)
@@ -340,10 +444,11 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
                 _ => throw new InvalidOperationException("Exactly one master key component allowed")
             };
         }
+
         private PwEntry? FindEntryByTitle(string title) =>
             string.IsNullOrWhiteSpace(title) ? null : _folder?.Entries?.FirstOrDefault(e => MatchesEntryTitle(e, title));
 
-        private void ValidateIOConnection(IOConnectionInfo ioc)
+        private static void ValidateIOConnection(IOConnectionInfo ioc)
         {
             if (string.IsNullOrWhiteSpace(ioc.Path))
                 throw new ArgumentException("Invalid IO connection path", nameof(ioc));
@@ -360,6 +465,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         protected new void OnKeyEntryUpdated(IChangeKeyEntry keyEntry)
         {
             KeyEntryUpdated?.Invoke(this, keyEntry);
+            base.OnKeyEntryUpdated(keyEntry);
         }
 
         private async Task CheckOpen()
@@ -409,6 +515,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             if (string.IsNullOrEmpty(Properties?.Secret))
                 throw new InvalidOperationException("Master password or key file required");
         }
+
         private KeePassKeyStoreProperties GetFileProperties() =>
             Properties as KeePassKeyStoreProperties ?? throw new KeyStoreException("Missing KeePass properties");
 
