@@ -1,4 +1,6 @@
-﻿namespace Leosac.KeyManager.Library.Plugin
+﻿using log4net.Repository.Hierarchy;
+
+namespace Leosac.KeyManager.Library.Plugin
 {
     public abstract class KMFactory<T> where T : KMFactory<T>
     {
@@ -40,9 +42,9 @@
                             return factory;
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
-
+                        System.Diagnostics.Trace.TraceError($"Plugin '{factory?.Name}' failed to load : {ex}");
                     }
                 }
             }
