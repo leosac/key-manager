@@ -117,22 +117,97 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Browse" xml:space="preserve">
-    <value>📁</value>
+  <data name="Availability" xml:space="preserve">
+    <value>✅ Prêt à se connecter • Aucun profil sélectionné</value>
+  </data>
+  <data name="AvailabilityProcessing" xml:space="preserve">
+    <value>🔄 Exploration en cours…</value>
   </data>
   <data name="Clear" xml:space="preserve">
     <value>🗑️ Effacer</value>
   </data>
+  <data name="CredentialMode" xml:space="preserve">
+    <value>Mode d’identification</value>
+  </data>
+  <data name="ErrorFile" xml:space="preserve">
+    <value>Sélectionnez un fichier KeePass.</value>
+  </data>
+  <data name="ErrorFileNotFound" xml:space="preserve">
+    <value>Le fichier KeePass sélectionné n'existe pas.</value>
+  </data>
+  <data name="ErrorFilePwdNotFound" xml:space="preserve">
+    <value>Master password ou key file est manquant ou incorrect.</value>
+  </data>
   <data name="File" xml:space="preserve">
     <value>Fichier KeePass (.kdbx)</value>
   </data>
-  <data name="KeyFile" xml:space="preserve">
-    <value>🔑</value>
+  <data name="MasterKey" xml:space="preserve">
+    <value>Master key 🔑</value>
+  </data>
+  <data name="KeyFileOnly" xml:space="preserve">
+    <value>Fichier clé uniquement</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>🔐 Master Password</value>
+    <value>Master Password 🔐</value>
+  </data>
+  <data name="PasswordOnly" xml:space="preserve">
+    <value>Mot de passe uniquement</value>
+  </data>
+  <data name="PasswordPlusKey" xml:space="preserve">
+    <value>Mot de passe + clé</value>
   </data>
   <data name="Title" xml:space="preserve">
-    <value>Conexion DB KeePass</value>
+    <value>Conexion à la base de données KeePass</value>
+  </data>
+  <data name="ProfileChecker" xml:space="preserve">
+    <value>🔗 Explorateur de profils</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profil :</value>
+  </data>
+  <data name="Exhaustive" xml:space="preserve">
+    <value>Exhaustif</value>
+  </data>
+  <data name="DefaultProfileName" xml:space="preserve">
+    <value>Défaut (Racine)</value>
+  </data>
+  <data name="SelectKeePassDatabase" xml:space="preserve">
+    <value>Base de données KeePass (.kdbx)</value>
+  </data>
+  <data name="KeePassDbFilter" xml:space="preserve">
+    <value>Base de données KeePass (.kdbx)|.kdbx|Tous les fichiers (.)|.</value>
+  </data>
+  <data name="FileSelected" xml:space="preserve">
+    <value>✅ Fichier KeePass sélectionné : {0}</value>
+  </data>
+  <data name="SelectMasterKey" xml:space="preserve">
+    <value>Sélectionner un fichier clé</value>
+  </data>
+  <data name="KeyFileFilter" xml:space="preserve">
+    <value>Fichier clé (.keyx)|.keyx|Tous les fichiers (.)|.</value>
+  </data>
+  <data name="KeyFileSelected" xml:space="preserve">
+    <value>🔑 Fichier clé sélectionné : {0}</value>
+  </data>
+  <data name="DatabasePathMissing" xml:space="preserve">
+    <value>Chemin vers le KeePass manquant</value>
+  </data>
+  <data name="PasswordRequired" xml:space="preserve">
+    <value>Mot de passe requis</value>
+  </data>
+  <data name="MasterKeyRequired" xml:space="preserve">
+    <value>Fichier de clé requis</value>
+  </data>
+  <data name="DatabaseValidated" xml:space="preserve">
+    <value>✅ Base KeePass validée avec succès ! • {0}</value>
+  </data>
+  <data name="OperationCancelled" xml:space="preserve">
+    <value>Opération annulée</value>
+  </data>
+  <data name="ConnectionFailed" xml:space="preserve">
+    <value>Échec de la connexion : {0}</value>
+  </data>
+  <data name="DatabaseCloseFailed" xml:space="preserve">
+    <value>⚠️ Échec de la fermeture du fichier : {0}</value>
   </data>
 </root>

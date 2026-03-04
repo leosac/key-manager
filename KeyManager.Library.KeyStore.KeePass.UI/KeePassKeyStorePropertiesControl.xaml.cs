@@ -1,91 +1,37 @@
-﻿using KeePassLib.Resources;
+﻿using KeePassLib;
+using KeePassLib.Keys;
+using KeePassLib.Serialization;
 using Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain;
-using Leosac.KeyManager.Library.UI;
-using Leosac.KeyManager.Library.UI.Domain;
 using Microsoft.Win32;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
 namespace KeyManager.Library.KeyStore.KeePass.UI
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class KeePassKeyStorePropertiesControl : UserControl, INotifyPropertyChanged
     {
-        private string? _defaultPath = "";
-        private string? _fileInfo = "";
-        private string _statusMessage = "";
-        private string? _keyFilePath = "";
-        private bool _isConnecting = false;
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public string TestButtonText => IsConnecting ? "🔄 Testing..." : "🔗 Test Connection";
-        public bool IsTestEnabled => !IsConnecting && !string.IsNullOrWhiteSpace(DefaultPath) && File.Exists(DefaultPath);
+        private PwDatabase? _DB;
+        private CancellationTokenSource? _cts;
+        
+        private bool _isConnecting = false;
+
+        public string TestButtonText => IsConnecting ? Properties.Resources.AvailabilityProcessing : Properties.Resources.ProfileChecker;
+        public bool IsTestEnabled => !IsConnecting && !string.IsNullOrWhiteSpace(TxtFilePath.Text) && File.Exists(TxtFilePath.Text);
         public bool IsClearEnabled => !IsConnecting;
-
-        public KeePassKeyStorePropertiesControl()
-        {
-            InitializeComponent();
-            DataContext = this;
-            TxtStatus.Foreground = Brushes.Gray;
-            UpdateBindings();
-            ShowProgress(false);
-        }
-
-        public string DefaultPath
-        {
-            get => _defaultPath ?? "";
-            set
-            {
-                _defaultPath = value;
-                OnPropertyChanged(nameof(DefaultPath));
-                UpdateStatus();
-            }
-        }
-
-        public string StatusMessage
-        {
-            get => _statusMessage;
-            set
-            {
-                _statusMessage = value ?? "Ready to connect • No file selected";
-                OnPropertyChanged(nameof(StatusMessage));
-            }
-        }
-
-        public string StatusFileInfo
-        {
-            get => _fileInfo ?? "";
-            set
-            {
-                _fileInfo = value;
-                OnPropertyChanged(nameof(StatusFileInfo));
-            }
-        }
-
-        public string KeyFilePath
-        {
-            get => _keyFilePath ?? "";
-            set
-            {
-                _keyFilePath = value;
-                OnPropertyChanged(nameof(KeyFilePath));
-                UpdateStatus();
-            }
-        }
-
         public bool IsConnecting
         {
             get => _isConnecting;
             set
             {
+                if (_isConnecting == value) return;
                 _isConnecting = value;
                 OnPropertyChanged(nameof(IsConnecting));
                 OnPropertyChanged(nameof(TestButtonText));
@@ -94,147 +40,303 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             }
         }
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        public ObservableCollection<ProfileItem> Profiles { get; } = new();
+        private readonly List<ProfileItem> _allProfiles = new();
+
+        private ProfileItem? _selectedProfile;
+        public ProfileItem? SelectedProfile
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            get => _selectedProfile;
+            set
+            {
+                if (_selectedProfile == value) return;
+                _selectedProfile = value;
+                OnPropertyChanged(nameof(SelectedProfile));
+                OnPropertyChanged(nameof(SelectedProfileBackground));
+            }
         }
 
-        private void UpdateStatus()
+        public Brush SelectedProfileBackground =>
+            _selectedProfile == null
+                ? Brushes.Transparent
+                : (_selectedProfile.IsNonExhaustive ? Brushes.Red : Brushes.Green);
+
+        private CredentialMode _selectedCredentialMode = UI.CredentialMode.PasswordOnly;
+
+        public CredentialMode SelectedCredential
         {
-            if (!string.IsNullOrEmpty(DefaultPath) && File.Exists(DefaultPath))
+            get => _selectedCredentialMode;
+            set
             {
-                StatusMessage = "Ready to test connection • Valid file selected";
-            }
-            else if (!string.IsNullOrEmpty(DefaultPath))
-            {
-                StatusMessage = "⚠️ File path specified but no file found";
-            }
-            else
-            {
-                StatusMessage = "Ready to connect • No file selected";
-            }
-            if (!string.IsNullOrEmpty(KeyFilePath))
-            {
-                StatusMessage += $" • Key file : {(KeyFilePath.Length > 20 ? Path.GetFileName(KeyFilePath) : KeyFilePath)}";
+                if (_selectedCredentialMode == value) return;
+                _selectedCredentialMode = value;
+                OnPropertyChanged(nameof(SelectedCredential));
+                OnPropertyChanged(nameof(IsMasterKeyVisible));
             }
         }
-        private void UpdateBindings()
+
+        public bool IsMasterKeyVisible =>
+            SelectedCredential != UI.CredentialMode.PasswordOnly;
+
+        private bool _isBusy;
+        public bool IsBusy
         {
-            OnPropertyChanged(nameof(TestButtonText));
-            OnPropertyChanged(nameof(IsTestEnabled));
-            OnPropertyChanged(nameof(StatusMessage));
-            OnPropertyChanged(nameof(StatusFileInfo));
-            OnPropertyChanged(nameof(IsClearEnabled));
+            get => _isBusy;
+            set
+            {
+                if (_isBusy == value) return;
+                _isBusy = value;
+                OnPropertyChanged(nameof(IsBusy));
+            }
         }
 
-        private void BtnBrowse_Click(object sender, RoutedEventArgs e)
+        public KeePassKeyStorePropertiesControl()
         {
+            InitializeComponent();
+            DataContext = this;
 
+            Profiles.Add(DefaultProfile);
+            SelectedProfile = DefaultProfile;
+
+            BtnExhaustive.Checked += (_, _) => ApplyFilter();
+            BtnExhaustive.Unchecked += (_, _) => ApplyFilter();
+            RbPassword.Checked += CredentialMode;
+            RbKeyFile.Checked += CredentialMode;
+            RbPasswordKey.Checked += CredentialMode;
+            TxtFilePath.TextChanged += (_, _) => OnPropertyChanged(nameof(IsTestEnabled));
+
+            Unloaded += (_, _) => ClearAll();
+            CredentialMode(null, null);
+            ShowStatus(Properties.Resources.Availability, StatusType.Success);
+            ShowProgress(false);
+        }
+
+        public static readonly string DefaultProfileName = Properties.Resources.DefaultProfileName;
+        private static readonly ProfileItem DefaultProfile = new() { Name = DefaultProfileName, IsNonExhaustive = false };
+
+        private void CredentialMode(object? sender, RoutedEventArgs? e)
+        {
+            bool pwdEnabled = RbPassword.IsChecked == true || RbPasswordKey.IsChecked == true;
+            bool keyEnabled = RbKeyFile.IsChecked == true || RbPasswordKey.IsChecked == true;
+            if (TxtPassword.IsEnabled != pwdEnabled)
+                TxtPassword.IsEnabled = pwdEnabled;
+            MasterKeyPanel.Visibility = keyEnabled ? Visibility.Visible : Visibility.Collapsed;
+            if (!keyEnabled && TxtMasterKey.Text.Length > 0)
+                TxtMasterKey.Clear();
+        }
+
+        private void BrowseFile(object sender, RoutedEventArgs e)
+        {
             var dialog = new OpenFileDialog
             {
-                Title = "KeePass Database (.kdbx)",
-                Filter = "KeePass Database (*.kdbx)|*.kdbx|All Files (*.*)|*.*",
-                FilterIndex = 1,
+                Title = Properties.Resources.SelectKeePassDatabase,
+                Filter = Properties.Resources.KeePassDbFilter,
                 CheckFileExists = true
             };
-            if (dialog.ShowDialog() == true)
+            if (dialog.ShowDialog() != true) return;
+            ShowStatus(string.Format(Properties.Resources.FileSelected, Path.GetFileName(dialog.FileName)), StatusType.Success);
+            if (DataContext is KeePassKeyStorePropertiesControlViewModel model && model.FileProperties != null)
             {
-                string filePath = dialog.FileName;
-                TxtFilePath.Text = filePath;
-                _defaultPath = filePath;
-                OnPropertyChanged(nameof(DefaultPath));
-                UpdateStatus();
-                UpdateBindings();
-                TxtFilePath.Focus();
-                TxtFilePath.CaretIndex = filePath.Length;
-                var model = DataContext as KeePassKeyStorePropertiesControlViewModel;
-                if (model?.FileProperties != null)
-                {
-                    model.FileProperties.DBpath = filePath;
-                }
+                if (!string.IsNullOrEmpty(model.FileProperties.DBPath) || !string.IsNullOrEmpty(model.FileProperties.Secret)
+                    || !string.IsNullOrEmpty(model.FileProperties.KeyPath))
+                        ClearAll();
+                model.FileProperties.DBPath = dialog.FileName;
             }
+            TxtFilePath.Text = dialog.FileName;
         }
 
-        private void BtnKeyFile_Click(object sender, RoutedEventArgs e)
+        private void BrowseKeyFile(object sender, RoutedEventArgs e)
         {
             var dialog = new OpenFileDialog
             {
-                Title = "Key File",
-                Filter = "Key Files (*.keyx)|*.keyx|All Files (*.*)|*.*",
-                FilterIndex = 1,
+                Title = Properties.Resources.SelectMasterKey,
+                Filter = Properties.Resources.KeyFileFilter,
                 CheckFileExists = true
             };
-            if (dialog.ShowDialog() == true)
-            {
-                KeyFilePath = dialog.FileName;
-                UpdateStatus();
-            }
+            if (dialog.ShowDialog() != true) return;
+            TxtMasterKey.Text = dialog.FileName;
+            if (RbPassword.IsChecked == true)
+                RbPasswordKey.IsChecked = !string.IsNullOrEmpty(TxtPassword.Password);
+            CredentialMode(null, null);
+            ShowStatus(string.Format(Properties.Resources.KeyFileSelected, Path.GetFileName(dialog.FileName)), StatusType.Success);
+            if (DataContext is KeePassKeyStorePropertiesControlViewModel model && model.FileProperties != null)
+                model.FileProperties.KeyPath = dialog.FileName;
         }
 
-        private async void BtnTest_Click(object sender, RoutedEventArgs e)
+        private void ClearAll(object? sender = null, RoutedEventArgs? e = null)
         {
-            if (!ValidateInputs())
-                return;
+            CancelConnection();
+            if (DataContext is KeePassKeyStorePropertiesControlViewModel model && model.FileProperties != null)
+            {
+                model.FileProperties.DBPath = string.Empty;
+                model.FileProperties.KeyPath = string.Empty;
+                model.FileProperties.Secret = string.Empty;
+                model.FileProperties.ProfilePath = string.Empty;
+            }
+            TxtFilePath.Clear();
+            TxtPassword.Clear();
+            TxtMasterKey.Clear();
 
+            Profiles.Clear();
+            Profiles.Add(DefaultProfile);
+            SelectedProfile = Profiles.First();
+
+            ShowProgress(false);
+            BtnExhaustive.IsChecked = false;
+            SelectedCredential = UI.CredentialMode.PasswordOnly;
+            CredentialMode(null, null);
+            ShowStatus(Properties.Resources.Availability, StatusType.Success);
+        }
+
+        private async void TestConnection(object sender, RoutedEventArgs e)
+        {
+            const int progressBarDuration = 1500; //Just for a minimum animation
+            var stopwatch = Stopwatch.StartNew();
             IsConnecting = true;
             ShowProgress(true);
             try
             {
-                await TestConnectionAsync();
-            }
-            catch (Exception ex)
-            {
-                ShowStatusError($"Connection failed : {ex.Message}");
+                await ExploreProfiles();
             }
             finally
             {
+                stopwatch.Stop();
+                var remaining = progressBarDuration - (int)stopwatch.ElapsedMilliseconds;
+                if (remaining > 0)
+                    await Task.Delay(remaining);
                 IsConnecting = false;
-                ShowProgress(false);
+                Dispatcher.Invoke(() =>
+                {
+                    ProgressBar.IsIndeterminate = false;
+                    ProgressBar.Opacity = 1;
+                });
             }
         }
 
-        private void BtnClear_Click(object sender, RoutedEventArgs e)
+        private async Task ExploreProfiles()
         {
-            ClearAllFields();
+            string dbPath = TxtFilePath.Text;
+            if (string.IsNullOrWhiteSpace(dbPath))
+            {
+                ShowStatus(Properties.Resources.DatabasePathMissing, StatusType.Warning);
+                return;
+            }
+            bool requirePassword = RbPassword.IsChecked == true || RbPasswordKey.IsChecked == true;
+            bool requireKey = RbKeyFile.IsChecked == true || RbPasswordKey.IsChecked == true;
+            if (requirePassword && string.IsNullOrEmpty(TxtPassword.Password))
+            {
+                ShowStatus(Properties.Resources.PasswordRequired, StatusType.Warning);
+                return;
+            }
+            if (requireKey && string.IsNullOrEmpty(TxtMasterKey.Text))
+            {
+                ShowStatus(Properties.Resources.MasterKeyRequired, StatusType.Warning);
+                return;
+            }
+
+            CancelConnection();
+            _cts = new CancellationTokenSource();
+            var token = _cts.Token;
+
+            try
+            {
+                IsBusy = true;
+                var masterKey = new CompositeKey();
+                if (requirePassword) masterKey.AddUserKey(new KcpPassword(TxtPassword.Password));
+                if (requireKey) masterKey.AddUserKey(new KcpKeyFile(TxtMasterKey.Text));
+
+                var db = new PwDatabase();
+                var io = new IOConnectionInfo { Path = dbPath };
+
+                await Task.Run(() =>
+                {
+                    token.ThrowIfCancellationRequested();
+                    db.Open(io, masterKey, null);
+                }, token);
+                _DB = db;
+                ReloadProfiles();
+                ShowStatus(string.Format(Properties.Resources.DatabaseValidated, Path.GetFileName(TxtFilePath.Text)), StatusType.Success);
+            }
+            catch (OperationCanceledException)
+            {
+                ShowStatus(Properties.Resources.OperationCancelled, StatusType.Warning);
+            }
+            catch (Exception ex)
+            {
+                ShowStatus(string.Format(Properties.Resources.ConnectionFailed, ex.Message), StatusType.Error);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+        private void CancelConnection()
+        {
+            if (_cts != null && !_cts.IsCancellationRequested)
+            {
+                _cts.Cancel();
+                _cts.Dispose();
+                _cts = null;
+            }
+            if (_DB != null)
+            {
+                try
+                {
+                    _DB.Close();
+                }
+                catch (Exception ex)
+                {
+                    ShowStatus(string.Format(Properties.Resources.DatabaseCloseFailed, ex.Message), StatusType.Warning);
+                }
+                _DB.Close();
+                _DB = null;
+            }
         }
 
-        private void ClearAllFields()
+        private void ReloadProfiles()
         {
-            DefaultPath = "";
-            Password.Password = "";
-            KeyFilePath = "";
-            StatusFileInfo = "";
-            StatusMessage = "Ready to connect • No file selected";
-            TxtStatus.Text = StatusMessage;
-            TxtStatus.Foreground = Brushes.Gray;
-            ShowProgress(false);
-            Keyboard.ClearFocus();
-            TxtFilePath.Focus();
-            UpdateBindings();
+            if (_DB == null)
+                return;
+            _allProfiles.Clear();
+            Explore(_DB.RootGroup);
+            ApplyFilter();
         }
 
-        private bool ValidateInputs()
+        private void Explore(PwGroup group)
         {
-            if (string.IsNullOrWhiteSpace(DefaultPath))
+            int count = group.Entries?.Count() ?? 0;
+            bool valid = group.Entries?.Any(e => e.Strings.Get("KeyData_Leosac") == null) ?? false;
+            _allProfiles.Add(new ProfileItem
             {
-                ShowStatusError("Select a KeePass database file.");
-                TxtFilePath.Focus();
-                return false;
-            }
+                Name = group.Name ?? "Undefined",
+                EntryCount = count,
+                IsNonExhaustive = valid
+            });
+            foreach (var e in group.Groups)
+                Explore(e);
+        }
 
-            if (!File.Exists(DefaultPath))
-            {
-                ShowStatusError("Selected KeePass file does not exist.");
-                TxtFilePath.Focus();
-                return false;
-            }
-            if (Password.Password?.Length < 4 && string.IsNullOrEmpty(KeyFilePath))
-            {
-                ShowStatusWarning("Master password or key file is missing or incorrect.");
-                Password.Focus();
-                return false;
-            }
-            return true;
+        private void ApplyFilter()
+        {
+            var exhaustive = BtnExhaustive.IsChecked == true;
+            Profiles.Clear();
+            var filtered = exhaustive
+                ? _allProfiles.Where(p => !p.IsNonExhaustive && p.EntryCount > 0).ToList()
+                : _allProfiles.ToList();
+            if (filtered.Count == 0)
+                filtered.Add(DefaultProfile);
+            foreach (var profile in filtered)
+                Profiles.Add(profile);
+            SelectedProfile = Profiles.FirstOrDefault();
+            if (DataContext is KeePassKeyStorePropertiesControlViewModel model && model.FileProperties != null)
+                model.FileProperties.ProfilePath = SelectedProfile!.Name;
+        }
+
+        private void SelectedProfileChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SelectedProfile != null && DataContext is KeePassKeyStorePropertiesControlViewModel model &&
+                model.FileProperties != null)
+                model.FileProperties.ProfilePath = SelectedProfile.Name;
         }
 
         private void ShowProgress(bool show)
@@ -262,49 +364,63 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             }
         }
 
-        private async Task TestConnectionAsync()
+        private void ShowStatus(string message, StatusType type)
         {
-            try
+            Dispatcher.Invoke(() =>
             {
-                if (!File.Exists(DefaultPath))
-                    throw new FileNotFoundException("KeePass database .kdbx file not found.");
-                var fileInfo = new FileInfo(DefaultPath);
-                if (fileInfo.Length < 1024)
-                    throw new InvalidDataException("File too small - Can't be a KeePass database.");
-                StatusFileInfo = $"File: {fileInfo.Name}\nSize: {(fileInfo.Length / 1024f):F1} KB\nModified: {fileInfo.LastWriteTime:MMM dd, yyyy}";
-                ShowStatusSuccess("✅ KeePass database validated successfully!");
-            }
-            catch (UnauthorizedAccessException)
-            {
-                throw new InvalidOperationException("Access denied to KeePass file. Check file permissions.");
-            }
-            catch (IOException ex)
-            {
-                throw new InvalidOperationException($"Cannot read file: {ex.Message}");
-            }
-        }
-        private void ShowStatusSuccess(string message)
-        {
-            TxtStatus.Text = message;
-            TxtStatus.Foreground = Brushes.Green;
-            StatusMessage = message;
-            OnPropertyChanged(nameof(StatusMessage));
+                TxtStatus.Text = message;
+                Color highlightColor;
+                Color startTextColor;
+                switch (type)
+                {
+                    case StatusType.Success:
+                        highlightColor = Colors.Green;
+                        startTextColor = Colors.Black;
+                        break;
+                    case StatusType.Warning:
+                        highlightColor = Colors.Orange;
+                        startTextColor = Colors.White;
+                        break;
+                    case StatusType.Error:
+                        highlightColor = Colors.Red;
+                        startTextColor = Colors.White;
+                        break;
+                    default:
+                        highlightColor = Colors.Gray;
+                        startTextColor = Colors.Black;
+                        break;
+                }
+                TxtStatus.Foreground = new SolidColorBrush(startTextColor);
+                var bgBrush = new SolidColorBrush(Color.FromArgb(180, highlightColor.R, highlightColor.G, highlightColor.B));
+                StatusBorder.Background = bgBrush;
+                StatusBorder.BorderBrush = Brushes.LightGray;
+                StatusBorder.BorderThickness = new Thickness(1);
+                StatusBorder.CornerRadius = new CornerRadius(4);
+                StatusBorder.Padding = new Thickness(6);
+                StatusBorder.Visibility = Visibility.Visible;
+                var bgFade = new ColorAnimation(Color.FromArgb(0, highlightColor.R, highlightColor.G, highlightColor.B),
+                                                TimeSpan.FromSeconds(3));
+                bgBrush.BeginAnimation(SolidColorBrush.ColorProperty, bgFade);
+                if (TxtStatus.Foreground is SolidColorBrush textBrush)
+                {
+                    var textFade = new ColorAnimation(Color.FromArgb(255, highlightColor.R, highlightColor.G, highlightColor.B),
+                                                      TimeSpan.FromSeconds(3));
+                    textBrush.BeginAnimation(SolidColorBrush.ColorProperty, textFade);
+                }
+            });
         }
 
-        private void ShowStatusError(string message)
-        {
-            TxtStatus.Text = $"❌ {message}";
-            TxtStatus.Foreground = Brushes.Red;
-            StatusMessage = $"❌ {message}";
-            OnPropertyChanged(nameof(StatusMessage));
-        }
+        private void OnPropertyChanged(string name) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-        private void ShowStatusWarning(string message)
-        {
-            TxtStatus.Text = $"⚠️ {message}";
-            TxtStatus.Foreground = Brushes.Orange;
-            StatusMessage = $"⚠️ {message}";
-            OnPropertyChanged(nameof(StatusMessage));
-        }
     }
+
+    public sealed class ProfileItem
+    {
+        public string Name { get; init; } = "";
+        public int EntryCount { get; set; }
+        public bool IsNonExhaustive { get; init; }
+        public string DisplayName => Name == KeePassKeyStorePropertiesControl.DefaultProfileName ? Name : $"{Name} ({EntryCount})";
+    }
+
 }

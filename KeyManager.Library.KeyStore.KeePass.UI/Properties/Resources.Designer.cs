@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Properties {
+namespace KeyManager.Library.KeyStore.KeePass.UI.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Leosac.KeyManager.Library.KeyStore.KeePass.UI.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("KeyManager.Library.KeyStore.KeePass.UI.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,20 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 📁.
+        ///   Looks up a localized string similar to ✅ Ready to connect • No profile selected.
         /// </summary>
-        public static string Browse {
+        public static string Availability {
             get {
-                return ResourceManager.GetString("Browse", resourceCulture);
+                return ResourceManager.GetString("Availability", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 🔄 Exploring....
+        /// </summary>
+        public static string AvailabilityProcessing {
+            get {
+                return ResourceManager.GetString("AvailabilityProcessing", resourceCulture);
             }
         }
         
@@ -79,6 +88,96 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connection failed : {0}.
+        /// </summary>
+        public static string ConnectionFailed {
+            get {
+                return ResourceManager.GetString("ConnectionFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Credential Mode.
+        /// </summary>
+        public static string CredentialMode {
+            get {
+                return ResourceManager.GetString("CredentialMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ⚠️ Failed to close database : {0}.
+        /// </summary>
+        public static string DatabaseCloseFailed {
+            get {
+                return ResourceManager.GetString("DatabaseCloseFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Database path missing.
+        /// </summary>
+        public static string DatabasePathMissing {
+            get {
+                return ResourceManager.GetString("DatabasePathMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ✅ KeePass database validated successfully ! • {0}.
+        /// </summary>
+        public static string DatabaseValidated {
+            get {
+                return ResourceManager.GetString("DatabaseValidated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default (Root).
+        /// </summary>
+        public static string DefaultProfileName {
+            get {
+                return ResourceManager.GetString("DefaultProfileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a KeePass database file..
+        /// </summary>
+        public static string ErrorFile {
+            get {
+                return ResourceManager.GetString("ErrorFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected KeePass file does not exist..
+        /// </summary>
+        public static string ErrorFileNotFound {
+            get {
+                return ResourceManager.GetString("ErrorFileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Master password or key file is missing or incorrect..
+        /// </summary>
+        public static string ErrorFilePwdNotFound {
+            get {
+                return ResourceManager.GetString("ErrorFilePwdNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exhaustive.
+        /// </summary>
+        public static string Exhaustive {
+            get {
+                return ResourceManager.GetString("Exhaustive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to KeePass File (.kdbx).
         /// </summary>
         public static string File {
@@ -88,20 +187,146 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 🔑.
+        ///   Looks up a localized string similar to ✅ KeePass file selected : {0}.
         /// </summary>
-        public static string KeyFile {
+        public static string FileSelected {
             get {
-                return ResourceManager.GetString("KeyFile", resourceCulture);
+                return ResourceManager.GetString("FileSelected", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 🔐 Master Password.
+        ///   Looks up a localized string similar to KeePass Database (*.kdbx)|*.kdbx|All Files (*.*)|*.*.
+        /// </summary>
+        public static string KeePassDbFilter {
+            get {
+                return ResourceManager.GetString("KeePassDbFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key File (*.keyx)|*.keyx|All Files (*.*)|*.*.
+        /// </summary>
+        public static string KeyFileFilter {
+            get {
+                return ResourceManager.GetString("KeyFileFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key file only.
+        /// </summary>
+        public static string KeyFileOnly {
+            get {
+                return ResourceManager.GetString("KeyFileOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 🔑 Key file selected : {0}.
+        /// </summary>
+        public static string KeyFileSelected {
+            get {
+                return ResourceManager.GetString("KeyFileSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Master key 🔑.
+        /// </summary>
+        public static string MasterKey {
+            get {
+                return ResourceManager.GetString("MasterKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Master key file is required.
+        /// </summary>
+        public static string MasterKeyRequired {
+            get {
+                return ResourceManager.GetString("MasterKeyRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation cancelled.
+        /// </summary>
+        public static string OperationCancelled {
+            get {
+                return ResourceManager.GetString("OperationCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Master Password 🔐.
         /// </summary>
         public static string Password {
             get {
                 return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password only.
+        /// </summary>
+        public static string PasswordOnly {
+            get {
+                return ResourceManager.GetString("PasswordOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password + Key.
+        /// </summary>
+        public static string PasswordPlusKey {
+            get {
+                return ResourceManager.GetString("PasswordPlusKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password is required.
+        /// </summary>
+        public static string PasswordRequired {
+            get {
+                return ResourceManager.GetString("PasswordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile :.
+        /// </summary>
+        public static string Profile {
+            get {
+                return ResourceManager.GetString("Profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 🔗 Profile Explorer.
+        /// </summary>
+        public static string ProfileChecker {
+            get {
+                return ResourceManager.GetString("ProfileChecker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to KeePass Database (.kdbx).
+        /// </summary>
+        public static string SelectKeePassDatabase {
+            get {
+                return ResourceManager.GetString("SelectKeePassDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Master Key.
+        /// </summary>
+        public static string SelectMasterKey {
+            get {
+                return ResourceManager.GetString("SelectMasterKey", resourceCulture);
             }
         }
         

@@ -11,10 +11,12 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         {
             return new KeePassKeyStore();
         }
+
         public override Type? GetPropertiesType()
         {
             return typeof(KeePassKeyStoreProperties);
         }
+
         public override KeyStoreProperties CreateKeyStoreProperties()
         {
             return new KeePassKeyStoreProperties();
