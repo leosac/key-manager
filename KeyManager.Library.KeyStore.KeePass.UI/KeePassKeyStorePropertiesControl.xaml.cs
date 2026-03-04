@@ -5,8 +5,9 @@ using Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Diagnostics;
+using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -21,7 +22,7 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
         private PwDatabase? _DB;
         private CancellationTokenSource? _cts;
         
-        private bool _isConnecting = false;
+        private bool _isConnecting;
 
         public string TestButtonText => IsConnecting ? Properties.Resources.AvailabilityProcessing : Properties.Resources.ProfileChecker;
         public bool IsTestEnabled => !IsConnecting && !string.IsNullOrWhiteSpace(TxtFilePath.Text) && File.Exists(TxtFilePath.Text);
@@ -33,7 +34,7 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             {
                 if (_isConnecting == value) return;
                 _isConnecting = value;
-                OnPropertyChanged(nameof(IsConnecting));
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(TestButtonText));
                 OnPropertyChanged(nameof(IsTestEnabled));
                 OnPropertyChanged(nameof(IsClearEnabled));
@@ -51,7 +52,7 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             {
                 if (_selectedProfile == value) return;
                 _selectedProfile = value;
-                OnPropertyChanged(nameof(SelectedProfile));
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(SelectedProfileBackground));
             }
         }
@@ -70,7 +71,7 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             {
                 if (_selectedCredentialMode == value) return;
                 _selectedCredentialMode = value;
-                OnPropertyChanged(nameof(SelectedCredential));
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(IsMasterKeyVisible));
             }
         }
@@ -125,7 +126,7 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
                 TxtMasterKey.Clear();
         }
 
-        private void BrowseFile(object sender, RoutedEventArgs e)
+        private void BrowseFile(object _, RoutedEventArgs __)
         {
             var dialog = new OpenFileDialog
             {
@@ -145,7 +146,7 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             TxtFilePath.Text = dialog.FileName;
         }
 
-        private void BrowseKeyFile(object sender, RoutedEventArgs e)
+        private void BrowseKeyFile(object _, RoutedEventArgs __)
         {
             var dialog = new OpenFileDialog
             {
@@ -288,8 +289,10 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
                 {
                     ShowStatus(string.Format(Properties.Resources.DatabaseCloseFailed, ex.Message), StatusType.Warning);
                 }
-                _DB.Close();
-                _DB = null;
+                finally
+                {
+                    _DB = null;
+                }
             }
         }
 
@@ -332,7 +335,7 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
                 model.FileProperties.ProfilePath = SelectedProfile!.Name;
         }
 
-        private void SelectedProfileChanged(object sender, SelectionChangedEventArgs e)
+        private void SelectedProfileChanged(object _, SelectionChangedEventArgs __)
         {
             if (SelectedProfile != null && DataContext is KeePassKeyStorePropertiesControlViewModel model &&
                 model.FileProperties != null)
@@ -410,8 +413,8 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             });
         }
 
-        private void OnPropertyChanged(string name) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
     }
 

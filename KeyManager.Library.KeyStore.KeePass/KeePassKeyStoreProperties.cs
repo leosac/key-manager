@@ -33,10 +33,11 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
             return string.Equals(DBPath, other.DBPath, StringComparison.Ordinal) &&
-                   string.Equals(KeyPath, other.KeyPath, StringComparison.Ordinal);
+                   string.Equals(KeyPath, other.KeyPath, StringComparison.Ordinal) &&
+                   string.Equals(ProfilePath, other.ProfilePath, StringComparison.Ordinal);
         }
 
-        public override int GetHashCode() => System.HashCode.Combine(DBPath, KeyPath);
+        public override int GetHashCode() => System.HashCode.Combine(DBPath, KeyPath, ProfilePath);
 
         public static bool operator ==(KeePassKeyStoreProperties? left, KeePassKeyStoreProperties? right) => Equals(left, right);
         public static bool operator !=(KeePassKeyStoreProperties? left, KeePassKeyStoreProperties? right) => !Equals(left, right);

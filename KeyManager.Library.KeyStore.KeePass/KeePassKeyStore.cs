@@ -38,10 +38,8 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         public override bool CanCreateKeyEntries => true;
         public override bool CanDeleteKeyEntries => true;
         public override bool CanUpdateKeyEntries => true;
-        public bool IgnoreIncompleteEntries { get; set; } = false;
+        public bool IgnoreIncompleteEntries { get; set; }
         public override IEnumerable<KeyEntryClass> SupportedClasses => [KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric];
-
-        new event EventHandler<IChangeKeyEntry>? KeyEntryUpdated;
 
         private static readonly JsonSerializerSettings SerializerSettings = KeyEntry.CreateJsonSerializerSettings();
 
@@ -619,12 +617,6 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             ArgumentNullException.ThrowIfNull(_database);
             if (!_database.IsOpen)
                 throw new InvalidOperationException("Database not opened");
-        }
-
-        protected new void OnKeyEntryUpdated(IChangeKeyEntry keyEntry)
-        {
-            KeyEntryUpdated?.Invoke(this, keyEntry);
-            base.OnKeyEntryUpdated(keyEntry);
         }
 
         private async Task CheckOpen()
