@@ -1,13 +1,18 @@
 ﻿using KeePassLib;
+using KeePassLib.Interfaces;
 using KeePassLib.Keys;
 using KeePassLib.Serialization;
 using Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain;
+using log4net;
 using Microsoft.Win32;
+using Net.Pkcs11Interop.HighLevelAPI;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Security;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -97,14 +102,17 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             DataContext = this;
 
             Profiles.Add(DefaultProfile);
-            SelectedProfile = DefaultProfile;
 
             BtnExhaustive.Checked += (_, _) => ApplyFilter();
             BtnExhaustive.Unchecked += (_, _) => ApplyFilter();
+            BtnSilent.Checked += (_, _) => UpdateSilent(true);
+            BtnSilent.Unchecked += (_, _) => UpdateSilent(false);
             RbPassword.Checked += CredentialMode;
             RbKeyFile.Checked += CredentialMode;
             RbPasswordKey.Checked += CredentialMode;
             TxtFilePath.TextChanged += (_, _) => OnPropertyChanged(nameof(IsTestEnabled));
+
+            SelectedProfile = Profiles.FirstOrDefault();
 
             Unloaded += (_, _) => ClearAll();
             CredentialMode(null, null);
@@ -122,8 +130,19 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             if (TxtPassword.IsEnabled != pwdEnabled)
                 TxtPassword.IsEnabled = pwdEnabled;
             MasterKeyPanel.Visibility = keyEnabled ? Visibility.Visible : Visibility.Collapsed;
+            if (!pwdEnabled && TxtPassword.Password.Length > 0)
+                TxtPassword.Clear();
             if (!keyEnabled && TxtMasterKey.Text.Length > 0)
                 TxtMasterKey.Clear();
+            if (DataContext is KeePassKeyStorePropertiesControlViewModel model && model.FileProperties != null)
+            {
+                if (RbPassword.IsChecked == true)
+                    model.FileProperties.SelectedCredentialMode = (int)UI.CredentialMode.PasswordOnly;
+                else if (RbKeyFile.IsChecked == true)
+                    model.FileProperties.SelectedCredentialMode = (int)UI.CredentialMode.KeyFileOnly;
+                else
+                    model.FileProperties.SelectedCredentialMode = (int)UI.CredentialMode.PasswordAndKey;
+            }
         }
 
         private void BrowseFile(object _, RoutedEventArgs __)
@@ -301,11 +320,11 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             if (_DB == null)
                 return;
             _allProfiles.Clear();
-            Explore(_DB.RootGroup);
+            Explore(_DB.RootGroup, isRoot: true);
             ApplyFilter();
         }
 
-        private void Explore(PwGroup group)
+        private void Explore(PwGroup group, bool isRoot = false)
         {
             int count = group.Entries?.Count() ?? 0;
             bool valid = group.Entries?.Any(e => e.Strings.Get("KeyData_Leosac") == null) ?? false;
@@ -313,7 +332,8 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             {
                 Name = group.Name ?? "Undefined",
                 EntryCount = count,
-                IsNonExhaustive = valid
+                IsNonExhaustive = valid,
+                IsRoot = isRoot
             });
             foreach (var e in group.Groups)
                 Explore(e);
@@ -333,6 +353,14 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             SelectedProfile = Profiles.FirstOrDefault();
             if (DataContext is KeePassKeyStorePropertiesControlViewModel model && model.FileProperties != null)
                 model.FileProperties.ProfilePath = SelectedProfile!.Name;
+        }
+
+        private void UpdateSilent(bool isSilent)
+        {
+            if (DataContext is KeePassKeyStorePropertiesControlViewModel model && model.FileProperties != null)
+            {
+                model.FileProperties.Silent = isSilent;
+            }
         }
 
         private void SelectedProfileChanged(object _, SelectionChangedEventArgs __)
@@ -413,6 +441,89 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             });
         }
 
+        private async void CreateKeyStore(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ShowStatus(Properties.Resources.Creating, StatusType.Info);
+
+                string filePath = TxtFilePath.Text?.Trim() ?? "";
+                string password = TxtPassword.Password ?? "";
+                string masterKeyPath = TxtMasterKey.Text?.Trim() ?? "";
+                if (string.IsNullOrWhiteSpace(filePath))
+                {
+                    ShowStatus(Properties.Resources.CreateFileNotFound, StatusType.Error);
+                    return;
+                }
+                if (File.Exists(filePath))
+                {
+                    ShowStatus(Properties.Resources.CreateFileExists, StatusType.Error);
+                    return;
+                }
+                if (string.IsNullOrEmpty(password) && string.IsNullOrEmpty(masterKeyPath))
+                {
+                    ShowStatus(Properties.Resources.CreateCredentialRequired, StatusType.Error);
+                    return;
+                }
+                await CreateEmptyKeePassDatabase(filePath, password, masterKeyPath);
+                ShowStatus(Properties.Resources.CreateSuccessful, StatusType.Success);
+            }
+            catch (Exception ex)
+            {
+                ShowStatus(string.Format(Properties.Resources.Error, ex.Message), StatusType.Error);
+            }
+        }
+
+        private async Task CreateEmptyKeePassDatabase(string filePath, string password, string masterKeyPath)
+        {
+            if (File.Exists(filePath))
+                throw new InvalidOperationException("File already exists.");
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? throw new InvalidOperationException("Invalid file path."));
+            var compositeKey = BuildCompositeKey(password, masterKeyPath);
+            var io = new IOConnectionInfo { Path = filePath };
+            var db = new PwDatabase();
+            try
+            {
+                db.New(io, compositeKey);
+                db.RootGroup.Groups.Clear();
+                db.RootGroup.AddGroup(new PwGroup(true, true, "LEOSAC", PwIcon.Folder), true);
+                await Task.Run(() => db.Save(new NullStatusLogger()));
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Failed to create KeePass database.", ex);
+            }
+            finally
+            {
+                db.Close();
+            }
+        }
+
+        private static CompositeKey BuildCompositeKey(string? password, string? masterKeyPath)
+        {
+            var compositeKey = new CompositeKey();
+            if (!string.IsNullOrEmpty(password))
+            {
+                var pwBytes = Encoding.UTF8.GetBytes(password);
+                compositeKey.AddUserKey(new KcpPassword(pwBytes));
+                WipeMemory(pwBytes);
+            }
+            if (!string.IsNullOrEmpty(masterKeyPath))
+            {
+                if (!File.Exists(masterKeyPath))
+                    throw new FileNotFoundException("Master key file not found.", masterKeyPath);
+                compositeKey.AddUserKey(new KcpKeyFile(masterKeyPath));
+            }
+            return compositeKey;
+        }
+
+        private static void WipeMemory(byte[] sensitiveBytes)
+        {
+            if (sensitiveBytes == null) return;
+            for (int i = 0; i < sensitiveBytes.Length; i++)
+                sensitiveBytes[i] = 0;
+        }
+
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
@@ -423,7 +534,17 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
         public string Name { get; init; } = "";
         public int EntryCount { get; set; }
         public bool IsNonExhaustive { get; init; }
-        public string DisplayName => Name == KeePassKeyStorePropertiesControl.DefaultProfileName ? Name : $"{Name} ({EntryCount})";
+        public bool IsRoot { get; init; }
+        public string DisplayName
+        {
+            get
+            {
+                if (Name == KeePassKeyStorePropertiesControl.DefaultProfileName)
+                    return Name;
+                var root = IsRoot ? Properties.Resources.DefaultProfile : string.Empty;
+                return $"{Name}{root} ({EntryCount})";
+            }
+        }
     }
 
 }

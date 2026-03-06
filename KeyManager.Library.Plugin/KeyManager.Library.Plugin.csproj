@@ -23,6 +23,9 @@
     <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="KeePassNetStandard.KeePassLib" Version="2.57.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\KeyManager.Library\KeyManager.Library.csproj" />

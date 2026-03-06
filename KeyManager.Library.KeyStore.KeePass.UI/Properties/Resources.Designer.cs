@@ -97,6 +97,60 @@ namespace KeyManager.Library.KeyStore.KeePass.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create ➤.
+        /// </summary>
+        public static string Create {
+            get {
+                return ResourceManager.GetString("Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ❌ Password or a master key file required.
+        /// </summary>
+        public static string CreateCredentialRequired {
+            get {
+                return ResourceManager.GetString("CreateCredentialRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ❌ File already exists.
+        /// </summary>
+        public static string CreateFileExists {
+            get {
+                return ResourceManager.GetString("CreateFileExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ❌ File path is required.
+        /// </summary>
+        public static string CreateFileNotFound {
+            get {
+                return ResourceManager.GetString("CreateFileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ✅ Keystore created successfully.
+        /// </summary>
+        public static string CreateSuccessful {
+            get {
+                return ResourceManager.GetString("CreateSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating keystore....
+        /// </summary>
+        public static string Creating {
+            get {
+                return ResourceManager.GetString("Creating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Credential Mode.
         /// </summary>
         public static string CredentialMode {
@@ -133,11 +187,29 @@ namespace KeyManager.Library.KeyStore.KeePass.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  (Root).
+        /// </summary>
+        public static string DefaultProfile {
+            get {
+                return ResourceManager.GetString("DefaultProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default (Root).
         /// </summary>
         public static string DefaultProfileName {
             get {
                 return ResourceManager.GetString("DefaultProfileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ❌ Error : {0}.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
             }
         }
         
@@ -169,7 +241,7 @@ namespace KeyManager.Library.KeyStore.KeePass.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exhaustive.
+        ///   Looks up a localized string similar to Valid Profiles.
         /// </summary>
         public static string Exhaustive {
             get {
@@ -327,6 +399,15 @@ namespace KeyManager.Library.KeyStore.KeePass.UI.Properties {
         public static string SelectMasterKey {
             get {
                 return ResourceManager.GetString("SelectMasterKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Valid Keys.
+        /// </summary>
+        public static string Silent {
+            get {
+                return ResourceManager.GetString("Silent", resourceCulture);
             }
         }
         

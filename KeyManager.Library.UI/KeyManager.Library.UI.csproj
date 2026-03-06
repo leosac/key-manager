@@ -31,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="KeePassNetStandard.KeePassLib" Version="2.57.0" />
     <PackageReference Include="Leosac.WpfApp" Version="1.25.0" />
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
     <PackageReference Include="Net.Codecrete.QrCodeGenerator" Version="2.0.6" />

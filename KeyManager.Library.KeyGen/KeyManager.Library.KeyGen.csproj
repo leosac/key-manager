@@ -42,6 +42,7 @@
   <ItemGroup>
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.6.0" />
     <PackageReference Include="Crc32.NET" Version="1.2.0" />
+    <PackageReference Include="KeePassNetStandard.KeePassLib" Version="2.57.0" />
     <PackageReference Include="SecretSharingDotNet" Version="0.12.0" />
   </ItemGroup>
 

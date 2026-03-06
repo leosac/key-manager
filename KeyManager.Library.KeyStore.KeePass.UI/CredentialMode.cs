@@ -2,8 +2,8 @@
 {
     public enum CredentialMode
     {
-        PasswordOnly,
-        KeyFileOnly,
-        PasswordAndKey
+        PasswordOnly = 0,
+        KeyFileOnly = 1,
+        PasswordAndKey = 2
     }
 }

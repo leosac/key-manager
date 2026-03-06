@@ -15,6 +15,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using Vanara.Extensions.Reflection;
 
 namespace Leosac.KeyManager.Library.KeyStore.KeePass
@@ -25,7 +26,12 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         private const string CUSTOM_KEYDATA_FIELD = "KeyData_Leosac";
         private const string VARIANT_NAME_FIELD = "KeyVariantName_Leosac";
         private const string KEY_VERSION_FIELD = "KeyVersion_Leosac";
+        private const string KEY_VALUE_FIELD = "KeyValue_Leosac";
         private const string DATE_MODIFICATION_FIELD = "LastModification_Leosac"; //Last modification from LKM
+
+        private const string JSON_PROPERTIES = "Properties";
+        private const string JSON_VARIANT = "Variant";
+        private const string JSON_NAME = "Name";
 
         public override string Name => "KeePass";
         private PwDatabase? _database;
@@ -39,7 +45,9 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         public override bool CanDeleteKeyEntries => true;
         public override bool CanUpdateKeyEntries => true;
         public bool IgnoreIncompleteEntries { get; set; }
-        public override IEnumerable<KeyEntryClass> SupportedClasses => [KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric];
+        private static readonly KeyEntryClass[] _supported = { KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric };
+
+        public override IEnumerable<KeyEntryClass> SupportedClasses => _supported;
 
         private static readonly JsonSerializerSettings SerializerSettings = KeyEntry.CreateJsonSerializerSettings();
 
@@ -51,7 +59,6 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         {
             Properties = new KeePassKeyStoreProperties();
         }
-
 
         public override async Task Open()
         {
@@ -84,7 +91,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             }
             catch (Exception ex)
             {
-                log.Error($"Failed to open KeePass .kdbx file: {ex.Message}", ex);
+                log.Error($"Failed to open KeePass .kdbx file : {ex.Message}", ex);
                 Cleanup();
                 throw new KeyStoreException("Failed to open KeePass database file.", ex);
             }
@@ -103,21 +110,18 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
                 var g = stack.Pop();
                 if (!string.IsNullOrEmpty(g?.Name) && comparer.Equals(g.Name.Trim(), name.Trim()))
                     return g;
-
                 if (g?.Groups != null)
                     foreach (var child in g.Groups)
                         if (child != null) stack.Push(child);
             }
-            return root; // fallback if not found
+            return root;
         }
 
         public override async Task<bool> CheckKeyEntryExists(KeyEntryId identifier, KeyEntryClass keClass)
         {
             ArgumentNullException.ThrowIfNull(identifier);
             if (string.IsNullOrWhiteSpace(identifier.Id)) return false;
-
             await CheckOpen().ConfigureAwait(false);
-
             return _folder?.Entries?.Any(e =>
                 MatchesEntryTitle(e, identifier.Id) &&
                 (!IgnoreIncompleteEntries || !string.IsNullOrEmpty(GetSafeString(e, CUSTOM_KEYDATA_FIELD)))
@@ -167,43 +171,65 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         {
             if (identifier == null || string.IsNullOrWhiteSpace(identifier.Id))
                 throw new ArgumentException("Identifier required", nameof(identifier));
+            var id = identifier.Id;
             await CheckOpen().ConfigureAwait(false);
-            var entry = FindEntryByTitle(identifier.Id) ?? throw new KeyStoreException($"Key entry '{identifier}' doesn't exist.");
+            var entry = FindEntryByTitle(id) ?? throw new KeyStoreException($"Key entry '{id}' doesn't exist.");
             var metadataJson = GetSafeString(entry, CUSTOM_KEYDATA_FIELD);
             if (string.IsNullOrEmpty(metadataJson))
             {
-                log.Warn($"No metadata found for entry : {identifier.Id}");
+                log.Warn($"No metadata found for entry `{id}`");
                 return null;
             }
             try
             {
                 var obj = JObject.Parse(metadataJson);
-                var _kclass = obj["KClass"]?.ToString();
-                if (!Enum.TryParse<KeyEntryClass>(_kclass, out var kclass) || kclass != keClass)
+                if (!obj.TryGetValue("KClass", out var classToken))
                 {
-                    log.Warn($"KClass mismatch for {identifier.Id}: expected {keClass}, got {_kclass}");
+                    log.Warn($"Missing KClass for `{id}`");
                     return null;
                 }
-                obj["Variant"] = BuildVariant(entry);
+                var _kclass = classToken.ToString();
+                if (!Enum.TryParse(_kclass, out KeyEntryClass kclass) ||
+                    kclass != keClass)
+                {
+                    log.Warn($"KClass mismatch for `{id}` : expected {keClass}, got {_kclass}");
+                    return null;
+                }
+                if (!obj.TryGetValue(JSON_PROPERTIES, out _))
+                {
+                    log.Warn("Adding default Properties to metadata");
+                    obj[JSON_PROPERTIES] = new JObject
+                    {
+                        ["$type"] = typeof(SAMSymmetricKeyEntryProperties).AssemblyQualifiedName,
+                        ["KeyUsageCounter"] = 0u
+                    };
+                }
+                obj[JSON_VARIANT] = BuildVariant(entry);
                 var keyEntry = CreateFromJson(obj, kclass, identifier);
                 if (keyEntry == null)
                 {
-                    log.Warn($"Failed to create KeyEntry for {identifier.Id}");
+                    log.Warn($"Failed to create KeyEntry for `{id}`");
                     return null;
                 }
-                PopulateKeyEntry(keyEntry, obj);
+                PopulateKeyEntry(keyEntry, obj, entry);
+                var fallbackKeyMaterial = keyEntry.Variant?.KeyContainers?.FirstOrDefault()?.Key?.Materials?.FirstOrDefault();
+                if (fallbackKeyMaterial != null && string.IsNullOrEmpty(fallbackKeyMaterial.Value))
+                {
+                    var password = GetSafeString(entry, PwDefs.PasswordField);
+                    fallbackKeyMaterial.Value = string.IsNullOrEmpty(password) ? string.Empty : password;
+                }
                 OnKeyEntryRetrieved(keyEntry);
-                log.Info($"Key entry `{identifier}` retrieved successfully.");
+                log.Info($"Key entry `{id}` retrieved successfully.");
                 return keyEntry;
             }
             catch (JsonException ex)
             {
-                log.Warn($"JSON deserialization failed for {identifier.Id}: {ex.Message}", ex);
+                log.Warn($"JSON deserialization failed for `{id}` : {ex.Message}", ex);
                 return null;
             }
             catch (Exception ex)
             {
-                log.Warn($"Failure when deserializing key entry {identifier.Id}: {ex.Message}", ex);
+                log.Warn($"Unexpected error deserializing key entry `{id}` : {ex.Message}", ex);
                 return null;
             }
         }
@@ -211,62 +237,49 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         private static JObject BuildVariant(PwEntry entry)
         {
             var vName = GetSafeString(entry, VARIANT_NAME_FIELD) ?? "KeyVariant";
-            var versionFields = entry.Strings.GetKeys()
+            var versionFields = entry.Strings
+                .GetKeys()
                 .Where(k => k.StartsWith(KEY_VERSION_FIELD, StringComparison.OrdinalIgnoreCase))
-                .OrderBy(k => k).ToList();
+                .OrderBy(k => k, StringComparer.OrdinalIgnoreCase);
             var containers = new JArray();
             var failedFields = new List<string>();
+            int index = 0;
             foreach (var field in versionFields)
             {
+                var versionJson = GetSafeString(entry, field);
+                if (string.IsNullOrWhiteSpace(versionJson))
+                {
+                    index++;
+                    continue;
+                }
                 try
                 {
-                    var versionJson = GetSafeString(entry, field);
-                    if (string.IsNullOrEmpty(versionJson)) continue;
                     var versionObj = JObject.Parse(versionJson);
-                    var name = versionObj[nameof(KeyContainer.Name)]?.ToString() ?? nameof(KeyContainer.Name);
-                    var keyObj = new JObject
-                    {
-                        ["KeySize"] = versionObj["KeySize"] ?? (JToken)0u,
-                        ["Tags"] = versionObj["Tags"] ?? new JArray(),
-                        ["Materials"] = new JArray(),
-                        ["Link"] = new JObject
-                        {
-                            ["KeyIdentifier"] = new JObject { ["Id"] = "" },
-                            ["DivInput"] = new JArray()
-                        }
-                    };
-                    if (versionObj[nameof(Key.Materials)] is JArray mats && keyObj[nameof(Key.Materials)] is JArray materialsArray)
-                    {
-                        foreach (var m in mats)
-                        {
-                            if (m is not JObject materialObj) continue;
-                            var value = materialObj[nameof(KeyMaterial.Value)]?.ToString();
-                            if (string.IsNullOrEmpty(value)) continue;
-                            materialsArray.Add(new JObject
-                            {
-                                [nameof(KeyMaterial.Value)] = value,
-                                [nameof(KeyMaterial.OverrideSize)] = materialObj[nameof(KeyMaterial.OverrideSize)] ?? (JToken)0u,
-                                [nameof(KeyMaterial.IsRealKeyMateriel)] = true
-                            });
-                        }
-                    }
-                    var containerObj = new JObject
+                    var name = versionObj[JSON_NAME]?.ToString() ?? $"KeyVersion_{index}";
+                    var keyObj = versionObj["Key"] is JObject key
+                        ? (JObject)key.DeepClone()
+                        : CreateDefaultKeyObject();
+                    var container = new JObject
                     {
                         ["$type"] = "Leosac.KeyManager.Library.KeyStore.KeyVersion, KeyManager.Library",
-                        [nameof(KeyVersion.Version)] = keyObj["Version"] ?? 0,
-                        [nameof(KeyVersion.Key)] = keyObj,
-                        [nameof(KeyVersion.Name)] = name
+                        [JSON_NAME] = name,
+                        ["Key"] = keyObj
                     };
-                    containers.Add(containerObj);
+                    if (versionObj["Version"] is JToken versionToken)
+                        container["Version"] = versionToken.Value<uint>();
+                    containers.Add(container);
                 }
-                catch (Exception ex)
+                catch (JsonException ex)
                 {
                     failedFields.Add(field);
-                    log.Warn($"Failed to parse {field}: {ex.Message}", ex);
+                    log.Warn($"Failed to parse {field} : {ex.Message}", ex);
                 }
+                index++;
             }
             if (failedFields.Count > 0)
-                log.Warn($"Variant skipped {failedFields.Count} malformed field(s): {string.Join(", ", failedFields)}");
+            {
+                log.Warn($"Variant skipped {failedFields.Count} malformed field(s) : {string.Join(", ", failedFields)}");
+            }
             return new JObject
             {
                 [nameof(KeyEntryVariant.Name)] = vName,
@@ -274,19 +287,44 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             };
         }
 
+        private static JObject CreateDefaultKeyObject()
+        {
+            return new JObject
+            {
+                ["KeySize"] = 16u,
+                ["Tags"] = new JArray(),
+                ["Materials"] = new JArray(),
+                ["Link"] = new JObject
+                {
+                    ["KeyIdentifier"] = new JObject { ["Id"] = "" },
+                    ["DivInput"] = new JArray()
+                }
+            };
+        }
+
         private static KeyEntry? CreateFromJson(JObject obj, KeyEntryClass kclass, KeyEntryId identifier)
         {
-            if (obj["Properties"]?["$type"] is JToken typeToken)
+            if (obj.TryGetValue(JSON_PROPERTIES, out var propToken) && propToken is JObject propObj &&
+                propObj.TryGetValue("$type", out var typeToken))
             {
-                var keyEntryType = MapToKeyEntry(typeToken.ToString());
-                if (keyEntryType != null)
+                var typeName = typeToken.Value<string>();
+                if (!string.IsNullOrEmpty(typeName))
                 {
-                    var keyEntry = (KeyEntry?)Activator.CreateInstance(keyEntryType);
-                    keyEntry!.Identifier = identifier;
-                    return keyEntry;
+                    var keyEntryType = MapToKeyEntry(typeName);
+                    if (KeyEntryFactories.TryGetValue(keyEntryType, out var factory))
+                    {
+                        var keyEntry = factory();
+                        keyEntry.Identifier = identifier;
+                        return keyEntry;
+                    }
                 }
             }
-            return kclass switch //Fallback
+            return CreateFallback(kclass, identifier); // Fallback
+        }
+
+        private static KeyEntry? CreateFallback(KeyEntryClass kclass, KeyEntryId identifier)
+        {
+            return kclass switch
             {
                 KeyEntryClass.Symmetric => new SAMSymmetricKeyEntry { Identifier = identifier },
                 KeyEntryClass.Asymmetric => new AsymmetricPKCS11KeyEntry { Identifier = identifier },
@@ -294,85 +332,172 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             };
         }
 
-        private static Type? MapToKeyEntry(string prop) =>
-            prop switch
+        private static Type MapToKeyEntry(string prop)
+        {
+            foreach (var (key, type) in PropertyTypeMap)
             {
-                var t when t.Contains("CNGKeyEntryProperties") => typeof(CNGKeyEntry),
-                var t when t.Contains("SymmetricPKCS11KeyEntryProperties") => typeof(SymmetricPKCS11KeyEntry),
-                var t when t.Contains("LCPKeyEntryProperties") => typeof(LCPKeyEntry),
-                var t when t.Contains("MemoryKeyEntryProperties") => typeof(MemoryKeyEntry),
-                var t when t.Contains("SAMSymmetricKeyEntryProperties") => typeof(SAMSymmetricKeyEntry),
-                var t when t.Contains("SAM_SESymmetricKeyEntryAuthenticationProperties") ||
-                        t.Contains("SAM_SESymmetricKeyEntryDESFireUIDProperties") ||
-                        t.Contains("SAM_SESymmetricKeyEntryDESFireProperties") => typeof(SAM_SESymmetricKeyEntry),
-                var t when t.Contains("SAMAsymmetricKeyEntryProperties") => typeof(AsymmetricPKCS11KeyEntry),
-                var t when t.Contains("AsymmetricPKCS11KeyEntryProperties") => typeof(AsymmetricPKCS11KeyEntry),
-                _ => null
-            };
+                if (prop.Contains(key, StringComparison.Ordinal))
+                    return type;
+            }
+            return typeof(MemoryKeyEntry); // Fallback
+        }
+
+        private static readonly Dictionary<Type, Func<KeyEntry>> KeyEntryFactories = new()
+        {
+            [typeof(CNGKeyEntry)] = static () => new CNGKeyEntry(),
+            [typeof(SymmetricPKCS11KeyEntry)] = static () => new SymmetricPKCS11KeyEntry(),
+            [typeof(LCPKeyEntry)] = static () => new LCPKeyEntry(),
+            [typeof(MemoryKeyEntry)] = static () => new MemoryKeyEntry(),
+            [typeof(SAMSymmetricKeyEntry)] = static () => new SAMSymmetricKeyEntry(),
+            [typeof(SAM_SESymmetricKeyEntry)] = static () => new SAM_SESymmetricKeyEntry(),
+            [typeof(AsymmetricPKCS11KeyEntry)] = static () => new AsymmetricPKCS11KeyEntry()
+        };
+
+        private static readonly Dictionary<string, Type> PropertyTypeMap = new(StringComparer.Ordinal)
+        {
+            ["CNGKeyEntryProperties"] = typeof(CNGKeyEntry),
+            ["SymmetricPKCS11KeyEntryProperties"] = typeof(SymmetricPKCS11KeyEntry),
+            ["LCPKeyEntryProperties"] = typeof(LCPKeyEntry),
+            ["MemoryKeyEntryProperties"] = typeof(MemoryKeyEntry),
+            ["SAMSymmetricKeyEntryProperties"] = typeof(SAMSymmetricKeyEntry),
+            ["SAM_SESymmetricKeyEntryProperties"] = typeof(SAM_SESymmetricKeyEntry),
+            ["AsymmetricPKCS11KeyEntryProperties"] = typeof(AsymmetricPKCS11KeyEntry)
+        };
 
         private static bool GetLabel(PwEntry entry, out string? label)
         {
-            var labelString = entry.Strings.GetSafe(PwDefs.UserNameField);
-            label = labelString?.ReadString();
+            label = entry.Strings.GetSafe(PwDefs.UserNameField)?.ReadString();
             return !string.IsNullOrWhiteSpace(label);
         }
 
-        private static void PopulateKeyEntry(KeyEntry keyEntry, JObject obj)
+        private static void PopulateKeyEntry(KeyEntry keyEntry, JObject obj, PwEntry entry)
         {
-            SetProperties(keyEntry, obj["Properties"] as JObject);
-            SetVariant(keyEntry, obj["Variant"] as JObject);
+            var props = obj[JSON_PROPERTIES] as JObject;
+            var variant = obj[JSON_VARIANT] as JObject;
+            SetProperties(keyEntry, props);
+            SetVariant(keyEntry, variant, entry);
         }
 
         private static void SetProperties(KeyEntry keyEntry, JObject? obj)
         {
-            if (obj == null) return;
+            if (obj == null)
+            {
+                log.Warn("Properties is null : using default properties");
+                SetDefaultProperties(keyEntry);
+                return;
+            }
             try
             {
-                var prop = JsonConvert.DeserializeObject<KeyEntryProperties>(obj.ToString(Formatting.None), SerializerSettings);
-                if (prop == null)
+                var prop = obj.ToObject<KeyEntryProperties>(CachedSerializer);
+                if (prop is null)
+                {
+                    log.Warn("Properties deserialization returned null : using default properties");
+                    SetDefaultProperties(keyEntry);
                     return;
+                }
                 var propFactory = KeyEntryFactory.GetFactoryFromPropertyType(prop.GetType());
                 keyEntry.Properties = propFactory?.CreateKeyEntryProperties(obj.ToString(Formatting.None)) ?? prop;
+                log.Info($"Properties set : {keyEntry.Properties.GetType().Name}");
             }
-            catch (JsonException ex)
+            catch (Exception ex)
             {
-                log.Warn($"Failed to deserialize key entry properties : {ex.Message}", ex);
+                log.Error($"Operation failed : {ex.Message} : using default properties");
+                SetDefaultProperties(keyEntry);
             }
         }
 
+        private static void SetDefaultProperties(KeyEntry keyEntry) // Fallback for deserialization errors
+        {
+            try
+            {
+                var typeName = keyEntry.GetType().Name;
+                if (PropertyTypeMap.TryGetValue(typeName, out var propsType))
+                {
+                    keyEntry.Properties = (KeyEntryProperties?)Activator.CreateInstance(propsType)
+                                          ?? new MemoryKeyEntryProperties();
+                    log.Debug($"Default properties created : {propsType.Name}");
+                }
+                else
+                {
+                    keyEntry.Properties = new MemoryKeyEntryProperties();
+                    log.Warn($"Unknown key type '{typeName}' : using MemoryKeyEntryProperties");
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Failed to create default properties for {keyEntry.GetType().Name} : {ex.Message}");
+                keyEntry.Properties = new MemoryKeyEntryProperties();
+            }
+        }
 
-        private static void SetVariant(KeyEntry keyEntry, JObject? variant)
+        private static void SetVariant(KeyEntry keyEntry, JObject? variant, PwEntry entry)
         {
             if (variant == null) return;
-            keyEntry.Variant ??= new KeyEntryVariant();
-            JsonConvert.PopulateObject(variant.ToString(Formatting.None), keyEntry.Variant, SerializerSettings);
-            SetContainers(keyEntry.Variant, variant["KeyContainers"] as JArray);
-        }
-
-        private static void SetContainers(KeyEntryVariant variant, JArray? containers)
-        {
-            if (containers?.HasValues != true) return;
-            variant.KeyContainers.Clear();
-            foreach (var c in containers.Cast<JObject>())
+            var variantObj = keyEntry.Variant ?? new KeyEntryVariant
             {
-                try
+                KeyContainers = new ObservableCollection<KeyContainer>()
+            };
+            variantObj.Name = variant[JSON_NAME]?.ToString() ?? string.Empty;
+            if (variant["KeyContainers"] is not JArray containers) return;
+            log.Info($"Found {containers.Count} containers");
+            variantObj.KeyContainers.Clear();
+            for (int i = 0; i < containers.Count; i++)
+            {
+                if (containers[i] is not JObject kcObj) continue;
+                string name = kcObj[JSON_NAME]?.ToString() ?? $"Key {i + 1}";
+                KeyContainer container = kcObj.ContainsKey("Version")
+                    ? new KeyVersion(name, kcObj["Version"]!.Value<byte>())
+                    : new KeyContainer(name);
+                if (kcObj["Key"] is JObject keyObj)
                 {
-                    var kc = c.ToObject<KeyContainer>(CachedSerializer);
-                    if (kc != null)
-                        variant.KeyContainers.Add(kc);
+                    var key = container.Key;
+                    key.KeySize = (ushort)(keyObj["KeySize"]?.Value<int>() ?? 16);
+                    key.Tags = keyObj["Tags"]?.ToObject<ObservableCollection<string>>() ?? new ObservableCollection<string>();
+                    key.Link = keyObj["Link"]?.ToObject<KeyLink>() ?? new KeyLink();
+                    if (keyObj["Materials"] is JArray materialsArray && materialsArray.Count > 0)
+                    {
+                        try
+                        {
+                            var materials = materialsArray.ToObject<ObservableCollection<KeyMaterial>>(CachedSerializer)
+                                            ?? new ObservableCollection<KeyMaterial>();
+                            if (i > 0 && materials.Count > 0)
+                            {
+                                string fieldName = $"KeyValue_Leosac_{SetFieldName(name)}";
+                                materials[0].Value = GetSafeString(entry, fieldName) ?? "";
+                                log.Info($"Key {name} : restored '{Short(materials[0].Value)}...' from {fieldName}");
+                            }
+                            key.Materials = materials;
+                            log.Info($"Key {name} : '{Short(key.Materials.FirstOrDefault()?.Value ?? "empty")}...'");
+                        }
+                        catch (Exception ex)
+                        {
+                            log.Error($"Failed to deserialize materials for {name} : {ex.Message}");
+                        }
+                    }
                 }
-                catch (JsonException ex)
+                variantObj.KeyContainers.Add(container);
+            }
+            keyEntry.Variant = variantObj;
+            if (variantObj.KeyContainers.Count > 0)
+            {
+                var pw = GetSafeString(entry, PwDefs.PasswordField);
+                if (!string.IsNullOrEmpty(pw))
                 {
-                    log.Warn($"Failed to populate KeyContainer : {ex.Message}", ex);
+                    variantObj.KeyContainers[0].Key.SetAggregatedValueAsString(pw);
+                    log.Info($"Key A password override : '{Short(pw)}...'");
                 }
             }
+            log.Info($"Final variant : {variantObj.KeyContainers.Count} containers loaded");
         }
 
+        private static string Short(string s) => string.IsNullOrEmpty(s) ? "" : (s.Length <= 8 ? s : s[..8]);
+
         private static string GetSafeString(PwEntry entry, string field) =>
-            entry.Strings.GetSafe(field) is ProtectedString ps ? ps.ReadString() : string.Empty;
+            entry?.Strings?.GetSafe(field)?.ReadString() ?? string.Empty;
 
         private static bool MatchesEntryTitle(PwEntry entry, string title) =>
-            string.Equals(entry.Strings.ReadSafe(PwDefs.TitleField), title, StringComparison.OrdinalIgnoreCase);
+            string.Equals(entry?.Strings?.ReadSafe(PwDefs.TitleField), title, StringComparison.OrdinalIgnoreCase);
+
 
         public override async Task Update(IChangeKeyEntry change, bool ignoreIfMissing)
         {
@@ -403,19 +528,18 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
 
         private static void UpdateKeePassEntry(PwEntry entry, IChangeKeyEntry keyEntry)
         {
+            ArgumentNullException.ThrowIfNull(entry);
             ArgumentNullException.ThrowIfNull(keyEntry);
             if (keyEntry is not KeyEntry keyEntryInstance)
                 throw new ArgumentException("KeyEntry instance not supported.", nameof(keyEntry));
             try
             {
-                var metadataObj = new
+                var metadataJson = JsonConvert.SerializeObject(new
                 {
                     keyEntryInstance.KClass,
                     keyEntryInstance.Properties
-                };
-                var metadataJson = JsonConvert.SerializeObject(metadataObj, SerializerSettings);
-                var metadata = JObject.Parse(metadataJson);
-                entry.Strings.Set(CUSTOM_KEYDATA_FIELD, new ProtectedString(true, metadata.ToString(Formatting.Indented)));
+                }, SerializerSettings);
+                entry.Strings.Set(CUSTOM_KEYDATA_FIELD, new ProtectedString(true, metadataJson));
                 if (!string.IsNullOrWhiteSpace(keyEntryInstance.Variant?.Name))
                     entry.Strings.Set(VARIANT_NAME_FIELD, new ProtectedString(false, keyEntryInstance.Variant.Name));
                 ResetKeyVersionFields(entry);
@@ -431,6 +555,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
 
         private static void SetKeePassFields(PwEntry entry, KeyEntry keyEntry)
         {
+            if (entry == null || keyEntry == null) return;
             var firstKey = ExtractKey(keyEntry.Variant);
             if (!string.IsNullOrEmpty(firstKey))
                 entry.Strings.Set(PwDefs.PasswordField, new ProtectedString(true, firstKey));
@@ -447,16 +572,13 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
 
         private static string? ExtractKey(KeyEntryVariant? variant)
         {
-            if (variant?.KeyContainers?.Any() != true)
-                return null;
-            return variant.KeyContainers
-                .SelectMany(c => c.Key?.Materials ?? [])
-                .FirstOrDefault(m => m.IsRealKeyMateriel && !string.IsNullOrEmpty(m.Value))
-                ?.Value;
+            var firstContainer = variant?.KeyContainers?.FirstOrDefault();
+            return firstContainer?.Key?.Materials?.FirstOrDefault(m => m.IsRealKeyMateriel)?.Value;
         }
 
         private static void ResetKeyVersionFields(PwEntry entry)
         {
+            if (entry?.Strings == null) return;
             foreach (var key in entry.Strings.GetKeys()
                 .Where(k => k.StartsWith(KEY_VERSION_FIELD, StringComparison.OrdinalIgnoreCase)).ToList())
             {
@@ -466,37 +588,51 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
 
         private static void StoreKeyVersions(PwEntry entry, IEnumerable<KeyContainer>? containers)
         {
-            if (containers?.Any() != true)
-                return;
+            if (entry?.Strings == null || containers?.Any() != true) return;
             int index = 0;
             foreach (var container in containers.Where(c => c?.Key != null))
             {
-                var fieldName = $"{KEY_VERSION_FIELD}_{SetFieldName(container.Name ?? $"V{index}")}";
-                var _jKey = JsonConvert.SerializeObject(KeyVersionSummary(container), Formatting.Indented);
-                entry.Strings.Set(fieldName, new ProtectedString(true, _jKey));
+                var keyContainer = container.Key!;
+                string safeName = SetFieldName(container.Name ?? $"V{index}");
+                string versionFieldName = $"{KEY_VERSION_FIELD}_{safeName}";
+                string valueFieldName = $"{KEY_VALUE_FIELD}_{safeName}";
+                JArray BuildMaterials()
+                {
+                    return new JArray(
+                        (keyContainer.Materials ?? Enumerable.Empty<KeyMaterial>())
+                        .Select(m => new JObject
+                        {
+                            ["OverrideSize"] = m.OverrideSize,
+                            ["IsRealKeyMateriel"] = m.IsRealKeyMateriel
+                        })
+                    );
+                }
+                var serializedKey = new JObject(new JProperty(JSON_NAME, container.Name ?? "Undefined"));
+                if (container is KeyVersion kv)
+                    serializedKey.Add("Version", kv.Version);
+                serializedKey.Add("Key", new JObject(
+                    new JProperty("KeySize", keyContainer.KeySize),
+                    new JProperty("Tags", new JArray((keyContainer.Tags ?? new ObservableCollection<string>()).ToArray())),
+                    new JProperty("Materials", BuildMaterials()),
+                    new JProperty("Link", JObject.FromObject(keyContainer.Link ?? new KeyLink()))
+                ));
+                serializedKey.Add("IsConfigured", container.IsConfigured());
+                entry.Strings.Set(versionFieldName, new ProtectedString(true, serializedKey.ToString(Formatting.Indented)));
+                if (container is KeyVersion && index > 0)
+                {
+                    var firstMaterialValue = keyContainer.Materials?.FirstOrDefault(m => m.IsRealKeyMateriel)?.Value ?? "";
+                    entry.Strings.Set(valueFieldName, new ProtectedString(true, firstMaterialValue));
+                    log.Debug(firstMaterialValue.Length > 0
+                        ? $"Stored key value for {container.Name} in {valueFieldName}: {Short(firstMaterialValue)}..."
+                        : $"Created empty KeyValue field : {valueFieldName}");
+                }
+                else
+                {
+                    entry.Strings.Remove(valueFieldName);
+                }
+
                 index++;
             }
-        }
-
-        private static object KeyVersionSummary(KeyContainer container)
-        {
-            var key = container.Key;
-            var tags = key.Tags?.Where(t => !string.IsNullOrWhiteSpace(t)).ToList() ?? [];
-            var keyMaterialsList = key.Materials?
-                .Where(m => m.IsRealKeyMateriel && !string.IsNullOrEmpty(m.Value))
-                .Select(m => new JObject
-                {
-                    ["Value"] = m.Value,
-                    ["OverrideSize"] = m.OverrideSize
-                }).Cast<JToken>().ToList() ?? [];
-            return new
-            {
-                Name = container.Name ?? "Undefined",
-                key.KeySize,
-                Tags = tags,
-                Materials = new JArray(keyMaterialsList),
-                IsConfigured = container.IsConfigured()
-            };
         }
 
         private static string BuildNotes(KeyEntry keyEntry)
@@ -525,7 +661,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
                 var name = container.Name ?? $"V{i + 1}";
                 var size = container.Key.KeySize * 8;
                 var tagsPreview = string.Join("/", container.Key.Tags?.Take(2) ?? []);
-                sb.Append($"  ↳ {name}: {size}b ({tagsPreview})").Append(Environment.NewLine); //UTF-8 symbol for pretty output
+                sb.Append($"  ↳ {name} : {size}b ({tagsPreview})").Append(Environment.NewLine); //UTF-8 symbol for pretty output
             }
             return sb.ToString().TrimEnd();
         }
@@ -540,7 +676,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
                 {
                     var typeStr = prop.ToString()?.Split(',')[0] ?? "";
                     _type = typeStr.Split('.').Last()
-                        ?.Replace("Properties", "", StringComparison.OrdinalIgnoreCase)
+                        ?.Replace(JSON_PROPERTIES, "", StringComparison.OrdinalIgnoreCase)
                         ?? "Unknown";
                     StoreCache[prop.GetType()] = _type;
                 }
@@ -592,12 +728,35 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
 
         private CompositeKey BuildMasterKey()
         {
-            var key = new CompositeKey();
             var props = GetFileProperties();
-            if (!string.IsNullOrEmpty(props.Secret))
-                key.AddUserKey(new KcpPassword(props.Secret));
-            if (!string.IsNullOrEmpty(props.KeyPath) && File.Exists(props.KeyPath))
-                key.AddUserKey(new KcpKeyFile(props.KeyPath));
+            var key = new CompositeKey();
+            var modeActions = new Dictionary<int, Action>
+            {
+                [0] = () =>
+                {
+                    if (string.IsNullOrEmpty(props.Secret))
+                        throw new InvalidOperationException("Password is required for PasswordOnly mode.");
+                    key.AddUserKey(new KcpPassword(props.Secret));
+                },
+                [1] = () =>
+                {
+                    if (string.IsNullOrEmpty(props.KeyPath) || !File.Exists(props.KeyPath))
+                        throw new InvalidOperationException("Valid key file is required for KeyFileOnly mode.");
+                    key.AddUserKey(new KcpKeyFile(props.KeyPath));
+                },
+                [2] = () =>
+                {
+                    if (string.IsNullOrEmpty(props.Secret))
+                        throw new InvalidOperationException("Password is required for Password+KeyFile mode.");
+                    if (string.IsNullOrEmpty(props.KeyPath) || !File.Exists(props.KeyPath))
+                        throw new InvalidOperationException("Valid key file is required for Password+KeyFile mode.");
+                    key.AddUserKey(new KcpPassword(props.Secret));
+                    key.AddUserKey(new KcpKeyFile(props.KeyPath));
+                }
+            };
+            if (!modeActions.TryGetValue(props.SelectedCredentialMode, out var buildAction))
+                throw new InvalidOperationException("Invalid credential mode.");
+            buildAction();
             if (key.UserKeyCount == 0)
                 throw new InvalidOperationException("At least one credential (password, key file, or both) required");
             return key;
@@ -668,8 +827,13 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
                 throw new InvalidOperationException("At least one credential (password, key file, or both) required");
         }
 
-        private KeePassKeyStoreProperties GetFileProperties() =>
-            Properties as KeePassKeyStoreProperties ?? throw new KeyStoreException("Missing KeePass properties");
+        private KeePassKeyStoreProperties GetFileProperties()
+        {
+            var props = Properties as KeePassKeyStoreProperties
+                ?? throw new KeyStoreException("Missing KeePass properties");
+            IgnoreIncompleteEntries = props.Silent;
+            return props;
+        }
 
         private static string SetFieldName(string name) =>
             Regex.Replace(name ?? "", @"[^\w\-]", "_", RegexOptions.NonBacktracking);

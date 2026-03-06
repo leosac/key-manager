@@ -7,6 +7,8 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         private string _dbPath = string.Empty;
         private string _keyFilePath = string.Empty;
         private string _profilePath = string.Empty;
+        private bool _isSilent= false;
+        private int _selectedCredentialMode = 0;
 
         public string DBPath
         {
@@ -25,6 +27,17 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             get => _profilePath;
             set => SetProperty(ref _profilePath, value);
         }
+        public bool Silent
+        {
+            get => _isSilent;
+            set => SetProperty(ref _isSilent, value);
+        }
+
+        public int SelectedCredentialMode
+        {
+            get => _selectedCredentialMode;
+            set => SetProperty(ref _selectedCredentialMode, value);
+        }
 
         public override bool Equals(object? obj) => Equals(obj as KeePassKeyStoreProperties);
 
@@ -34,10 +47,12 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             if (ReferenceEquals(this, other)) return true;
             return string.Equals(DBPath, other.DBPath, StringComparison.Ordinal) &&
                    string.Equals(KeyPath, other.KeyPath, StringComparison.Ordinal) &&
-                   string.Equals(ProfilePath, other.ProfilePath, StringComparison.Ordinal);
+                   string.Equals(ProfilePath, other.ProfilePath, StringComparison.Ordinal) &&
+                   Silent == other.Silent &&
+                   SelectedCredentialMode == other.SelectedCredentialMode;
         }
 
-        public override int GetHashCode() => System.HashCode.Combine(DBPath, KeyPath, ProfilePath);
+        public override int GetHashCode() => System.HashCode.Combine(DBPath, KeyPath, ProfilePath, Silent, SelectedCredentialMode);
 
         public static bool operator ==(KeePassKeyStoreProperties? left, KeePassKeyStoreProperties? right) => Equals(left, right);
         public static bool operator !=(KeePassKeyStoreProperties? left, KeePassKeyStoreProperties? right) => !Equals(left, right);

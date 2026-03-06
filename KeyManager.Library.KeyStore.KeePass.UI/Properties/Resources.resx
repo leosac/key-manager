@@ -166,7 +166,7 @@
     <value>Profile :</value>
   </data>
   <data name="Exhaustive" xml:space="preserve">
-    <value>Exhaustive</value>
+    <value>Valid Profiles</value>
   </data>
   <data name="DefaultProfileName" xml:space="preserve">
     <value>Default (Root)</value>
@@ -209,5 +209,32 @@
   </data>
   <data name="DatabaseCloseFailed" xml:space="preserve">
     <value>⚠️ Failed to close database : {0}</value>
+  </data>
+  <data name="DefaultProfile" xml:space="preserve">
+    <value> (Root)</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create ➤</value>
+  </data>
+  <data name="Silent" xml:space="preserve">
+    <value>Valid Keys</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>❌ Error : {0}</value>
+  </data>
+  <data name="CreateSuccessful" xml:space="preserve">
+    <value>✅ Keystore created successfully</value>
+  </data>
+  <data name="Creating" xml:space="preserve">
+    <value>Creating keystore...</value>
+  </data>
+  <data name="CreateFileNotFound" xml:space="preserve">
+    <value>❌ File path is required</value>
+  </data>
+  <data name="CreateFileExists" xml:space="preserve">
+    <value>❌ File already exists</value>
+  </data>
+  <data name="CreateCredentialRequired" xml:space="preserve">
+    <value>❌ Password or a master key file required</value>
   </data>
 </root>

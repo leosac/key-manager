@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="KeePassNetStandard.KeePassLib" Version="2.57.0" />
     <PackageReference Include="Leosac.WpfApp" Version="1.25.0" />
     <PackageReference Include="log4net" Version="3.1.0" />
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
