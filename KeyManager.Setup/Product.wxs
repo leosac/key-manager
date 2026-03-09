@@ -44,6 +44,7 @@
         <ComponentGroupRef Id="LCPPluginResourcesFR" />
         <ComponentGroupRef Id="NXP_SAMPluginResourcesFR" />
         <ComponentGroupRef Id="CNGPluginResourcesFR" />
+		<ComponentGroupRef Id="KeePassPluginResourcesFR" />
       </Feature>
       <Feature Id="SAM_SEFeatureFrench" Title="!(loc.SAM_SEFrenchFeature)" Description="!(loc.SAM_SEFrenchFeatureDescr)" Level="1" AllowAbsent="yes">
         <ComponentGroupRef Id="SAM_SEPluginResourcesFR" />
@@ -122,6 +123,9 @@
               <Directory Id="CNGPLUGIN" Name="CNG">
                 <Directory Id="CNGPLUGINFR" Name="fr" />
               </Directory>
+			  <Directory Id="KEEPASSPLUGIN" Name="KeePass">
+				<Directory Id="KEEPASSPLUGINFR" Name="fr" />
+			  </Directory>
             </Directory>
             <Directory Id="APPRUNTIMES" Name="runtimes">
               <Directory Id="RUNTIMEWIN" Name="win">
@@ -258,6 +262,14 @@
         <File Id="___var.KeyManager.Library.KeyStore.SAM_SE.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.SAM_SE.UI.TargetPath)" />
       </Component>
     </ComponentGroup>
+	<ComponentGroup Id="KeePassPluginComponents" Directory="KEEPASSPLUGIN">
+		<Component Id="KeyManagerLibraryKeyStoreKeePassComponent">
+			<File Id="___var.KeyManager.Library.KeyStore.KeePass.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetPath)" />
+		</Component>
+		<Component Id="KeyManagerLibraryKeyStoreKeePassUIComponent">
+			<File Id="___var.KeyManager.Library.KeyStore.KeePass.UI.TargetPath_" Source="$(var.KeyManager.Library.KeyStore.KeePass.UI.TargetPath)" />
+		</Component>
+	</ComponentGroup>
 
     <ComponentGroup Id="KeyManagerResourcesFR" Directory="RESOURCESFR">
       <Component Id="KeyManagerResourcesFRComponent">
@@ -298,7 +310,7 @@
         <File Id="___var.KeyManager.Library.KeyStore.CNG.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.CNG.UI.TargetDir)\fr\KeyManager.Library.KeyStore.CNG.UI.resources.dll" />
       </Component>
     </ComponentGroup>
-	<ComponentGroup Id="KeePassPluginResourcesFR" Directory="CNGPLUGINFR">
+	<ComponentGroup Id="KeePassPluginResourcesFR" Directory="KEEPASSPLUGINFR">
 	  <Component Id="KeyManagerLibraryKeyStoreKeePassUIResourcesFRComponent">
 		<File Id="___var.KeyManager.Library.KeyStore.KeePass.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.KeePass.UI.TargetDir)\fr\KeyManager.Library.KeyStore.KeePass.UI.resources.dll" />
 	  </Component>
@@ -446,6 +458,59 @@
         <File Id="___var.SPSE_DLL.dll_" Source="$(var.KeyManager.Library.KeyStore.SAM_SE.ProjectDir)\DLL\Release\SPSE_DLL.dll" />
       </Component>
     </ComponentGroup>
+	<ComponentGroup Id="KeePassPluginDependenciesComponents" Directory="KEEPASSPLUGIN">
+		<Component Id="KeePassLibComponent">
+			<File Id="___var.KeePassLib.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\KeePassLib.dll" />
+		</Component>
+		<Component Id="MicrosoftAspNetCoreCryptographyInternalComponent">
+			<File Id="___var.Microsoft.AspNetCore.Cryptography.Internal.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.AspNetCore.Cryptography.Internal.dll" />
+		</Component>
+		<Component Id="MicrosoftAspNetCoreDataProtectionAbstractionsComponent">
+			<File Id="___var.Microsoft.AspNetCore.DataProtection.Abstractions.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.AspNetCore.DataProtection.Abstractions.dll" />
+		</Component>
+		<Component Id="MicrosoftAspNetCoreDataProtectionComponent">
+			<File Id="___var.Microsoft.AspNetCore.DataProtection.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.AspNetCore.DataProtection.dll" />
+		</Component>
+		<Component Id="MicrosoftAspNetCoreDataProtectionExtensionsComponent">
+			<File Id="___var.Microsoft.AspNetCore.DataProtection.Extensions.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.AspNetCore.DataProtection.Extensions.dll" />
+		</Component>
+		<Component Id="MicrosoftExtensionsConfigurationAbstractionsComponent">
+			<File Id="___var.Microsoft.Extensions.Configuration.Abstractions.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Configuration.Abstractions.dll" />
+		</Component>
+		<Component Id="MicrosoftExtensionsDependencyInjectionAbstractionsComponent">
+			<File Id="___var.Microsoft.Extensions.DependencyInjection.Abstractions.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+		</Component>
+		<Component Id="MicrosoftExtensionsDependencyInjectionComponent">
+			<File Id="___var.Microsoft.Extensions.DependencyInjection.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.DependencyInjection.dll" />
+		</Component>
+		<Component Id="MicrosoftExtensionsDiagnosticsAbstractionsComponent">
+			<File Id="___var.Microsoft.Extensions.Diagnostics.Abstractions.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Diagnostics.Abstractions.dll" />
+		</Component>
+		<Component Id="MicrosoftExtensionsFileProvidersAbstractionsComponent">
+			<File Id="___var.Microsoft.Extensions.FileProviders.Abstractions.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.FileProviders.Abstractions.dll" />
+		</Component>
+		<Component Id="MicrosoftExtensionsHostingAbstractionsComponent">
+			<File Id="___var.Microsoft.Extensions.Hosting.Abstractions.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Hosting.Abstractions.dll" />
+		</Component>
+		<Component Id="MicrosoftExtensionsLoggingAbstractionsComponent">
+			<File Id="___var.Microsoft.Extensions.Logging.Abstractions.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Logging.Abstractions.dll" />
+		</Component>
+		<Component Id="MicrosoftExtensionsOptionsComponent">
+			<File Id="___var.Microsoft.Extensions.Options.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Options.dll" />
+		</Component>
+		<Component Id="MicrosoftExtensionsPrimitivesComponent">
+			<File Id="___var.Microsoft.Extensions.Primitives.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Primitives.dll" />
+		</Component>
+		<Component Id="SystemDrawingCommonComponent">
+			<File Id="___var.System.Drawing.Common.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\System.Drawing.Common.dll" />
+		</Component>
+		<Component Id="SystemSecurityCryptographyPkcsComponent">
+			<File Id="___var.System.Security.Cryptography.Pkcs.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\System.Security.Cryptography.Pkcs.dll" />
+		</Component>
+		<Component Id="SystemSecurityCryptographyXmlComponent">
+			<File Id="___var.System.Security.Cryptography.Xml.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\System.Security.Cryptography.Xml.dll" />
+		</Component>
+	</ComponentGroup>
     
   </Fragment>
 </Wix>
