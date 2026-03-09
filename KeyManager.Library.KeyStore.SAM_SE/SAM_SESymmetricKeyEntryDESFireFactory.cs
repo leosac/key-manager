@@ -8,34 +8,13 @@
 */
 
 using Leosac.KeyManager.Library.Plugin;
-using Newtonsoft.Json;
 
 namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
 {
-    public class SAM_SESymmetricKeyEntryDESFireFactory : KeyEntryFactory
+    public class SAM_SESymmetricKeyEntryDESFireFactory : GenericKeyEntryFactory<SAM_SESymmetricKeyEntryDESFire, SAM_SESymmetricKeyEntryDESFireProperties>
     {
         public override string Name => "SAM-SE DESFire Key Entry";
 
-        public override IEnumerable<KeyEntryClass> KClasses => new KeyEntryClass[] { KeyEntryClass.Symmetric };
-
-        public override KeyEntry CreateKeyEntry()
-        {
-            return new SAM_SESymmetricKeyEntryDESFire();
-        }
-
-        public override Type GetPropertiesType()
-        {
-            return typeof(SAM_SESymmetricKeyEntryDESFireProperties);
-        }
-
-        public override KeyEntryProperties CreateKeyEntryProperties()
-        {
-            return new SAM_SESymmetricKeyEntryDESFireProperties();
-        }
-
-        public override KeyEntryProperties? CreateKeyEntryProperties(string serialized)
-        {
-            return JsonConvert.DeserializeObject<SAM_SESymmetricKeyEntryDESFireProperties>(serialized);
-        }
+        public override IEnumerable<KeyEntryClass> KClasses => [KeyEntryClass.Symmetric];
     }
 }

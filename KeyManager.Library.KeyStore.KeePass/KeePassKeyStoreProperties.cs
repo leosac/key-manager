@@ -7,8 +7,8 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         private string _dbPath = string.Empty;
         private string _keyFilePath = string.Empty;
         private string _profilePath = string.Empty;
-        private bool _isSilent= false;
-        private int _selectedCredentialMode = 0;
+        private bool _isSilent;
+        private int _selectedCredentialMode;
 
         public string DBPath
         {

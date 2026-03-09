@@ -9,20 +9,22 @@
 
 		<Feature Id="ProductFeature" Title="$(var.ProductName)" Description="!(loc.ProductDescr)" Level="1" AllowAbsent="no">
 			<ComponentGroupRef Id="KeyManagerComponents" />
-      <ComponentGroupRef Id="FilePluginComponents" />
-      <ComponentGroupRef Id="HSM_PKCS11PluginComponents" />
-      <ComponentGroupRef Id="LCPPluginComponents" />
-      <ComponentGroupRef Id="MemoryPluginComponents" />
-      <ComponentGroupRef Id="NXP_SAMPluginComponents" />
-      <ComponentGroupRef Id="CNGPluginComponents" />
-      <ComponentGroupRef Id="WinRuntimeComponents" />
-      <ComponentGroupRef Id="NativeWinx64RuntimeComponents" />
-      <ComponentGroupRef Id="NativeWinx86RuntimeComponents" />
-      <ComponentGroupRef Id="DependenciesComponents" />
-      <ComponentGroupRef Id="HSM_PKCS11PluginDependenciesComponents" />
-      <ComponentGroupRef Id="LCPPluginDependenciesComponents" />
-	  <ComponentGroupRef Id="NXP_SAMPluginDependenciesComponents" />
-      <ComponentGroupRef Id="CNGPluginDependenciesComponents" />
+              <ComponentGroupRef Id="FilePluginComponents" />
+              <ComponentGroupRef Id="HSM_PKCS11PluginComponents" />
+              <ComponentGroupRef Id="LCPPluginComponents" />
+              <ComponentGroupRef Id="MemoryPluginComponents" />
+              <ComponentGroupRef Id="NXP_SAMPluginComponents" />
+              <ComponentGroupRef Id="CNGPluginComponents" />
+	          <ComponentGroupRef Id="KeePassPluginComponents" />
+              <ComponentGroupRef Id="WinRuntimeComponents" />
+              <ComponentGroupRef Id="NativeWinx64RuntimeComponents" />
+              <ComponentGroupRef Id="NativeWinx86RuntimeComponents" />
+              <ComponentGroupRef Id="DependenciesComponents" />
+              <ComponentGroupRef Id="HSM_PKCS11PluginDependenciesComponents" />
+              <ComponentGroupRef Id="LCPPluginDependenciesComponents" />
+	          <ComponentGroupRef Id="NXP_SAMPluginDependenciesComponents" />
+              <ComponentGroupRef Id="CNGPluginDependenciesComponents" />
+			  <ComponentGroupRef Id="KeePassPluginDependenciesComponents" />
 		</Feature>
     <Feature Id="AdditionalPluginsFeature" Title="!(loc.AdditionalPlugins)" Description="!(loc.AdditionalPluginsDescr)" Level="1">
       <Feature Id="SAM_SEFeature" Title="!(loc.SAM_SEFeature)" Description="!(loc.SAM_SEFeatureDescr)" Level="1" AllowAbsent="yes">
@@ -296,6 +298,11 @@
         <File Id="___var.KeyManager.Library.KeyStore.CNG.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.CNG.UI.TargetDir)\fr\KeyManager.Library.KeyStore.CNG.UI.resources.dll" />
       </Component>
     </ComponentGroup>
+	<ComponentGroup Id="KeePassPluginResourcesFR" Directory="CNGPLUGINFR">
+	  <Component Id="KeyManagerLibraryKeyStoreKeePassUIResourcesFRComponent">
+		<File Id="___var.KeyManager.Library.KeyStore.KeePass.UI.ResourcesFR_" Source="$(var.KeyManager.Library.KeyStore.KeePass.UI.TargetDir)\fr\KeyManager.Library.KeyStore.KeePass.UI.resources.dll" />
+	  </Component>
+	</ComponentGroup>
 
     <ComponentGroup Id="DependenciesResourcesFR" Directory="RESOURCESFR">
       <Component Id="WpfAppResourcesFRComponent">

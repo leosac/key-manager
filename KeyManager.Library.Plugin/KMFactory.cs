@@ -1,6 +1,4 @@
-﻿using log4net.Repository.Hierarchy;
-
-namespace Leosac.KeyManager.Library.Plugin
+﻿namespace Leosac.KeyManager.Library.Plugin
 {
     public abstract class KMFactory<T> where T : KMFactory<T>
     {
@@ -23,10 +21,13 @@ namespace Leosac.KeyManager.Library.Plugin
 
         public static T? GetFactoryFromPropertyType(Type? type)
         {
-            if (type == null)
-            {
-                return default;
-            }
+            if (type == null) return default;
+            return GetFactoryFromPropertyType(type.FullName);
+        }
+
+        public static T? GetFactoryFromPropertyType(string? typeName)
+        {
+            if (string.IsNullOrWhiteSpace(typeName)) return default;
 
             lock (RegisteredFactories)
             {
@@ -37,7 +38,7 @@ namespace Leosac.KeyManager.Library.Plugin
                     try
                     {
                         var t = factory.GetPropertiesType();
-                        if (t != null && type.FullName != null && t.FullName != null && type.FullName.Equals(t.FullName, StringComparison.Ordinal))
+                        if (t != null && typeName != null && t.FullName != null && typeName.Equals(t.FullName, StringComparison.InvariantCultureIgnoreCase))
                         {
                             return factory;
                         }

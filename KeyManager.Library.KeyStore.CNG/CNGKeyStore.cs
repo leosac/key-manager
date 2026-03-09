@@ -1,9 +1,4 @@
-﻿using Microsoft.Win32.SafeHandles;
-using System.ComponentModel;
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
+﻿using System.Text;
 using Vanara.InteropServices;
 using Vanara.PInvoke;
 using static Vanara.PInvoke.NCrypt;
