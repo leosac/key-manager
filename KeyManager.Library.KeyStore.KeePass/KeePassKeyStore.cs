@@ -2,21 +2,12 @@
 using KeePassLib.Keys;
 using KeePassLib.Security;
 using KeePassLib.Serialization;
-using Leosac.KeyManager.Library.KeyStore.CNG;
-using Leosac.KeyManager.Library.KeyStore.HSM_PKCS11;
-using Leosac.KeyManager.Library.KeyStore.LCP;
-using Leosac.KeyManager.Library.KeyStore.Memory;
-using Leosac.KeyManager.Library.KeyStore.NXP_SAM;
-using Leosac.KeyManager.Library.KeyStore.SAM_SE;
 using Leosac.KeyManager.Library.Plugin;
-using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
-using Vanara.Extensions.Reflection;
 
 namespace Leosac.KeyManager.Library.KeyStore.KeePass
 {
@@ -54,8 +45,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         private static readonly Dictionary<Type, string> StoreCache = [];
         private static readonly JsonSerializer CachedSerializer = JsonSerializer.Create(SerializerSettings);
 
-
-        /*public KeePassKeyStore()
+        public KeePassKeyStore()
         {
             Properties = new KeePassKeyStoreProperties();
         }*/
@@ -198,11 +188,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
                 if (!obj.TryGetValue(JSON_PROPERTIES, out _))
                 {
                     log.Warn("Adding default Properties to metadata");
-                    obj[JSON_PROPERTIES] = new JObject
-                    {
-                        ["$type"] = typeof(SAMSymmetricKeyEntryProperties).AssemblyQualifiedName,
-                        ["KeyUsageCounter"] = 0u
-                    };
+                    obj[JSON_PROPERTIES] = new JObject();
                 }
                 obj[JSON_VARIANT] = BuildVariant(entry);
                 var keyEntry = CreateFromJson(obj, kclass, identifier);
@@ -310,10 +296,10 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
                 var typeName = typeToken.Value<string>();
                 if (!string.IsNullOrEmpty(typeName))
                 {
-                    var keyEntryType = MapToKeyEntry(typeName);
-                    if (KeyEntryFactories.TryGetValue(keyEntryType, out var factory))
+                    var factory = KeyEntryFactory.GetFactoryFromKeyEntryType(typeName);
+                    if (factory != null)
                     {
-                        var keyEntry = factory();
+                        var keyEntry = factory.CreateKeyEntry();
                         keyEntry.Identifier = identifier;
                         return keyEntry;
                     }
@@ -324,45 +310,13 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
 
         private static KeyEntry? CreateFallback(KeyEntryClass kclass, KeyEntryId identifier)
         {
-            return kclass switch
+            var ke = KeyEntryFactory.GetFactoryFromBestMatch(kclass)?.CreateKeyEntry();
+            if (ke != null)
             {
-                KeyEntryClass.Symmetric => new SAMSymmetricKeyEntry { Identifier = identifier },
-                KeyEntryClass.Asymmetric => new AsymmetricPKCS11KeyEntry { Identifier = identifier },
-                _ => null
-            };
-        }
-
-        private static Type MapToKeyEntry(string prop)
-        {
-            foreach (var (key, type) in PropertyTypeMap)
-            {
-                if (prop.Contains(key, StringComparison.Ordinal))
-                    return type;
+                ke.Identifier = identifier;
             }
-            return typeof(MemoryKeyEntry); // Fallback
+            return ke;
         }
-
-        private static readonly Dictionary<Type, Func<KeyEntry>> KeyEntryFactories = new()
-        {
-            [typeof(CNGKeyEntry)] = static () => new CNGKeyEntry(),
-            [typeof(SymmetricPKCS11KeyEntry)] = static () => new SymmetricPKCS11KeyEntry(),
-            [typeof(LCPKeyEntry)] = static () => new LCPKeyEntry(),
-            [typeof(MemoryKeyEntry)] = static () => new MemoryKeyEntry(),
-            [typeof(SAMSymmetricKeyEntry)] = static () => new SAMSymmetricKeyEntry(),
-            [typeof(SAM_SESymmetricKeyEntry)] = static () => new SAM_SESymmetricKeyEntry(),
-            [typeof(AsymmetricPKCS11KeyEntry)] = static () => new AsymmetricPKCS11KeyEntry()
-        };
-
-        private static readonly Dictionary<string, Type> PropertyTypeMap = new(StringComparer.Ordinal)
-        {
-            ["CNGKeyEntryProperties"] = typeof(CNGKeyEntry),
-            ["SymmetricPKCS11KeyEntryProperties"] = typeof(SymmetricPKCS11KeyEntry),
-            ["LCPKeyEntryProperties"] = typeof(LCPKeyEntry),
-            ["MemoryKeyEntryProperties"] = typeof(MemoryKeyEntry),
-            ["SAMSymmetricKeyEntryProperties"] = typeof(SAMSymmetricKeyEntry),
-            ["SAM_SESymmetricKeyEntryProperties"] = typeof(SAM_SESymmetricKeyEntry),
-            ["AsymmetricPKCS11KeyEntryProperties"] = typeof(AsymmetricPKCS11KeyEntry)
-        };
 
         private static bool GetLabel(PwEntry entry, out string? label)
         {
@@ -410,23 +364,22 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         {
             try
             {
-                var typeName = keyEntry.GetType().Name;
-                if (PropertyTypeMap.TryGetValue(typeName, out var propsType))
+                var factory = KeyEntryFactory.GetFactoryFromKeyEntryType(keyEntry.GetType());
+                if (factory != null)
                 {
-                    keyEntry.Properties = (KeyEntryProperties?)Activator.CreateInstance(propsType)
-                                          ?? new MemoryKeyEntryProperties();
-                    log.Debug($"Default properties created : {propsType.Name}");
+                    keyEntry.Properties = factory.CreateKeyEntryProperties();
+                    log.Debug($"Default properties created");
                 }
                 else
                 {
-                    keyEntry.Properties = new MemoryKeyEntryProperties();
-                    log.Warn($"Unknown key type '{typeName}' : using MemoryKeyEntryProperties");
+                    log.Warn($"Cannot found factory from key entry of type '{keyEntry.GetType().Name}'");
+                    keyEntry.Properties = null;
                 }
             }
             catch (Exception ex)
             {
                 log.Error($"Failed to create default properties for {keyEntry.GetType().Name} : {ex.Message}");
-                keyEntry.Properties = new MemoryKeyEntryProperties();
+                keyEntry.Properties = null;
             }
         }
 
@@ -602,8 +555,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
                         (keyContainer.Materials ?? Enumerable.Empty<KeyMaterial>())
                         .Select(m => new JObject
                         {
-                            ["OverrideSize"] = m.OverrideSize,
-                            ["IsRealKeyMateriel"] = m.IsRealKeyMateriel
+                            ["OverrideSize"] = m.OverrideSize
                         })
                     );
                 }
@@ -616,7 +568,6 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
                     new JProperty("Materials", BuildMaterials()),
                     new JProperty("Link", JObject.FromObject(keyContainer.Link ?? new KeyLink()))
                 ));
-                serializedKey.Add("IsConfigured", container.IsConfigured());
                 entry.Strings.Set(versionFieldName, new ProtectedString(true, serializedKey.ToString(Formatting.Indented)));
                 if (container is KeyVersion && index > 0)
                 {
@@ -639,8 +590,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         {
             var variant = keyEntry.Variant;
             if (variant?.KeyContainers == null)
-                return $"Key Type : Unknown{Environment.NewLine}Class : {keyEntry.KClass}{Environment.NewLine}Store : {ExtractStoreType(keyEntry.Properties)}";
-            var storeType = ExtractStoreType(keyEntry.Properties);
+                return $"Key Type : Unknown{Environment.NewLine}Class : {keyEntry.KClass}";
             var sb = new StringBuilder(512)
                 .Append($"Key Type : {variant.Name ?? "Unknown"}")
                 .Append(Environment.NewLine)
@@ -651,7 +601,6 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             var firstTags = variant.KeyContainers[0].Key.Tags;
             if (firstTags?.Count > 0)
                 sb.Append($"Tags : {string.Join(", ", firstTags.Take(5))}").Append(Environment.NewLine);
-            sb.Append($"Store : {storeType}").Append(Environment.NewLine);
             var containerCount = variant.KeyContainers.Count;
             if (containerCount > 1)
                 sb.Append($"Versions : {containerCount}").Append(Environment.NewLine);
@@ -664,28 +613,6 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
                 sb.Append($"  ↳ {name} : {size}b ({tagsPreview})").Append(Environment.NewLine); //UTF-8 symbol for pretty output
             }
             return sb.ToString().TrimEnd();
-        }
-
-        private static string ExtractStoreType(object? prop)
-        {
-            if (prop == null)
-                return "Unknown";
-            if (!StoreCache.TryGetValue(prop.GetType(), out var _type))
-            {
-                try
-                {
-                    var typeStr = prop.ToString()?.Split(',')[0] ?? "";
-                    _type = typeStr.Split('.').Last()
-                        ?.Replace(JSON_PROPERTIES, "", StringComparison.OrdinalIgnoreCase)
-                        ?? "Unknown";
-                    StoreCache[prop.GetType()] = _type;
-                }
-                catch
-                {
-                    _type = "Unknown";
-                }
-            }
-            return _type;
         }
 
         private static void SetEntryIcon(PwEntry entry, KeyEntry keyEntry)
@@ -730,21 +657,21 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         {
             var props = GetFileProperties();
             var key = new CompositeKey();
-            var modeActions = new Dictionary<int, Action>
+            var modeActions = new Dictionary<CredentialMode, Action>
             {
-                [0] = () =>
+                [CredentialMode.PasswordOnly] = () =>
                 {
                     if (string.IsNullOrEmpty(props.Secret))
                         throw new InvalidOperationException("Password is required for PasswordOnly mode.");
                     key.AddUserKey(new KcpPassword(props.Secret));
                 },
-                [1] = () =>
+                [CredentialMode.KeyFileOnly] = () =>
                 {
                     if (string.IsNullOrEmpty(props.KeyPath) || !File.Exists(props.KeyPath))
                         throw new InvalidOperationException("Valid key file is required for KeyFileOnly mode.");
                     key.AddUserKey(new KcpKeyFile(props.KeyPath));
                 },
-                [2] = () =>
+                [CredentialMode.PasswordAndKey] = () =>
                 {
                     if (string.IsNullOrEmpty(props.Secret))
                         throw new InvalidOperationException("Password is required for Password+KeyFile mode.");

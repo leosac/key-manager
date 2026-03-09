@@ -1,33 +1,11 @@
-﻿using Leosac.KeyManager.Library.KeyStore.CNG;
-using Leosac.KeyManager.Library.Plugin;
-using Newtonsoft.Json;
+﻿using Leosac.KeyManager.Library.Plugin;
 
 namespace Leosac.KeyManager.Library.KeyStore.CNG
 {
-    public class CNGKeyEntryFactory : KeyEntryFactory
+    public class CNGKeyEntryFactory : GenericKeyEntryFactory<CNGKeyEntry, CNGKeyEntryProperties>
     {
         public override string Name => "CNG Key Entry";
 
         public override IEnumerable<KeyEntryClass> KClasses => [KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric];
-
-        public override KeyEntry CreateKeyEntry()
-        {
-            return new CNGKeyEntry();
-        }
-
-        public override Type GetPropertiesType()
-        {
-            return typeof(CNGKeyEntryProperties);
-        }
-
-        public override KeyEntryProperties CreateKeyEntryProperties()
-        {
-            return new CNGKeyEntryProperties();
-        }
-
-        public override KeyEntryProperties? CreateKeyEntryProperties(string serialized)
-        {
-            return JsonConvert.DeserializeObject<CNGKeyEntryProperties>(serialized);
-        }
     }
 }

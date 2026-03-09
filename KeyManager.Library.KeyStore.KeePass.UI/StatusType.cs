@@ -1,4 +1,4 @@
-﻿namespace KeyManager.Library.KeyStore.KeePass.UI
+﻿namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI
 {
 
     public enum StatusType

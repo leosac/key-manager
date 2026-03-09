@@ -5,12 +5,12 @@
     <TargetFramework>net8.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-	  <Version>1.23.0</Version>
+	  <Version>1.24.0</Version>
 	  <Product>Leosac Key Manager</Product>
 	  <Description>Key Manager for Access Control and RFID related technologies, by Leosac.</Description>
 	  <Company>Leosac SAS</Company>
 	  <AssemblyTitle>Leosac Key Manager</AssemblyTitle>
-	  <Copyright>Copyright ©2025 Leosac SAS</Copyright>
+	  <Copyright>Copyright ©2026 Leosac SAS</Copyright>
 	  <RootNamespace>Leosac.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
 	  <ApplicationIcon>leosac_key.ico</ApplicationIcon>
   </PropertyGroup>
@@ -25,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="KeePassNetStandard.KeePassLib" Version="2.57.0" />
     <PackageReference Include="Leosac.WpfApp" Version="1.25.0" />
     <PackageReference Include="log4net" Version="3.1.0" />
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
