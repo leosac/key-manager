@@ -657,21 +657,21 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         {
             var props = GetFileProperties();
             var key = new CompositeKey();
-            var modeActions = new Dictionary<int, Action>
+            var modeActions = new Dictionary<CredentialMode, Action>
             {
-                [0] = () =>
+                [CredentialMode.PasswordOnly] = () =>
                 {
                     if (string.IsNullOrEmpty(props.Secret))
                         throw new InvalidOperationException("Password is required for PasswordOnly mode.");
                     key.AddUserKey(new KcpPassword(props.Secret));
                 },
-                [1] = () =>
+                [CredentialMode.KeyFileOnly] = () =>
                 {
                     if (string.IsNullOrEmpty(props.KeyPath) || !File.Exists(props.KeyPath))
                         throw new InvalidOperationException("Valid key file is required for KeyFileOnly mode.");
                     key.AddUserKey(new KcpKeyFile(props.KeyPath));
                 },
-                [2] = () =>
+                [CredentialMode.PasswordAndKey] = () =>
                 {
                     if (string.IsNullOrEmpty(props.Secret))
                         throw new InvalidOperationException("Password is required for Password+KeyFile mode.");

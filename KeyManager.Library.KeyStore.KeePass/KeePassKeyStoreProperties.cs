@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Text.Json.Serialization;
 
 namespace Leosac.KeyManager.Library.KeyStore.KeePass
 {
@@ -8,7 +8,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         private string _keyFilePath = string.Empty;
         private string _profilePath = string.Empty;
         private bool _isSilent;
-        private int _selectedCredentialMode;
+        private CredentialMode _selectedCredentialMode = CredentialMode.PasswordOnly;
 
         public string DBPath
         {
@@ -33,11 +33,22 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             set => SetProperty(ref _isSilent, value);
         }
 
-        public int SelectedCredentialMode
+        public CredentialMode SelectedCredentialMode
         {
             get => _selectedCredentialMode;
-            set => SetProperty(ref _selectedCredentialMode, value);
+            set
+            {
+                SetProperty(ref _selectedCredentialMode, value);
+                OnPropertyChanged(nameof(SecretIsRequired));
+                OnPropertyChanged(nameof(KeyFileIsRequired));
+            }
         }
+
+        [JsonIgnore]
+        public bool SecretIsRequired => SelectedCredentialMode == CredentialMode.PasswordOnly || SelectedCredentialMode == CredentialMode.PasswordAndKey;
+
+        [JsonIgnore]
+        public bool KeyFileIsRequired => SelectedCredentialMode == CredentialMode.KeyFileOnly || SelectedCredentialMode == CredentialMode.PasswordAndKey;
 
         public override bool Equals(object? obj) => Equals(obj as KeePassKeyStoreProperties);
 
