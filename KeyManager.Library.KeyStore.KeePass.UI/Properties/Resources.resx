@@ -237,4 +237,10 @@
   <data name="CreateCredentialRequired" xml:space="preserve">
     <value>❌ Password or a master key file required</value>
   </data>
+  <data name="DatabaseValidatedFailed" xml:space="preserve">
+    <value>Failed to validate the newly created database : {0}</value>
+  </data>
+  <data name="Tools" xml:space="preserve">
+    <value>Tools</value>
+  </data>
 </root>

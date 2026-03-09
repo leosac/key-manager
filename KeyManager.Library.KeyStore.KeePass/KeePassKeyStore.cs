@@ -55,10 +55,10 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         private static readonly JsonSerializer CachedSerializer = JsonSerializer.Create(SerializerSettings);
 
 
-        public KeePassKeyStore()
+        /*public KeePassKeyStore()
         {
             Properties = new KeePassKeyStoreProperties();
-        }
+        }*/
 
         public override async Task Open()
         {

@@ -187,6 +187,15 @@ namespace KeyManager.Library.KeyStore.KeePass.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to validate the newly created database : {0}.
+        /// </summary>
+        public static string DatabaseValidatedFailed {
+            get {
+                return ResourceManager.GetString("DatabaseValidatedFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  (Root).
         /// </summary>
         public static string DefaultProfile {
@@ -417,6 +426,15 @@ namespace KeyManager.Library.KeyStore.KeePass.UI.Properties {
         public static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tools.
+        /// </summary>
+        public static string Tools {
+            get {
+                return ResourceManager.GetString("Tools", resourceCulture);
             }
         }
     }

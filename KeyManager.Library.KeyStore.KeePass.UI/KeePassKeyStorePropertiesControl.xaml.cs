@@ -154,6 +154,7 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
                 CheckFileExists = true
             };
             if (dialog.ShowDialog() != true) return;
+            TxtFilePath.Text = dialog.FileName;
             ShowStatus(string.Format(Properties.Resources.FileSelected, Path.GetFileName(dialog.FileName)), StatusType.Success);
             if (DataContext is KeePassKeyStorePropertiesControlViewModel model && model.FileProperties != null)
             {
@@ -162,7 +163,6 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
                         ClearAll();
                 model.FileProperties.DBPath = dialog.FileName;
             }
-            TxtFilePath.Text = dialog.FileName;
         }
 
         private void BrowseKeyFile(object _, RoutedEventArgs __)
@@ -290,6 +290,7 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
                 IsBusy = false;
             }
         }
+
         private void CancelConnection()
         {
             if (_cts != null && !_cts.IsCancellationRequested)
@@ -337,6 +338,17 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             });
             foreach (var e in group.Groups)
                 Explore(e);
+        }
+
+        private void Options_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            if (btn?.ContextMenu != null)
+            {
+                btn.ContextMenu.PlacementTarget = btn;
+                btn.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+                btn.ContextMenu.IsOpen = true;
+            }
         }
 
         private void ApplyFilter()
@@ -446,13 +458,13 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             try
             {
                 ShowStatus(Properties.Resources.Creating, StatusType.Info);
-
-                string filePath = TxtFilePath.Text?.Trim() ?? "";
-                string password = TxtPassword.Password ?? "";
-                string masterKeyPath = TxtMasterKey.Text?.Trim() ?? "";
-                if (string.IsNullOrWhiteSpace(filePath))
+                var filePath = EnsureFilePath();
+                if (filePath == null) return;
+                var password = TxtPassword.Password ?? string.Empty;
+                var masterKeyPath = TxtMasterKey.Text?.Trim() ?? string.Empty;
+                if (string.IsNullOrEmpty(password) && string.IsNullOrEmpty(masterKeyPath))
                 {
-                    ShowStatus(Properties.Resources.CreateFileNotFound, StatusType.Error);
+                    ShowStatus(Properties.Resources.CreateCredentialRequired, StatusType.Error);
                     return;
                 }
                 if (File.Exists(filePath))
@@ -460,13 +472,31 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
                     ShowStatus(Properties.Resources.CreateFileExists, StatusType.Error);
                     return;
                 }
-                if (string.IsNullOrEmpty(password) && string.IsNullOrEmpty(masterKeyPath))
-                {
-                    ShowStatus(Properties.Resources.CreateCredentialRequired, StatusType.Error);
-                    return;
-                }
                 await CreateEmptyKeePassDatabase(filePath, password, masterKeyPath);
                 ShowStatus(Properties.Resources.CreateSuccessful, StatusType.Success);
+                TxtFilePath.Text = filePath;
+                if (DataContext is KeePassKeyStorePropertiesControlViewModel model && model.FileProperties != null)
+                {
+                    model.FileProperties.DBPath = filePath;
+                }
+                try
+                {
+                    var compositeKey = BuildCompositeKey(password, masterKeyPath);
+                    var db = new PwDatabase();
+                    var io = new IOConnectionInfo { Path = filePath };
+                    db.Open(io, compositeKey, null);
+                    _DB = db;
+                    _allProfiles.Clear();
+                    Explore(_DB.RootGroup, isRoot: true);
+                    ApplyFilter();
+                    SelectedProfile = Profiles.FirstOrDefault();
+                    OnPropertyChanged(nameof(SelectedProfile));
+                    OnPropertyChanged(nameof(IsTestEnabled));
+                }
+                catch (Exception ex)
+                {
+                    ShowStatus(string.Format(Properties.Resources.DatabaseValidatedFailed, ex.Message), StatusType.Warning);
+                }
             }
             catch (Exception ex)
             {
@@ -474,16 +504,57 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             }
         }
 
-        private async Task CreateEmptyKeePassDatabase(string filePath, string password, string masterKeyPath)
+        private string? EnsureFilePath()
         {
-            if (File.Exists(filePath))
-                throw new InvalidOperationException("File already exists.");
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? throw new InvalidOperationException("Invalid file path."));
-            var compositeKey = BuildCompositeKey(password, masterKeyPath);
-            var io = new IOConnectionInfo { Path = filePath };
-            var db = new PwDatabase();
+            var filePath = TxtFilePath.Text?.Trim();
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                var dialog = new SaveFileDialog
+                {
+                    Title = Properties.Resources.SelectKeePassDatabase,
+                    Filter = Properties.Resources.KeePassDbFilter,
+                    DefaultExt = ".kdbx",
+                    AddExtension = true
+                };
+                if (dialog.ShowDialog() != true)
+                {
+                    ShowStatus(Properties.Resources.CreateFileNotFound, StatusType.Warning);
+                    return null;
+                }
+                filePath = dialog.FileName;
+                TxtFilePath.Text = filePath;
+                if (DataContext is KeePassKeyStorePropertiesControlViewModel model && model.FileProperties != null)
+                    model.FileProperties.DBPath = filePath;
+            }
             try
             {
+                filePath = Path.GetFullPath(filePath);
+                var dir = Path.GetDirectoryName(filePath);
+                if (string.IsNullOrWhiteSpace(dir))
+                    throw new InvalidOperationException("Invalid file path.");
+                Directory.CreateDirectory(dir);
+            }
+            catch (Exception ex)
+            {
+                ShowStatus(string.Format(Properties.Resources.Error, ex.Message), StatusType.Error);
+                return null;
+            }
+            return filePath;
+        }
+
+        private async Task CreateEmptyKeePassDatabase(string filePath, string password, string masterKeyPath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException("File path cannot be empty.", nameof(filePath));
+            if (File.Exists(filePath))
+                throw new InvalidOperationException("File already exists.");
+            PwDatabase? db = null;
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? throw new InvalidOperationException("Invalid file path."));
+                var compositeKey = BuildCompositeKey(password, masterKeyPath);
+                var io = new IOConnectionInfo { Path = filePath };
+                db = new PwDatabase();
                 db.New(io, compositeKey);
                 db.RootGroup.Groups.Clear();
                 db.RootGroup.AddGroup(new PwGroup(true, true, "LEOSAC", PwIcon.Folder), true);
@@ -495,7 +566,14 @@ namespace KeyManager.Library.KeyStore.KeePass.UI
             }
             finally
             {
-                db.Close();
+                try
+                {
+                    db?.Close();
+                }
+                catch (Exception ex)
+                {
+                    ShowStatus(string.Format(Properties.Resources.DatabaseCloseFailed, ex.Message), StatusType.Warning);
+                }
             }
         }
 
