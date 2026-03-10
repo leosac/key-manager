@@ -6,6 +6,7 @@ using KeePassLib.Serialization;
 using Leosac.KeyManager.Library.Plugin.UI.Domain;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -18,6 +19,13 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain
         public KeePassKeyStorePropertiesControlViewModel()
         {
             _properties = new KeePassKeyStoreProperties();
+            if (FileProperties != null)
+                FileProperties.PropertyChanged += OnFilePropertiesChanged;
+            BrowseFileCommand = new RelayCommand(BrowseFile);
+            BrowseKeyFileCommand = new RelayCommand(BrowseKeyFile);
+            TestConnectionCommand = new AsyncRelayCommand(TestConnection);
+            ClearAllCommand = new RelayCommand(ClearAll);
+            CreateKeyStoreCommand = new AsyncRelayCommand(CreateKeyStore);
             Profiles.Add(DefaultProfile);
             SelectedProfile = Profiles.FirstOrDefault();
             ShowStatus(UI.Properties.Resources.Availability, StatusType.Success);
@@ -67,7 +75,11 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain
         public bool IsExhaustive
         {
             get => _isExhaustive;
-            set => SetProperty(ref _isExhaustive, value);
+            set
+            {
+                if (SetProperty(ref _isExhaustive, value))
+                    ApplyFilter();
+            }
         }
 
         private bool _showProgress;
@@ -84,23 +96,48 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain
             set => SetProperty(ref _status, value);
         }
 
+        private StatusType _statusType;
+        public StatusType StatusType
+        {
+            get => _statusType;
+            set => SetProperty(ref _statusType, value);
+        }
+
         public KeePassKeyStoreProperties? FileProperties
         {
             get { return Properties as KeePassKeyStoreProperties; }
         }
 
-        public RelayCommand BrowseFileCommand => new(BrowseFile);
+        public RelayCommand BrowseFileCommand { get; }
 
-        public RelayCommand BrowseKeyFileCommand => new(BrowseKeyFile);
+        public RelayCommand BrowseKeyFileCommand { get; }
 
-        public AsyncRelayCommand TestConnectionCommand => new(TestConnection);
+        public AsyncRelayCommand TestConnectionCommand { get; }
 
-        public RelayCommand ClearAllCommand => new(ClearAll);
+        public RelayCommand ClearAllCommand { get; }
 
-        public AsyncRelayCommand CreateKeyStoreCommand => new(CreateKeyStore);
+        public AsyncRelayCommand CreateKeyStoreCommand { get; }
 
         public static readonly string DefaultProfileName = UI.Properties.Resources.DefaultProfileName;
         private static readonly ProfileItem DefaultProfile = new() { Name = DefaultProfileName, IsNonExhaustive = false };
+
+        private void OnFilePropertiesChanged(object? _, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != nameof(KeePassKeyStoreProperties.SelectedCredentialMode) || FileProperties == null)
+                return;
+            switch (FileProperties.SelectedCredentialMode)
+            {
+                case CredentialMode.PasswordOnly:
+                    FileProperties.KeyPath = string.Empty;
+                    break;
+                case CredentialMode.KeyFileOnly:
+                    FileProperties.Secret = string.Empty;
+                    break;
+                case CredentialMode.PasswordAndKey:
+                    break;
+            }
+            OnPropertyChanged(nameof(FileProperties));
+        }
 
         private void BrowseFile()
         {
@@ -111,7 +148,6 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain
                 CheckFileExists = true
             };
             if (dialog.ShowDialog() != true) return;
-            ShowStatus(string.Format(UI.Properties.Resources.FileSelected, Path.GetFileName(dialog.FileName)), StatusType.Success);
             if (FileProperties != null)
             {
                 if (!string.IsNullOrEmpty(FileProperties.DBPath) || !string.IsNullOrEmpty(FileProperties.Secret)
@@ -119,6 +155,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain
                     ClearAll();
                 FileProperties.DBPath = dialog.FileName;
             }
+            ShowStatus(string.Format(UI.Properties.Resources.FileSelected, Path.GetFileName(dialog.FileName)), StatusType.Success);
         }
 
         private void BrowseKeyFile()
@@ -200,21 +237,17 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain
                     ShowStatus(UI.Properties.Resources.MasterKeyRequired, StatusType.Warning);
                     return;
                 }
-
                 CancelConnection();
                 _cts = new CancellationTokenSource();
                 var token = _cts.Token;
-
                 try
                 {
                     IsBusy = true;
                     var masterKey = new CompositeKey();
                     if (requirePassword) masterKey.AddUserKey(new KcpPassword(FileProperties.Secret));
                     if (requireKey) masterKey.AddUserKey(new KcpKeyFile(FileProperties.KeyPath));
-
                     var db = new PwDatabase();
                     var io = new IOConnectionInfo { Path = FileProperties.DBPath };
-
                     await Task.Run(() =>
                     {
                         token.ThrowIfCancellationRequested();
@@ -238,6 +271,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain
                 }
             }
         }
+
         private void CancelConnection()
         {
             if (_cts != null && !_cts.IsCancellationRequested)
@@ -294,7 +328,12 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain
                 ? _allProfiles.Where(p => !p.IsNonExhaustive && p.EntryCount > 0).ToList()
                 : _allProfiles.ToList();
             if (filtered.Count == 0)
-                filtered.Add(DefaultProfile);
+            {
+                if (_allProfiles.Count == 0)
+                    filtered.Add(DefaultProfile);
+                else
+                    filtered.Add(_allProfiles.FirstOrDefault(p => p.IsRoot) ?? _allProfiles.First());
+            }
             foreach (var profile in filtered)
                 Profiles.Add(profile);
             SelectedProfile = Profiles.FirstOrDefault();
@@ -305,46 +344,9 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain
         private void ShowStatus(string message, StatusType type)
         {
             Status = message;
-            Color highlightColor;
-            Color startTextColor;
-            switch (type)
-            {
-                case StatusType.Success:
-                    highlightColor = Colors.Green;
-                    startTextColor = Colors.Black;
-                    break;
-                case StatusType.Warning:
-                    highlightColor = Colors.Orange;
-                    startTextColor = Colors.White;
-                    break;
-                case StatusType.Error:
-                    highlightColor = Colors.Red;
-                    startTextColor = Colors.White;
-                    break;
-                default:
-                    highlightColor = Colors.Gray;
-                    startTextColor = Colors.Black;
-                    break;
-            }
-            /*TxtStatus.Foreground = new SolidColorBrush(startTextColor);
-            var bgBrush = new SolidColorBrush(Color.FromArgb(180, highlightColor.R, highlightColor.G, highlightColor.B));
-            StatusBorder.Background = bgBrush;
-            StatusBorder.BorderBrush = Brushes.LightGray;
-            StatusBorder.BorderThickness = new Thickness(1);
-            StatusBorder.CornerRadius = new CornerRadius(4);
-            StatusBorder.Padding = new Thickness(6);
-            StatusBorder.Visibility = Visibility.Visible;
-            var bgFade = new ColorAnimation(Color.FromArgb(0, highlightColor.R, highlightColor.G, highlightColor.B),
-                                            TimeSpan.FromSeconds(3));
-            bgBrush.BeginAnimation(SolidColorBrush.ColorProperty, bgFade);
-            if (TxtStatus.Foreground is SolidColorBrush textBrush)
-            {
-                var textFade = new ColorAnimation(Color.FromArgb(255, highlightColor.R, highlightColor.G, highlightColor.B),
-                                                    TimeSpan.FromSeconds(3));
-                textBrush.BeginAnimation(SolidColorBrush.ColorProperty, textFade);
-            }*/
+            StatusType = type;
         }
-
+        
         private async Task CreateKeyStore()
         {
             if (FileProperties != null)
@@ -352,13 +354,13 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain
                 try
                 {
                     ShowStatus(UI.Properties.Resources.Creating, StatusType.Info);
-
-                    string filePath = FileProperties.DBPath?.Trim() ?? "";
-                    string password = FileProperties.Secret ?? "";
-                    string masterKeyPath = FileProperties.KeyPath?.Trim() ?? "";
-                    if (string.IsNullOrWhiteSpace(filePath))
+                    var filePath = EnsureFilePath();
+                    if (filePath == null) return;
+                    var password = FileProperties.Secret ?? string.Empty;
+                    var masterKeyPath = FileProperties.KeyPath?.Trim() ?? string.Empty;
+                    if (string.IsNullOrEmpty(password) && string.IsNullOrEmpty(masterKeyPath))
                     {
-                        ShowStatus(UI.Properties.Resources.CreateFileNotFound, StatusType.Error);
+                        ShowStatus(UI.Properties.Resources.CreateCredentialRequired, StatusType.Error);
                         return;
                     }
                     if (File.Exists(filePath))
@@ -381,16 +383,57 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain
             }
         }
 
-        private async Task CreateEmptyKeePassDatabase(string filePath, string password, string masterKeyPath)
+        private string? EnsureFilePath()
         {
-            if (File.Exists(filePath))
-                throw new InvalidOperationException("File already exists.");
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? throw new InvalidOperationException("Invalid file path."));
-            var compositeKey = BuildCompositeKey(password, masterKeyPath);
-            var io = new IOConnectionInfo { Path = filePath };
-            var db = new PwDatabase();
+            var filePath = FileProperties?.DBPath?.Trim();
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                var dialog = new SaveFileDialog
+                {
+                    Title = UI.Properties.Resources.SelectKeePassDatabase,
+                    Filter = UI.Properties.Resources.KeePassDbFilter,
+                    DefaultExt = ".kdbx",
+                    AddExtension = true
+                };
+                if (dialog.ShowDialog() != true)
+                {
+                    ShowStatus(UI.Properties.Resources.CreateFileNotFound, StatusType.Warning);
+                    return null;
+                }
+                filePath = dialog.FileName;
+                if (FileProperties == null)
+                    return null;
+                FileProperties.DBPath = filePath;
+            }
             try
             {
+                filePath = Path.GetFullPath(filePath);
+                var dir = Path.GetDirectoryName(filePath);
+                if (string.IsNullOrWhiteSpace(dir))
+                    throw new InvalidOperationException("Invalid file path.");
+                Directory.CreateDirectory(dir);
+            }
+            catch (Exception ex)
+            {
+                ShowStatus(string.Format(UI.Properties.Resources.Error, ex.Message), StatusType.Error);
+                return null;
+            }
+            return filePath;
+        }
+
+        private async Task CreateEmptyKeePassDatabase(string filePath, string password, string masterKeyPath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException("File path cannot be empty.", nameof(filePath));
+            if (File.Exists(filePath))
+                throw new InvalidOperationException("File already exists.");
+            PwDatabase? db = null;
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? throw new InvalidOperationException("Invalid file path."));
+                var compositeKey = BuildCompositeKey(password, masterKeyPath);
+                var io = new IOConnectionInfo { Path = filePath };
+                db = new PwDatabase();
                 db.New(io, compositeKey);
                 db.RootGroup.Groups.Clear();
                 db.RootGroup.AddGroup(new PwGroup(true, true, "LEOSAC", PwIcon.Folder), true);
@@ -402,7 +445,14 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain
             }
             finally
             {
-                db.Close();
+                try
+                {
+                    db?.Close();
+                }
+                catch (Exception ex)
+                {
+                    ShowStatus(string.Format(UI.Properties.Resources.DatabaseCloseFailed, ex.Message), StatusType.Warning);
+                }
             }
         }
 

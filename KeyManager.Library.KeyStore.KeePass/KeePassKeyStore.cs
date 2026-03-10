@@ -48,7 +48,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         public KeePassKeyStore()
         {
             Properties = new KeePassKeyStoreProperties();
-        }*/
+        }
 
         public override async Task Open()
         {
