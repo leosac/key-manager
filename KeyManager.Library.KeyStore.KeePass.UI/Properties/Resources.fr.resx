@@ -237,4 +237,10 @@
   <data name="CreateCredentialRequired" xml:space="preserve">
     <value>❌ Mot de passe ou fichier de clé requis</value>
   </data>
+  <data name="DatabaseValidatedFailed" xml:space="preserve">
+    <value>Impossible de valider la nouvelle base de données créée : {0}</value>
+  </data>
+  <data name="Tools" xml:space="preserve">
+    <value>Outils</value>
+  </data>
 </root>
