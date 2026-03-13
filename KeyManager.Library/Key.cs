@@ -69,7 +69,10 @@ namespace Leosac.KeyManager.Library
                 {
                     if (item is KeyMaterial k)
                     {
-                        k.BeforeValueChanged += (_, e) => ValidatePolicies(e);
+                        if (k.ValidatePolicies)
+                        {
+                            k.BeforeValueChanged += (_, e) => ValidatePolicies(e);
+                        }
                     }
                 }
             }

@@ -67,6 +67,14 @@ namespace Leosac.KeyManager.Library
             set { SetProperty(ref _overrideSize, value); }
         }
 
+        private bool _validatePolicies = true;
+        [JsonIgnore]
+        public bool ValidatePolicies
+        {
+            get => _validatePolicies;
+            set { SetProperty(ref _validatePolicies, value); }
+        }
+
         public static string? GetValueAsString(string? value, KeyValueStringFormat format)
         {
             if (value != null)
