@@ -19,7 +19,7 @@ namespace Leosac.KeyManager.Library.UI.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -66,6 +66,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string AddDivInputFragment {
             get {
                 return ResourceManager.GetString("AddDivInputFragment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Advanced Settings.
+        /// </summary>
+        public static string AdvancedSettings {
+            get {
+                return ResourceManager.GetString("AdvancedSettings", resourceCulture);
             }
         }
         
@@ -120,6 +129,24 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string Confirm {
             get {
                 return ResourceManager.GetString("Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm each unit before proceeding.
+        /// </summary>
+        public static string ConfirmEachUnit {
+            get {
+                return ResourceManager.GetString("ConfirmEachUnit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continuous mode.
+        /// </summary>
+        public static string ContinuousMode {
+            get {
+                return ResourceManager.GetString("ContinuousMode", resourceCulture);
             }
         }
         
@@ -304,6 +331,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable flow provisioning.
+        /// </summary>
+        public static string EnableFlowProvisioning {
+            get {
+                return ResourceManager.GetString("EnableFlowProvisioning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string Error {
@@ -345,6 +381,33 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string Finish {
             get {
                 return ResourceManager.GetString("Finish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flow.
+        /// </summary>
+        public static string Flow {
+            get {
+                return ResourceManager.GetString("Flow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provision multiple units in a batch with optional confirmations..
+        /// </summary>
+        public static string FlowDescription {
+            get {
+                return ResourceManager.GetString("FlowDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flow not supported for this key store.
+        /// </summary>
+        public static string FlowNotSupported {
+            get {
+                return ResourceManager.GetString("FlowNotSupported", resourceCulture);
             }
         }
         
@@ -1024,6 +1087,42 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable detailed logs per unit.
+        /// </summary>
+        public static string LoggingVerbosity {
+            get {
+                return ResourceManager.GetString("LoggingVerbosity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max units in flow.
+        /// </summary>
+        public static string MaxUnits {
+            get {
+                return ResourceManager.GetString("MaxUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set the number of units to provision..
+        /// </summary>
+        public static string MaxUnitsHelper {
+            get {
+                return ResourceManager.GetString("MaxUnitsHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of units to provision.
+        /// </summary>
+        public static string MaxUnitsHelperShort {
+            get {
+                return ResourceManager.GetString("MaxUnitsHelperShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mnemonic.
         /// </summary>
         public static string Mnemonic {
@@ -1110,6 +1209,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string Notes {
             get {
                 return ResourceManager.GetString("Notes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notify on successful unit provisioning.
+        /// </summary>
+        public static string Notifications {
+            get {
+                return ResourceManager.GetString("Notifications", resourceCulture);
             }
         }
         
@@ -1312,6 +1420,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Automatically retry failed units.
+        /// </summary>
+        public static string RetryOnFailure {
+            get {
+                return ResourceManager.GetString("RetryOnFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Salt.
         /// </summary>
         public static string Salt {
@@ -1434,6 +1551,24 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string Test {
             get {
                 return ResourceManager.GetString("Test", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set a maximum wait time before failing.
+        /// </summary>
+        public static string TimeoutWait {
+            get {
+                return ResourceManager.GetString("TimeoutWait", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seconds.
+        /// </summary>
+        public static string TimeSecond {
+            get {
+                return ResourceManager.GetString("TimeSecond", resourceCulture);
             }
         }
         
