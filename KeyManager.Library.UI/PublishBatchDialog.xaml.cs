@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using Leosac.KeyManager.Library.KeyStore;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,6 +11,7 @@ namespace Leosac.KeyManager.Library.UI
 {
     public partial class PublishBatchDialog : UserControl
     {
+        private ScrollViewer? _logTreeScrollViewer;
         private Domain.LogEntry? _lastParentNode;
         private bool _autoScroll = true;
 
@@ -18,10 +20,16 @@ namespace Leosac.KeyManager.Library.UI
             InitializeComponent();
             Loaded += (_, __) =>
             {
+                if (LogTree != null)
+                {
+                    _logTreeScrollViewer = GetScrollViewer(LogTree);
+                    if (_logTreeScrollViewer != null)
+                        _logTreeScrollViewer.ScrollChanged += LogScroll;
+                }
                 if (DataContext is Domain.PublishBatchDialogViewModel vm)
                     vm.Logs.CollectionChanged += ChangedLogs;
                 if (GetScrollViewer(LogTree) is ScrollViewer s)
-                    s.ScrollChanged += HandleLogScroll;
+                    s.ScrollChanged += LogScroll;
             };
             Unloaded += (_, __) =>
             {
@@ -30,12 +38,12 @@ namespace Leosac.KeyManager.Library.UI
                     vm.Logs.CollectionChanged -= ChangedLogs;
                     vm.Dispose();
                 }
-                if (GetScrollViewer(LogTree) is ScrollViewer s)
-                    s.ScrollChanged -= HandleLogScroll;
+                if (_logTreeScrollViewer != null)
+                    _logTreeScrollViewer.ScrollChanged -= LogScroll;
             };
         }
 
-        private void HandleLogScroll(object s, ScrollChangedEventArgs e)
+        private void LogScroll(object s, ScrollChangedEventArgs e)
         {
             if (s is not ScrollViewer sv) return;
             _autoScroll = e.ExtentHeightChange == 0 ? sv.VerticalOffset >= sv.ScrollableHeight - 2 : _autoScroll;
@@ -60,13 +68,19 @@ namespace Leosac.KeyManager.Library.UI
 
         private void ScrollToBottom() => GetScrollViewer(LogTree)?.ScrollToEnd();
 
-        private static ScrollViewer? GetScrollViewer(DependencyObject d)
+        private static ScrollViewer? GetScrollViewer(DependencyObject? d)
         {
+            if (d == null) return null;
             if (d is ScrollViewer sv) return sv;
+
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(d); i++)
-                if (GetScrollViewer(VisualTreeHelper.GetChild(d, i)) is ScrollViewer child) return child;
+            {
+                if (GetScrollViewer(VisualTreeHelper.GetChild(d, i)) is ScrollViewer child)
+                    return child;
+            }
             return null;
         }
+
     }
 
     public class ChangePadding : IValueConverter
@@ -76,6 +90,14 @@ namespace Leosac.KeyManager.Library.UI
 
         public object Convert(object v, Type _, object __, CultureInfo ___) =>
             v is double d ? (_last.HasValue && Math.Abs(_last.Value - d) < 0.5 ? Binding.DoNothing : (_last = d) == d ? Math.Max(0, d - Subtract) : Math.Max(0, d - Subtract)) : v!;
-        public object ConvertBack(object _, Type __, object ___, CultureInfo ____) => throw new NotImplementedException();
+
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var s = value?.ToString();
+            if (string.IsNullOrWhiteSpace(s)) return null;
+            if (Guid.TryParse(s, out var guid))
+                return new KeyEntryId(guid.ToString());
+            return new KeyEntryId(s);
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             _timeoutWaitMin = 5;
             _timeoutWaitMax = 600;
             _timeoutWaitSeconds = 5;
-            _continuousMode = false;
+            _continuousMode = true;
             _confirmEachUnit = true;
             _isEnabled = false;
             _loggingVerbosity = true;

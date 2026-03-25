@@ -253,24 +253,38 @@ namespace Leosac.KeyManager.Domain
             return (ret != null);
         }
 
-        public async Task<bool> RunOnKeyStore(UserControl dialog, Func<KeyStore, Func<string, KeyStore?>, Func<KeyStore, string?, Task<bool>>?, KeyEntryClass, IEnumerable<KeyEntryId>?, Action<KeyStore, KeyEntryClass, int>?, Task> action, string? label = null)
+        public async Task<bool> RunOnKeyStore(Func<UserControl> createDialog, Func<KeyStore, Func<string, KeyStore?>, Func<KeyStore, string?, Task<bool>>?, KeyEntryClass, IEnumerable<KeyEntryId>?, Action<KeyStore, KeyEntryClass, int>?, Task> action, string? label = null)
         {
             if (KeyStore == null)
                 return false;
+            var dialog = createDialog();
             var model = new PublishKeyStoreDialogViewModel();
             if (!string.IsNullOrEmpty(label))
                 model.Label = label;
             dialog.DataContext = model;
-            var ret = await DialogHost.Show(dialog, "RootDialog");
+            var ret = await DialogHost.Show(dialog, "RootDialog", closingEventHandler: (_, __) =>
+            {
+                dialog.DataContext = null;
+            });
             if (ret == null || model.Favorite == null)
                 return false;
             if (model.BatchOptions.IsSupported && model.BatchOptions.IsEnabled)
             {
+                var batch = new PublishBatchDialogViewModel(model.Favorite, model.BatchOptions, KeyStore, _keModels);
                 var batchDialog = new PublishBatchDialog
                 {
-                    DataContext = new PublishBatchDialogViewModel(model.Favorite, model.BatchOptions, KeyStore!)
+                    DataContext = batch
                 };
-                await DialogHost.Show(batchDialog, "RootDialog");
+                try
+                {
+                    await DialogHost.Show(batchDialog, "RootDialog");
+                }
+                finally
+                {
+                    batch.Dispose();
+                    batch = null;
+                    model = null;
+                }
                 return true;
             }
             var prop = model.Favorite.Properties;
@@ -315,9 +329,7 @@ namespace Leosac.KeyManager.Domain
                 {
                     IEnumerable<KeyEntryId>? entries = null;
                     if (keModel.ShowSelection)
-                    {
                         entries = keModel.Identifiers.Where(k => k.Selected && k.KeyEntryId != null).Select(k => k.KeyEntryId!);
-                    }
                     await action(destStore,
                         GetFavoriteKeyStore,
                         AskForKeyStoreSecretIfRequired,
@@ -358,27 +370,30 @@ namespace Leosac.KeyManager.Domain
         {
             await ExecuteKeyStoreOperation(
                 async () => KeyStore != null &&
-                    await RunOnKeyStore(new PublishKeyStoreDialog(), KeyStore.Publish),
+                    await RunOnKeyStore(() => new PublishKeyStoreDialog(), KeyStore.Publish, "Publish Key Entries"),
                 "Key Entries have been successfully published.",
-                "Publishing the Key Entries failed unexpectedly.");
+                "Publishing the Key Entries failed unexpectedly."
+            );
         }
 
         public async Task Import()
         {
             await ExecuteKeyStoreOperation(
                 async () => KeyStore != null &&
-                    await RunOnKeyStore(new PublishKeyStoreDialog(), KeyStore.Import, Properties.Resources.ImportKeyStore),
+                    await RunOnKeyStore(() => new PublishKeyStoreDialog(), KeyStore.Import, Properties.Resources.ImportKeyStore),
                 "Key Entries have been successfully imported.",
-                "Importing the Key Entries failed unexpectedly.");
+                "Importing the Key Entries failed unexpectedly."
+            );
         }
 
         public async Task Diff()
         {
             await ExecuteKeyStoreOperation(
                 async () => KeyStore != null &&
-                    await RunOnKeyStore(new DiffKeyStoreDialog(), KeyStore.Diff, Properties.Resources.DiffKeyStore),
+                    await RunOnKeyStore(() => new DiffKeyStoreDialog(), KeyStore.Diff, Properties.Resources.DiffKeyStore),
                 "No differences found.",
-                "Comparing the Key Entries failed unexpectedly.");
+                "Comparing the Key Entries failed unexpectedly."
+            );
         }
     }
 }

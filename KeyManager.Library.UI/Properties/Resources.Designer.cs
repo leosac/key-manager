@@ -88,11 +88,92 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Batch Progress.
+        /// </summary>
+        public static string BatchProgress {
+            get {
+                return ResourceManager.GetString("BatchProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Browse.
         /// </summary>
         public static string Browse {
             get {
                 return ResourceManager.GetString("Browse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string ButtonCancel {
+            get {
+                return ResourceManager.GetString("ButtonCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string ButtonClose {
+            get {
+                return ResourceManager.GetString("ButtonClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string ButtonNext {
+            get {
+                return ResourceManager.GetString("ButtonNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause.
+        /// </summary>
+        public static string ButtonPause {
+            get {
+                return ResourceManager.GetString("ButtonPause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resume.
+        /// </summary>
+        public static string ButtonResume {
+            get {
+                return ResourceManager.GetString("ButtonResume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retry.
+        /// </summary>
+        public static string ButtonRetry {
+            get {
+                return ResourceManager.GetString("ButtonRetry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip.
+        /// </summary>
+        public static string ButtonSkip {
+            get {
+                return ResourceManager.GetString("ButtonSkip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        public static string ButtonStart {
+            get {
+                return ResourceManager.GetString("ButtonStart", resourceCulture);
             }
         }
         
@@ -331,11 +412,20 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable flow provisioning.
+        ///   Looks up a localized string similar to Enable workflow provisioning.
         /// </summary>
         public static string EnableFlowProvisioning {
             get {
                 return ResourceManager.GetString("EnableFlowProvisioning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Notifications.
+        /// </summary>
+        public static string EnableNotifications {
+            get {
+                return ResourceManager.GetString("EnableNotifications", resourceCulture);
             }
         }
         
@@ -345,6 +435,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string Error {
             get {
                 return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Execution Logs.
+        /// </summary>
+        public static string ExecutionLogs {
+            get {
+                return ResourceManager.GetString("ExecutionLogs", resourceCulture);
             }
         }
         
@@ -385,7 +484,7 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flow.
+        ///   Looks up a localized string similar to Workflow.
         /// </summary>
         public static string Flow {
             get {
@@ -403,7 +502,7 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flow not supported for this key store.
+        ///   Looks up a localized string similar to Workflow not supported for this key store.
         /// </summary>
         public static string FlowNotSupported {
             get {
@@ -952,6 +1051,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 🔑 .
+        /// </summary>
+        public static string KeyLogo {
+            get {
+                return ResourceManager.GetString("KeyLogo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Size.
         /// </summary>
         public static string KeySize {
@@ -975,6 +1083,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string KeyStoreAttribute {
             get {
                 return ResourceManager.GetString("KeyStoreAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current KeyStore Progress.
+        /// </summary>
+        public static string KeyStoreProgress {
+            get {
+                return ResourceManager.GetString("KeyStoreProgress", resourceCulture);
             }
         }
         
@@ -1096,7 +1213,7 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Max units in flow.
+        ///   Looks up a localized string similar to Max units in workflow.
         /// </summary>
         public static string MaxUnits {
             get {
@@ -1420,11 +1537,20 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatically retry failed units.
+        ///   Looks up a localized string similar to Retry failed units.
         /// </summary>
         public static string RetryOnFailure {
             get {
                 return ResourceManager.GetString("RetryOnFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retry On Failure.
+        /// </summary>
+        public static string RetryOnFailureBatch {
+            get {
+                return ResourceManager.GetString("RetryOnFailureBatch", resourceCulture);
             }
         }
         
@@ -1555,11 +1681,29 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Processing : .
+        /// </summary>
+        public static string TextProcessing {
+            get {
+                return ResourceManager.GetString("TextProcessing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Set a maximum wait time before failing.
         /// </summary>
         public static string TimeoutWait {
             get {
                 return ResourceManager.GetString("TimeoutWait", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timeout Wait.
+        /// </summary>
+        public static string TimeoutWaitBatch {
+            get {
+                return ResourceManager.GetString("TimeoutWaitBatch", resourceCulture);
             }
         }
         
@@ -1596,6 +1740,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         public static string Update {
             get {
                 return ResourceManager.GetString("Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verbose Logging.
+        /// </summary>
+        public static string VerboseLogging {
+            get {
+                return ResourceManager.GetString("VerboseLogging", resourceCulture);
             }
         }
         

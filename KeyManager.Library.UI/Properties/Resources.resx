@@ -604,19 +604,19 @@
     <value>Date</value>
   </data>
   <data name="Flow" xml:space="preserve">
-    <value>Flow</value>
+    <value>Workflow</value>
   </data>
   <data name="EnableFlowProvisioning" xml:space="preserve">
-    <value>Enable flow provisioning</value>
+    <value>Enable workflow provisioning</value>
   </data>
   <data name="MaxUnits" xml:space="preserve">
-    <value>Max units in flow</value>
+    <value>Max units in workflow</value>
   </data>
   <data name="ContinuousMode" xml:space="preserve">
     <value>Continuous mode</value>
   </data>
   <data name="FlowNotSupported" xml:space="preserve">
-    <value>Flow not supported for this key store</value>
+    <value>Workflow not supported for this key store</value>
   </data>
   <data name="FlowDescription" xml:space="preserve">
     <value>Provision multiple units in a batch with optional confirmations.</value>
@@ -634,7 +634,7 @@
     <value>Enable detailed logs per unit</value>
   </data>
   <data name="RetryOnFailure" xml:space="preserve">
-    <value>Automatically retry failed units</value>
+    <value>Retry failed units</value>
   </data>
   <data name="TimeoutWait" xml:space="preserve">
     <value>Set a maximum wait time before failing</value>
@@ -647,5 +647,56 @@
   </data>
   <data name="TimeSecond" xml:space="preserve">
     <value>Seconds</value>
+  </data>
+  <data name="ExecutionLogs" xml:space="preserve">
+    <value>Execution Logs</value>
+  </data>
+  <data name="BatchProgress" xml:space="preserve">
+    <value>Batch Progress</value>
+  </data>
+  <data name="KeyStoreProgress" xml:space="preserve">
+    <value>Current KeyStore Progress</value>
+  </data>
+  <data name="TextProcessing" xml:space="preserve">
+    <value>Processing : </value>
+  </data>
+  <data name="KeyLogo" xml:space="preserve">
+    <value>🔑 </value>
+  </data>
+  <data name="VerboseLogging" xml:space="preserve">
+    <value>Verbose Logging</value>
+  </data>
+  <data name="EnableNotifications" xml:space="preserve">
+    <value>Enable Notifications</value>
+  </data>
+  <data name="RetryOnFailureBatch" xml:space="preserve">
+    <value>Retry On Failure</value>
+  </data>
+  <data name="TimeoutWaitBatch" xml:space="preserve">
+    <value>Timeout Wait</value>
+  </data>
+  <data name="ButtonStart" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="ButtonPause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="ButtonResume" xml:space="preserve">
+    <value>Resume</value>
+  </data>
+  <data name="ButtonCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="ButtonNext" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="ButtonSkip" xml:space="preserve">
+    <value>Skip</value>
+  </data>
+  <data name="ButtonRetry" xml:space="preserve">
+    <value>Retry</value>
   </data>
 </root>

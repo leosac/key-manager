@@ -43,6 +43,8 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
 
         public override bool CanReorderKeyEntries => false;
 
+        public override bool SupportsBatching => true;
+
         public override IEnumerable<KeyEntryClass> SupportedClasses
         {
             get => new KeyEntryClass[] { KeyEntryClass.Symmetric };

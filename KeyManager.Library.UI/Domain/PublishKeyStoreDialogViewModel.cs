@@ -48,23 +48,34 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         private void UpdateBatchSupport()
         {
+            if (Favorite?.Properties == null)
+            {
+                BatchOptions.IsSupported = false;
+                return;
+            }
             try
             {
-                if (Favorite?.Properties == null)
+                var factory = KeyStoreFactory.GetFactoryFromPropertyType(Favorite.Properties.GetType());
+                if (factory == null)
                 {
                     BatchOptions.IsSupported = false;
                     return;
                 }
-                var factory = KeyStoreFactory.GetFactoryFromPropertyType(Favorite.Properties.GetType())
-                              ?? throw new KeyStoreException("No factory found for Favorite Properties type.");
-                var targetKs = factory.CreateKeyStore()
-                               ?? throw new KeyStoreException("Failed to create KeyStore from Favorite.");
-                BatchOptions.IsSupported = targetKs.SupportsBatching;
+                bool supportsBatching;
+                try
+                {
+                    var targetKs = factory.CreateKeyStore();
+                    supportsBatching = targetKs?.SupportsBatching ?? false;
+                }
+                catch
+                {
+                    supportsBatching = false;
+                }
+                BatchOptions.IsSupported = supportsBatching;
             }
-            catch (Exception ex)
+            catch
             {
                 BatchOptions.IsSupported = false;
-                throw new KeyStoreException("Unable to determine batch support from Favorite.", ex);
             }
         }
 

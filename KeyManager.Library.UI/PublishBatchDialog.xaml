@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
              xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
@@ -21,7 +22,7 @@
                     <Setter Property="Foreground" Value="LimeGreen"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsFailed}" Value="True">
-                    <Setter Property="Foreground" Value="Tomato"/>
+                    <Setter Property="Foreground" Value="Red"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -54,17 +55,20 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+
         <TextBlock Grid.Row="0"
                    Text="{Binding Label}"
                    FontSize="18"
                    Margin="0,0,0,10" Grid.ColumnSpan="2"/>
+
         <Border Grid.Row="1"
                 Padding="10"
                 CornerRadius="6"
                 Background="{DynamicResource MaterialDesignCardBackground}"
                 Margin="0,0,0,10" MinHeight="250" MinWidth="700" Grid.ColumnSpan="2">
-            <GroupBox Header="Execution Logs">
+            <GroupBox Header="{x:Static properties:Resources.ExecutionLogs}">
                 <TreeView x:Name="LogTree"
                           ItemsSource="{Binding Logs}"
                           VirtualizingStackPanel.IsVirtualizing="True"
@@ -118,56 +122,93 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Batch Progress" Margin="0,0,0,5"/>
+            <TextBlock Grid.Row="0" Text="{x:Static properties:Resources.BatchProgress}" Margin="0,0,0,5"/>
             <TextBlock Grid.Row="1" Text="{Binding ThroughputText}" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
             <ProgressBar Grid.Row="2" Height="20" Minimum="0" Maximum="{Binding BatchProgressMaximum}" Value="{Binding BatchProgressValue, Mode=OneWay}" Style="{StaticResource BatchProgressStyle}"/>
             <TextBlock Grid.Row="3" Text="{Binding BatchProgressText}" HorizontalAlignment="Right" FontSize="12" Foreground="Gray"/>
         </Grid>
+
         <Grid Grid.Row="3" Margin="0,0,0,10" Visibility="{Binding HasStarted, Converter={StaticResource BoolToVisibilityConverter}}" Grid.ColumnSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Current KeyStore Progress" Margin="0,0,0,5"/>
+            <TextBlock Grid.Row="0" Text="{x:Static properties:Resources.KeyStoreProgress}" Margin="0,0,0,5"/>
             <ProgressBar Grid.Row="1" Height="20" Minimum="0" Maximum="{Binding KeyStoreProgressMaximum}" Value="{Binding KeyStoreProgressValue, Mode=OneWay}" Style="{StaticResource BatchProgressStyle}"/>
             <TextBlock Grid.Row="2" Text="{Binding KeyStoreProgressText}" HorizontalAlignment="Right" FontSize="12" Foreground="Gray"/>
             <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,5,0,0">
                 <TextBlock FontSize="12">
-                    <Run Text="🔑 " Foreground="Gray"/>
-                    <Run Text="Processing : " Foreground="DarkGray"/>
+                    <Run Text="{x:Static properties:Resources.KeyLogo}" Foreground="Gray"/>
+                    <Run Text="{x:Static properties:Resources.TextProcessing}" Foreground="DarkGray"/>
                     <Run Text="{Binding CurrentKeyName, Mode=OneWay}" FontWeight="Bold" Foreground="DodgerBlue"/>
                 </TextBlock>
                 <TextBlock FontSize="12" Foreground="Gray" FontStyle="Italic" Margin="5,0,0,0" Text="..." Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibilityConverter}}"/>
             </StackPanel>
         </Grid>
-        <StackPanel Grid.Row="4" Grid.ColumnSpan="2">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5">
-                <ToggleButton IsChecked="{Binding LoggingVerbosity, Mode=TwoWay}"
-                              IsEnabled="{Binding CanToggleLogging}"
-                              Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-                <TextBlock Text="Verbose Logging" Padding="3"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5">
-                <ToggleButton IsChecked="{Binding BatchOptions.Notifications}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-                <TextBlock Text="Enable Notifications" Padding="3"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5">
-                <ToggleButton IsChecked="{Binding BatchOptions.RetryOnFailure}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-                <TextBlock Text="Retry On Failure" Padding="3"/>
-            </StackPanel>
+
+        <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="5" Orientation="Vertical">
+            <materialDesign:Snackbar x:Name="SnackbarControl"
+                                     MessageQueue="{Binding SnackbarQueue}"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Bottom"
+                                     Margin="0,0,0,5"
+                                     IsHitTestVisible="True"
+                                     Panel.ZIndex="100"/>
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <ToggleButton IsChecked="{Binding LoggingVerbosity, Mode=TwoWay}" IsEnabled="{Binding CanToggleLogging}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                    <TextBlock Text="{x:Static properties:Resources.VerboseLogging}" Padding="3"/>
+                </StackPanel>
+            </Grid>
+
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Grid.Column="0">
+                    <ToggleButton IsChecked="{Binding BatchOptions.Notifications}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                    <TextBlock Text="{x:Static properties:Resources.EnableNotifications}" Padding="3"/>
+                </StackPanel>
+                <Button Grid.Column="2" Content="{x:Static properties:Resources.ButtonNext}" Width="100" Margin="0,0,0,0" Command="{Binding NextCommand}" Visibility="{Binding ShowNextButton, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            </Grid>
+
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Grid.Column="0">
+                    <ToggleButton IsChecked="{Binding BatchOptions.RetryOnFailure}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                    <TextBlock Text="{x:Static properties:Resources.RetryOnFailureBatch}" Padding="3"/>
+                </StackPanel>
+                <Button Grid.Column="2" Content="{x:Static properties:Resources.ButtonRetry}" Width="100" Margin="100,0,0,0" Command="{Binding RetryCommand}" Visibility="{Binding ShowRetryButton, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <Button Grid.Column="3" Content="{x:Static properties:Resources.ButtonSkip}" Width="100" Margin="10,0,0,0" Command="{Binding SkipCommand}" Visibility="{Binding ShowSkipButton, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            </Grid>
+
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5">
                 <ToggleButton IsChecked="{Binding BatchOptions.TimeoutWait}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
-                <TextBlock Text="Timeout Wait" Padding="3"/>
-                <TextBox Width="50" Margin="5,0,0,0" Text="{Binding BatchOptions.TimeoutWaitSeconds, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding BatchOptions.TimeoutWait}"/>
-                <TextBlock Text="seconds" Margin="2,0,0,0"/>
+                <TextBlock Text="{x:Static properties:Resources.TimeoutWaitBatch}" Padding="3"/>
+                <TextBox Width="50" Margin="5,0,0,0" Text="{Binding TimeoutWaitSecondsText, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding BatchOptions.TimeoutWait}"/>
+                <TextBlock Text="{x:Static properties:Resources.TimeSecond}" Margin="2,0,0,0"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-                <Button Content="Start" Width="100" Margin="0,0,10,0" Command="{Binding StartBatchCommand}" Visibility="{Binding CanStart, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                <Button Content="Pause" Width="100" Margin="0,0,10,0" Command="{Binding PauseCommand}" Visibility="{Binding CanPause, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                <Button Content="Resume" Width="100" Margin="0,0,10,0" Command="{Binding ResumeCommand}" Visibility="{Binding CanResume, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                <Button Content="Cancel" Width="100" Margin="0,0,10,0" Command="{Binding CancelBatchCommand}" IsEnabled="{Binding CanCancel}"/>
-                <Button Content="Close" Width="100" Command="{Binding CloseCommand}"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                <Button Content="{x:Static properties:Resources.ButtonStart}" Width="100" Margin="5,0" Command="{Binding StartBatchCommand}" Visibility="{Binding CanStart, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <Button Content="{x:Static properties:Resources.ButtonPause}" Width="100" Margin="5,0" Command="{Binding PauseCommand}" Visibility="{Binding CanPause, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <Button Content="{x:Static properties:Resources.ButtonResume}" Width="100" Margin="5,0" Command="{Binding ResumeCommand}" Visibility="{Binding CanResume, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <Button Content="{x:Static properties:Resources.ButtonCancel}" Width="100" Margin="5,0" Command="{Binding CancelBatchCommand}" IsEnabled="{Binding CanCancel}"/>
+                <Button Content="{x:Static properties:Resources.ButtonClose}" Width="100" Margin="5,0" Command="{Binding CloseCommand}"/>
             </StackPanel>
         </StackPanel>
     </Grid>
