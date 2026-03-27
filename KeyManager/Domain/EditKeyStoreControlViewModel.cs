@@ -262,7 +262,7 @@ namespace Leosac.KeyManager.Domain
             if (!string.IsNullOrEmpty(label))
                 model.Label = label;
             dialog.DataContext = model;
-            var ret = await DialogHost.Show(dialog, "RootDialog", closingEventHandler: (_, __) =>
+            var ret = await DialogHost.Show(dialog, "RootDialog", closingEventHandler: (_, _) =>
             {
                 dialog.DataContext = null;
             });
