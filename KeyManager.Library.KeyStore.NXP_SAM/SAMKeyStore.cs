@@ -388,6 +388,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             log.Info(string.Format("Storing `{0}` key entries...", changes.Count));
 
             var cmd = Chip?.getCommands();
+            bool activated = false;
             if (cmd is LibLogicalAccess.Reader.SAMAV1ISO7816Commands av1cmd)
             {
                 if (GetSAMProperties().AutoSwitchToAV2)
@@ -399,6 +400,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                         log.Error("The SAM didn't switched properly to AV2 mode.");
                         throw new KeyStoreException("The SAM didn't switched properly to AV2 mode.");
                     }
+                    activated = true;
                 }
                 else
                 {
@@ -416,6 +418,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                         if (version != null && version.manufacture.modecompatibility == 0x03) // Unactivated MIFARE SAM AV3
                         {
                             ActivateMifareSAM(av2cmd);
+                            activated = true;
                         }
                     }
                 }
@@ -428,6 +431,30 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             // We sort the changes to update change key reference last
             var ochanges = changes.Order(new SAMKeyEntryComparer(GetSAMProperties()));
             await base.Store(ochanges.ToList());
+            if (activated)
+            {
+                // Workaround for AV3 to allow unlock by any Unlock key and not only the SAM Master Key (to have backward compatibility behavior with SAM AV2)...
+                if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
+                {
+                    var mke = changes.FirstOrDefault(c => c.Identifier.Id == "0");
+                    if (mke != null && mke is SAMSymmetricKeyEntry smke && smke.SAMProperties != null && smke.SAMProperties.LockUnlock)
+                    {
+                        log.Info("Explicitly Locking the SAM to ensure auto-lock will not requires the SAM Master Key to unlock but any Unlock Key...");
+                        var mkey = new LibLogicalAccess.Card.DESFireKey();
+                        if (smke.Variant != null && smke.Variant.KeyContainers.Count > 0)
+                        {
+                            var container = smke.Variant.KeyContainers[0];
+                            mkey.setKeyType(container.Key.Tags.Contains("AES") ? LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES : LibLogicalAccess.Card.DESFireKeyType.DF_KEY_DES);
+                            mkey.setKeyVersion((container as KeyVersion)?.Version ?? 0 );
+                            if (!container.Key.IsEmpty())
+                            { 
+                                mkey.fromString(container.Key.GetAggregatedValueAsString(KeyValueStringFormat.HexStringWithSpace));
+                            }
+                        }
+                        av2cmd.lockUnlock(mkey, LibLogicalAccess.Card.SAMLockUnlock.LockWithoutSpecifyingKey, 0, 0, 0);
+                    }
+                }
+            }
 
             log.Info("Key Entries storing completed.");
         }

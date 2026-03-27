@@ -2,44 +2,144 @@
 {
     public class SAMSymmetricKeyEntryProperties : KeyEntryProperties
     {
-        public SAMKeyEntryType SAMKeyEntryType { get; set; } = SAMKeyEntryType.Host;
+        private SAMKeyEntryType _samKeyEntryType = SAMKeyEntryType.Host;
+        public SAMKeyEntryType SAMKeyEntryType
+        {
+            get => _samKeyEntryType;
+            set => SetProperty(ref _samKeyEntryType, value);
+        }
 
-        public bool EnableDumpSessionKey { get; set; }
+        private bool _enableDumpSessionKey;
+        public bool EnableDumpSessionKey
+        {
+            get => _enableDumpSessionKey;
+            set => SetProperty(ref _enableDumpSessionKey, value);
+        }
 
-        public bool CryptoBasedOnSecretKey { get; set; }
+        private bool _cryptoBasedOnSecretKey;
+        public bool CryptoBasedOnSecretKey
+        {
+            get => _cryptoBasedOnSecretKey;
+            set => SetProperty(ref _cryptoBasedOnSecretKey, value);
+        }
 
-        public bool KeepIV { get; set; }
+        private bool _keepIV;
+        public bool KeepIV
+        {
+            get => _keepIV;
+            set => SetProperty(ref _keepIV, value);
+        }
 
-        public bool LockUnlock { get; set; }
+        private bool _lockUnlock;
+        public bool LockUnlock
+        {
+            get => _lockUnlock;
+            set => SetProperty(ref _lockUnlock, value);
+        }
 
-        public bool AuthenticateHost { get; set; } = true;
+        private bool _authenticateHost = true;
+        public bool AuthenticateHost
+        {
+            get => _authenticateHost;
+            set => SetProperty(ref _authenticateHost, value);
+        }
 
-        public bool DisableChangeKeyPICC { get; set; }
+        private bool _disableChangeKeyPICC;
+        public bool DisableChangeKeyPICC
+        {
+            get => _disableChangeKeyPICC;
+            set => SetProperty(ref _disableChangeKeyPICC, value);
+        }
 
-        public bool DisableDecryptData { get; set; }
+        private bool _disableDecryptData;
+        public bool DisableDecryptData
+        {
+            get => _disableDecryptData;
+            set => SetProperty(ref _disableDecryptData, value);
+        }
 
-        public bool DisableEncryptData { get; set; }
+        private bool _disableEncryptData;
+        public bool DisableEncryptData
+        {
+            get => _disableEncryptData;
+            set => SetProperty(ref _disableEncryptData, value);
+        }
 
-        public bool DisableVerifyMACFromPICC { get; set; }
+        private bool _disableVerifyMACFromPICC;
+        public bool DisableVerifyMACFromPICC
+        {
+            get => _disableVerifyMACFromPICC;
+            set => SetProperty(ref _disableVerifyMACFromPICC, value);
+        }
 
-        public bool DisableGenerateMACFromPICC { get; set; }
+        private bool _disableGenerateMACFromPICC;
+        public bool DisableGenerateMACFromPICC
+        {
+            get => _disableGenerateMACFromPICC;
+            set => SetProperty(ref _disableGenerateMACFromPICC, value);
+        }
 
-        public bool DisableKeyEntry { get; set; }
+        private bool _disableKeyEntry;
+        public bool DisableKeyEntry
+        {
+            get => _disableKeyEntry;
+            set => SetProperty(ref _disableKeyEntry, value);
+        }
 
-        public bool AllowDumpSecretKey { get; set; }
+        private bool _allowDumpSecretKey;
+        public bool AllowDumpSecretKey
+        {
+            get => _allowDumpSecretKey;
+            set => SetProperty(ref _allowDumpSecretKey, value);
+        }
 
-        public bool AllowDumpSecretKeyWithDiv { get; set; }
+        private bool _allowDumpSecretKeyWithDiv;
+        public bool AllowDumpSecretKeyWithDiv
+        {
+            get => _allowDumpSecretKeyWithDiv;
+            set => SetProperty(ref _allowDumpSecretKeyWithDiv, value);
+        }
 
-        public bool ReservedForPerso { get; set; }
+        private bool _reservedForPerso;
+        public bool ReservedForPerso
+        {
+            get => _reservedForPerso;
+            set => SetProperty(ref _reservedForPerso, value);
+        }
 
-        public byte[] DESFireAID { get; set; } = new byte[3];
+        private byte[] _desfireAID = new byte[3];
+        public byte[] DESFireAID
+        {
+            get => _desfireAID;
+            set => SetProperty(ref _desfireAID, value);
+        }
 
-        public byte DESFireKeyNum { get; set; }
+        private byte _desfireKeyNum;
+        public byte DESFireKeyNum
+        {
+            get => _desfireKeyNum;
+            set => SetProperty(ref _desfireKeyNum, value);
+        }
 
-        public byte? KeyUsageCounter { get; set; } = null;
+        private byte? keyUsageCounter = null;
+        public byte? KeyUsageCounter
+        {
+            get => keyUsageCounter;
+            set => SetProperty(ref keyUsageCounter, value);
+        }
 
-        public byte ChangeKeyRefId { get; set; }
+        private byte _changeKeyRefId;
+        public byte ChangeKeyRefId
+        {
+            get => _changeKeyRefId;
+            set => SetProperty(ref _changeKeyRefId, value);
+        }
 
-        public byte ChangeKeyRefVersion { get; set; }
+        private byte _changeKeyRefVersion;
+        public byte ChangeKeyRefVersion
+        {
+            get => _changeKeyRefVersion;
+            set => SetProperty(ref _changeKeyRefVersion, value);
+        }
     }
 }

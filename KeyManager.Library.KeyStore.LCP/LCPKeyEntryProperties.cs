@@ -4,8 +4,18 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
 {
     public class LCPKeyEntryProperties : KeyEntryProperties
     {
-        public CredentialKeyScope Scope { get; set; }
+        private CredentialKeyScope _scope;
+        public CredentialKeyScope Scope
+        {
+            get => _scope;
+            set => SetProperty(ref _scope, value);
+        }
 
-        public string? ScopeDiversifier { get; set; }
+        private string? _scopeDiversifier;
+        public string? ScopeDiversifier
+        {
+            get => _scopeDiversifier;
+            set => SetProperty(ref _scopeDiversifier, value);
+        }
     }
 }
