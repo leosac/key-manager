@@ -1,7 +1,8 @@
-﻿using Leosac.KeyManager.Library.Device;
-using Leosac.KeyManager.Library.Common;
+﻿using Leosac.KeyManager.Library.Common;
+using Leosac.KeyManager.Library.Device;
 using Leosac.KeyManager.Library.KeyStore;
 using LibLogicalAccess;
+using log4net;
 using System.Diagnostics;
 
 namespace Leosac.KeyManager.Domain
@@ -10,6 +11,8 @@ namespace Leosac.KeyManager.Domain
     {
         public string DeviceName { get; }
         public string? DeviceUid { get; }
+
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(SAMCardDevice));
 
         public bool IsSAMDevice => true;
 
@@ -46,7 +49,6 @@ namespace Leosac.KeyManager.Domain
                 return false;
             }
             Stopwatch? stopwatch = useTimeout ? Stopwatch.StartNew() : null;
-            int timeoutSeconds = useTimeout ? (int)timeout.TotalSeconds : 0;
             string originalMessage = message ?? "Waiting for card insertion...";
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -108,7 +110,15 @@ namespace Leosac.KeyManager.Domain
                 log?.Invoke(message, LogLevel.Error);
                 notify?.Invoke($"Batch unit {batchIndex + 1} : SAM chip not in AV2 mode.", LogLevel.Error);
                 await Task.Run(() => _reader.waitRemoval(0), token);
-                try { _reader.disconnect(); } catch { }
+                try
+                {
+                    _reader.disconnect();
+                }
+                catch (Exception ex)
+                {
+                    log?.Invoke($"Error while disconnecting reader : {ex.Message}", LogLevel.Warning);
+                    notify?.Invoke($"Error while disconnecting reader : {ex.Message}", LogLevel.Warning);
+                }
                 return false;
             }
             return true;
@@ -141,8 +151,9 @@ namespace Leosac.KeyManager.Domain
                 {
                     inserted = _reader.waitInsertion(200);
                 }
-                catch (LibLogicalAccessException)
+                catch (LibLogicalAccessException ex)
                 {
+                    log.Error($"Reader exception : {ex.Message}");
                     throw;
                 }
                 if (inserted)
@@ -155,7 +166,17 @@ namespace Leosac.KeyManager.Domain
 
         public void Dispose()
         {
-            try { _reader?.disconnect(); } catch { }
+            if (_reader != null)
+            {
+                try
+                {
+                    _reader.disconnect();
+                }
+                catch (Exception ex)
+                {
+                    log.Error($"Error disconnecting reader during Dispose : {ex.Message}");
+                }
+            }
             _reader = null;
             GC.SuppressFinalize(this);
         }

@@ -282,8 +282,6 @@ namespace Leosac.KeyManager.Domain
                 finally
                 {
                     batch.Dispose();
-                    batch = null;
-                    model = null;
                 }
                 return true;
             }

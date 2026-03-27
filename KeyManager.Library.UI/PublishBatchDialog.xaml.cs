@@ -18,7 +18,7 @@ namespace Leosac.KeyManager.Library.UI
         public PublishBatchDialog()
         {
             InitializeComponent();
-            Loaded += (_, __) =>
+            Loaded += (_, _) =>
             {
                 if (LogTree != null)
                 {
@@ -31,7 +31,7 @@ namespace Leosac.KeyManager.Library.UI
                 if (GetScrollViewer(LogTree) is ScrollViewer s)
                     s.ScrollChanged += LogScroll;
             };
-            Unloaded += (_, __) =>
+            Unloaded += (_, _) =>
             {
                 if (DataContext is Domain.PublishBatchDialogViewModel vm)
                 {
@@ -88,8 +88,17 @@ namespace Leosac.KeyManager.Library.UI
         public double Subtract { get; set; } = 20;
         private double? _last;
 
-        public object Convert(object v, Type _, object __, CultureInfo ___) =>
-            v is double d ? (_last.HasValue && Math.Abs(_last.Value - d) < 0.5 ? Binding.DoNothing : (_last = d) == d ? Math.Max(0, d - Subtract) : Math.Max(0, d - Subtract)) : v!;
+        public object Convert(object v, Type _, object __, CultureInfo ___)
+        {
+            if (v is double d)
+            {
+                if (_last.HasValue && Math.Abs(_last.Value - d) < 0.5)
+                    return Binding.DoNothing;
+                _last = d;
+                return Math.Max(0, d - Subtract);
+            }
+            return v!;
+        }
 
         public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
