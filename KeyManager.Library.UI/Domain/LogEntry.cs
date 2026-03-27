@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using Leosac.KeyManager.Library.Common;
 using System.ComponentModel;
 
 namespace Leosac.KeyManager.Library.UI.Domain

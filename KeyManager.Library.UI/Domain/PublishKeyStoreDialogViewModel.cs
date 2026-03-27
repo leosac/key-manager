@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin;
 

@@ -1,8 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Leosac.KeyManager.Domain;
+using Leosac.KeyManager.Library.Common;
+using Leosac.KeyManager.Library.Device;
 using Leosac.KeyManager.Library.KeyStore;
-using LibLogicalAccess;
+using Leosac.KeyManager.Library.Plugin;
 using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -43,7 +44,19 @@ namespace Leosac.KeyManager.Library.UI.Domain
             PauseCommand = new RelayCommand(PauseBatch, () => CanPause);
             ResumeCommand = new RelayCommand(ResumeBatch, () => CanResume);
             CancelBatchCommand = new RelayCommand(CancelBatch, () => CanCancel);
+            CloseCommand = new RelayCommand(Close);
             NextCommand = new RelayCommand(NextBatch, () => ShowNextButton);
+            RetryCommand = new RelayCommand(() =>
+            {
+                _retryAccepted = true;
+                _waitForRetry?.TrySetResult(true);
+            });
+
+            SkipCommand = new RelayCommand(() =>
+            {
+                _retryAccepted = false;
+                _waitForRetry?.TrySetResult(true);
+            });
             PropertyChanged += (_, e) =>
             {
                 if (e.PropertyName is nameof(IsRunning) or nameof(IsPaused) or nameof(HasStarted) or nameof(IsCompleted) or nameof(IsCancelled))
@@ -66,17 +79,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public RelayCommand ResumeCommand { get; }
         public ICommand CancelBatchCommand { get; }
 
-        public ICommand RetryCommand => new RelayCommand(() =>
-        {
-            _retryAccepted = true;
-            _waitForRetry?.TrySetResult(true);
-        });
-
-        public ICommand SkipCommand => new RelayCommand(() =>
-        {
-            _retryAccepted = false;
-            _waitForRetry?.TrySetResult(true);
-        });
+        public RelayCommand RetryCommand { get; }
+        public RelayCommand SkipCommand { get; }
 
         public RelayCommand NextCommand { get; }
 
@@ -162,6 +166,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     UpdateCommands();
             }
         }
+
         private TaskCompletionSource<bool>? _waitForRetry;
         private bool _retryAccepted;
 
@@ -337,6 +342,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         private void UpdateCommands()
         {
+            if (_disposed) return;
             StartBatchCommand.NotifyCanExecuteChanged();
             PauseCommand.NotifyCanExecuteChanged();
             ResumeCommand.NotifyCanExecuteChanged();
@@ -345,6 +351,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         private void UpdateOptionsVisibility()
         {
+            if (_disposed) return;
             OnPropertyChanged(nameof(ShowRetryButton));
             OnPropertyChanged(nameof(ShowSkipButton));
             OnPropertyChanged(nameof(ShowNextButton));
@@ -359,7 +366,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 OnPropertyChanged(prop);
         }
 
-        public ICommand CloseCommand => new RelayCommand(Close);
+        public RelayCommand CloseCommand { get; }
 
         private void Close()
         {
@@ -394,17 +401,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        private async Task WaitRemoval(ReaderUnit? reader, CancellationToken token)
-        {
-            while (!token.IsCancellationRequested)
-            {
-                if (reader == null) return;
-                bool removed = await Task.Run(() => reader.waitRemoval(200));
-                if (removed)
-                    return;
-            }
-        }
-
         /*public void InitializeSnackbar()
         {
             if (_snackbarQueue != null) return;
@@ -418,19 +414,37 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             if (favorite.Properties == null)
                 throw new InvalidOperationException("Favorite does not have KeyStoreProperties set.");
+            var factory = KeyStoreFactory.GetFactoryFromPropertyType(favorite.Properties.GetType());
+            if (factory != null)
+            {
+                try
+                {
+                    var device = factory.CreateCardDevice(keyStore);
+                    if (device != null)
+                    {
+                        Logs.Add(new LogEntry($"Matched {factory.Name} type", LogLevel.Info));
+                        return device;
+                    }
+                }
+                catch (NotImplementedException)
+                {
 
-            var propsType = favorite.Properties.GetType();
-            if (propsType.Name.Contains("SAM", StringComparison.OrdinalIgnoreCase))
-            {
-                Logs.Add(new LogEntry("Matched SAM type", LogLevel.Info));
-                return new SAMCardDevice(keyStore);
+                }
             }
-            else
-            {
-                Logs.Add(new LogEntry("Creating generic card device", LogLevel.Info));
-                return new GenericCardDevice(keyStore);
-            }
+            Logs.Add(new LogEntry("Creating generic card device", LogLevel.Info));
+            return new GenericCardDevice(keyStore);
         }
+
+        private async Task<ICardDevice> InitializeDeviceAsync(CancellationToken token, KeyStore.KeyStore targetStore)
+        {
+            ICardDevice device = CreateDeviceFromFavorite(Favorite, targetStore);
+            await device.InitializeReaderAsync(
+                (msg, level) => Logs.Add(new LogEntry(msg, level)),
+                (msg, level) => Notify(msg, level)
+            );
+            return device;
+        }
+
 
         private async Task StartWorkflow()
         {
@@ -447,18 +461,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 InitializeWorkflow();
                 var targetStore = Favorite.CreateKeyStore() ?? throw new KeyStoreException("Cannot create KeyStore from Favorite.");
-                ICardDevice device = CreateDeviceFromFavorite(Favorite, targetStore);
-                await device.InitializeReaderAsync((msg, level) => Logs.Add(new LogEntry(msg, level)), (msg, level) => Notify(msg, level));
-                var keyIds = (await Task.WhenAll(_selection.Select(async ke =>
-                {
-                    if (!ke.ShowSelection)
-                    {
-                        var keys = await SourceKeyStore.GetAll(ke.KeyEntryClass);
-                        return keys.ToList();
-                    }
-                    else
-                        return ke.Identifiers.Where(k => k.Selected && k.KeyEntryId != null).Select(k => k.KeyEntryId!).ToList();
-                }))).SelectMany(l => l).ToList();
+                ICardDevice device = await InitializeDeviceAsync(token, targetStore);
+                var keyIds = await GetSelectedKeysAsync();
                 if (keyIds.Count == 0)
                 {
                     AddLog("No keys selected for publishing. Aborting workflow.", LogLevel.Warning);
@@ -486,7 +490,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
                         BatchOptions.TimeoutWait,
                         token,
                         _pauseEvent,
-                        batchLog,
+                        batchLog.Message,
+                        batchLog: (msg, level) =>
+                        {
+                            batchLog.Message = msg;
+                            batchLog.Level = level;
+                        },
                         (msg, level) => AddLog(msg, level, batchLog),
                         () => OnPropertyChanged(nameof(Logs)));
                     _stopwatch.Start();
@@ -499,20 +508,28 @@ namespace Leosac.KeyManager.Library.UI.Domain
                         continue;
                     }
                     AddLog("Card inserted.", LogLevel.Info, batchLog);
-                    bool ready = await device.PrepareForBatchAsync(token, batchLog, batchIndex, log: logEntry => Logs.Add(logEntry), notify: (msg, level) => Notify(msg, level));
+                    bool ready = await device.PrepareForBatchAsync(token,
+                        batchIndex: 0,
+                        batchLog: (msg, level) =>
+                        {
+                            batchLog.Message = msg;
+                            batchLog.Level = level;
+                        },
+                        log: (msg, level) => Logs.Add(new LogEntry(msg, level)),
+                        notify: (msg, level) => Notify(msg, level));
                     if (!ready)
                     {
                         _skippedBatches++;
                         continue;
                     }
-                    int errors = await Task.Run(() => ProcessBatchKeys(SourceKeyStore, targetStore, keyIds, batchLog, device, token), token);
+                    int errors = await Task.Run(() => ProcessBatchKeysAsync(SourceKeyStore, targetStore, keyIds, batchLog, device, token), token);
                     CurrentBatchFailed = errors > 0;
                     IsFailed = errors > 0;
                     AddLog("Waiting for card removal...", LogLevel.Info, batchLog);
                     _isWaitingForCard = true;
                     UpdateCommands();
                     _stopwatch.Stop();
-                    await WaitRemoval(device.GetReader(), token);
+                    await device.WaitForRemovalAsync(token);
                     _stopwatch.Start();
                     _isWaitingForCard = false;
                     UpdateCommands();
@@ -524,48 +541,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
                         Notify($"Batch unit {batchIndex + 1} ended with {errors} fail(s).", LogLevel.Error);
                     else
                         Notify($"Batch unit {batchIndex + 1} completed successfully.", LogLevel.Success);*/
-                    if (BatchOptions.RetryOnFailure && CurrentBatchFailed)
-                    {
-                        _retryAccepted = false;
-                        _isSkipOrRetry = true;
-                        UpdateCommands();
-                        while (CurrentBatchFailed && !_cts?.IsCancellationRequested == true)
-                        {
-                            _waitForRetry = new TaskCompletionSource<bool>();
-                            UpdateOptionsVisibility();
-                            Logs.Add(new LogEntry($"Batch unit {batchIndex + 1} failed. Waiting for Retry or Skip...", LogLevel.Warning));
-                            await _waitForRetry.Task;
-                            _waitForRetry = null;
-                            UpdateOptionsVisibility();
-                            if (!_retryAccepted)
-                            {
-                                _skippedBatches += 1;
-                                Logs.Add(new LogEntry($"Batch unit {batchIndex + 1} skipped by user.", LogLevel.Error));
-                                break;
-                            }
-                            else
-                            {
-                                Logs.Add(new LogEntry($"Retrying batch unit {batchIndex + 1}...", LogLevel.Warning));
-                                BatchProgressValue -= 1;
-                                batchIndex -= 1;
-                                break;
-                            }
-                        }
-                        _isSkipOrRetry = false;
-                        UpdateCommands();
-                    }
+                    batchIndex = await HandleRetryAsync(batchIndex, token);
                     if (!BatchOptions.ContinuousMode && batchIndex < BatchOptions.Count - 1)
-                    {
-                        Logs.Add(new LogEntry($"Batch unit {batchIndex + 1} completed. Waiting for you to press 'Next' to continue with the next card.", LogLevel.Warning));
-                        _waitForNext = new TaskCompletionSource<bool>();
-                        IsWaitingForCard = true;
-                        IsWaitingForNext = true;
-                        UpdateOptionsVisibility();
-                        await _waitForNext.Task;
-                        IsWaitingForCard = false;
-                        IsWaitingForNext = false;
-                        UpdateOptionsVisibility();
-                    }
+                        await WaitForNextCardAsync(batchIndex);
                 }
                 CompleteWorkflow();
             }
@@ -583,30 +561,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
             finally
             {
-                CancellationTokenSource? cts;
-                ManualResetEventSlim? pause;
-                lock (_ctsLock)
-                {
-                    cts = _cts;
-                    _cts = null;
-                }
-                pause = _pauseEvent;
-                _pauseEvent = null;
-                try {
-                    cts?.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Error disposing CTS : {ex}");
-                }
-                try
-                {
-                    pause?.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Error disposing pause event : {ex}");
-                }
+                FinishAndPause();
                 IsRunning = false;
                 UpdateCommands();
             }
@@ -645,7 +600,52 @@ namespace Leosac.KeyManager.Library.UI.Domain
             Notify($"Workflow completed : {SuccessfulKeys} keys succeeded keys, {FailedKeys} keys failed, {_skippedBatches} batches were skipped.", (FailedKeys > 0 || _skippedBatches > 0) ? LogLevel.Warning : LogLevel.Success);
         }
 
-        private async Task<int> ProcessBatchKeys(KeyStore.KeyStore source, KeyStore.KeyStore target, List<KeyEntryId> keyIds, LogEntry batchLog, ICardDevice? device, CancellationToken token)
+        private void FinishAndPause()
+        {
+            CancellationTokenSource? cts;
+            ManualResetEventSlim? pause;
+            lock (_ctsLock)
+            {
+                cts = _cts;
+                _cts = null;
+            }
+            pause = _pauseEvent;
+            _pauseEvent = null;
+            try
+            {
+                cts?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error disposing CTS : {ex}");
+            }
+            try
+            {
+                pause?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error disposing pause event : {ex}");
+            }
+        }
+
+        private async Task<List<KeyEntryId>> GetSelectedKeysAsync()
+        {
+            var keyIds = (await Task.WhenAll(_selection.Select(async ke =>
+            {
+                if (!ke.ShowSelection)
+                {
+                    var keys = await SourceKeyStore.GetAll(ke.KeyEntryClass);
+                    return keys.ToList();
+                }
+                else
+                    return ke.Identifiers.Where(k => k.Selected && k.KeyEntryId != null)
+                                         .Select(k => k.KeyEntryId!).ToList();
+            }))).SelectMany(l => l).ToList();
+            return keyIds;
+        }
+
+        private async Task<int> ProcessBatchKeysAsync(KeyStore.KeyStore source, KeyStore.KeyStore target, List<KeyEntryId> keyIds, LogEntry batchLog, ICardDevice? device, CancellationToken token)
         {
             KeyStoreProgressValue = 0;
             int successCount = 0, failureCount = 0;
@@ -656,13 +656,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 foreach (var keyId in keyIds)
                 {
                     token.ThrowIfCancellationRequested();
-                    var pause = _pauseEvent ?? throw new InvalidOperationException("Pause event not initialized");
-                    if (!_pauseEvent.IsSet && IsPaused)
-                        AddLog("Workflow paused by user.", LogLevel.Warning, batchLog);
-                    await WaitAsync(pause, token);
-                    if (_pauseEvent.IsSet && !IsRunning)
-                        AddLog("Workflow resumed.", LogLevel.Warning, batchLog);
-                    var keyEntry = await SourceKeyStore.Get(keyId, KeyEntryClass.Symmetric);
+                    await WaitIfPausedAsync(batchLog, token);
+                    var keyEntry = await source.Get(keyId, KeyEntryClass.Symmetric);
                     if (keyEntry == null)
                     {
                         AddLog($"Key {keyId} not found, skipping.", LogLevel.Warning, batchLog);
@@ -677,7 +672,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     bool published = false;
                     try
                     {
-                        device?.EnsureCardInserted();
+                        if (device != null)
+                            await device.EnsureCardInserted(token);
                         AddLog($"Publishing key {CurrentKeyName} ...", LogLevel.Info, batchLog);
                         await source.Publish(
                             store: target,
@@ -690,24 +686,14 @@ namespace Leosac.KeyManager.Library.UI.Domain
                         published = true;
                         AddLog($"Key {CurrentKeyName} published successfully.", LogLevel.Success, batchLog);
                     }
-                    catch (LibLogicalAccessException ex)
-                    {
-                        if (device?.IsSAMDevice == true)
-                        {
-                            AddLog($"Publishing failed due to SAM card removal or reader error. Error : {ex.Message}", LogLevel.Error, batchLog);
-                            published = false;
-                            AddLog("If SAM card is removed, please re-insert...", LogLevel.Error, batchLog);
-                        }
-                    }
                     catch (OperationCanceledException)
                     {
                         AddLog($"Publishing of key {CurrentKeyName} was canceled.", LogLevel.Warning, batchLog);
-                        published = false;
+                        IsCancelled = true;
                     }
                     catch (Exception ex)
                     {
                         AddLog($"Publishing key {CurrentKeyName} failed: {ex.Message}", LogLevel.Error, batchLog);
-                        published = false;
                     }
                     if (published)
                     {
@@ -740,6 +726,64 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 AddLog($"{failureCount} key(s) failed in this batch.", LogLevel.Error, batchLog);
             AddLog($"Batch unit completed ({successCount} succeeded, {failureCount} failed)", LogLevel.Info, batchLog);
             return failureCount;
+        }
+
+        private async Task WaitIfPausedAsync(LogEntry batchLog, CancellationToken token)
+        {
+            var pause = _pauseEvent ?? throw new InvalidOperationException("Pause event not initialized");
+            if (!_pauseEvent.IsSet && IsPaused)
+                AddLog("Workflow paused by user.", LogLevel.Warning, batchLog);
+            await WaitAsync(pause, token);
+            if (_pauseEvent.IsSet && !IsRunning)
+                AddLog("Workflow resumed.", LogLevel.Warning, batchLog);
+        }
+
+        private async Task<int> HandleRetryAsync(int batchIndex, CancellationToken token)
+        {
+            if (!BatchOptions.RetryOnFailure || !CurrentBatchFailed || _cts == null || _cts.IsCancellationRequested)
+                return batchIndex;
+            _retryAccepted = false;
+            _isSkipOrRetry = true;
+            UpdateCommands();
+            while (CurrentBatchFailed && _cts != null && !_cts.IsCancellationRequested)
+            {
+                _waitForRetry = new TaskCompletionSource<bool>();
+                UpdateOptionsVisibility();
+                Logs.Add(new LogEntry($"Batch unit {batchIndex + 1} failed. Waiting for Retry or Skip...", LogLevel.Warning));
+                await _waitForRetry.Task;
+                _waitForRetry = null;
+                UpdateOptionsVisibility();
+                if (!_retryAccepted)
+                {
+                    _skippedBatches++;
+                    Logs.Add(new LogEntry($"Batch unit {batchIndex + 1} skipped by user.", LogLevel.Error));
+                    break;
+                }
+                else
+                {
+                    Logs.Add(new LogEntry($"Retrying batch unit {batchIndex + 1}...", LogLevel.Warning));
+                    BatchProgressValue -= 1;
+                    batchIndex -= 1;
+                    break;
+                }
+            }
+            _isSkipOrRetry = false;
+            UpdateCommands();
+            return batchIndex;
+        }
+
+        private async Task WaitForNextCardAsync(int batchIndex)
+        {
+            Logs.Add(new LogEntry($"Batch unit {batchIndex + 1} completed. Waiting for you to press 'Next' to continue with the next card.", LogLevel.Warning));
+            _waitForNext = new TaskCompletionSource<bool>();
+            IsWaitingForCard = true;
+            IsWaitingForNext = true;
+            UpdateOptionsVisibility();
+            await _waitForNext.Task;
+            _waitForNext = null;
+            IsWaitingForCard = false;
+            IsWaitingForNext = false;
+            UpdateOptionsVisibility();
         }
 
         private static string FormatMessage(string message, LogLevel level) => level switch
@@ -793,7 +837,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     Foreground = Brushes.Black
                 });
                 stack.Children.Add(ok);
-
                 var dialog = new Window
                 {
                     Title = title,

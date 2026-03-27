@@ -1,4 +1,4 @@
-﻿namespace Leosac.KeyManager.Library.UI.Domain
+﻿namespace Leosac.KeyManager.Library.Common
 {
     public enum LogLevel : byte
     {

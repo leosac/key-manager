@@ -41,7 +41,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KeyManager.Library.KeyGen\KeyManager.Library.KeyGen.csproj" />
-    <ProjectReference Include="..\KeyManager.Library.KeyStore.NXP_SAM\KeyManager.Library.KeyStore.NXP_SAM.csproj" />
     <ProjectReference Include="..\KeyManager.Library.Plugin.UI\KeyManager.Library.Plugin.UI.csproj" />
     <ProjectReference Include="..\KeyManager.Library.Plugin\KeyManager.Library.Plugin.csproj" />
     <ProjectReference Include="..\KeyManager.Library\KeyManager.Library.csproj" />
