@@ -699,4 +699,7 @@
   <data name="ButtonRetry" xml:space="preserve">
     <value>Retry</value>
   </data>
+  <data name="PublishLabel" xml:space="preserve">
+    <value>Publish as batch ({0} unit{1}) to : {2}</value>
+  </data>
 </root>

@@ -15,13 +15,10 @@
     <UserControl.Resources>
         <materialDesign:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed"/>
         <materialDesign:BooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" TrueValue="Collapsed" FalseValue="Visible"/>
-        <SolidColorBrush x:Key="SuccessBrush" Color="Green"/>
-        <SolidColorBrush x:Key="WarningBrush" Color="Orange"/>
         <SolidColorBrush x:Key="ErrorBrush" Color="Red"/>
-        <SolidColorBrush x:Key="TextBrush" Color="Gray"/>
         <SolidColorBrush x:Key="ContinuousBrush" Color="Green"/>
     </UserControl.Resources>
-    <Grid Margin="10">
+    <Grid Margin="10" IsEnabled="{Binding BatchOptions.IsSupported}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -36,25 +33,8 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <ToggleButton IsChecked="{Binding BatchOptions.IsEnabled}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" IsEnabled="{Binding BatchOptions.IsSupported}"/>
+            <ToggleButton IsChecked="{Binding BatchOptions.IsEnabled}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}"/>
             <TextBlock Grid.Column="1" Text="{x:Static properties:Resources.EnableFlowProvisioning}" Margin="5,0,0,0" VerticalAlignment="Center"/>
-            <TextBlock Grid.Column="2" Text="{Binding BatchOptions.FlowStatusMessage}" Margin="5,0,0,0" VerticalAlignment="Center">
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding BatchOptions.FlowStatusMessage}" Value="Enabled">
-                                <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding BatchOptions.FlowStatusMessage}" Value="Disabled">
-                                <Setter Property="Foreground" Value="{StaticResource WarningBrush}"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding BatchOptions.FlowStatusMessage}" Value="Not supported">
-                                <Setter Property="Foreground" Value="{StaticResource ErrorBrush}"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style></TextBlock>
         </Grid>
         <wpfappctrls:NumericUpDownControl Grid.Row="1" Margin="5,5,5,12" Width="180" MinValue="1" MaxValue="9999" Hint="{x:Static properties:Resources.MaxUnits}"
                                           HelperText="{x:Static properties:Resources.MaxUnitsHelperShort}" ToolTip="{x:Static properties:Resources.MaxUnitsHelper}"

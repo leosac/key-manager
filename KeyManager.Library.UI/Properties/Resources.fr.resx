@@ -699,4 +699,7 @@
   <data name="ButtonRetry" xml:space="preserve">
     <value>Réessayer</value>
   </data>
+  <data name="PublishLabel" xml:space="preserve">
+    <value>Publier en lot ({0} unité{1}) vers : {2}</value>
+  </data>
 </root>

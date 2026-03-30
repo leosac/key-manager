@@ -37,8 +37,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             SourceKeyStore = sourceKeyStore ?? throw new ArgumentNullException(nameof(sourceKeyStore));
             _selection = keModels;
             _uiContext = SynchronizationContext.Current ?? new SynchronizationContext();
-            //InitializeSnackbar();
-            Label = $"Publish as batch ({BatchOptions.Count} unit{(BatchOptions.Count > 1 ? "s" : "")}) to : {Favorite.Name}";
+            Label = string.Format(Properties.Resources.PublishLabel, BatchOptions.Count, BatchOptions.Count > 1 ? "s" : string.Empty, Favorite.Name);
             Logs = new ObservableCollection<LogEntry>();
             BatchProgressMaximum = BatchOptions.Count;
             CurrentKeyName = string.Empty;
@@ -221,13 +220,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        /*private SnackbarMessageQueue _snackbarQueue;
-        public SnackbarMessageQueue SnackbarQueue
-        {
-            get => _snackbarQueue;
-            private set => SetProperty(ref _snackbarQueue, value);
-        }*/
-
         private int _skippedBatches;
         public int SkippedBatches
         {
@@ -295,11 +287,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             if (_disposed) return;
             _disposed = true;
-
-            //SnackbarQueue.Clear();
-            //SnackbarQueue.Dispose();
-            //SnackbarQueue = null!;
-
             CancellationTokenSource? cts;
             ManualResetEventSlim? pause;
             lock (_ctsLock)
@@ -405,15 +392,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        /*public void InitializeSnackbar()
-        {
-            if (_snackbarQueue != null) return;
-            _snackbarQueue = new SnackbarMessageQueue(TimeSpan.FromSeconds(3))
-            {
-                DiscardDuplicates = true
-            };
-        }*/
-
         private ICardDevice CreateDeviceFromFavorite(Favorite favorite, KeyStore.KeyStore keyStore)
         {
             if (favorite.Properties == null)
@@ -509,7 +487,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     if (!cardInserted)
                     {
                         _skippedBatches++;
-                        //Notify($"Batch unit {batchIndex + 1} : Card not inserted (timed out). Skipping batch.", LogLevel.Error);
                         continue;
                     }
                     AddLog("Card inserted.", LogLevel.Info, batchLog);
@@ -542,10 +519,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     await device.DisconnectAsync(token);
                     batchLog.Message += errors > 0 ? $" - Ended : {errors} fail(s)" : " - Success";
                     batchLog.Level = errors > 0 ? LogLevel.Error : LogLevel.Success;
-                    /*if (errors > 0)
-                        Notify($"Batch unit {batchIndex + 1} ended with {errors} fail(s).", LogLevel.Error);
-                    else
-                        Notify($"Batch unit {batchIndex + 1} completed successfully.", LogLevel.Success);*/
                     await HandleRetryAsync();
                     if (!BatchOptions.ContinuousMode && _batchIndex < BatchOptions.Count - 1)
                         await WaitForNextCardAsync(_batchIndex);
@@ -858,19 +831,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
             });
         }
 
-        /*private void Notify(string message, LogLevel level)
-        {
-            if (!BatchOptions.Notifications || _disposed)
-                return;
-            string fullMessage = FormatMessage(message, level);
-            if (_disposed || _snackbarQueue == null) return;
-                _uiContext.Post(_ =>
-                {
-                        if (_disposed || _snackbarQueue == null) return;
-                        _snackbarQueue.Enqueue(fullMessage, "X", () => { });
-                }, null);
-        }*/
-
         private void SafeUiAction(Action action)
         {
             if (_disposed) return;
@@ -879,7 +839,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             else
                 _uiContext.Post(_ => action(), null);
         }
-        
+
         private void AddLog(string message, LogLevel level, LogEntry? parent = null)
         {
             if (parent is null)

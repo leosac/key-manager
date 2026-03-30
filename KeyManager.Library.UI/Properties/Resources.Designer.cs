@@ -1465,6 +1465,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Publish as batch ({0} unit{1}) to : {2}.
+        /// </summary>
+        public static string PublishLabel {
+            get {
+                return ResourceManager.GetString("PublishLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable.
         /// </summary>
         public static string PublishVariable {
