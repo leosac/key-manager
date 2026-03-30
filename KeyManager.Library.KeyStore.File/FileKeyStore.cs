@@ -27,6 +27,8 @@ namespace Leosac.KeyManager.Library.KeyStore.File
 
         public override bool CanDeleteKeyEntries => true;
 
+        public override bool SupportsBatching => true;
+
         public override IEnumerable<KeyEntryClass> SupportedClasses
         {
             get => [KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric];

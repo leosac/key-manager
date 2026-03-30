@@ -34,6 +34,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
         public override bool IsNumericKeyId => true;
 
+        public override bool SupportsBatching => true;
+
         public override IEnumerable<KeyEntryClass> SupportedClasses
         {
             get => [KeyEntryClass.Symmetric];
@@ -113,7 +115,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
                         if (version != null)
                         {
-                            Attributes.Add(ATTRIBUTE_UID, Convert.ToHexString(version.manufacture.uniqueserialnumber));
+                            Attributes[ATTRIBUTE_UID] = Convert.ToHexString(version.manufacture.uniqueserialnumber);
                             log.Info(string.Format("SAM Version {0}.{1}, UID: {2}", version.software.majorversion, version.software.minorversion, Attributes[ATTRIBUTE_UID]));
                         }
                     }

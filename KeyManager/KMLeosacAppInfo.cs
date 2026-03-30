@@ -14,8 +14,7 @@ namespace Leosac.KeyManager
 {
     public class KMLeosacAppInfo : LeosacWinAppInfo
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
-
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(KMLeosacAppInfo));
         static KMLeosacAppInfo()
         {
             SharedServices.MaintenancePlan.AllowedProductCodes = ["29512", "29511", "29465", "29463", "29461", "29462", "29464", "29466"];
@@ -96,7 +95,7 @@ namespace Leosac.KeyManager
                                     if (model.SelectedItem?.DataContext is EditKeyStoreControlViewModel editModel)
                                     {
                                         // Ensure everything is back to original state
-                                        editModel.CloseKeyStore(false);
+                                        await editModel.CloseKeyStore(false);
                                         editModel.KeyStore = ks;
                                         editModel.KeyStore.UserMessageNotified += (sender, e) => SnackbarHelper.EnqueueMessage(editModel.SnackbarMessageQueue, e);
                                         editModel.Favorite = fav;

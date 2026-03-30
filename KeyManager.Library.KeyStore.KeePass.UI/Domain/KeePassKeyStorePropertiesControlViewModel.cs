@@ -135,6 +135,11 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass.UI.Domain
                     break;
                 case CredentialMode.PasswordAndKey:
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        nameof(FileProperties.SelectedCredentialMode),
+                        FileProperties.SelectedCredentialMode,
+                        "Unexpected credential mode");
             }
             OnPropertyChanged(nameof(FileProperties));
         }

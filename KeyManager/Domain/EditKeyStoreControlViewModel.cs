@@ -1,33 +1,32 @@
-﻿using Leosac.KeyManager.Library;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Leosac.KeyManager.Library;
 using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using Leosac.WpfApp;
+using log4net;
 using MaterialDesignThemes.Wpf;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Collections.Generic;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
-using Org.BouncyCastle.Crypto;
-using log4net;
 
 namespace Leosac.KeyManager.Domain
 {
     public class EditKeyStoreControlViewModel : ObservableValidator
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType ?? typeof(EditKeyStoreControlViewModel));
         public EditKeyStoreControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
             _showProgress = false;
             SnackbarMessageQueue = snackbarMessageQueue;
             Tabs = new ObservableCollection<TabItem>();
-            _keModels = new List<KeyEntriesControlViewModel>();
             RefreshKeyEntriesCommand = new AsyncRelayCommand(() => RefreshKeyEntries(500));
             SaveFavoriteCommand = new RelayCommand(
                 () =>
@@ -40,7 +39,7 @@ namespace Leosac.KeyManager.Domain
 
         public ISnackbarMessageQueue SnackbarMessageQueue { get; private set; }
 
-        protected IList<KeyEntriesControlViewModel> _keModels;
+        protected readonly IList<KeyEntriesControlViewModel> _keModels = new List<KeyEntriesControlViewModel>();
         protected void OnKeyStoreUpdated()
         {
             if (Favorite != null)
@@ -129,37 +128,40 @@ namespace Leosac.KeyManager.Domain
 
         public async Task OpenKeyStore()
         {
-            if (KeyStore != null)
+            if (KeyStore == null) return;
+
+            Mouse.OverrideCursor = Cursors.Wait;
+            try
             {
-                Mouse.OverrideCursor = Cursors.Wait;
-                try
+                await KeyStore.Open().ConfigureAwait(true);
+
+                var tempModels = new List<KeyEntriesControlViewModel>();
+                var tempTabs = new List<TabItem>();
+
+                foreach (var kclass in KeyStore.SupportedClasses)
                 {
-                    await KeyStore.Open();
-                    var classes = KeyStore.SupportedClasses;
-                    foreach (var kclass in classes)
+                    var model = new KeyEntriesControlViewModel(SnackbarMessageQueue, kclass) { KeyStore = KeyStore };
+                    model.DefaultKeyEntryUpdated += (_, _) => OnKeyStoreUpdated();
+                    tempModels.Add(model);
+
+                    tempTabs.Add(new TabItem
                     {
-                        var model = new KeyEntriesControlViewModel(SnackbarMessageQueue, kclass) { KeyStore = KeyStore };
-                        model.DefaultKeyEntryUpdated += (sender, e) =>
-                        {
-                            OnKeyStoreUpdated();
-                        };
-                        _keModels.Add(model);
-                        Tabs.Add(new TabItem
-                        {
-                            Header = string.Format("{0} Key Entries", kclass.ToString()),
-                            Content = new KeyEntriesControl
-                            {
-                                DataContext = model
-                            }
-                        });
-                    }
+                        Header = $"{kclass} Key Entries",
+                        Content = new KeyEntriesControl { DataContext = model }
+                    });
                 }
-                finally
-                {
-                    Mouse.OverrideCursor = null;
-                }
-                await RefreshKeyEntries();
+                _keModels.Clear();
+                Tabs.Clear();
+                foreach (var model in tempModels)
+                    _keModels.Add(model);
+                foreach (var tab in tempTabs)
+                    Tabs.Add(tab);
             }
+            finally
+            {
+                Mouse.OverrideCursor = null;
+            }
+            await RefreshKeyEntries().ConfigureAwait(true);
         }
 
         public Task RefreshKeyEntries() => RefreshKeyEntries(0);
@@ -167,22 +169,20 @@ namespace Leosac.KeyManager.Domain
         public async Task RefreshKeyEntries(int delay)
         {
             IsLoadingKeyEntries = true;
-            if (delay > 0)
-            {
-                await Task.Delay(delay);
-            }
             try
             {
-                foreach (var model in _keModels)
-                {
-                    await model.RefreshKeyEntries();
-                }
+                if (delay > 0)
+                    await Task.Delay(delay);
+                await Task.WhenAll(_keModels.Select(m => m.RefreshKeyEntries()));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex, "Key Store Error");
             }
-            IsLoadingKeyEntries = false;
+            finally
+            {
+                IsLoadingKeyEntries = false;
+            }
         }
 
         public async Task EditFavorite()
@@ -240,7 +240,6 @@ namespace Leosac.KeyManager.Domain
             {
                 return true;
             }
-
             var dialog = new OpenFavoriteControl
             {
                 DataContext = ks,
@@ -253,159 +252,146 @@ namespace Leosac.KeyManager.Domain
             var ret = await DialogHost.Show(dialog, "RootDialog");
             return (ret != null);
         }
-        
-        public async Task<bool> RunOnKeyStore(UserControl dialog, Func<KeyStore, Func<string, KeyStore?>, Func<KeyStore, string?, Task<bool>>?, KeyEntryClass, IEnumerable<KeyEntryId>?, Action<KeyStore, KeyEntryClass, int>?, Task> action, string? label = null)
+
+        public async Task<bool> RunOnKeyStore(Func<UserControl> createDialog, Func<KeyStore, Func<string, KeyStore?>, Func<KeyStore, string?, Task<bool>>?, KeyEntryClass, IEnumerable<KeyEntryId>?, Action<KeyStore, KeyEntryClass, int>?, Task> action, string? label = null)
         {
+            if (KeyStore == null)
+                return false;
+            var dialog = createDialog();
             var model = new PublishKeyStoreDialogViewModel();
             if (!string.IsNullOrEmpty(label))
-            {
                 model.Label = label;
-            }
             dialog.DataContext = model;
-            object? ret = await DialogHost.Show(dialog, "RootDialog");
-            if (ret != null && model.Favorite != null)
+            var ret = await DialogHost.Show(dialog, "RootDialog", closingEventHandler: (_, _) =>
             {
-                var prop = model.Favorite.Properties;
-                if (prop != null)
+                dialog.DataContext = null;
+            });
+            if (ret == null || model.Favorite == null)
+                return false;
+            if (model.BatchOptions.IsSupported && model.BatchOptions.IsEnabled)
+            {
+                var batch = new PublishBatchDialogViewModel(model.Favorite, model.BatchOptions, KeyStore, _keModels);
+                var batchDialog = new PublishBatchDialog
                 {
-                    var factory = KeyStoreFactory.GetFactoryFromPropertyType(prop.GetType());
-                    if (factory != null)
+                    DataContext = batch
+                };
+                try
+                {
+                    await DialogHost.Show(batchDialog, "RootDialog");
+                }
+                finally
+                {
+                    batch.Dispose();
+                }
+                return true;
+            }
+            var prop = model.Favorite.Properties;
+            if (prop == null)
+                return false;
+            var factory = KeyStoreFactory.GetFactoryFromPropertyType(prop.GetType());
+            if (factory == null)
+                return false;
+            try
+            {
+                ProgressValue = 0;
+                ShowProgress = true;
+                var destStore = factory.CreateKeyStore()
+                    ?? throw new KeyStoreException("Failed to create destination key store.");
+                destStore.Properties = prop;
+                destStore.Options = model.Options;
+                destStore.KeyEntryRetrieved += (_, _) => Interlocked.Increment(ref _progressValue);
+                destStore.KeyEntryUpdated += (_, _) => Interlocked.Increment(ref _progressValue);
+                destStore.UserMessageNotified += (_, e) => SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, e);
+                if (KeyStore == null)
+                    throw new InvalidOperationException("KeyStore can't be null when running operations.");
+                KeyStore.Options = model.Options;
+                Action<KeyStore, KeyEntryClass, int> initCallback = (_, _, nbEntries) =>
+                {
+                    ProgressMaximum = nbEntries * 2;
+                };
+                var favorites = Favorites.GetSingletonInstance();
+                KeyStore? GetFavoriteKeyStore(string favoriteName)
+                {
+                    if (string.IsNullOrEmpty(favoriteName))
+                        return null;
+                    if (favorites != null)
                     {
-                        try
-                        {
-                            ProgressValue = 0;
-                            ShowProgress = true;
-
-                            var deststore = factory.CreateKeyStore();
-                            deststore.Properties = prop;
-                            deststore.KeyEntryRetrieved += (sender, e) => ProgressValue++;
-                            deststore.KeyEntryUpdated += (sender, e) => ProgressValue++;
-                            deststore.UserMessageNotified += (sender, e) => SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, e);
-                            deststore.Options = model.Options;
-                            KeyStore!.Options = model.Options; // Options object contains information for source and destination key stores, this should probably be splitted...
-                            var initCallback = new Action<KeyStore, KeyEntryClass, int>((_, _, nbentries) =>
-                            {
-                                ProgressMaximum = nbentries * 2;
-                            });
-                            var getFavoriteKeyStore = new Func<string, KeyStore?>((favoriteName) =>
-                            {
-                                if (!string.IsNullOrEmpty(favoriteName))
-                                {
-                                    var favorites = Favorites.GetSingletonInstance();
-                                    if (favorites != null)
-                                    {
-                                        var fav = favorites.Get(favoriteName);
-                                        if (fav != null)
-                                        {
-                                            return fav.CreateKeyStore();
-                                        }
-                                        else
-                                        {
-                                            log.Error(string.Format("Cannot found the favorite Key Store `{0}`.", favoriteName));
-                                            throw new KeyStoreException("Cannot found the favorite Key Store.");
-                                        }
-                                    }
-                                }
-                                return null;
-                            });
-
-                            foreach (var keModel in _keModels)
-                            {
-                                IEnumerable<KeyEntryId>? entries = null;
-                                if (keModel.ShowSelection)
-                                {
-                                    entries = keModel.Identifiers.Where(k => k.Selected && k.KeyEntryId != null).Select(k => k.KeyEntryId!);
-                                        
-                                }
-                                await action(deststore,
-                                    getFavoriteKeyStore,
-                                    AskForKeyStoreSecretIfRequired,
-                                    keModel.KeyEntryClass,
-                                    entries,
-                                    initCallback
-                                );
-                            }
-                        }
-                        finally
-                        {
-                            ShowProgress = false;
-                        }
-
-                        return true;
+                        var fav = favorites.Get(favoriteName);
+                        if (fav != null)
+                            return fav.CreateKeyStore();
                     }
+                    log.Error($"Cannot found the favorite Key Store `{favoriteName}`.");
+                    throw new KeyStoreException("Cannot found the favorite Key Store.");
+                }
+                foreach (var keModel in _keModels)
+                {
+                    IEnumerable<KeyEntryId>? entries = null;
+                    if (keModel.ShowSelection)
+                        entries = keModel.Identifiers.Where(k => k.Selected && k.KeyEntryId != null).Select(k => k.KeyEntryId!);
+                    await action(destStore,
+                        GetFavoriteKeyStore,
+                        AskForKeyStoreSecretIfRequired,
+                        keModel.KeyEntryClass,
+                        entries,
+                        initCallback
+                    );
+                }
+                return true;
+            }
+            finally
+            {
+                ShowProgress = false;
+            }
+        }
+
+        private async Task ExecuteKeyStoreOperation(Func<Task<bool>> operation, string successMessage, string logErrorMessage)
+        {
+            try
+            {
+                if (await operation())
+                {
+                    SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, successMessage);
                 }
             }
-
-            return false;
+            catch (KeyStoreException ex)
+            {
+                SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex, "Key Store Error");
+            }
+            catch (Exception ex)
+            {
+                log.Error(logErrorMessage, ex);
+                SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
+            }
         }
 
         public async Task Publish()
         {
-            if (KeyStore != null)
-            {
-                try
-                {
-                    if (await RunOnKeyStore(new PublishKeyStoreDialog(), KeyStore.Publish))
-                    {
-                        SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "Key Entries have been successfully published.");
-                    }
-                }
-                catch (KeyStoreException ex)
-                {
-                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex, "Key Store Error");
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Publishing the Key Entries failed unexpected.", ex);
-                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
-                }
-            }
+            await ExecuteKeyStoreOperation(
+                async () => KeyStore != null &&
+                    await RunOnKeyStore(() => new PublishKeyStoreDialog(), KeyStore.Publish, "Publish Key Entries"),
+                "Key Entries have been successfully published.",
+                "Publishing the Key Entries failed unexpectedly."
+            );
         }
 
         public async Task Import()
         {
-            if (KeyStore != null)
-            {
-                try
-                {
-                    if (await RunOnKeyStore(new PublishKeyStoreDialog(), KeyStore.Import, Properties.Resources.ImportKeyStore))
-                    {
-                        SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "Key Entries have been successfully imported.");
-                    }
-                }
-                catch (KeyStoreException ex)
-                {
-                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex, "Key Store Error");
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Importing the Key Entries failed unexpected.", ex);
-                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
-                }
-            }
+            await ExecuteKeyStoreOperation(
+                async () => KeyStore != null &&
+                    await RunOnKeyStore(() => new PublishKeyStoreDialog(), KeyStore.Import, Properties.Resources.ImportKeyStore),
+                "Key Entries have been successfully imported.",
+                "Importing the Key Entries failed unexpectedly."
+            );
         }
 
         public async Task Diff()
         {
-            if (KeyStore != null)
-            {
-                try
-                {
-                    if (await RunOnKeyStore(new DiffKeyStoreDialog(), KeyStore.Diff, Properties.Resources.DiffKeyStore))
-                    {
-                        SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "No differences found.");
-                    }
-                }
-                catch (KeyStoreException ex)
-                {
-                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex, "Key Store Error");
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Comparing the Key Entries failed unexpected.", ex);
-                    SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
-                }
-            }
+            await ExecuteKeyStoreOperation(
+                async () => KeyStore != null &&
+                    await RunOnKeyStore(() => new DiffKeyStoreDialog(), KeyStore.Diff, Properties.Resources.DiffKeyStore),
+                "No differences found.",
+                "Comparing the Key Entries failed unexpectedly."
+            );
         }
     }
 }

@@ -603,4 +603,103 @@
   <data name="Date" xml:space="preserve">
     <value>Date</value>
   </data>
+  <data name="Flow" xml:space="preserve">
+    <value>Flux</value>
+  </data>
+  <data name="EnableFlowProvisioning" xml:space="preserve">
+    <value>Activer le provisionnement en flux</value>
+  </data>
+  <data name="MaxUnits" xml:space="preserve">
+    <value>Nombre d’unités du flux</value>
+  </data>
+  <data name="ContinuousMode" xml:space="preserve">
+    <value>Mode continu</value>
+  </data>
+  <data name="FlowNotSupported" xml:space="preserve">
+    <value>Le provisionnement en flux n’est pas supporté par ce type de magasin</value>
+  </data>
+  <data name="FlowDescription" xml:space="preserve">
+    <value>Provisionner plusieurs unités en lot avec confirmations optionnelles.</value>
+  </data>
+  <data name="AdvancedSettings" xml:space="preserve">
+    <value>Paramètres avancés</value>
+  </data>
+  <data name="ConfirmEachUnit" xml:space="preserve">
+    <value>Confirmer chaque unité avant de continuer</value>
+  </data>
+  <data name="MaxUnitsHelper" xml:space="preserve">
+    <value>Définissez le nombre d’unités à provisionner.</value>
+  </data>
+  <data name="LoggingVerbosity" xml:space="preserve">
+    <value>Activer les logs détaillés par unité</value>
+  </data>
+  <data name="RetryOnFailure" xml:space="preserve">
+    <value>Réessayer les unités échouées</value>
+  </data>
+  <data name="TimeoutWait" xml:space="preserve">
+    <value>Définir un temps d’attente maximum avant d'échouer</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifier en cas de provisionnement réussi</value>
+  </data>
+  <data name="MaxUnitsHelperShort" xml:space="preserve">
+    <value>Nombre d’unités à provisionner</value>
+  </data>
+  <data name="TimeSecond" xml:space="preserve">
+    <value>Secondes</value>
+  </data>
+  <data name="ExecutionLogs" xml:space="preserve">
+    <value>Journaux d’exécution</value>
+  </data>
+  <data name="BatchProgress" xml:space="preserve">
+    <value>Progression du lot</value>
+  </data>
+  <data name="KeyStoreProgress" xml:space="preserve">
+    <value>Progression du KeyStore actuel</value>
+  </data>
+  <data name="TextProcessing" xml:space="preserve">
+    <value>Traitement : </value>
+  </data>
+  <data name="KeyLogo" xml:space="preserve">
+    <value>🔑 </value>
+  </data>
+  <data name="VerboseLogging" xml:space="preserve">
+    <value>Journalisation détaillée</value>
+  </data>
+  <data name="EnableNotifications" xml:space="preserve">
+    <value>Activer les notifications</value>
+  </data>
+  <data name="RetryOnFailureBatch" xml:space="preserve">
+    <value>Réessayer en cas d’échec</value>
+  </data>
+  <data name="TimeoutWaitBatch" xml:space="preserve">
+    <value>Attente avec timeout</value>
+  </data>
+  <data name="ButtonStart" xml:space="preserve">
+    <value>Démarrer</value>
+  </data>
+  <data name="ButtonPause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="ButtonResume" xml:space="preserve">
+    <value>Reprendre</value>
+  </data>
+  <data name="ButtonCancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="ButtonNext" xml:space="preserve">
+    <value>Suivant</value>
+  </data>
+  <data name="ButtonSkip" xml:space="preserve">
+    <value>Passer</value>
+  </data>
+  <data name="ButtonRetry" xml:space="preserve">
+    <value>Réessayer</value>
+  </data>
+  <data name="PublishLabel" xml:space="preserve">
+    <value>Publier en lot ({0} unité{1}) vers : {2}</value>
+  </data>
 </root>

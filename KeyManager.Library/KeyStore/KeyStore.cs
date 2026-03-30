@@ -64,6 +64,11 @@ namespace Leosac.KeyManager.Library.KeyStore
         public virtual bool IsNumericKeyId => false;
 
         /// <summary>
+        /// True if key store supports batch operations (flow).
+        /// </summary>
+        public virtual bool SupportsBatching => false;
+
+        /// <summary>
         /// Get the supported key entry classes.
         /// </summary>
         public abstract IEnumerable<KeyEntryClass> SupportedClasses { get; }
