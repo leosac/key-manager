@@ -1,3 +1,9 @@
+# v1.24.0 - 03/31/2026
+ - Add KeePass key store plug-in
+ - Add Batch Publish feature
+ - Add workaround for NXP SAM AV3 to allow unlock by any Unlock key and not only the SAM Master Key (to have backward compatibility behavior with SAM AV2), when auto-switching/activating on Publish
+ - Fix default value for MIFARE key variant
+
 # v1.23.1 - 02/11/2026
  - Add cancel button for Random Number Generator (generator option selection)
 
@@ -38,11 +44,9 @@
  - Fix DESFire reading test on SAM AV2/AV3 key store
 
 # v1.18.1 - 09/06/2024
-
  - Fix possible race condition on initialization cleanup when opening a key store
 
 # v1.18.0 - 08/27/2024
-
  - Add Key Value export as text file
  - Improve secret cleanup on publish to avoid asking several times the same secret
  - Clear clipboard on application exit
@@ -53,7 +57,6 @@
  - Fix Key Entry clone
 
 # v1.17.0 - 06/30/2024
- 
  - Add Import from another key store feature
  - Add default generic Key Generation logic on Store operation (publish / import)
  - Clear favorites filter on favorite key store opening
@@ -62,18 +65,15 @@
  - Fix key generation binding on key store opening
 
 # v1.16.1 - 05/23/2024
- 
  - Prompt for optional user elevation when editing global settings
  - Enhance Snackbar messages / errors
  - Fix Favorites file location settings usage
 
 # v1.16.0 - 05/21/2024
- 
  - Add Search input box on Favorites view
  - New Per User / Per Machine settings logic
 
 # v1.15.0 - 04/11/2024
- 
  - Add Synchronic SAM-SE Key Store
  - Add an option on PKCS#11 key store to enforce Label use
  - Add hexpubvar variable
@@ -89,7 +89,6 @@
  - Fix File Key Store export to only add *.leok files to zip archive
 
 # v1.14.0 - 03/07/2024
- 
  - Add Dry Run option on publish
  - Add an optional variable (%{pubvar}) on publish
  - Add Sensitive property to PKCS#11 key entry
@@ -100,7 +99,6 @@
  - Move some logic from KeyManager.Library to KeyManager.Library.KeyGen to reduce dependencies list of the core library
 
 # v1.13.1 - 02/13/2024
- 
  - Add "Save" option to PKCS#11 key store user's password
  - Add attributes variables to KeyEntry Id during publish/links resolution
  - Add an option to enable/disable key links during publish
@@ -108,21 +106,17 @@
  - Fix MIFARE and AES256 key variant definition
 
 # v1.12.0 - 01/29/2024
- 
  - Fix default Key Entry configuration
  - Upgrade project from .NET7 to .NET8
  - Add support for some NXP SAM AV3 features: new AES 192/256 symmetric key entries, Offline Upload and Offline Perso key entry classes and add a Reserved for Offline Perso properties. Bump dependency version to LibLogicalAccess v3.
 
 # v1.11.2 - 11/28/2023
- 
  - Fix SAM Key Entry update when only Key A is defined
  
 # v1.11.1 - 11/07/2023
- 
  - Fix File Key Store Properties UI display
 
 # v1.11.0 - 11/06/2023
- 
  - Update key entries properties without updating key values if unchanged, for NXP SAM and HSM PKCS#11 key store
  - Add Dump options support on ISLOG SAM Manager template migration
  - Add default key entry properties configuration, per key store
@@ -136,7 +130,6 @@
  - Fix 3K3DES SAM key entry update
 
 # v1.10.0 - 10/19/2023
- 
  - Add ISLOG SAM Manager template support as a new key store
  - Add basic File Key Store Import/Export feature (as zip)
  - Add missing confirmation message on Key Link test
@@ -144,7 +137,6 @@
  - Fix Key Link - This fix is considered as critical: keys could have been published with default value instead of expected key materials with v1.8 and v1.9 when using a Key Link because of a silent error since the move to async
 
 # v1.9.0 - 10/16/2023
- 
  - Sort SAM Key Entries on Store operation
  - Add SAM UID to log file and Get Version tool
  - Add Leosac Credential Provisioning Server key store
@@ -155,7 +147,6 @@
  - Remove Key (Entry) Link Identifier default value
 
 # v1.8.0 - 09/29/2023
- 
  - Add character count to key store secret inputs
  - Add button to Select/Unselect all key entries
  - Add specific button action for key link import
@@ -168,28 +159,23 @@
  - Fix DESFire AID input on SAM key entry
 
 # v1.7.0 - 08/18/2023
- 
  - Add confirmation message on wizard completion
  - Add Activate Mifare SAM features tool for NXP SAM AV3
  - Upgrade from WiX v3 to v4
  - Add French MSI translation
 
 # v1.6.0 - 08/07/2023
- 
  - Move from .NET6 to .NET7
 
 # v1.5.0 - 07/10/2023
- 
  - Add multiple KeyEntry selection for grouped operations
  - Fix SAM for Access Control wizard default key entries properties
 
 # v1.4.0 - 07/05/2023
- 
  - Add option to store key store Secret
  - Add option to force SAM card type
 
 # v1.3.0 - 06/13/2023
- 
  - Use WpfApp library for the general Application Layout
  - Use LibLogicalAccess MSM packages on MSI installer
  - Add confirmation message on successful Key Entries publish
@@ -197,12 +183,10 @@
  - Fix random issue with DialogHost when previous dialog wasn't properly closed
 
 # v1.2.0 - 04/03/2023
- 
  - Load plugins from the same sub-folder on the same context (fix enum value assignment from UI component)
  - Fix Key Ceremony start button French translation
 
 # v1.1.0 - 03/24/2023
- 
  - Key stores/entries/wizards are now independent plugins dll files
  - Add support for NXP SAM AV3 as AV2
  - Disable some UI controls for better user feedback
@@ -211,5 +195,4 @@
  - Fix Key Link to skip div input computation (not implemented)
 
 # v1.0.0 - 01/24/2023
- 
  - First release of Leosac Key Manager.

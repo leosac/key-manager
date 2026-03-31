@@ -462,44 +462,44 @@
 		<Component Id="KeePassLibComponent">
 			<File Id="___var.KeePassLib.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\KeePassLib.dll" />
 		</Component>
-		<Component Id="MicrosoftAspNetCoreCryptographyInternalComponent">
-			<File Id="___var.Microsoft.AspNetCore.Cryptography.Internal.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.AspNetCore.Cryptography.Internal.dll" />
+		<Component Id="MicrosoftAspNetCoreCryptographyInternalKPComponent">
+			<File Id="___var.Microsoft.AspNetCore.Cryptography.Internal.dll_kp_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.AspNetCore.Cryptography.Internal.dll" />
 		</Component>
-		<Component Id="MicrosoftAspNetCoreDataProtectionAbstractionsComponent">
-			<File Id="___var.Microsoft.AspNetCore.DataProtection.Abstractions.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.AspNetCore.DataProtection.Abstractions.dll" />
+		<Component Id="MicrosoftAspNetCoreDataProtectionAbstractionsKPComponent">
+			<File Id="___var.Microsoft.AspNetCore.DataProtection.Abstractions.dll_kp_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.AspNetCore.DataProtection.Abstractions.dll" />
 		</Component>
-		<Component Id="MicrosoftAspNetCoreDataProtectionComponent">
-			<File Id="___var.Microsoft.AspNetCore.DataProtection.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.AspNetCore.DataProtection.dll" />
+		<Component Id="MicrosoftAspNetCoreDataProtectionKPComponent">
+			<File Id="___var.Microsoft.AspNetCore.DataProtection.dll_kp_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.AspNetCore.DataProtection.dll" />
 		</Component>
-		<Component Id="MicrosoftAspNetCoreDataProtectionExtensionsComponent">
-			<File Id="___var.Microsoft.AspNetCore.DataProtection.Extensions.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.AspNetCore.DataProtection.Extensions.dll" />
+		<Component Id="MicrosoftAspNetCoreDataProtectionExtensionsKPComponent">
+			<File Id="___var.Microsoft.AspNetCore.DataProtection.Extensions.dll_kp_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.AspNetCore.DataProtection.Extensions.dll" />
 		</Component>
-		<Component Id="MicrosoftExtensionsConfigurationAbstractionsComponent">
+		<Component Id="MicrosoftExtensionsConfigurationAbstractionsKPComponent">
 			<File Id="___var.Microsoft.Extensions.Configuration.Abstractions.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Configuration.Abstractions.dll" />
 		</Component>
-		<Component Id="MicrosoftExtensionsDependencyInjectionAbstractionsComponent">
-			<File Id="___var.Microsoft.Extensions.DependencyInjection.Abstractions.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+		<Component Id="MicrosoftExtensionsDependencyInjectionAbstractionsKPComponent">
+			<File Id="___var.Microsoft.Extensions.DependencyInjection.Abstractions.dll_kp_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
 		</Component>
-		<Component Id="MicrosoftExtensionsDependencyInjectionComponent">
-			<File Id="___var.Microsoft.Extensions.DependencyInjection.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.DependencyInjection.dll" />
+		<Component Id="MicrosoftExtensionsDependencyInjectionKPComponent">
+			<File Id="___var.Microsoft.Extensions.DependencyInjection.dll_kp_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.DependencyInjection.dll" />
 		</Component>
-		<Component Id="MicrosoftExtensionsDiagnosticsAbstractionsComponent">
-			<File Id="___var.Microsoft.Extensions.Diagnostics.Abstractions.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Diagnostics.Abstractions.dll" />
+		<Component Id="MicrosoftExtensionsDiagnosticsAbstractionsKPComponent">
+			<File Id="___var.Microsoft.Extensions.Diagnostics.Abstractions.dll_kp_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Diagnostics.Abstractions.dll" />
 		</Component>
-		<Component Id="MicrosoftExtensionsFileProvidersAbstractionsComponent">
-			<File Id="___var.Microsoft.Extensions.FileProviders.Abstractions.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.FileProviders.Abstractions.dll" />
+		<Component Id="MicrosoftExtensionsFileProvidersAbstractionsKPComponent">
+			<File Id="___var.Microsoft.Extensions.FileProviders.Abstractions.dll_kp_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.FileProviders.Abstractions.dll" />
 		</Component>
-		<Component Id="MicrosoftExtensionsHostingAbstractionsComponent">
-			<File Id="___var.Microsoft.Extensions.Hosting.Abstractions.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Hosting.Abstractions.dll" />
+		<Component Id="MicrosoftExtensionsHostingAbstractionsKPComponent">
+			<File Id="___var.Microsoft.Extensions.Hosting.Abstractions.dll_kp_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Hosting.Abstractions.dll" />
 		</Component>
-		<Component Id="MicrosoftExtensionsLoggingAbstractionsComponent">
-			<File Id="___var.Microsoft.Extensions.Logging.Abstractions.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Logging.Abstractions.dll" />
+		<Component Id="MicrosoftExtensionsLoggingAbstractionsKPComponent">
+			<File Id="___var.Microsoft.Extensions.Logging.Abstractions.dll_kp_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Logging.Abstractions.dll" />
 		</Component>
-		<Component Id="MicrosoftExtensionsOptionsComponent">
-			<File Id="___var.Microsoft.Extensions.Options.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Options.dll" />
+		<Component Id="MicrosoftExtensionsOptionsKPComponent">
+			<File Id="___var.Microsoft.Extensions.Options.dll_kp_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Options.dll" />
 		</Component>
-		<Component Id="MicrosoftExtensionsPrimitivesComponent">
-			<File Id="___var.Microsoft.Extensions.Primitives.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Primitives.dll" />
+		<Component Id="MicrosoftExtensionsPrimitivesKPComponent">
+			<File Id="___var.Microsoft.Extensions.Primitives.dll_kp_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\Microsoft.Extensions.Primitives.dll" />
 		</Component>
 		<Component Id="SystemDrawingCommonComponent">
 			<File Id="___var.System.Drawing.Common.dll_" Source="$(var.KeyManager.Library.KeyStore.KeePass.TargetDir)\System.Drawing.Common.dll" />

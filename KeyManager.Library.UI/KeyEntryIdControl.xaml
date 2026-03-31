@@ -11,7 +11,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="150" d:DesignWidth="500">
     <StackPanel>
-        <TextBox Text="{Binding KeyEntryId, Mode=TwoWay, ElementName=userControl}" Margin="5"
+        <TextBox Text="{Binding KeyEntryId.Id, Mode=TwoWay, ElementName=userControl}" Margin="5"
                  materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifierHelper}"
                  materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"/>
     </StackPanel>
