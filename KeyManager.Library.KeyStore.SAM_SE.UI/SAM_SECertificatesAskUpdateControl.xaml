@@ -1,0 +1,28 @@
+﻿<UserControl x:Class="Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.SAM_SECertificatesAskUpdateControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:domain="clr-namespace:Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Domain"
+             xmlns:libui="clr-namespace:Leosac.KeyManager.Library.UI;assembly=KeyManager.Library.UI"
+             xmlns:local="clr-namespace:Leosac.KeyManager.Library.KeyStore.SAM_SE.UI"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties"
+             xmlns:wpfappctrls="clr-namespace:Leosac.WpfApp.Controls;assembly=WpfApp"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance domain:SAM_SEKeyStoreCertificatesControlViewModel}"
+             d:DesignHeight="100" d:DesignWidth="400" PreviewKeyDown="Key_Pressed">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0,10" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{x:Static properties:Resources.AskUpdate}" TextWrapping="Wrap"/>
+        <Button Grid.Row="1" Grid.Column="0" Content="{x:Static properties:Resources.Cancel}" Margin="20,10,20,0" Click="Btn_Cancel" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
+        <Button Grid.Row="1" Grid.Column="1" Content="{x:Static properties:Resources.Valid}" Margin="20,10,20,0" Click="Btn_Valid" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
+    </Grid>
+</UserControl>

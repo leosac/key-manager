@@ -30,6 +30,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Domain
                 {SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.DESFire, Resources.SAM_SEKeyEntryDESFire},
                 {SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.DESFireUID, Resources.SAM_SEKeyEntryDESFireUid},
                 {SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.Authenticate, Resources.SAM_SEKeyEntryAuthenticate},
+                {SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.Reader, Resources.SAM_SEKeyEntryReader},
             };
 
         public Dictionary<SAM_SESymmetricKeyEntryDESFireProperties.SAM_SEDESFireMode, string> SAM_SE_DESFire_Mode_Text { get; } =

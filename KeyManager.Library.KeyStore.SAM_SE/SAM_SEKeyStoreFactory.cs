@@ -15,7 +15,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
     {
         private readonly uint MAJOR = 1;
         private readonly uint MINOR = 5;
-        private readonly uint DVL = 0;
+        private readonly uint DVL = 6;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         public override string Name => "NXP SAM-SE (Synchronic)";

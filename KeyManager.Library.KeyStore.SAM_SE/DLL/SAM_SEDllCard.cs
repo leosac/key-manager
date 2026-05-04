@@ -7,6 +7,7 @@
 ** Copyright (c) 2023-Present Synchronic
 */
 
+using Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -20,9 +21,15 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
         //List of objects in the SAM-SE
         private readonly static List<SAM_SEDllObject> keys = [];
 
-        public SAM_SEDllCard(UIntPtr ctx)
+        private readonly uint Index;
+
+        public readonly SAM_SEDllCertificates Certificates;
+
+        public SAM_SEDllCard(UIntPtr ctx, uint index)
         {
             Context = ctx;
+            Index = index;
+            Certificates = new(ctx);
         }
 
         [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
@@ -117,6 +124,16 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
         }
 
         [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
+        private static extern int spse_writeHardFile(UIntPtr currentSAM_SE);
+        public int SetHardenedConfigurationFile()
+        {
+            int ret = spse_writeHardFile(Context);
+            ret = SAM_SEDllConstants.ErrorHandler.HandlingError(ret);
+            BlinkLed(1);
+            return ret;
+        }
+
+        [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
         private static extern int spse_downloadMetadatas(UIntPtr currentSAM_SE);
         public int DownloadMetadatas()
         {
@@ -133,6 +150,53 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
             SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType ret = (SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType)spse_getKeyType(id);
             BlinkLed(1);
             return ret;
+        }
+
+        [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr spse_getInformation(uint index, SAM_SEInformations type);
+        public string GetVersionSAM_SE()
+        {
+            IntPtr ptr = spse_getInformation(Index, SAM_SEInformations.INFORMATIONS_VERSION);
+            if (ptr == IntPtr.Zero)
+            {
+                return Resources.Absent;
+            }
+            byte[] versionArray = new byte[SAM_SEDllConstants.SizeVersion];
+            Marshal.Copy(ptr, versionArray, 0, SAM_SEDllConstants.SizeVersion);
+            string[] versionStr = Array.ConvertAll(versionArray, b => b.ToString());
+            versionStr[0] = versionStr[0].TrimStart('0');
+            string version = "v" + string.Join(".", versionStr);
+            return version;
+        }
+
+        public string GetVersionUT()
+        {
+            IntPtr ptr = spse_getInformation(Index, SAM_SEInformations.INFORMATIONS_VERSION_UT);
+            if (ptr == IntPtr.Zero)
+            {
+                return Resources.Absent;
+            }
+            byte[] versionArray = new byte[SAM_SEDllConstants.SizeVersion];
+            Marshal.Copy(ptr, versionArray, 0, SAM_SEDllConstants.SizeVersion);
+            string[] versionStr = Array.ConvertAll(versionArray, b => b.ToString());
+            versionStr[0] = versionStr[0].TrimStart('0');
+            string version = "v" + string.Join(".", versionStr);
+            return version;
+        }
+
+        public string GetVersionUGL()
+        {
+            IntPtr ptr = spse_getInformation(Index, SAM_SEInformations.INFORMATIONS_VERSION_UGL);
+            if (ptr == IntPtr.Zero)
+            {
+                return Resources.Absent;
+            }
+            byte[] versionArray = new byte[SAM_SEDllConstants.SizeVersion];
+            Marshal.Copy(ptr, versionArray, 0, SAM_SEDllConstants.SizeVersion);
+            string[] versionStr = Array.ConvertAll(versionArray, b => b.ToString());
+            versionStr[0] = versionStr[0].TrimStart('0');
+            string version = "v" + string.Join(".", versionStr);
+            return version;
         }
 
         //Method used to format Label of each key depending on its ID
@@ -153,6 +217,10 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
             else if (keyId.StartsWith("BIO"))
             {
                 return Properties.Resources.LabelBioa;
+            }
+            else if (keyId.StartsWith("KEYK"))
+            {
+                return Properties.Resources.LabelKeyK;
             }
             else
             {
@@ -175,6 +243,9 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
                     break;
                 case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.DESFireUID:
                     temp = new SAM_SEDllDESFireUid(Context, stringId, id, type);
+                    break;
+                case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.Reader:
+                    temp = new SAM_SEDllReader(Context, stringId, id, type);
                     break;
                 default:
                 case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.Default:

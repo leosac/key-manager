@@ -20,6 +20,8 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
         private readonly IList<KeyEntryId> _keyEntriesId = [];
         private readonly Dictionary<string,bool> _keyEntriesActive = [];
 
+        private bool PasswordChangedSession = false;
+
         public SAM_SEDllEntryPoint SAM_SEDll = new();
 
         public SAM_SEKeyStoreProperties GetFileProperties()
@@ -65,6 +67,10 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
         public override Task Close(bool secretCleanup = true)
         {
             SAM_SEDll.DeselectProgrammingStation(GetFileProperties().ProgrammingStationPath);
+            if (secretCleanup && PasswordChangedSession)
+            {
+                secretCleanup = false;
+            }
             return base.Close(secretCleanup);
         }
 
@@ -77,7 +83,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             int ret;
 
             //Depending on GUI, we connect with default secret or not
-            if (GetFileProperties().DefaultKey == true)
+            if (GetFileProperties().DefaultKey == true && !PasswordChangedSession)
             {
                 if (GetFileProperties().Secret!.Length != 0)
                     log.Warn("A password have been typed but it's not used");
@@ -86,6 +92,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             else
             {
                 ret = SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.ConnectToSAM_SE(GetFileProperties().Secret!, Convert.ToUInt16(GetFileProperties().Secret!.Length));
+                PasswordChangedSession = false;
             }
 
             //Auto update SAM-SE
@@ -103,7 +110,10 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
                     if (ex.Message == Resources.SAM_SEErrorOldVersion)
                     {
                         //Then we call the method to update the configuration file
-                        SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.SetDefaultConfigurationFile();
+                        if (GetFileProperties().DefaultFile == ConfigurationFile.CONF_FILE_DEFAULT)
+                            SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.SetDefaultConfigurationFile();
+                        else if (GetFileProperties().DefaultFile == ConfigurationFile.CONF_FILE_HARDENED)
+                            SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.SetHardenedConfigurationFile();
                     }
                 }
             }
@@ -117,6 +127,8 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
 
             if (ret != 0)
                 log.Error(String.Format("Error {0} while connecting", ret));
+
+            SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.Certificates.InitArchive();
 
             log.Info("SAM-SE KeyStore opened");
             return Task.CompletedTask;
@@ -163,6 +175,9 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
                     break;
                 case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.DESFireUID:
                     keyEntry = new SAM_SESymmetricKeyEntryDESFireUID(identifier.Id!);
+                    break;
+                case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.Reader:
+                    keyEntry = new SAM_SESymmetricKeyEntryReader();
                     break;
                 default:
                 case SAM_SESymmetricKeyEntryProperties.SAM_SEKeyEntryType.Default:
@@ -268,6 +283,10 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
                     {
                         log.Error(String.Format("Error while updating DESFire metadata of key entry `{0}`.", keyEntryModification.Identifier));
                     }
+                }
+                else if (keyEntryModification is SAM_SESymmetricKeyEntryReader)
+                {
+                    UpdateReaderKey(keyEntryModification);
                 }
                 else
                 {
@@ -395,6 +414,23 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             return ret;
         }
 
+        private int UpdateReaderKey(SAM_SESymmetricKeyEntry keyEntry)
+        {
+            int ret = 0;
+            string? currentKey = keyEntry.Variant!.KeyContainers[0].Key.GetAggregatedValueAsString();
+            string? newKey = keyEntry.Variant!.KeyContainers[1].Key.GetAggregatedValueAsString();
+            SAM_SEDllObject? temp = SAM_SEDll.GetCurrentProgrammingStation()!.SAM_SE.GetKey(keyEntry.Identifier.Id!);
+            if (temp is SAM_SEDllReader reader && keyEntry is SAM_SESymmetricKeyEntryReader entryReader)
+            {
+                ret = reader.UploadReaderKey(entryReader.SAM_SEReaderProperties!.CurrentKey, currentKey, entryReader.SAM_SEReaderProperties!.NewKeyActive, entryReader.SAM_SEReaderProperties!.NewKey, newKey);
+                if (ret != 0)
+                {
+                    log.Error(String.Format("Error {0} modifying object.", ret));
+                }
+            }
+            return ret;
+        }
+
         //Method to update the password used to connect to the SAM-SE
         private void UpdatePassword(SAM_SESymmetricKeyEntry keyEntry)
         {
@@ -426,6 +462,8 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
                         log.Error(String.Format("Error {0} modifying password.", ret));
                     }
                     log.Info("Password modified.");
+                    PasswordChangedSession = true;
+                    GetFileProperties().Secret = keyAuth.SAM_SEAuthenticationProperties!.Password;
                     return;
                 }
                 else
@@ -468,7 +506,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
                     des.SAM_SEDESFireProperties!.Ev2 = desfire.GetEv2();
                     des.SAM_SEDESFireProperties!.Ev3 = desfire.GetEv3();
                     des.SAM_SEDESFireProperties!.Jcop = desfire.GetJcop();
-                    des.SAM_SEDESFireProperties!.Jcop = desfire.GetJcopEv3();
+                    des.SAM_SEDESFireProperties!.JcopEv3 = desfire.GetJcopEv3();
                     des.SAM_SEDESFireProperties!.AuthEv2 = desfire.GetAuthEv2();
                     des.SAM_SEDESFireProperties!.ProximityCheck = desfire.GetProximityCheck();
                     des.SAM_SEDESFireProperties!.AidString = BitConverter.ToString(desfire.GetAid()).Replace("-", "");
@@ -494,6 +532,12 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
                 {
                     desUid.SAM_SEDESFireUIDProperties!.KeyNum = desfireUID.GetUidKeyNumber();
                 }
+            }
+            else if (temp is SAM_SEDllReader reader && keyEntry is SAM_SESymmetricKeyEntryReader keyEntryReader)
+            {
+                keyEntryReader.SAM_SEReaderProperties!.NewKeyActive = reader.GetNewKeyActive();
+                keyEntryReader.SAM_SEReaderProperties!.CurrentKey = (SAM_SEReaderKeyType)reader.GetCurrentKeyType();
+                keyEntryReader.SAM_SEReaderProperties!.NewKey = (SAM_SEReaderKeyType)reader.GetNewKeyType();
             }
             else
             {

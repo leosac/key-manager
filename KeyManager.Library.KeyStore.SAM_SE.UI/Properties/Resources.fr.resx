@@ -374,7 +374,7 @@
     <comment>Used</comment>
   </data>
   <data name="KeyStoreDefaultKey" xml:space="preserve">
-    <value>SAM-SE en clé par défaut</value>
+    <value>SAM-SE avec mot de passe par défaut</value>
     <comment>Used</comment>
   </data>
   <data name="KeyStoreErrorSelection" xml:space="preserve">
@@ -386,7 +386,7 @@
     <comment>Used</comment>
   </data>
   <data name="KeyStoreReadersHelper" xml:space="preserve">
-    <value>Station de programmation : Type - Mac - Version</value>
+    <value>Station de programmation : Mac</value>
     <comment>Used</comment>
   </data>
   <data name="KeyStoreReadersProvider" xml:space="preserve">
@@ -422,19 +422,19 @@
     <comment>Used</comment>
   </data>
   <data name="ToolsConfFileConf1" xml:space="preserve">
-    <value>Configuration 1 : </value>
+    <value>Configuration Mifare DESFire 1 : </value>
     <comment>Used</comment>
   </data>
   <data name="ToolsConfFileConf2" xml:space="preserve">
-    <value>Configuration 2 : </value>
+    <value>Configuration Mifare DESFire 2 : </value>
     <comment>Used</comment>
   </data>
   <data name="ToolsConfFileConf3" xml:space="preserve">
-    <value>Configuration 3 : </value>
+    <value>Configuration Mifare DESFire 3 : </value>
     <comment>Used</comment>
   </data>
   <data name="ToolsConfFileConf4" xml:space="preserve">
-    <value>Configuration 4 : </value>
+    <value>Configuration Mifare DESFire 4 : </value>
     <comment>Used</comment>
   </data>
   <data name="ToolsConfFileDefaultOk" xml:space="preserve">
@@ -466,19 +466,251 @@
     <comment>Used</comment>
   </data>
   <data name="ToolsSummary" xml:space="preserve">
-    <value>Résumé :</value>
+    <value>Résumé de la configuration :</value>
     <comment>Used</comment>
   </data>
   <data name="ToolsUpdateDefault" xml:space="preserve">
-    <value>Mettre à jour le SAM-SE avec les valeurs par défaut</value>
+    <value>Mettre à jour le fichier de configuration du SAM-SE</value>
     <comment>Used</comment>
   </data>
   <data name="ToolsWarningDefaultFile" xml:space="preserve">
-    <value>Attention : Mettre à jour le fichier de configuration avec les valeurs par défaut va effacer les métadonnées de chaque objet</value>
+    <value>Attention : Mettre à jour le fichier de configuration va effacer les métadonnées de chaque objet</value>
     <comment>Used</comment>
   </data>
   <data name="Update" xml:space="preserve">
     <value>Mise à jour</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ACSIp" xml:space="preserve">
+    <value>IP du serveur de contrôle d'accès</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ACSSetting" xml:space="preserve">
+    <value>Paramètres du contrôle d'accès</value>
+    <comment>Used</comment>
+  </data>
+  <data name="Browse" xml:space="preserve">
+    <value>Parcourir</value>
+    <comment>Used</comment>
+  </data>
+  <data name="CAAbsent" xml:space="preserve">
+    <value>Absent</value>
+    <comment>Used</comment>
+  </data>
+  <data name="Certificates" xml:space="preserve">
+    <value>Certificats</value>
+    <comment>Used</comment>
+  </data>
+  <data name="CSR" xml:space="preserve">
+    <value>Génère un CSR</value>
+    <comment>Used</comment>
+  </data>
+  <data name="CUGateway" xml:space="preserve">
+    <value>Passerelle de l'UGL</value>
+    <comment>Used</comment>
+  </data>
+  <data name="CUId" xml:space="preserve">
+    <value>Numéro de dossier de l'UGL</value>
+    <comment>Used</comment>
+  </data>
+  <data name="CUIp" xml:space="preserve">
+    <value>Adresse IP de l'UGL</value>
+    <comment>Used</comment>
+  </data>
+  <data name="CUMask" xml:space="preserve">
+    <value>Masque de l'UGL</value>
+    <comment>Used</comment>
+  </data>
+  <data name="CUName" xml:space="preserve">
+    <value>Nom de l'UGL</value>
+    <comment>Used</comment>
+  </data>
+  <data name="CUSetting" xml:space="preserve">
+    <value>Paramètres unité de gestion locale</value>
+    <comment>Used</comment>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Supprimer</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DeleteCAInt" xml:space="preserve">
+    <value>Cette action va supprimer ce certificat intermédiaire</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DeleteCAIntAll" xml:space="preserve">
+    <value>Cette action va supprimer tous les certificats intermédiaires</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DeleteCertificates" xml:space="preserve">
+    <value>Cette action va supprimer ce certificat</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DeleteConfirmation" xml:space="preserve">
+    <value>Confirmation de suppression</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DeleteList" xml:space="preserve">
+    <value>Supprimer la liste</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DeleteRCA" xml:space="preserve">
+    <value>Cette action va supprimer l'autorité de certification racine</value>
+    <comment>Used</comment>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Télécharger</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DragDrop" xml:space="preserve">
+    <value>Déposer un fichier ici</value>
+    <comment>Used</comment>
+  </data>
+  <data name="FDLPort" xml:space="preserve">
+    <value>Port Fil de l'eau</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ICA" xml:space="preserve">
+    <value>Autorité(s) de certification intermédiaires(s)</value>
+    <comment>Used</comment>
+  </data>
+  <data name="NetworkSetting" xml:space="preserve">
+    <value>Paramètres réseau</value>
+    <comment>Used</comment>
+  </data>
+  <data name="QuickCommissioning" xml:space="preserve">
+    <value>Interface de configuration de mise en service rapide</value>
+    <comment>Used</comment>
+  </data>
+  <data name="RadiusIdentity" xml:space="preserve">
+    <value>Identité du certificat RADIUS</value>
+    <comment>Used</comment>
+  </data>
+  <data name="RCA" xml:space="preserve">
+    <value>Autorité de Certification Racine</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsVersion" xml:space="preserve">
+    <value>Versions</value>
+    <comment>Used</comment>
+  </data>
+  <data name="UpdateCertificates" xml:space="preserve">
+    <value>Mise à jour des certificats</value>
+    <comment>Used</comment>
+  </data>
+  <data name="UpdateCertificatesToolTip" xml:space="preserve">
+    <value>Cette action va mettre à jour les certificats dans le SAM-SE</value>
+    <comment>Used</comment>
+  </data>
+  <data name="UpdateConfirmation" xml:space="preserve">
+    <value>Confirmation de mise à jour dans le SAM-SE</value>
+    <comment>Used</comment>
+  </data>
+  <data name="UpdateConfirmationMessage" xml:space="preserve">
+    <value>Cette action va mettre à jour les certificats dans le SAM-SE. Cette opération peut prendre jusqu'à 20 secondes.</value>
+    <comment>Used</comment>
+  </data>
+  <data name="UpdatePort" xml:space="preserve">
+    <value>Port Mise à jour</value>
+    <comment>Used</comment>
+  </data>
+  <data name="VersionSAM" xml:space="preserve">
+    <value>Version SAM-SE</value>
+    <comment>Used</comment>
+  </data>
+  <data name="VersionUGL" xml:space="preserve">
+    <value>Version UGL</value>
+    <comment>Used</comment>
+  </data>
+  <data name="VersionUT" xml:space="preserve">
+    <value>Version UT</value>
+    <comment>Used</comment>
+  </data>
+  <data name="PFXPassword" xml:space="preserve">
+    <value>Mot de passe pour le fichier pfx</value>
+    <comment>Used</comment>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annuler</value>
+    <comment>Used</comment>
+  </data>
+  <data name="Valid" xml:space="preserve">
+    <value>Ok</value>
+    <comment>Used</comment>
+  </data>
+  <data name="AskUpdate" xml:space="preserve">
+    <value>Voulez-vous mettre à jour le SAM-SE avec ces informations ?</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolTipDepositCert" xml:space="preserve">
+    <value>Glisser-Déposer ou parcourir pour déposer un certificat ici</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ConfigurationSAN" xml:space="preserve">
+    <value>Saisie des SAN</value>
+    <comment>Used</comment>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Ajouter</value>
+    <comment>Used</comment>
+  </data>
+  <data name="TooMuchSan" xml:space="preserve">
+    <value>Il y a déjà 16 SAN. Supprimer des SAN avant d'en ajouter une nouvelle.</value>
+    <comment>Used</comment>
+  </data>
+  <data name="SAM_SEKeyEntryReader" xml:space="preserve">
+    <value>Lecteur</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyReaderK" xml:space="preserve">
+    <value>Clé lecteur</value>
+    <comment>Used</comment>
+  </data>
+  <data name="SAM_SEKeyEntryTypePerso" xml:space="preserve">
+    <value>Clé lecteur personnalisée</value>
+    <comment>Used</comment>
+  </data>
+  <data name="SAM_SEKeyEntryTypeSynchro" xml:space="preserve">
+    <value>Clé lecteur Synchronic</value>
+    <comment>Used</comment>
+  </data>
+  <data name="CurrentReaderKeyActive" xml:space="preserve">
+    <value>Clé actuelle lecteur toujours active</value>
+    <comment>Used</comment>
+  </data>
+  <data name="NewReaderKeyActive" xml:space="preserve">
+    <value>Clé nouvelle lecteur active</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsConfFileHardenedOk" xml:space="preserve">
+    <value>Fichier durci crée</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsSecurEvoHardened" xml:space="preserve">
+    <value>Créer un fichier de configuration durci dans le SAM-SE</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsConfFileConfClassic" xml:space="preserve">
+    <value>Configuration Mifare Classic : </value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsConfFileConfPlus" xml:space="preserve">
+    <value>Configuration Mifare Plus : </value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsConfFileConfUltra" xml:space="preserve">
+    <value>Configuration Mifare Ultralight : </value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolsConfFileConf125k" xml:space="preserve">
+    <value>Configuration 125kHz : </value>
+    <comment>Used</comment>
+  </data>
+  <data name="HardenedFile" xml:space="preserve">
+    <value>Fichier durci</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DefaultFile" xml:space="preserve">
+    <value>Fichier défaut</value>
     <comment>Used</comment>
   </data>
 </root>

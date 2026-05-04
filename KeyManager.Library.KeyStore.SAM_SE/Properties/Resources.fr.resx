@@ -120,8 +120,13 @@
   <data name="Absent" xml:space="preserve">
     <value>Absent</value>
   </data>
+  <data name="AddCertSuccess" xml:space="preserve">
+    <value>L'ajout du certificat a réussi</value>
+    <comment>Used</comment>
+  </data>
   <data name="AidNotValid" xml:space="preserve">
     <value>L'AID ne peut pas contenir cette valeur</value>
+    <comment>Used</comment>
   </data>
   <data name="AidWarningMissing" xml:space="preserve">
     <value>L'AID n'est pas renseigné</value>
@@ -129,8 +134,28 @@
   <data name="AidWarningWrongLength" xml:space="preserve">
     <value>L'AID renseigné n'est pas de longueur égale à 6</value>
   </data>
+  <data name="CSRSuccess" xml:space="preserve">
+    <value>La génération du CSR a réussi</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DeleteAllCaIntSuccess" xml:space="preserve">
+    <value>La suppression de tous les certificats intermédaires a réussi</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DeleteCertSuccess" xml:space="preserve">
+    <value>La suppression du certificat a réussi</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DLSuccess" xml:space="preserve">
+    <value>Le téléchargement du certificat a réussi</value>
+    <comment>Used</comment>
+  </data>
   <data name="FavoriteSAM_SEDisconnected" xml:space="preserve">
     <value>Le SAM-SE utilisé en favori n'est pas connecté</value>
+  </data>
+  <data name="JANUSModule" xml:space="preserve">
+    <value>Module JANUS</value>
+    <comment>Used</comment>
   </data>
   <data name="KeyStoreEntryNotSupported" xml:space="preserve">
     <value>Ce type de clé n'est pas supporté</value>
@@ -159,8 +184,8 @@
   <data name="LabelDfxa" xml:space="preserve">
     <value>Clé MIFARE DESFire : configuration</value>
   </data>
-  <data name="LabelScp3" xml:space="preserve">
-    <value>Clé d'authentification SAM-SE</value>
+  <data name="LabelKeyK" xml:space="preserve">
+    <value>Clé lecteur</value>
   </data>
   <data name="LabelUidx" xml:space="preserve">
     <value>Clé Random ID : configuration</value>
@@ -185,6 +210,10 @@
   </data>
   <data name="PasswordErrorLetter" xml:space="preserve">
     <value>Le mot de passe ne contient pas de lettre</value>
+  </data>
+  <data name="RADIUSModule" xml:space="preserve">
+    <value>Module RADIUS</value>
+    <comment>Used</comment>
   </data>
   <data name="SAM_SEDllVersionError" xml:space="preserve">
     <value>La version de SPSEDLL.dll ne correspond pas à la version attendue</value>
@@ -236,5 +265,72 @@
   </data>
   <data name="SiNotValid" xml:space="preserve">
     <value>Le SI ne peut pas être de longueur impaire</value>
+  </data>
+  <data name="TLSModule" xml:space="preserve">
+    <value>Module TLS</value>
+    <comment>Used</comment>
+  </data>
+  <data name="UpdateSuccess" xml:space="preserve">
+    <value>La mise à jour du SAM-SE a réussi</value>
+    <comment>Used</comment>
+  </data>
+  <data name="WEBModule" xml:space="preserve">
+    <value>Module WEB</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolTipDepositCert" xml:space="preserve">
+    <value>Glisser-Déposer ou parcourir pour déposer un certificat ici</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolTipDepositCert1" xml:space="preserve">
+    <value>Glisser-Déposer ou parcourir pour déposer un certificat ici</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolTipDepositFile" xml:space="preserve">
+    <value>Glisser-Déposer ou parcourir pour déposer des fichiers ici</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolTipDepositKey" xml:space="preserve">
+    <value>Glisser-Déposer ou parcourir pour déposer une clé ici</value>
+    <comment>Used</comment>
+  </data>
+  <data name="ToolTipOpenCert" xml:space="preserve">
+    <value>Effectuer un double clic pour ouvrir le certificat</value>
+    <comment>Used</comment>
+  </data>
+  <data name="AddKeySuccess" xml:space="preserve">
+    <value>L'ajout de la clé a réussi</value>
+    <comment>Used</comment>
+  </data>
+  <data name="AddPFXSuccess" xml:space="preserve">
+    <value>L'ajout du fichier PFX a réussi</value>
+    <comment>Used</comment>
+  </data>
+  <data name="DeleteCertKeySuccess" xml:space="preserve">
+    <value>La suppression du certificat et de la clé a réussi</value>
+  </data>
+  <data name="SAM_SELowLevelError" xml:space="preserve">
+    <value>Une erreur s'est produite à un niveau bas du SAM-SE</value>
+  </data>
+  <data name="UpdateFailed" xml:space="preserve">
+    <value>La mise à jour du SAM-SE a echoué</value>
+    <comment>Used</comment>
+  </data>
+  <data name="KeyValueCurrent" xml:space="preserve">
+    <value>Valeur de la clé nouvelle</value>
+  </data>
+  <data name="KeyValueNew" xml:space="preserve">
+    <value>Valeur de la clé actuelle</value>
+  </data>
+  <data name="LabelScp3" xml:space="preserve">
+    <value>Clé d'authentification SAM-SE</value>
+  </data>
+  <data name="DefaultFile" xml:space="preserve">
+    <value>Fichier défaut</value>
+    <comment>Used</comment>
+  </data>
+  <data name="HardenedFile" xml:space="preserve">
+    <value>Fichier durci</value>
+    <comment>Used</comment>
   </data>
 </root>
