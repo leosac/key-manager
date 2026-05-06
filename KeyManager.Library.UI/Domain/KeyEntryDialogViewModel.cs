@@ -14,6 +14,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             KClass = keClass;
             _submitButtonText = Leosac.KeyManager.Library.UI.Properties.Resources.OK;
             KeyEntryFactories = new ObservableCollection<KeyEntryItem>();
+            ExpandKeyContainers = UIPreferences.GetSingletonInstance(false)?.ExpandKeyContainersByDefault ?? false;
             foreach (var factory in KeyEntryUIFactory.RegisteredFactories)
             {
                 if (factory.TargetFactory != null && factory.TargetFactory.KClasses.Contains(KClass))
@@ -53,6 +54,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         private bool _showKeyEntryLabel = true;
         private bool _allowSubmit = true;
         private string _submitButtonText;
+        private bool _expandKeyContainers;
         private KeyEntry? _keyEntry;
         private KeyEntryItem? _selectedFactoryItem;
 
@@ -117,6 +119,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             get => _submitButtonText;
             set => SetProperty(ref _submitButtonText, value);
+        }
+
+        public bool ExpandKeyContainers
+        {
+            get => _expandKeyContainers;
+            protected set => SetProperty(ref _expandKeyContainers, value);
         }
 
         public void RefreshVariants()

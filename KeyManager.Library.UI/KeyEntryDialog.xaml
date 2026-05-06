@@ -106,7 +106,7 @@
                                 <DataTemplate DataType="lib:KeyContainer">
                                     <materialDesign:Card Grid.Row="3" Grid.ColumnSpan="2">
                                         <StackPanel>
-                                            <Expander HorizontalAlignment="Stretch" Header="{Binding Name}">
+                                            <Expander HorizontalAlignment="Stretch" Header="{Binding Name}" IsExpanded="{Binding DataContext.ExpandKeyContainers, ElementName=userControl, Mode=OneTime}">
                                                 <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="24,8,24,16">
                                                     <local:KeyContainerControl ShowKeyMaterials="{Binding DataContext.ShowKeyMaterials, ElementName=userControl}" />
                                                 </StackPanel>
