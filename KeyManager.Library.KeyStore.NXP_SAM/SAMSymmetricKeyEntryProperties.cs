@@ -1,4 +1,6 @@
-﻿namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
+﻿using System.ComponentModel;
+
+namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 {
     public class SAMSymmetricKeyEntryProperties : KeyEntryProperties
     {
@@ -108,6 +110,7 @@
         }
 
         private byte[] _desfireAID = new byte[3];
+        [Browsable(false)]
         public byte[] DESFireAID
         {
             get => _desfireAID;
@@ -115,6 +118,7 @@
         }
 
         private byte _desfireKeyNum;
+        [Browsable(false)]
         public byte DESFireKeyNum
         {
             get => _desfireKeyNum;

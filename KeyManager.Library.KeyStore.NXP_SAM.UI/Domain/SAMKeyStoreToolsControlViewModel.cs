@@ -222,7 +222,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 {
                     key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_DES);
                 }
-                else if (SAMAuthKeyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES128)
+                else if (SAMAuthKeyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES128 || SAMAuthKeyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES192 || SAMAuthKeyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES256)
                 {
                     key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
                 }
