@@ -83,7 +83,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             set => SetProperty(ref _forceCardType, value);
         }
 
-        public override int? SecretMaxLength => 32;
+        public override int? SecretMaxLength => 64;
 
         public override bool Equals(object? obj)
         {

@@ -712,6 +712,14 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                         kv = AN10922KeyDiversification.Diversify(kv, input);
                     }
                 }
+                if (kv.Length == 64)
+                {
+                    key.setLength(32);
+                }
+                else if (kv.Length == 48)
+                {
+                    key.setLength(24);
+                }
                 key.fromString(KeyMaterial.GetValueAsString(kv, KeyValueStringFormat.HexStringWithSpace));
             }
             else
