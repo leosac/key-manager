@@ -788,31 +788,28 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             Mouse.OverrideCursor = Cursors.Wait;
             _identifiersView.SortDescriptions.Clear();
-            string idProperty = ((KeyStore?.IsNumericKeyId).GetValueOrDefault(false)) ? "KeyEntryId.NumericId" : "KeyEntryId.Id";
-            switch (order)
+            if (string.IsNullOrEmpty(order))
             {
-                case "ByIdAsc":
-                    // Even if key id is not enforced to be numeric, we try to order in numeric order first
-                    if (!(KeyStore?.IsNumericKeyId).GetValueOrDefault(false))
-                    {
-                        _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.NumericId", ListSortDirection.Ascending));
-                    }
-                    _identifiersView.SortDescriptions.Add(new SortDescription(idProperty, ListSortDirection.Ascending));
-                    break;
-                case "ByIdDesc":
-                    if (!(KeyStore?.IsNumericKeyId).GetValueOrDefault(false))
-                    {
-                        _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.NumericId", ListSortDirection.Descending));
-                    }
-                    _identifiersView.SortDescriptions.Add(new SortDescription(idProperty, ListSortDirection.Descending));
-                    break;
-                case "ByLabelAsc":
-                    _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.Label", ListSortDirection.Ascending));
-                    break;
-                case "ByLabelDesc":
-                    _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.Label", ListSortDirection.Descending));
-                    break;
+                Mouse.OverrideCursor = null;
+                return;
             }
+            bool isNumeric = (KeyStore?.IsNumericKeyId).GetValueOrDefault(false);
+            string idProperty = isNumeric ? "KeyEntryId.NumericId" : "KeyEntryId.Id";
+            // Even if key id is not enforced to be numeric, we try to order in numeric order first
+            if (!isNumeric && order.StartsWith("ById"))
+            {
+                _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.NumericId",
+                    order.EndsWith("Desc") ? ListSortDirection.Descending : ListSortDirection.Ascending));
+            }
+            var direction = order.EndsWith("Desc") ? ListSortDirection.Descending : ListSortDirection.Ascending;
+            var property = order switch
+            {
+                "ByIdAsc" or "ByIdDesc" => idProperty,
+                "ByLabelAsc" or "ByLabelDesc" => "KeyEntryId.Label",
+                _ => null
+            };
+            if (property != null)
+                _identifiersView.SortDescriptions.Add(new SortDescription(property, direction));
 
             var uipref = UIPreferences.GetSingletonInstance(false) ?? new UIPreferences();
             if (order != uipref.DefaultOrdering)
