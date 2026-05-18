@@ -11,7 +11,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             {
                 LibLogicalAccess.Card.DESFireKeyType.DF_KEY_DES => "DES",
                 LibLogicalAccess.Card.DESFireKeyType.DF_KEY_3K3DES => "TK3DES",
-                _ => "AES128",
+                _ => "AES",
             };
         }
 

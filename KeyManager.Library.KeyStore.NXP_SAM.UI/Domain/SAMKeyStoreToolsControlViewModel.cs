@@ -18,9 +18,6 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             _samAuthKey = new KeyVersion { Name = "Key" };
             _samAuthKeyId = 0;
             _samAuthKeyType = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES128;
-
-            _samUnlockKey = new KeyVersion { Name = "Key", Key = new Key(null, 16, "") };
-            _samUnlockKeyId = 1;
             _samUnlockAction = LibLogicalAccess.Card.SAMLockUnlock.Unlock;
 
             KeyTypes = new ObservableCollection<LibLogicalAccess.Card.SAMKeyType>(Enum.GetValues<LibLogicalAccess.Card.SAMKeyType>());
@@ -61,20 +58,6 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
         {
             get => _samAuthKeyType;
             set => SetProperty(ref _samAuthKeyType, value);
-        }
-
-        private KeyVersion _samUnlockKey;
-        public KeyVersion SAMUnlockKey
-        {
-            get => _samUnlockKey;
-            set => SetProperty(ref _samUnlockKey, value);
-        }
-
-        private byte _samUnlockKeyId;
-        public byte SAMUnlockKeyId
-        {
-            get => _samUnlockKeyId;
-            set => SetProperty(ref _samUnlockKeyId, value);
         }
 
         private LibLogicalAccess.Card.SAMLockUnlock _samUnlockAction;
@@ -216,23 +199,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
         {
             try
             {
-                var key = new LibLogicalAccess.Card.DESFireKey();
-
-                if (SAMAuthKeyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_DES)
-                {
-                    key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_DES);
-                }
-                else if (SAMAuthKeyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES128)
-                {
-                    key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
-                }
-                else
-                {
-                    key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_3K3DES);
-                }
-
-                key.fromString(SAMAuthKey.Key.GetAggregatedValueAsString(KeyValueStringFormat.HexStringWithSpace));
-                key.setKeyVersion(SAMAuthKey.Version);
+                var key = GetAuthenticationKey();
                 var cmd = (KeyStore as SAMKeyStore)?.Chip?.getCommands();
                 if (cmd is SAMAV1ISO7816Commands samav1cmd)
                 {
@@ -301,6 +268,36 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
             }
         }
 
+        protected LibLogicalAccess.Card.DESFireKey GetAuthenticationKey()
+        {
+            var key = new LibLogicalAccess.Card.DESFireKey();
+            if (SAMAuthKeyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_DES)
+            {
+                key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_DES);
+            }
+            else if (SAMAuthKeyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES128)
+            {
+                key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
+            }
+            else if (SAMAuthKeyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES192)
+            {
+                key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
+                key.setLength(24);
+            }
+            else if (SAMAuthKeyType == LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES256)
+            {
+                key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
+                key.setLength(32);
+            }
+            else
+            {
+                key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_3K3DES);
+            }
+            key.fromString(SAMAuthKey.Key.GetAggregatedValueAsString(KeyValueStringFormat.HexStringWithSpace));
+            key.setKeyVersion(SAMAuthKey.Version);
+            return key;
+        }
+
         private void SAMLockUnlock()
         {
             try
@@ -308,18 +305,14 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain
                 var ks = (KeyStore as SAMKeyStore);
                 var cmd = ks?.Chip?.getCommands();
 
-                var key = new LibLogicalAccess.Card.DESFireKey();
-                key.setKeyType(LibLogicalAccess.Card.DESFireKeyType.DF_KEY_AES);
-                key.fromString(SAMUnlockKey.Key.GetAggregatedValueAsString(KeyValueStringFormat.HexStringWithSpace));
-                key.setKeyVersion(SAMUnlockKey.Version);
-
+                var key = GetAuthenticationKey();
                 if (cmd is SAMAV1ISO7816Commands samav1cmd)
                 {
-                    samav1cmd.lockUnlock(key, SAMUnlockAction, SAMUnlockKeyId, 0, 0);
+                    samav1cmd.lockUnlock(key, SAMUnlockAction, SAMAuthKeyId, 0, 0);
                 }
                 else if (cmd is SAMAV2ISO7816Commands samav2cmd)
                 {
-                    samav2cmd.lockUnlock(key, SAMUnlockAction, SAMUnlockKeyId, 0, 0);
+                    samav2cmd.lockUnlock(key, SAMUnlockAction, SAMAuthKeyId, 0, 0);
                 }
                 
                 SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, "SAM Lock/Unlock completed.");

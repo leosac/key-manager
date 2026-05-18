@@ -11,11 +11,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
         protected LinkDialogViewModel()
         {
             RunLinkCommand = new AsyncRelayCommand(
-                () =>
+                async () =>
                 {
                     MaterialDesignThemes.Wpf.DrawerHost.OpenDrawerCommand.Execute(null, null);
                     AllowImport = false;
-                    return RunLink();
+                    await RunLink();
+                    LinkResult = null;
                 });
 
             RunLinkForImportCommand = new AsyncRelayCommand(

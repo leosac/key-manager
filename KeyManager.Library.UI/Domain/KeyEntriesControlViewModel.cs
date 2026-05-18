@@ -600,7 +600,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
                                 {
                                     bool include = false;
                                     var v = p.GetValue(ke.Properties);
-                                    if (v != null)
+                                    var attrs = p.GetCustomAttributes(true);
+                                    var hasBrowsableFalse = attrs.OfType<BrowsableAttribute>().Any(ba => !ba.Browsable);
+                                    if (!hasBrowsableFalse && v != null)
                                     {
                                         if (p.PropertyType == typeof(string) || p.PropertyType.IsEnum)
                                         {
@@ -610,7 +612,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
                                         {
                                             include = (bool)v;
                                         }
+                                        else if (IsNumericType(p.PropertyType))
+                                        {
+                                            include = true;
+                                        }
                                     }
+
                                     if (include)
                                     {
                                         l.ListItems.Add(new ListItem(new Paragraph(new Run(ConvertPropertyNameToHumanFriendlyName(p.Name) + ": " + v))));
@@ -746,6 +753,15 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     log.Error("Key entries printing error.", ex);
                 }
             }
+        }
+
+        private bool IsNumericType(Type t)
+        {
+            return t == typeof(byte) || t == typeof(sbyte) ||
+                t == typeof(short) || t == typeof(ushort) ||
+                t == typeof(int) || t == typeof(uint) ||
+                t == typeof(long) || t == typeof(ulong) ||
+                t == typeof(float) || t == typeof(double) || t == typeof(decimal);
         }
 
         private IEnumerable<SelectableKeyEntryId>? GetSelectedIdentifiers()
