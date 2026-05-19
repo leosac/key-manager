@@ -392,11 +392,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        private ICardDevice CreateDeviceFromFavorite(Favorite favorite, KeyStore.KeyStore keyStore)
+        private ICardDevice CreateDeviceFromFavorite(KeyStore.KeyStore keyStore, KeyStoreFactory factory)
         {
-            if (favorite.Properties == null)
+            if (Favorite.Properties == null)
                 throw new InvalidOperationException("Favorite does not have KeyStoreProperties set.");
-            var factory = KeyStoreFactory.GetFactoryFromPropertyType(favorite.Properties.GetType());
             if (factory != null)
             {
                 try
@@ -417,9 +416,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
             return new GenericCardDevice(keyStore);
         }
 
-        private async Task<ICardDevice> InitializeDeviceAsync(KeyStore.KeyStore targetStore)
+        private async Task<ICardDevice> InitializeDeviceAsync(KeyStore.KeyStore targetStore, KeyStoreFactory factory)
         {
-            ICardDevice device = CreateDeviceFromFavorite(Favorite, targetStore);
+            ICardDevice device = CreateDeviceFromFavorite(targetStore, factory);
             await device.InitializeReaderAsync(
                 (msg, level) => Logs.Add(new LogEntry(msg, level)),
                 (msg, level) => Notify(msg, level)
@@ -427,6 +426,17 @@ namespace Leosac.KeyManager.Library.UI.Domain
             return device;
         }
 
+        private async Task<List<IChangeKeyEntry>> BuildChangesForOrderingAsync(IEnumerable<KeyEntryId> keyIds, KeyStore.KeyStore targetStore)
+        {
+            var result = new List<IChangeKeyEntry>();
+            foreach (var id in keyIds)
+            {
+                var entry = await targetStore.Get(id, KeyEntryClass.Symmetric);
+                if (entry is IChangeKeyEntry change)
+                    result.Add(change);
+            }
+            return result;
+        }
 
         private async Task StartWorkflow()
         {
@@ -443,8 +453,14 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 InitializeWorkflow();
                 var targetStore = Favorite.CreateKeyStore() ?? throw new KeyStoreException("Cannot create KeyStore from Favorite.");
-                ICardDevice device = await InitializeDeviceAsync(targetStore);
+                var factory = KeyStoreFactory.GetFactoryFromPropertyType(Favorite?.Properties?.GetType())
+                    ?? throw new InvalidOperationException("No factory found for favorite.");
+                ICardDevice device = await InitializeDeviceAsync(targetStore, factory);
                 var keyIds = await GetSelectedKeysAsync();
+                
+                var changesForOrdering = await BuildChangesForOrderingAsync(keyIds, targetStore);
+                keyIds = factory.OrderKeyEntries(changesForOrdering, targetStore).Select(x => x.Identifier).ToList();
+                
                 if (keyIds.Count == 0)
                 {
                     AddLog("No keys selected for publishing. Aborting workflow.", LogLevel.Warning);
@@ -615,11 +631,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 if (!ke.ShowSelection)
                 {
                     var keys = await SourceKeyStore.GetAll(ke.KeyEntryClass);
-                    return keys.ToList();
+                    return keys;
                 }
                 else
                     return ke.Identifiers.Where(k => k.Selected && k.KeyEntryId != null)
-                                         .Select(k => k.KeyEntryId!).ToList();
+                                         .Select(k => k.KeyEntryId!);
             }))).SelectMany(l => l).ToList();
             return keyIds;
         }

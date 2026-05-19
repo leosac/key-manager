@@ -795,13 +795,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
             bool isNumeric = (KeyStore?.IsNumericKeyId).GetValueOrDefault(false);
             string idProperty = isNumeric ? "KeyEntryId.NumericId" : "KeyEntryId.Id";
+            var direction = order.EndsWith("Desc") ? ListSortDirection.Descending : ListSortDirection.Ascending;
             // Even if key id is not enforced to be numeric, we try to order in numeric order first
             if (!isNumeric && order.StartsWith("ById"))
             {
-                _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.NumericId",
-                    order.EndsWith("Desc") ? ListSortDirection.Descending : ListSortDirection.Ascending));
+                _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.NumericId", direction));
             }
-            var direction = order.EndsWith("Desc") ? ListSortDirection.Descending : ListSortDirection.Ascending;
             var property = order switch
             {
                 "ByIdAsc" or "ByIdDesc" => idProperty,

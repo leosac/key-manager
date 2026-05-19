@@ -12,5 +12,14 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 return new Domain.SAMCardDevice(samStore);
             return null;
         }
+
+        public override IEnumerable<IChangeKeyEntry> OrderKeyEntries(IList<IChangeKeyEntry> entries, KeyStore keyStore)
+        {
+            if (keyStore is not SAMKeyStore sam)
+                return entries;
+
+            return entries.Order(new SAMKeyEntryComparer(sam.GetSAMProperties()));
+        }
+
     }
 }
