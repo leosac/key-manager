@@ -33,7 +33,7 @@ namespace Leosac.KeyManager.Library.Plugin
         /// <returns> "ICardDevice" instance if supported; otherwise, null.</returns>
         public virtual Device.ICardDevice? CreateCardDevice(KeyStore.KeyStore keyStore)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException($"Doesn't support card device creation for '{keyStore?.GetType().Name}'.");
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Leosac.KeyManager.Library.Plugin
         /// <param name="entries">The collection of key entry identifiers to order.</param>
         /// <param name="keyStore">The key store for which the entries will be published.</param>
         /// <returns>An ordered list of key entry identifiers.</returns>
-        public virtual IEnumerable<IChangeKeyEntry> OrderKeyEntries(IList<IChangeKeyEntry> entries, KeyStore.KeyStore keyStore)
+        public virtual IEnumerable<KeyEntryInfo> OrderKeyEntries(IList<KeyEntryInfo> entries, KeyStore.KeyStore keyStore)
         {
             return entries;
         }

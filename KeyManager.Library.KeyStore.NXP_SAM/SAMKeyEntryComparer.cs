@@ -11,49 +11,29 @@
         public int Compare(IChangeKeyEntry? x, IChangeKeyEntry? y)
         {
             if (x == null && y == null)
+                return 0;
+
+            if (x == null)
+                return -1;
+
+            if (y == null)
+                return 1;
+
+            if (x.Identifier.Id == _properties.AuthenticateKeyEntryIdentifier.ToString())
+                return 1;
+
+            if (y.Identifier.Id == _properties.AuthenticateKeyEntryIdentifier.ToString())
+                return -1;
+
+            try
+            {
+                return int.Parse(x.Identifier.Id ?? "0").CompareTo(int.Parse(y.Identifier.Id ?? "0"));
+            }
+            catch
             {
                 return 0;
             }
-
-            if (x == null)
-            {
-                return -1;
-            }
-
-            if (y == null)
-            {
-                return 1;
-            }
-
-            if (x is SAMSymmetricKeyEntry kx)
-            {
-                // Always push to end the key used for key store authentication
-                if (kx.Identifier.Id == _properties.AuthenticateKeyEntryIdentifier.ToString())
-                {
-                    return 1;
-                }
-
-                if (y is SAMSymmetricKeyEntry ky)
-                {
-                    if (ky.Identifier.Id == _properties.AuthenticateKeyEntryIdentifier.ToString())
-                    {
-                        return -1;
-                    }
-
-                    try
-                    {
-                        return int.Parse(kx.Identifier.Id ?? "0") - int.Parse(ky.Identifier.Id ?? "0");
-                    }
-                    catch
-                    {
-                        return 0;
-                    }
-                }
-
-                return 1;
-            }
-
-            return 0;
         }
+
     }
 }
