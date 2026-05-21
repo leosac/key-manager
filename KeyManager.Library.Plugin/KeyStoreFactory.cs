@@ -1,4 +1,6 @@
-﻿namespace Leosac.KeyManager.Library.Plugin
+﻿using Leosac.KeyManager.Library.KeyStore;
+
+namespace Leosac.KeyManager.Library.Plugin
 {
     /// <summary>
     /// The base class for Key Store Factory implementation.
@@ -31,7 +33,18 @@
         /// <returns> "ICardDevice" instance if supported; otherwise, null.</returns>
         public virtual Device.ICardDevice? CreateCardDevice(KeyStore.KeyStore keyStore)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException($"Doesn't support card device creation for '{keyStore?.GetType().Name}'.");
+        }
+
+        /// <summary>
+        /// Orders the specified key entries according to the target key store publishing requirements.
+        /// </summary>
+        /// <param name="entries">The collection of key entry identifiers to order.</param>
+        /// <param name="keyStore">The key store for which the entries will be published.</param>
+        /// <returns>An ordered list of key entry identifiers.</returns>
+        public virtual IEnumerable<KeyEntryInfo> OrderKeyEntries(IList<KeyEntryInfo> entries, KeyStore.KeyStore keyStore)
+        {
+            return entries;
         }
     }
 }
