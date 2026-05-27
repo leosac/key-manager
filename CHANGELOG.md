@@ -1,3 +1,12 @@
+# v1.25.0 - 05/27/2026
+ - Add numeric properties to the print summary (to have change key references information on SAM key entries)
+ - Allow AES192 and AES256 as NXP SAM Authentication Key
+ - Add an user preference to expand Key Containers by default (hidden feature atm)
+ - Several Batch Publish feature improvement
+ - Update Synchronic SAM SE key store plug-in: several fixes, new Certificates management feature, hardened configuration file creation and to change Readers communication key
+ - Fix kdbx extension filter in French translation on KeePass key store
+ - Fix Key Link test to avoid importing key value unexpectedly
+
 # v1.24.0 - 03/31/2026
  - Add KeePass key store plug-in
  - Add Batch Publish feature
