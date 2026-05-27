@@ -61,6 +61,78 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Access Control Server IP.
+        /// </summary>
+        public static string ACSIp {
+            get {
+                return ResourceManager.GetString("ACSIp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Access control settings.
+        /// </summary>
+        public static string ACSSetting {
+            get {
+                return ResourceManager.GetString("ACSSetting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Add.
+        /// </summary>
+        public static string Add {
+            get {
+                return ResourceManager.GetString("Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Do you want to update the SAM-SE with these informations ?.
+        /// </summary>
+        public static string AskUpdate {
+            get {
+                return ResourceManager.GetString("AskUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Browse.
+        /// </summary>
+        public static string Browse {
+            get {
+                return ResourceManager.GetString("Browse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Missing.
+        /// </summary>
+        public static string CAAbsent {
+            get {
+                return ResourceManager.GetString("CAAbsent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Cancel.
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Certificates.
+        /// </summary>
+        public static string Certificates {
+            get {
+                return ResourceManager.GetString("Certificates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Disabled.
         /// </summary>
         public static string ConfFileDisabled {
@@ -84,6 +156,159 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         public static string ConfFileDivRid {
             get {
                 return ResourceManager.GetString("ConfFileDivRid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Entering SAN.
+        /// </summary>
+        public static string ConfigurationSAN {
+            get {
+                return ResourceManager.GetString("ConfigurationSAN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Generate a CSR.
+        /// </summary>
+        public static string CSR {
+            get {
+                return ResourceManager.GetString("CSR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Central Unit gateway.
+        /// </summary>
+        public static string CUGateway {
+            get {
+                return ResourceManager.GetString("CUGateway", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Central Unit id.
+        /// </summary>
+        public static string CUId {
+            get {
+                return ResourceManager.GetString("CUId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Central Unit IP address.
+        /// </summary>
+        public static string CUIp {
+            get {
+                return ResourceManager.GetString("CUIp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Central Unit mask.
+        /// </summary>
+        public static string CUMask {
+            get {
+                return ResourceManager.GetString("CUMask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Central Unit name.
+        /// </summary>
+        public static string CUName {
+            get {
+                return ResourceManager.GetString("CUName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reader current key always active.
+        /// </summary>
+        public static string CurrentReaderKeyActive {
+            get {
+                return ResourceManager.GetString("CurrentReaderKeyActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Central unit settings.
+        /// </summary>
+        public static string CUSetting {
+            get {
+                return ResourceManager.GetString("CUSetting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Default file.
+        /// </summary>
+        public static string DefaultFile {
+            get {
+                return ResourceManager.GetString("DefaultFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Delete.
+        /// </summary>
+        public static string Delete {
+            get {
+                return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This action will delete this intermediate certificate.
+        /// </summary>
+        public static string DeleteCAInt {
+            get {
+                return ResourceManager.GetString("DeleteCAInt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This action will delete all the intermediates certificates.
+        /// </summary>
+        public static string DeleteCAIntAll {
+            get {
+                return ResourceManager.GetString("DeleteCAIntAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This action will delete this certificate.
+        /// </summary>
+        public static string DeleteCertificates {
+            get {
+                return ResourceManager.GetString("DeleteCertificates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Deletion confirmation.
+        /// </summary>
+        public static string DeleteConfirmation {
+            get {
+                return ResourceManager.GetString("DeleteConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Delete list.
+        /// </summary>
+        public static string DeleteList {
+            get {
+                return ResourceManager.GetString("DeleteList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This action will delete the root authority certificate.
+        /// </summary>
+        public static string DeleteRCA {
+            get {
+                return ResourceManager.GetString("DeleteRCA", resourceCulture);
             }
         }
         
@@ -165,6 +390,51 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         public static string DESFireModeUid {
             get {
                 return ResourceManager.GetString("DESFireModeUid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Download.
+        /// </summary>
+        public static string Download {
+            get {
+                return ResourceManager.GetString("Download", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Drag &amp; Drop files here.
+        /// </summary>
+        public static string DragDrop {
+            get {
+                return ResourceManager.GetString("DragDrop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Event viewer port.
+        /// </summary>
+        public static string FDLPort {
+            get {
+                return ResourceManager.GetString("FDLPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Hardened file.
+        /// </summary>
+        public static string HardenedFile {
+            get {
+                return ResourceManager.GetString("HardenedFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Intermediate(s) Certificate Authority(ies).
+        /// </summary>
+        public static string ICA {
+            get {
+                return ResourceManager.GetString("ICA", resourceCulture);
             }
         }
         
@@ -601,6 +871,15 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reader key.
+        /// </summary>
+        public static string KeyReaderK {
+            get {
+                return ResourceManager.GetString("KeyReaderK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Updating the SAM-SE lock level.
         /// </summary>
         public static string KeyStoreAutoLock {
@@ -637,7 +916,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à SAM-SE default key.
+        ///   Recherche une chaîne localisée semblable à SAM-SE default password.
         /// </summary>
         public static string KeyStoreDefaultKey {
             get {
@@ -664,7 +943,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Programming Station : Type - Mac - Version.
+        ///   Recherche une chaîne localisée semblable à Programming Station : Mac.
         /// </summary>
         public static string KeyStoreReadersHelper {
             get {
@@ -682,6 +961,24 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Network settings.
+        /// </summary>
+        public static string NetworkSetting {
+            get {
+                return ResourceManager.GetString("NetworkSetting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reader new key active.
+        /// </summary>
+        public static string NewReaderKeyActive {
+            get {
+                return ResourceManager.GetString("NewReaderKeyActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Password.
         /// </summary>
         public static string Password {
@@ -691,11 +988,47 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Password for the pfx file.
+        /// </summary>
+        public static string PFXPassword {
+            get {
+                return ResourceManager.GetString("PFXPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Enables protection against relay attacks.
         /// </summary>
         public static string ProximityCheckExplanation {
             get {
                 return ResourceManager.GetString("ProximityCheckExplanation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Quickstart configuration interface.
+        /// </summary>
+        public static string QuickCommissioning {
+            get {
+                return ResourceManager.GetString("QuickCommissioning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Identity of RADIUS certificate.
+        /// </summary>
+        public static string RadiusIdentity {
+            get {
+                return ResourceManager.GetString("RadiusIdentity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Root Certificate Authority.
+        /// </summary>
+        public static string RCA {
+            get {
+                return ResourceManager.GetString("RCA", resourceCulture);
             }
         }
         
@@ -727,6 +1060,33 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reader.
+        /// </summary>
+        public static string SAM_SEKeyEntryReader {
+            get {
+                return ResourceManager.GetString("SAM_SEKeyEntryReader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reader key personalized.
+        /// </summary>
+        public static string SAM_SEKeyEntryTypePerso {
+            get {
+                return ResourceManager.GetString("SAM_SEKeyEntryTypePerso", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reader key Synchronic.
+        /// </summary>
+        public static string SAM_SEKeyEntryTypeSynchro {
+            get {
+                return ResourceManager.GetString("SAM_SEKeyEntryTypeSynchro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Save connection informations.
         /// </summary>
         public static string StoreSecret {
@@ -745,7 +1105,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Configuration 1 : .
+        ///   Recherche une chaîne localisée semblable à Configuration Mifare DESFire 1 : .
         /// </summary>
         public static string ToolsConfFileConf1 {
             get {
@@ -754,7 +1114,16 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Configuration 2 : .
+        ///   Recherche une chaîne localisée semblable à Configuration 125kHz : .
+        /// </summary>
+        public static string ToolsConfFileConf125k {
+            get {
+                return ResourceManager.GetString("ToolsConfFileConf125k", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Configuration Mifare DESFire 2 : .
         /// </summary>
         public static string ToolsConfFileConf2 {
             get {
@@ -763,7 +1132,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Configuration 3 : .
+        ///   Recherche une chaîne localisée semblable à Configuration Mifare DESFire 3 : .
         /// </summary>
         public static string ToolsConfFileConf3 {
             get {
@@ -772,11 +1141,38 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Configuration 4 : .
+        ///   Recherche une chaîne localisée semblable à Configuration Mifare DESFire 4 : .
         /// </summary>
         public static string ToolsConfFileConf4 {
             get {
                 return ResourceManager.GetString("ToolsConfFileConf4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Configuration Mifare Classic : .
+        /// </summary>
+        public static string ToolsConfFileConfClassic {
+            get {
+                return ResourceManager.GetString("ToolsConfFileConfClassic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Configuration Mifare Plus : .
+        /// </summary>
+        public static string ToolsConfFileConfPlus {
+            get {
+                return ResourceManager.GetString("ToolsConfFileConfPlus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Configuration Mifare Ultralight : .
+        /// </summary>
+        public static string ToolsConfFileConfUltra {
+            get {
+                return ResourceManager.GetString("ToolsConfFileConfUltra", resourceCulture);
             }
         }
         
@@ -786,6 +1182,15 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         public static string ToolsConfFileDefaultOk {
             get {
                 return ResourceManager.GetString("ToolsConfFileDefaultOk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Harden file created.
+        /// </summary>
+        public static string ToolsConfFileHardenedOk {
+            get {
+                return ResourceManager.GetString("ToolsConfFileHardenedOk", resourceCulture);
             }
         }
         
@@ -844,7 +1249,16 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Summary :.
+        ///   Recherche une chaîne localisée semblable à Create a harden configuration file in SAM-SE.
+        /// </summary>
+        public static string ToolsSecurEvoHardened {
+            get {
+                return ResourceManager.GetString("ToolsSecurEvoHardened", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Configuration summary :.
         /// </summary>
         public static string ToolsSummary {
             get {
@@ -853,7 +1267,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Update SAM-SE with default values.
+        ///   Recherche une chaîne localisée semblable à Update SAM-SE configuration file.
         /// </summary>
         public static string ToolsUpdateDefault {
             get {
@@ -862,11 +1276,38 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Warning : updating the configuration file to default values will erase metadatas of every object.
+        ///   Recherche une chaîne localisée semblable à Versions.
+        /// </summary>
+        public static string ToolsVersion {
+            get {
+                return ResourceManager.GetString("ToolsVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Warning : updating the configuration file will erase metadatas of every object.
         /// </summary>
         public static string ToolsWarningDefaultFile {
             get {
                 return ResourceManager.GetString("ToolsWarningDefaultFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Drag&amp;Drop or browse to deposit cetificate here.
+        /// </summary>
+        public static string ToolTipDepositCert {
+            get {
+                return ResourceManager.GetString("ToolTipDepositCert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à There are already 16 SAN. Delete some before adding a new one..
+        /// </summary>
+        public static string TooMuchSan {
+            get {
+                return ResourceManager.GetString("TooMuchSan", resourceCulture);
             }
         }
         
@@ -876,6 +1317,87 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Properties {
         public static string Update {
             get {
                 return ResourceManager.GetString("Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Certificates update.
+        /// </summary>
+        public static string UpdateCertificates {
+            get {
+                return ResourceManager.GetString("UpdateCertificates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This action will update certificates inside the SAM-SE.
+        /// </summary>
+        public static string UpdateCertificatesToolTip {
+            get {
+                return ResourceManager.GetString("UpdateCertificatesToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Update of SAM-SE confirmation.
+        /// </summary>
+        public static string UpdateConfirmation {
+            get {
+                return ResourceManager.GetString("UpdateConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This action will update certificates inside the SAM-SE. This operation can take upto 20 seconds..
+        /// </summary>
+        public static string UpdateConfirmationMessage {
+            get {
+                return ResourceManager.GetString("UpdateConfirmationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Update port.
+        /// </summary>
+        public static string UpdatePort {
+            get {
+                return ResourceManager.GetString("UpdatePort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Ok.
+        /// </summary>
+        public static string Valid {
+            get {
+                return ResourceManager.GetString("Valid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Version SAM-SE.
+        /// </summary>
+        public static string VersionSAM {
+            get {
+                return ResourceManager.GetString("VersionSAM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Version CU.
+        /// </summary>
+        public static string VersionUGL {
+            get {
+                return ResourceManager.GetString("VersionUGL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Version PU.
+        /// </summary>
+        public static string VersionUT {
+            get {
+                return ResourceManager.GetString("VersionUT", resourceCulture);
             }
         }
     }

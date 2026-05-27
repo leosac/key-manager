@@ -23,6 +23,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Domain
         {
             SAM_SELockCommand = new RelayCommand(SAM_SELockState);
             SAM_SEDefaultConfigFileCommand = new RelayCommand(SAM_SECreateDefaultConfigFile);
+            SAM_SEHardenedConfigFileCommand = new RelayCommand(SAM_SECreateHardenedConfigFile);
         }
 
         public SAM_SEKeyStore? SAM_SEKeyStore
@@ -31,6 +32,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Domain
         }
 
         public RelayCommand SAM_SEDefaultConfigFileCommand { get; }
+        public RelayCommand SAM_SEHardenedConfigFileCommand { get; }
         public RelayCommand SAM_SELockCommand { get; }
 
         private bool lockedLevelExpanded = false;
@@ -170,6 +172,219 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Domain
             }
         }
 
+        private string configurationClassic = Resources.DESFireModeUid;
+        public string ConfigurationClassic
+        {
+            get => configurationClassic;
+            set
+            {
+                SetProperty(ref configurationClassic, value);
+            }
+        }
+
+        private string configurationUltra = Resources.DESFireModeUid;
+        public string ConfigurationUltra
+        {
+            get => configurationUltra;
+            set
+            {
+                SetProperty(ref configurationUltra, value);
+            }
+        }
+
+        private string configurationPlus = Resources.DESFireModeUid;
+        public string ConfigurationPlus
+        {
+            get => configurationPlus;
+            set
+            {
+                SetProperty(ref configurationPlus, value);
+            }
+        }
+
+        private string configuration125k = Resources.DESFireModeUid;
+        public string Configuration125k
+        {
+            get => configuration125k;
+            set
+            {
+                SetProperty(ref configuration125k, value);
+            }
+        }
+        
+        private string configurationHardened1 = Resources.DESFireModeIdp;
+        public string ConfigurationHardened1
+        {
+            get => configurationHardened1;
+            set
+            {
+                if (SetProperty(ref configurationHardened1, value))
+                {
+                    if (value == Resources.ConfFileDisabled)
+                    {
+                        ConfigurationHardened2Displayed = false;
+                    }
+                    else
+                    {
+                        ConfigurationHardened2Displayed = true;
+                    }
+                }
+            }
+        }
+
+        private bool configurationHardened2Displayed = true;
+        public bool ConfigurationHardened2Displayed
+        {
+            get => configurationHardened2Displayed;
+            set
+            {
+                if(SetProperty(ref configurationHardened2Displayed, value))
+                {
+                    if (value == false)
+                    {
+                        ConfigurationHardened3Displayed = false;
+                        ConfigurationHardened4Displayed = false;
+                    }
+                    else
+                    {
+                        ConfigurationHardened3Displayed = true;
+                        ConfigurationHardened4Displayed = false;
+                    }
+                }
+            }
+        }
+
+        private string configurationHardened2 = Resources.ConfFileDisabled;
+        public string ConfigurationHardened2
+        {
+            get => configurationHardened2;
+            set
+            {
+                if (SetProperty(ref configurationHardened2, value))
+                {
+                    if (value == Resources.ConfFileDisabled)
+                    {
+                        ConfigurationHardened3Displayed = false;
+                    }
+                    else
+                    {
+                        ConfigurationHardened3Displayed = true;
+                    }
+                }
+            }
+        }
+
+        private bool configurationHardened3Displayed = false;
+        public bool ConfigurationHardened3Displayed
+        {
+            get => configurationHardened3Displayed;
+            set
+            {
+                if (SetProperty(ref configurationHardened3Displayed, value))
+                {
+                    if (value == false)
+                    {
+                        ConfigurationHardened4Displayed = false;
+                    }
+                    else
+                    {
+                        ConfigurationHardened4Displayed = true;
+                    }
+                }
+
+            }
+        }
+
+        private string configurationHardened3 = Resources.ConfFileDisabled;
+        public string ConfigurationHardened3
+        {
+            get => configurationHardened3;
+            set
+            {
+                if (SetProperty(ref configurationHardened3, value))
+                {
+                    if (value == Resources.ConfFileDisabled)
+                    {
+                        ConfigurationHardened4Displayed = false;
+                    }
+                    else
+                    {
+                        ConfigurationHardened4Displayed = true;
+                    }
+                }
+            }
+        }
+
+        private bool configurationHardened4Displayed = false;
+        public bool ConfigurationHardened4Displayed
+        {
+            get => configurationHardened4Displayed;
+            set => SetProperty(ref configurationHardened4Displayed, value);
+        }
+
+        private string configurationHardened4 = Resources.ConfFileDisabled;
+        public string ConfigurationHardened4
+        {
+            get => configurationHardened4;
+            set
+            {
+                SetProperty(ref configurationHardened4, value);
+            }
+        }
+
+        private string configurationHardenedClassic = Resources.ConfFileDisabled;
+        public string ConfigurationHardenedClassic
+        {
+            get => configurationHardenedClassic;
+            set
+            {
+                SetProperty(ref configurationHardenedClassic, value);
+            }
+        }
+
+        private string configurationHardenedUltra = Resources.ConfFileDisabled;
+        public string ConfigurationHardenedUltra
+        {
+            get => configurationHardenedUltra;
+            set
+            {
+                SetProperty(ref configurationHardenedUltra, value);
+            }
+        }
+
+        private string configurationHardenedPlus = Resources.ConfFileDisabled;
+        public string ConfigurationHardenedPlus
+        {
+            get => configurationHardenedPlus;
+            set
+            {
+                SetProperty(ref configurationHardenedPlus, value);
+            }
+        }
+
+        private string configurationHardened125k = Resources.ConfFileDisabled;
+        public string ConfigurationHardened125k
+        {
+            get => configurationHardened125k;
+            set
+            {
+                SetProperty(ref configurationHardened125k, value);
+            }
+        }
+
+        public string VersionSAM_SE
+        {
+            get { return string.Format("{0} : {1}", Resources.VersionSAM, SAM_SEKeyStore!.GetSAM_SEDll()!.GetCurrentProgrammingStation()!.SAM_SE.GetVersionSAM_SE()); }
+        }
+        public string VersionUT
+        {
+            get { return string.Format("{0} : {1}", Resources.VersionUT, SAM_SEKeyStore!.GetSAM_SEDll()!.GetCurrentProgrammingStation()!.SAM_SE.GetVersionUT()); }
+        }
+        public string VersionUGL
+        {
+            get { return string.Format("{0} : {1}", Resources.VersionUGL, SAM_SEKeyStore!.GetSAM_SEDll()!.GetCurrentProgrammingStation()!.SAM_SE.GetVersionUGL()); }
+        }
+
         private async void SAM_SECreateDefaultConfigFile()
         {
             Mouse.OverrideCursor = Cursors.Wait;
@@ -184,6 +399,28 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Domain
             catch (Exception ex)
             {
                 log.Error("Creating default file failed.", ex);
+                SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
+            }
+        }
+
+        private async void SAM_SECreateHardenedConfigFile()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            try
+            {
+                var ks = (KeyStore as SAM_SEKeyStore);
+                ks?.GetSAM_SEDll()!.GetCurrentProgrammingStation()!.SAM_SE.SetHardenedConfigurationFile();
+                await ks!.GetAll();
+                SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, Resources.ToolsConfFileHardenedOk);
+                DefaultExpanderExpanded = false;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Creating hardened file failed.", ex);
                 SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
             }
             finally

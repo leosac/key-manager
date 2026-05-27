@@ -184,21 +184,6 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
             string mac = string.Join("", macStr);
             return mac;
         }
-
-        public string GetVersion(uint index)
-        {
-            IntPtr ptr = spse_getInformation(index, SAM_SEInformations.INFORMATIONS_VERSION);
-            if (ptr == IntPtr.Zero)
-            {
-                return "v0.0.0";
-            }
-            byte[] versionArray = new byte[SAM_SEDllConstants.SizeVersion];
-            Marshal.Copy(ptr, versionArray, 0, SAM_SEDllConstants.SizeVersion);
-            string[] versionStr = Array.ConvertAll(versionArray, b => b.ToString());
-            versionStr[0] = versionStr[0].TrimStart('0');
-            string version = "v" + string.Join(".", versionStr);
-            return version;
-        }
         
         public string GetPath(uint index)
         {

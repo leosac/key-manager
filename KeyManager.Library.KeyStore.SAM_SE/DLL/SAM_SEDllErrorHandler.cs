@@ -41,14 +41,14 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
             if (error != (int)SAM_SEError.DLL_SPSE_DONE)
                 log.Error(String.Format("Error {0}",error));
             //If it's a SAM-SE error, we need to call a specific function
-            if (error == (int)SAM_SEError.DLL_SPSE_ON_ERROR)
+            if (error == (int)SAM_SEError.DLL_SPSE_ON_ERROR || error == (int)SAM_SEError.DLL_SPSE_ARCH_ON_ERROR)
             {
                 IntPtr temp = spse_getLastError();
                 string? result = Marshal.PtrToStringAnsi(temp);
                 //So we log the new return
                 log.Error(result);
                 //And an exception is created with the error
-                throw new KeyStoreException(result);
+                throw new KeyStoreException(Resources.SAM_SELowLevelError);
             }
             //Else, it's a programming station error, we know what is the error right away
             else

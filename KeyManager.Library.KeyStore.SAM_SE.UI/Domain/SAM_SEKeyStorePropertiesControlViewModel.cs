@@ -32,9 +32,15 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Domain
             get { return Properties as SAM_SEKeyStoreProperties; }
         }
 
+        public Dictionary<ConfigurationFile, string> SAM_SEConfigurationFile { get; } =
+            new Dictionary<ConfigurationFile, string>()
+            {
+                {ConfigurationFile.CONF_FILE_DEFAULT, Resources.DefaultFile},
+                {ConfigurationFile.CONF_FILE_HARDENED, Resources.HardenedFile},
+            };
+
         public ObservableCollection<string> SAM_SEReaders { get; set; }
         public SAM_SEDllEntryPoint SAM_SEDll { get; set; }
-
         public uint LockedMin { get; set; } = 0;
         public uint LockedMax { get; set; } = (uint)SAM_SELockLevel.LOCK_LVL_NB_MAX - 1;
 
@@ -129,10 +135,9 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Domain
 
                     if (SAM_SEDll.GetSAM_SEPresence(i) == SAM_SEConnectionState.STATION_CONNECTED_WITH_SAMSE)
                     {
-                        string version = SAM_SEDll.GetVersion(i);
                         string mac = SAM_SEDll.GetMac(i);
 
-                        SAM_SEReaders.Add(string.Format("Station n°{0} : SAM-SE : {1} - {2} - {3}", i + 1, "SE", mac, version));
+                        SAM_SEReaders.Add(string.Format("Station n°{0} : SAM-SE : {1}", i + 1, mac));
                     }
                     else
                     {
