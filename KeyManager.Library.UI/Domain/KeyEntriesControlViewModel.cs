@@ -600,7 +600,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
                                 {
                                     bool include = false;
                                     var v = p.GetValue(ke.Properties);
-                                    if (v != null)
+                                    var attrs = p.GetCustomAttributes(true);
+                                    var hasBrowsableFalse = attrs.OfType<BrowsableAttribute>().Any(ba => !ba.Browsable);
+                                    if (!hasBrowsableFalse && v != null)
                                     {
                                         if (p.PropertyType == typeof(string) || p.PropertyType.IsEnum)
                                         {
@@ -610,7 +612,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
                                         {
                                             include = (bool)v;
                                         }
+                                        else if (IsNumericType(p.PropertyType))
+                                        {
+                                            include = true;
+                                        }
                                     }
+
                                     if (include)
                                     {
                                         l.ListItems.Add(new ListItem(new Paragraph(new Run(ConvertPropertyNameToHumanFriendlyName(p.Name) + ": " + v))));
@@ -748,6 +755,15 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
+        private bool IsNumericType(Type t)
+        {
+            return t == typeof(byte) || t == typeof(sbyte) ||
+                t == typeof(short) || t == typeof(ushort) ||
+                t == typeof(int) || t == typeof(uint) ||
+                t == typeof(long) || t == typeof(ulong) ||
+                t == typeof(float) || t == typeof(double) || t == typeof(decimal);
+        }
+
         private IEnumerable<SelectableKeyEntryId>? GetSelectedIdentifiers()
         {
             if (!ShowSelection)
@@ -772,31 +788,27 @@ namespace Leosac.KeyManager.Library.UI.Domain
         {
             Mouse.OverrideCursor = Cursors.Wait;
             _identifiersView.SortDescriptions.Clear();
-            string idProperty = ((KeyStore?.IsNumericKeyId).GetValueOrDefault(false)) ? "KeyEntryId.NumericId" : "KeyEntryId.Id";
-            switch (order)
+            if (string.IsNullOrEmpty(order))
             {
-                case "ByIdAsc":
-                    // Even if key id is not enforced to be numeric, we try to order in numeric order first
-                    if (!(KeyStore?.IsNumericKeyId).GetValueOrDefault(false))
-                    {
-                        _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.NumericId", ListSortDirection.Ascending));
-                    }
-                    _identifiersView.SortDescriptions.Add(new SortDescription(idProperty, ListSortDirection.Ascending));
-                    break;
-                case "ByIdDesc":
-                    if (!(KeyStore?.IsNumericKeyId).GetValueOrDefault(false))
-                    {
-                        _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.NumericId", ListSortDirection.Descending));
-                    }
-                    _identifiersView.SortDescriptions.Add(new SortDescription(idProperty, ListSortDirection.Descending));
-                    break;
-                case "ByLabelAsc":
-                    _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.Label", ListSortDirection.Ascending));
-                    break;
-                case "ByLabelDesc":
-                    _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.Label", ListSortDirection.Descending));
-                    break;
+                Mouse.OverrideCursor = null;
+                return;
             }
+            bool isNumeric = (KeyStore?.IsNumericKeyId).GetValueOrDefault(false);
+            string idProperty = isNumeric ? "KeyEntryId.NumericId" : "KeyEntryId.Id";
+            var direction = order.EndsWith("Desc") ? ListSortDirection.Descending : ListSortDirection.Ascending;
+            // Even if key id is not enforced to be numeric, we try to order in numeric order first
+            if (!isNumeric && order.StartsWith("ById"))
+            {
+                _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.NumericId", direction));
+            }
+            var property = order switch
+            {
+                "ByIdAsc" or "ByIdDesc" => idProperty,
+                "ByLabelAsc" or "ByLabelDesc" => "KeyEntryId.Label",
+                _ => null
+            };
+            if (property != null)
+                _identifiersView.SortDescriptions.Add(new SortDescription(property, direction));
 
             var uipref = UIPreferences.GetSingletonInstance(false) ?? new UIPreferences();
             if (order != uipref.DefaultOrdering)

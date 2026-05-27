@@ -231,7 +231,16 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public bool IsWaitingForCard
         {
             get => _isWaitingForCard;
-            set { _isWaitingForCard = value; OnPropertyChanged(); UpdateOptionsVisibility(); }
+            set
+            {
+                if (SetProperty(ref _isWaitingForCard, value))
+                {
+                    OnPropertyChanged(nameof(CanPause));
+                    OnPropertyChanged(nameof(CanResume));
+                    UpdateCommands();
+                    UpdateOptionsVisibility();
+                }
+            }
         }
 
         private bool _currentBatchFailed;
@@ -392,11 +401,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        private ICardDevice CreateDeviceFromFavorite(Favorite favorite, KeyStore.KeyStore keyStore)
+        private ICardDevice CreateDeviceFromFavorite(KeyStore.KeyStore keyStore, KeyStoreFactory factory)
         {
-            if (favorite.Properties == null)
+            if (Favorite.Properties == null)
                 throw new InvalidOperationException("Favorite does not have KeyStoreProperties set.");
-            var factory = KeyStoreFactory.GetFactoryFromPropertyType(favorite.Properties.GetType());
             if (factory != null)
             {
                 try
@@ -417,16 +425,15 @@ namespace Leosac.KeyManager.Library.UI.Domain
             return new GenericCardDevice(keyStore);
         }
 
-        private async Task<ICardDevice> InitializeDeviceAsync(KeyStore.KeyStore targetStore)
+        private async Task<ICardDevice> InitializeDeviceAsync(KeyStore.KeyStore targetStore, KeyStoreFactory factory)
         {
-            ICardDevice device = CreateDeviceFromFavorite(Favorite, targetStore);
+            ICardDevice device = CreateDeviceFromFavorite(targetStore, factory);
             await device.InitializeReaderAsync(
                 (msg, level) => Logs.Add(new LogEntry(msg, level)),
                 (msg, level) => Notify(msg, level)
             );
             return device;
         }
-
 
         private async Task StartWorkflow()
         {
@@ -443,8 +450,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 InitializeWorkflow();
                 var targetStore = Favorite.CreateKeyStore() ?? throw new KeyStoreException("Cannot create KeyStore from Favorite.");
-                ICardDevice device = await InitializeDeviceAsync(targetStore);
-                var keyIds = await GetSelectedKeysAsync();
+                var factory = KeyStoreFactory.GetFactoryFromPropertyType(Favorite?.Properties?.GetType())
+                    ?? throw new InvalidOperationException("No factory found for favorite.");
+                ICardDevice device = await InitializeDeviceAsync(targetStore, factory);
+                var keyIds = factory.OrderKeyEntries(await GetSelectedKeysAsync(), targetStore).ToList();
                 if (keyIds.Count == 0)
                 {
                     AddLog("No keys selected for publishing. Aborting workflow.", LogLevel.Warning);
@@ -464,7 +473,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     BatchProgressValue = _batchIndex + 1;
                     var batchLog = new LogEntry($"Batch unit {BatchProgressValue} started", LogLevel.Info);
                     Logs.Add(batchLog);
-                    _isWaitingForCard = true;
+                    IsWaitingForCard = true;
                     UpdateCommands();
                     AddLog("Waiting for card insertion...", LogLevel.Info, batchLog);
                     _stopwatch.Stop();
@@ -482,7 +491,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                         (msg, level) => AddLog(msg, level, batchLog),
                         () => OnPropertyChanged(nameof(Logs)));
                     _stopwatch.Start();
-                    _isWaitingForCard = false;
+                    IsWaitingForCard = false;
                     UpdateCommands();
                     if (!cardInserted)
                     {
@@ -508,12 +517,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     CurrentBatchFailed = errors > 0;
                     IsFailed = errors > 0;
                     AddLog("Waiting for card removal...", LogLevel.Info, batchLog);
-                    _isWaitingForCard = true;
+                    IsWaitingForCard = true;
                     UpdateCommands();
                     _stopwatch.Stop();
                     await device.WaitForRemovalAsync(token);
                     _stopwatch.Start();
-                    _isWaitingForCard = false;
+                    IsWaitingForCard = false;
                     UpdateCommands();
                     AddLog("Card removed.", LogLevel.Info, batchLog);
                     await device.DisconnectAsync(token);
@@ -608,23 +617,24 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        private async Task<List<KeyEntryId>> GetSelectedKeysAsync()
+        private async Task<List<KeyEntryInfo>> GetSelectedKeysAsync()
         {
-            var keyIds = (await Task.WhenAll(_selection.Select(async ke =>
+            return (await Task.WhenAll(_selection.Select(async ke =>
             {
-                if (!ke.ShowSelection)
-                {
-                    var keys = await SourceKeyStore.GetAll(ke.KeyEntryClass);
-                    return keys.ToList();
-                }
-                else
-                    return ke.Identifiers.Where(k => k.Selected && k.KeyEntryId != null)
-                                         .Select(k => k.KeyEntryId!).ToList();
-            }))).SelectMany(l => l).ToList();
-            return keyIds;
+                IEnumerable<KeyEntryId> ids = !ke.ShowSelection
+                    ? await SourceKeyStore.GetAll(ke.KeyEntryClass)
+                    : ke.Identifiers
+                        .Where(k => k.Selected && k.KeyEntryId != null)
+                        .Select(k => k.KeyEntryId!);
+
+                return ids.Select(id => new KeyEntryInfo(id, ke.KeyEntryClass));
+            })))
+            .SelectMany(x => x)
+            .ToList();
         }
 
-        private async Task<int> ProcessBatchKeysAsync(KeyStore.KeyStore source, KeyStore.KeyStore target, List<KeyEntryId> keyIds, LogEntry batchLog, ICardDevice? device, CancellationToken token)
+
+        private async Task<int> ProcessBatchKeysAsync(KeyStore.KeyStore source, KeyStore.KeyStore target, List<KeyEntryInfo> keyIds, LogEntry batchLog, ICardDevice? device, CancellationToken token)
         {
             KeyStoreProgressValue = 0;
             int successCount = 0, failureCount = 0;
@@ -636,10 +646,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 {
                     token.ThrowIfCancellationRequested();
                     await WaitIfPausedAsync(batchLog, token);
-                    var keyEntry = await source.Get(keyId, KeyEntryClass.Symmetric);
+                    var keyEntry = await source.Get(keyId.Identifier, keyId.KClass);
                     if (keyEntry == null)
                     {
-                        AddLog($"Key {keyId} not found, skipping.", LogLevel.Warning, batchLog);
+                        AddLog($"Key {keyId.Identifier} not found, skipping.", LogLevel.Warning, batchLog);
                         failureCount++;
                         FailedKeys++;
                         TotalProcessedKeys++;
@@ -659,7 +669,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                             getFavoriteKeyStore: null,
                             askForKeyStoreSecretIfRequired: null,
                             keClass: keyEntry.KClass,
-                            ids: new List<KeyEntryId> { keyId },
+                            ids: new List<KeyEntryId> { keyId.Identifier },
                             initCallback: null
                         );
                         published = true;

@@ -87,6 +87,16 @@
                           VerticalAlignment="Stretch"
                           Background="{StaticResource TreeBackgroundBrush}"
                           Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=GroupBox}, Converter={StaticResource SubtractPaddingConverter}}">
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="TreeViewItem">
+                            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                            <Setter Property="FontSize" Value="13" />
+                            <Setter Property="Padding" Value="2" />
+                            <Setter Property="Margin" Value="0,1,0,1" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </TreeView.ItemContainerStyle>
                     <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type domain:LogEntry}" ItemsSource="{Binding Nodes}">
                             <StackPanel>
@@ -115,12 +125,6 @@
                                 <ItemsControl ItemsSource="{Binding Nodes}" Visibility="{Binding IsVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
                             </StackPanel>
                         </HierarchicalDataTemplate>
-                        <Style TargetType="TreeViewItem">
-                            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
-                            <Setter Property="FontSize" Value="13"/>
-                            <Setter Property="Padding" Value="2"/>
-                            <Setter Property="Margin" Value="0,1,0,1"/>
-                        </Style>
                     </TreeView.Resources>
                 </TreeView>
             </GroupBox>

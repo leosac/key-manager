@@ -175,7 +175,7 @@
     <value>Base de données KeePass (.kdbx)</value>
   </data>
   <data name="KeePassDbFilter" xml:space="preserve">
-    <value>Base de données KeePass (.kdbx)|.kdbx|Tous les fichiers (.)|.</value>
+    <value>Base de données KeePass (*.kdbx)|*.kdbx|Tous les fichiers (*.*)|*.*</value>
   </data>
   <data name="FileSelected" xml:space="preserve">
     <value>✅ Fichier KeePass sélectionné : {0}</value>
@@ -184,7 +184,7 @@
     <value>Sélectionner un fichier clé</value>
   </data>
   <data name="KeyFileFilter" xml:space="preserve">
-    <value>Fichier clé (.keyx)|.keyx|Tous les fichiers (.)|.</value>
+    <value>Fichier clé (*.keyx)|*.keyx|Tous les fichiers (*.*)|*.*</value>
   </data>
   <data name="KeyFileSelected" xml:space="preserve">
     <value>🔑 Fichier clé sélectionné : {0}</value>
