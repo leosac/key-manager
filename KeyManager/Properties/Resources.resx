@@ -261,4 +261,7 @@
   <data name="EncryptionTypeHelper" xml:space="preserve">
     <value>Encryption Type for secrets</value>
   </data>
+  <data name="MissingModule" xml:space="preserve">
+    <value>This favorite cannot be opened because a required module is missing.</value>
+  </data>
 </root>

@@ -115,7 +115,7 @@
                                 <ToggleButton IsChecked="{Binding Properties.KeyUsageCounter, Mode=TwoWay, Converter={StaticResource NullToBooleanConverter}}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
                                 <TextBlock Text="{x:Static properties:Resources.Enabled}" Padding="3" />
                             </StackPanel>
-                            <wpfappctrls:NumericUpDownControl MinValue="0" MaxValue="15" CurrentValue="{Binding Properties.KeyUsageCounter, Mode=TwoWay}" Grid.Row="1"
+                            <wpfappctrls:NumericUpDownControl MinValue="0" MaxValue="15" CurrentValue="{Binding Properties.KeyUsageCounter, Mode=TwoWay, TargetNullValue=0}" Grid.Row="1"
                                                         IsEnabled="{Binding Properties.KeyUsageCounter, Mode=OneWay, Converter={StaticResource NullToBooleanConverter}}"
                                                         HelperText="{x:Static properties:Resources.KUCReferenceHelper}"
                                                         Hint="{x:Static properties:Resources.KUCReference}"/>

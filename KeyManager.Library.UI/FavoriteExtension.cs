@@ -7,20 +7,25 @@ namespace Leosac.KeyManager.Library.UI
     {
         public static KeyStore.KeyStore? CreateKeyStore(this Favorite fav)
         {
-            var factory = KeyStoreFactory.GetFactoryFromPropertyType(fav.Properties!.GetType());
-            if (factory != null)
-            {
-                var ks = factory.CreateKeyStore();
-                ks.Properties = fav.Properties;
-                ks.DefaultKeyEntries = fav.DefaultKeyEntries;
+            ArgumentNullException.ThrowIfNull(fav);
 
-                ks.Attributes[KeyStore.KeyStore.ATTRIBUTE_NAME] = fav.Name;
-                ks.Attributes[KeyStore.KeyStore.ATTRIBUTE_HEXNAME] = Convert.ToHexString(Encoding.UTF8.GetBytes(fav.Name));
+            if (fav.Properties == null)
+                return null;
 
-                return ks;
-            }
+            var factory = KeyStoreFactory.GetFactoryFromPropertyType(fav.Properties.GetType());
+            if (factory == null)
+                return null;
 
-            return null;
+            var ks = factory.CreateKeyStore() ?? throw new InvalidOperationException($"Factory failed to create KeyStore for '{fav.Name}'");
+            ks.Properties = fav.Properties;
+            ks.DefaultKeyEntries = fav.DefaultKeyEntries;
+            var name = fav.Name ?? string.Empty;
+
+            ks.Attributes[KeyStore.KeyStore.ATTRIBUTE_NAME] = name;
+            ks.Attributes[KeyStore.KeyStore.ATTRIBUTE_HEXNAME] = Convert.ToHexString(Encoding.UTF8.GetBytes(name));
+
+            return ks;
         }
     }
+
 }

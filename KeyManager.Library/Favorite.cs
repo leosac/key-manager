@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Leosac.KeyManager.Library.KeyStore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Leosac.KeyManager.Library
 {
@@ -11,6 +13,8 @@ namespace Leosac.KeyManager.Library
             _name = string.Empty;
             DefaultKeyEntries = new Dictionary<KeyEntryClass, KeyEntry?>();
         }
+
+        public string? KeyStoreTypeName { get; set; }
 
         private string _identifier;
         public string Identifier
@@ -28,16 +32,40 @@ namespace Leosac.KeyManager.Library
 
         private KeyStoreProperties? _properties;
 
+        [JsonIgnore]
         public KeyStoreProperties? Properties
         {
             get => _properties;
             set => SetProperty(ref _properties, value);
         }
 
+        [JsonIgnore]
+        public bool IsResolved => Properties != null;
+
+        [JsonIgnore]
+        public JObject? UnresolvedModule { get; set; }
+
+        [JsonProperty(nameof(Properties))]
+        public object? SerializedProperties
+        {
+            get
+            {
+                if (UnresolvedModule != null) //If plugin missing
+                    return UnresolvedModule;
+                return Properties;
+            }
+            set
+            {
+                if (value is JObject jObject)
+                    UnresolvedModule = jObject;
+                else if (value is KeyStoreProperties props)
+                    Properties = props;
+            }
+        }
+
         public IDictionary<KeyEntryClass, KeyEntry?> DefaultKeyEntries { get; set; }
 
         private DateTime _creationDate = DateTime.Now;
-
         public DateTime CreationDate
         {
             get => _creationDate;
@@ -51,10 +79,7 @@ namespace Leosac.KeyManager.Library
             set => SetProperty(ref _tags, value);
         }
 
-        public override bool Equals(object? obj)
-        {
-            return this.Equals(obj as Favorite);
-        }
+        public override bool Equals(object? obj) => Equals(obj as Favorite);
 
         public bool Equals(Favorite? p)
         {
@@ -63,30 +88,24 @@ namespace Leosac.KeyManager.Library
                 return false;
             }
 
-            if (Object.ReferenceEquals(this, p))
+            if (ReferenceEquals(this, p))
             {
                 return true;
             }
 
-            if (this.GetType() != p.GetType())
+            if (GetType() != p.GetType())
             {
                 return false;
             }
 
-            return (Identifier == p.Identifier) && (Name == p.Name) && (Properties!.Equals(p.Properties));
+            return (Identifier == p.Identifier) && (Name == p.Name) && (Equals(Properties, p.Properties));
         }
 
-        public override int GetHashCode() => (Name, Properties).GetHashCode();
+        public override int GetHashCode() =>
+            HashCode.Combine(Identifier, Name, Properties);
 
-        public static bool operator ==(Favorite? lhs, Favorite? rhs)
-        {
-            if (lhs is null)
-            {
-                return rhs is null;
-            }
-
-            return lhs.Equals(rhs);
-        }
+        public static bool operator ==(Favorite? lhs, Favorite? rhs) =>
+            lhs is null ? rhs is null : lhs.Equals(rhs);
 
         public static bool operator !=(Favorite? lhs, Favorite? rhs) => !(lhs == rhs);
     }

@@ -4,8 +4,6 @@ using Leosac.WpfApp;
 using log4net;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
-using System.IO;
-using System.Security.Cryptography;
 
 namespace Leosac.KeyManager.Library.KeyStore.File.UI.Domain
 {

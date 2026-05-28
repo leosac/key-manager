@@ -19,7 +19,7 @@ namespace Leosac.KeyManager.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -194,29 +194,25 @@ namespace Leosac.KeyManager.Properties {
                 return ResourceManager.GetString("ElevationCodeHelper", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Encryption Type.
         /// </summary>
-        public static string EncryptionType
-        {
-            get
-            {
+        public static string EncryptionType {
+            get {
                 return ResourceManager.GetString("EncryptionType", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Encryption Type.
+        ///   Looks up a localized string similar to Encryption Type for secrets.
         /// </summary>
-        public static string EncryptionTypeHelper
-        {
-            get
-            {
+        public static string EncryptionTypeHelper {
+            get {
                 return ResourceManager.GetString("EncryptionTypeHelper", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
@@ -358,6 +354,15 @@ namespace Leosac.KeyManager.Properties {
         public static string MenuKeyStore {
             get {
                 return ResourceManager.GetString("MenuKeyStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This favorite cannot be opened because a required module is missing..
+        /// </summary>
+        public static string MissingModule {
+            get {
+                return ResourceManager.GetString("MissingModule", resourceCulture);
             }
         }
         

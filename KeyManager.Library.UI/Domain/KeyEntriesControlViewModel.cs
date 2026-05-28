@@ -10,7 +10,6 @@ using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -28,7 +27,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
             _identifierLock = new object();
             Identifiers = new ObservableCollection<SelectableKeyEntryId>();
             BindingOperations.EnableCollectionSynchronization(Identifiers, _identifierLock);
-            WizardFactories = new ObservableCollection<WizardFactory>(WizardFactory.RegisteredFactories.Where(f => f.KeyEntryClasses.Contains(KeyEntryClass)));
+            var factories = WizardFactory.RegisteredFactories.Where(f => f.KeyEntryClasses.Contains(KeyEntryClass));
+            WizardFactories = new ObservableCollection<WizardFactory>(factories);
 
             CreateKeyEntryCommand = new AsyncRelayCommand(
                 async () =>
@@ -534,9 +534,13 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        private string ConvertPropertyNameToHumanFriendlyName(string propertyName)
+        private static readonly Regex _step1 = new(@"(\P{Ll})(\P{Ll}\p{Ll})", RegexOptions.Compiled);
+
+        private static readonly Regex _step2 = new(@"(\p{Ll})(\P{Ll})", RegexOptions.Compiled);
+
+        private static string FormatPropertyNameForDisplay(string propertyName)
         {
-            return Regex.Replace(Regex.Replace(propertyName, @"(\P{Ll})(\P{Ll}\p{Ll})", "$1 $2"), @"(\p{Ll})(\P{Ll})", "$1 $2");
+            return _step2.Replace(_step1.Replace(propertyName, "$1 $2"),"$1 $2");
         }
 
         private async Task PrintSelection()
@@ -552,8 +556,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
             table.Columns.Add(new TableColumn());
             table.Columns.Add(new TableColumn());
             table.Columns.Add(new TableColumn());
-            var tableHeader = new TableRowGroup();
-            tableHeader.Rows.Add(new TableRow
+            table.Columns.Add(new TableColumn());
+            table.Columns.Add(new TableColumn());
+            var headerGroup = new TableRowGroup();
+            var rowsGroup = new TableRowGroup();
+            headerGroup.Rows.Add(new TableRow
             {
                 Background = Brushes.LightGray,
                 FontWeight = FontWeights.Bold,
@@ -566,108 +573,84 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     new TableCell(new Paragraph(new Run(Properties.Resources.KeyEntryProperties)))
                 }
             });
-            table.RowGroups.Add(tableHeader);
-            var tableRows = new TableRowGroup();
+            table.RowGroups.Add(headerGroup);
+            table.RowGroups.Add(rowsGroup);
             foreach (var identifier in GetSelectedIdentifiers() ?? Identifiers)
             {
-                if (identifier.KeyEntryId != null && KeyStore != null)
+                if (identifier.KeyEntryId is null || KeyStore is null)
+                    continue;
+                
+                var ke = await KeyStore.Get(identifier.KeyEntryId, KeyEntryClass);
+                if (ke is null)
+                    continue;
+
+                var border = new Thickness(0, 1, 0, 0);
+                var vcell = new TableCell() { BorderBrush = Brushes.Black, BorderThickness = border };
+                var pcell = new TableCell() { BorderBrush = Brushes.Black, BorderThickness = border };
+                rowsGroup.Rows.Add(new TableRow
                 {
-                    var ke = await KeyStore.Get(identifier.KeyEntryId, KeyEntryClass);
-                    if (ke != null)
+                    Cells =
                     {
-                        var border = new Thickness(0, 1, 0, 0);
-                        var vcell = new TableCell() { BorderBrush = Brushes.Black, BorderThickness = border };
-                        var pcell = new TableCell() { BorderBrush = Brushes.Black, BorderThickness = border };
-                        tableHeader.Rows.Add(new TableRow
-                        {
-                            Cells =
-                            {
-                                new TableCell(new Paragraph(new Run(ke.Identifier.Id))) { BorderBrush = Brushes.Black, BorderThickness = border },
-                                new TableCell(new Paragraph(new Run(ke.Identifier.Label))) { BorderBrush = Brushes.Black, BorderThickness = border },
-                                new TableCell(new Paragraph(new Run(ke.Variant?.Name))) { BorderBrush = Brushes.Black, BorderThickness = border },
-                                vcell,
-                                pcell,
-                            }
-                        });
-                        if (ke.Properties != null)
-                        {
-                            var l = new List() { FontSize = 12, Margin = new Thickness(0) };
-                            var t = ke.Properties.GetType();
-                            var props = t.GetProperties();
-                            foreach (var p in props)
-                            {
-                                if (p.CanRead && p.CanWrite)
-                                {
-                                    bool include = false;
-                                    var v = p.GetValue(ke.Properties);
-                                    var attrs = p.GetCustomAttributes(true);
-                                    var hasBrowsableFalse = attrs.OfType<BrowsableAttribute>().Any(ba => !ba.Browsable);
-                                    if (!hasBrowsableFalse && v != null)
-                                    {
-                                        if (p.PropertyType == typeof(string) || p.PropertyType.IsEnum)
-                                        {
-                                            include = !string.IsNullOrWhiteSpace(v.ToString());
-                                        }
-                                        else if (p.PropertyType == typeof(bool))
-                                        {
-                                            include = (bool)v;
-                                        }
-                                        else if (IsNumericType(p.PropertyType))
-                                        {
-                                            include = true;
-                                        }
-                                    }
-
-                                    if (include)
-                                    {
-                                        l.ListItems.Add(new ListItem(new Paragraph(new Run(ConvertPropertyNameToHumanFriendlyName(p.Name) + ": " + v))));
-                                    }
-                                }
-                            }
-                            pcell.Blocks.Add(l);
-                        }
-                        if (ke.Variant != null)
-                        {
-                            var p = new Paragraph() { FontSize = 12 };
-                            foreach (var kc in ke.Variant.KeyContainers)
-                            {
-                                if (p.Inlines.Count > 0)
-                                {
-                                    p.Inlines.Add(new LineBreak());
-                                }
-                                if (kc is KeyVersion kv)
-                                {
-                                    p.Inlines.Add(new Run(kv.Version + ": "));
-                                }
-                                string? c = null;
-                                if (ke.KClass == KeyEntryClass.Symmetric)
-                                {
-                                    var v = kc.Key.GetAggregatedValueAsString();
-                                    if (!string.IsNullOrEmpty(v))
-                                    {
-                                        var kcv = new KCV();
-                                        c = kcv.ComputeKCV(kc.Key);
-                                    }
-                                }
-
-                                if (!string.IsNullOrEmpty(c))
-                                {
-                                    p.Inlines.Add(new Run(c));
-                                }
-                                else
-                                {
-                                    p.Inlines.Add(new Run("-"));
-                                }
-                            }
-                            vcell.Blocks.Add(p);
-                        }
+                        new TableCell(new Paragraph(new Run(ke.Identifier.Id))) { BorderBrush = Brushes.Black, BorderThickness = border },
+                        new TableCell(new Paragraph(new Run(ke.Identifier.Label))) { BorderBrush = Brushes.Black, BorderThickness = border },
+                        new TableCell(new Paragraph(new Run(ke.Variant?.Name))) { BorderBrush = Brushes.Black, BorderThickness = border },
+                        vcell,
+                        pcell
                     }
+                });
+                if (ke.Properties != null)
+                {
+                    var list = new List { FontSize = 12, Margin = new Thickness(0) };
+                    var props = ke.Properties.GetType().GetProperties();
+                    foreach (var p in props)
+                    {
+                        if (!p.CanRead || !p.CanWrite)
+                            continue;
+
+                        var value = p.GetValue(ke.Properties);
+
+                        if (value == null)
+                            continue;
+
+                        var hasBrowsableFalse = p.GetCustomAttributes(true).OfType<BrowsableAttribute>().Any(ba => !ba.Browsable);
+                        
+                        if (hasBrowsableFalse)
+                            continue;
+                        
+                        bool include = (p.PropertyType == typeof(string) || p.PropertyType.IsEnum)
+                            ? !string.IsNullOrWhiteSpace(value.ToString()) : p.PropertyType == typeof(bool)
+                            ? (bool)value : IsNumericType(p.PropertyType);
+                        if (include)
+                            list.ListItems.Add(new ListItem(new Paragraph(new Run(FormatPropertyNameForDisplay(p.Name) + ": " + value))));
+                    }
+                    pcell.Blocks.Add(list);
+                }
+                if (ke.Variant != null)
+                {
+                    var p = new Paragraph() { FontSize = 12 };
+                    foreach (var kc in ke.Variant.KeyContainers)
+                    {
+                        if (p.Inlines.Count > 0)
+                            p.Inlines.Add(new LineBreak());
+                        if (kc is KeyVersion kv)
+                            p.Inlines.Add(new Run(kv.Version + ": "));
+                        string c = "-";
+                        if (ke.KClass == KeyEntryClass.Symmetric)
+                        {
+                            var v = kc.Key.GetAggregatedValueAsString();
+                            if (!string.IsNullOrEmpty(v))
+                            {
+                                var kcv = new KCV();
+                                var computed = kcv.ComputeKCV(kc.Key);
+                                c = string.IsNullOrEmpty(computed) ? "-" : computed;
+                            }
+                        }
+                        p.Inlines.Add(new Run(c));
+                    }
+                    vcell.Blocks.Add(p);
                 }
             }
-            table.RowGroups.Add(tableRows);
-            content.Blocks.Add(table);
-            flow.Blocks.Add(content);
-
+            flow.Blocks.Add(table);
             var sign = new Section();
             var stable = new Table()
             {
@@ -755,13 +738,16 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        private bool IsNumericType(Type t)
+        private static readonly HashSet<Type> NumericTypes =
+            [typeof(byte), typeof(sbyte),
+            typeof(short), typeof(ushort),
+            typeof(int), typeof(uint),
+            typeof(long), typeof(ulong),
+            typeof(float), typeof(double), typeof(decimal)];
+
+        private static bool IsNumericType(Type t)
         {
-            return t == typeof(byte) || t == typeof(sbyte) ||
-                t == typeof(short) || t == typeof(ushort) ||
-                t == typeof(int) || t == typeof(uint) ||
-                t == typeof(long) || t == typeof(ulong) ||
-                t == typeof(float) || t == typeof(double) || t == typeof(decimal);
+            return NumericTypes.Contains(t);
         }
 
         private IEnumerable<SelectableKeyEntryId>? GetSelectedIdentifiers()
@@ -787,36 +773,56 @@ namespace Leosac.KeyManager.Library.UI.Domain
         private void Ordering(string? order)
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            _identifiersView.SortDescriptions.Clear();
-            if (string.IsNullOrEmpty(order))
+
+            try
+            {
+                _identifiersView.SortDescriptions.Clear();
+
+                if (string.IsNullOrWhiteSpace(order))
+                    return;
+
+                bool isNumeric = (KeyStore?.IsNumericKeyId).GetValueOrDefault(false);
+                ListSortDirection direction = order.EndsWith("Desc",
+                    StringComparison.OrdinalIgnoreCase) ? ListSortDirection.Descending : ListSortDirection.Ascending;
+
+                void AddSort(string propertyName, ListSortDirection sortDirection)
+                {
+                    _identifiersView.SortDescriptions.Add(new SortDescription(propertyName, sortDirection));
+                }
+
+                switch (order)
+                {
+                    case "ByIdAsc":
+                    case "ByIdDesc":
+                        AddSort("KeyEntryId.NumericId", direction);
+                        if (!isNumeric)
+                            AddSort("KeyEntryId.Id", direction);
+                        AddSort("KeyEntryId.Label", ListSortDirection.Ascending);
+                        break;
+                    case "ByLabelAsc":
+                    case "ByLabelDesc":
+                        AddSort("KeyEntryId.Label", direction);
+                        AddSort("KeyEntryId.NumericId", direction);
+                        if (!isNumeric)
+                            AddSort("KeyEntryId.Id", direction);
+                        break;
+                    default:
+                        log.Warn($"Unknown ordering mode '{order}'.");
+                        return;
+                }
+
+                UIPreferences preferences = UIPreferences.GetSingletonInstance(false) ?? new UIPreferences();
+
+                if (!string.Equals(order, preferences.DefaultOrdering, StringComparison.Ordinal))
+                {
+                    preferences.DefaultOrdering = order;
+                    preferences.SaveToFile();
+                }
+            }
+            finally
             {
                 Mouse.OverrideCursor = null;
-                return;
             }
-            bool isNumeric = (KeyStore?.IsNumericKeyId).GetValueOrDefault(false);
-            string idProperty = isNumeric ? "KeyEntryId.NumericId" : "KeyEntryId.Id";
-            var direction = order.EndsWith("Desc") ? ListSortDirection.Descending : ListSortDirection.Ascending;
-            // Even if key id is not enforced to be numeric, we try to order in numeric order first
-            if (!isNumeric && order.StartsWith("ById"))
-            {
-                _identifiersView.SortDescriptions.Add(new SortDescription("KeyEntryId.NumericId", direction));
-            }
-            var property = order switch
-            {
-                "ByIdAsc" or "ByIdDesc" => idProperty,
-                "ByLabelAsc" or "ByLabelDesc" => "KeyEntryId.Label",
-                _ => null
-            };
-            if (property != null)
-                _identifiersView.SortDescriptions.Add(new SortDescription(property, direction));
-
-            var uipref = UIPreferences.GetSingletonInstance(false) ?? new UIPreferences();
-            if (order != uipref.DefaultOrdering)
-            {
-                uipref.DefaultOrdering = order;
-                uipref.SaveToFile();
-            }
-            Mouse.OverrideCursor = null;
         }
 
         public async Task RefreshKeyEntries()
