@@ -70,6 +70,33 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Adding certificate has succeeded.
+        /// </summary>
+        public static string AddCertSuccess {
+            get {
+                return ResourceManager.GetString("AddCertSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Adding key has succeeded.
+        /// </summary>
+        public static string AddKeySuccess {
+            get {
+                return ResourceManager.GetString("AddKeySuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Adding PFX file has succeeded.
+        /// </summary>
+        public static string AddPFXSuccess {
+            get {
+                return ResourceManager.GetString("AddPFXSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à The AID can&apos;t store this value.
         /// </summary>
         public static string AidNotValid {
@@ -97,11 +124,87 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à CSR generation has succeeded.
+        /// </summary>
+        public static string CSRSuccess {
+            get {
+                return ResourceManager.GetString("CSRSuccess", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Default file.
+        /// </summary>
+        public static string DefaultFile
+        {
+            get
+            {
+                return ResourceManager.GetString("DefaultFile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Deletion of all intermediate certificates has succeeded.
+        /// </summary>
+        public static string DeleteAllCaIntSuccess {
+            get {
+                return ResourceManager.GetString("DeleteAllCaIntSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Deletion of certificate and key has succeeded.
+        /// </summary>
+        public static string DeleteCertKeySuccess {
+            get {
+                return ResourceManager.GetString("DeleteCertKeySuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Deletion of certificate has succeeded.
+        /// </summary>
+        public static string DeleteCertSuccess {
+            get {
+                return ResourceManager.GetString("DeleteCertSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Certificate download has succeeded.
+        /// </summary>
+        public static string DLSuccess {
+            get {
+                return ResourceManager.GetString("DLSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à The favourite SAM-SE is not connected.
         /// </summary>
         public static string FavoriteSAM_SEDisconnected {
             get {
                 return ResourceManager.GetString("FavoriteSAM_SEDisconnected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Hardened file.
+        /// </summary>
+        public static string HardenedFile
+        {
+            get
+            {
+                return ResourceManager.GetString("HardenedFile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à JANUS Module.
+        /// </summary>
+        public static string JANUSModule {
+            get {
+                return ResourceManager.GetString("JANUSModule", resourceCulture);
             }
         }
         
@@ -169,6 +272,24 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à New key value.
+        /// </summary>
+        public static string KeyValueCurrent {
+            get {
+                return ResourceManager.GetString("KeyValueCurrent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Current key value.
+        /// </summary>
+        public static string KeyValueNew {
+            get {
+                return ResourceManager.GetString("KeyValueNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à MIFARE DESFire key : biometric configuration.
         /// </summary>
         public static string LabelBioa {
@@ -183,6 +304,15 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties {
         public static string LabelDfxa {
             get {
                 return ResourceManager.GetString("LabelDfxa", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Authentication key of reader.
+        /// </summary>
+        public static string LabelKeyK {
+            get {
+                return ResourceManager.GetString("LabelKeyK", resourceCulture);
             }
         }
         
@@ -264,6 +394,15 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties {
         public static string PasswordErrorLetter {
             get {
                 return ResourceManager.GetString("PasswordErrorLetter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à RADIUS Module.
+        /// </summary>
+        public static string RADIUSModule {
+            get {
+                return ResourceManager.GetString("RADIUSModule", resourceCulture);
             }
         }
         
@@ -394,6 +533,15 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à An error occured at a low level on the SAM-SE.
+        /// </summary>
+        public static string SAM_SELowLevelError {
+            get {
+                return ResourceManager.GetString("SAM_SELowLevelError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à No SAM-SE is connected to the selected programming station.
         /// </summary>
         public static string SAM_SEMissing {
@@ -417,6 +565,87 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties {
         public static string SiNotValid {
             get {
                 return ResourceManager.GetString("SiNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à TLS Module.
+        /// </summary>
+        public static string TLSModule {
+            get {
+                return ResourceManager.GetString("TLSModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Drag&amp;Drop or browse to deposit cetificate here.
+        /// </summary>
+        public static string ToolTipDepositCert {
+            get {
+                return ResourceManager.GetString("ToolTipDepositCert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Drag&amp;Drop or browse to deposit cetificate here.
+        /// </summary>
+        public static string ToolTipDepositCert1 {
+            get {
+                return ResourceManager.GetString("ToolTipDepositCert1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Drag&amp;Drop or browse to deposit files here.
+        /// </summary>
+        public static string ToolTipDepositFile {
+            get {
+                return ResourceManager.GetString("ToolTipDepositFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Drag&amp;Drop or browse to deposit key here.
+        /// </summary>
+        public static string ToolTipDepositKey {
+            get {
+                return ResourceManager.GetString("ToolTipDepositKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Double click to open the certificate.
+        /// </summary>
+        public static string ToolTipOpenCert {
+            get {
+                return ResourceManager.GetString("ToolTipOpenCert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à SAM-SE update has failed.
+        /// </summary>
+        public static string UpdateFailed {
+            get {
+                return ResourceManager.GetString("UpdateFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à SAM-SE update has succeeded.
+        /// </summary>
+        public static string UpdateSuccess {
+            get {
+                return ResourceManager.GetString("UpdateSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à WEB Module.
+        /// </summary>
+        public static string WEBModule {
+            get {
+                return ResourceManager.GetString("WEBModule", resourceCulture);
             }
         }
     }

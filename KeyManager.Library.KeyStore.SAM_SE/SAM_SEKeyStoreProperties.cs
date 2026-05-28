@@ -12,6 +12,12 @@ using Leosac.KeyManager.Library.KeyStore.SAM_SE.Properties;
 
 namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
 {
+    public enum ConfigurationFile
+    {
+        CONF_FILE_DEFAULT = 0,      /*<! Fichier de configuration par défaut */
+        CONF_FILE_HARDENED,         /*<! Fichier de configuration durci */
+    }
+
     public class SAM_SEKeyStoreProperties : KeyStoreProperties, IEquatable<SAM_SEKeyStoreProperties>
     {
         public SAM_SEKeyStoreProperties() : base()
@@ -34,7 +40,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             get => lockedLevelString;
             set { SetProperty(ref lockedLevelString, value); }
         }
-
+        public ConfigurationFile DefaultFile { get; set; } = ConfigurationFile.CONF_FILE_DEFAULT;
         public string ProgrammingStationPath {  get; set; } = string.Empty;
 
         private SAM_SELockLevel lockedLevel = SAM_SELockLevel.LOCK_LVL_FILE;

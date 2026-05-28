@@ -42,6 +42,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.UI
         {
             var controls = new Dictionary<string, UserControl>
             {
+                { Properties.Resources.Certificates, new SAM_SEKeyStoreCertificatesControl() },
                 { Properties.Resources.Tools, new SAM_SEKeyStoreToolsControl() }
             };
             return controls;

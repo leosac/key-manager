@@ -13,10 +13,6 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
 {
     public class SAM_SEDllProgrammingStation
     {
-        //String with MAC of SAM-SE
-        public string Mac;
-        //String with version of SAM-SE
-        public string Version;
         //String with version of SAM-SE
         public string Path;
 
@@ -32,10 +28,8 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
         {
             Context = ctx;
             Index = index;
-            Mac = GetMac(Index);
-            Version = GetVersion(Index);
             Path = GetProgrammingStationPath();
-            SAM_SE = new(Context);
+            SAM_SE = new(Context, Index);
         }
 
         [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
@@ -52,37 +46,6 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE.DLL
         public void Deinit()
         {
             spse_freeSpse(Context);
-        }
-
-        [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr spse_getInformation(uint index, SAM_SEInformations type);
-        public string GetMac(uint index)
-        {
-            IntPtr ptr = spse_getInformation(index, SAM_SEInformations.INFORMATIONS_MAC);
-            if (ptr == IntPtr.Zero)
-            {
-                return "0C000000";
-            }
-            byte[] macArray = new byte[SAM_SEDllConstants.SizeMac];
-            Marshal.Copy(ptr, macArray, 0, SAM_SEDllConstants.SizeMac);
-            string[] macStr = Array.ConvertAll(macArray, b => b.ToString("X2"));
-            string mac = string.Join("", macStr);
-            return mac;
-        }
-
-        public string GetVersion(uint index)
-        {
-            IntPtr ptr = spse_getInformation(index, SAM_SEInformations.INFORMATIONS_VERSION);
-            if (ptr == IntPtr.Zero)
-            {
-                return "v0.0.0";
-            }
-            byte[] versionArray = new byte[SAM_SEDllConstants.SizeVersion];
-            Marshal.Copy(ptr, versionArray, 0, SAM_SEDllConstants.SizeVersion);
-            string[] versionStr = Array.ConvertAll(versionArray, b => b.ToString());
-            versionStr[0] = versionStr[0].TrimStart('0');
-            string version = "v" + string.Join(".", versionStr);
-            return version;
         }
 
         [DllImport(SAM_SEDllConstants.SPSEDllPath, CallingConvention = CallingConvention.Cdecl)]

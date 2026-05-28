@@ -21,6 +21,7 @@ namespace Leosac.KeyManager.Library.KeyStore.SAM_SE
             Authenticate,
             DESFire,
             DESFireUID,
+            Reader,
         }
 
         private SAM_SEKeyEntryType keyEntryType = SAM_SEKeyEntryType.Default;
