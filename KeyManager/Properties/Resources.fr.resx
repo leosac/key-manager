@@ -255,4 +255,7 @@
   <data name="EncryptionTypeHelper" xml:space="preserve">
     <value>Méthode de chiffrement des secrets</value>
   </data>
+  <data name="MissingModule" xml:space="preserve">
+    <value>Ce favori ne peut pas être ouvert car le module requis est manquant.</value>
+  </data>
 </root>

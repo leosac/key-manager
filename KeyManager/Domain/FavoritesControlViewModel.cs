@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Leosac.KeyManager.Library;
-using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using Leosac.WpfApp;
@@ -9,7 +8,6 @@ using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using System;
 using System.ComponentModel;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
@@ -19,99 +17,23 @@ namespace Leosac.KeyManager.Domain
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
+        protected ISnackbarMessageQueue _snackbarMessageQueue;
+
         public FavoritesControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
             _snackbarMessageQueue = snackbarMessageQueue;
-            RefreshFavoritesCommand = new RelayCommand(
-                () =>
-                {
-                    RefreshFavorites();
-                });
-            ImportFavoritesCommand = new RelayCommand(
-                () =>
-                {
-                    ImportFavorites();
-                });
-            ExportFavoritesCommand = new RelayCommand(
-                () =>
-                {
-                    ExportFavorites();
-                });
-            OpenFavoriteCommand = new AsyncRelayCommand<Favorite>(
-                async fav =>
-                {
-                    DialogHost.CloseDialogCommand.Execute(null, null);
-                    if (KeyStoreCommand != null)
-                    {
-                        await KeyStoreCommand.ExecuteAsync(fav);
-                        SearchTerms = string.Empty;
-                    }
-                });
-            CreateFavoriteCommand = new AsyncRelayCommand(
-                async () =>
-                {
-                    var model = new KeyStoreSelectorDialogViewModel { Message = "Save a new Favorite Key Store" };
-                    var dialog = new KeyStoreSelectorDialog
-                    {
-                        DataContext = model
-                    };
 
-                    object? ret = await DialogHost.Show(dialog, "RootDialog");
-                    if (ret != null)
-                    {
-                        var store = model.CreateKeyStore();
-                        if (store != null)
-                        {
-                            Favorites?.CreateFromKeyStore(store);
-                        }
-                    }
-                });
-            RemoveFavoriteCommand = new RelayCommand<Favorite>(
-                fav =>
-                {
-                    if (fav != null)
-                    {
-                        DialogHost.CloseDialogCommand.Execute(null, null);
+            RefreshFavoritesCommand = new RelayCommand(RefreshFavorites);
+            ImportFavoritesCommand = new RelayCommand(ImportFavorites);
+            ExportFavoritesCommand = new RelayCommand(ExportFavorites);
+            ChangeMasterKeyCommand = new RelayCommand(ChangeMasterKey);
 
-                        Favorites?.KeyStores.Remove(fav);
-                        Favorites?.SaveToFile();
-                        log.Info(string.Format("Favorite `{0}` removed.", fav.Name));
-                    }
-                });
-            EditFavoriteCommand = new AsyncRelayCommand<Favorite>(
-                async fav =>
-                {
-                    if (Favorites != null && fav != null)
-                    {
-                        await EditKeyStoreControlViewModel.EditFavorite(Favorites, fav);
-                        RefreshFavorites();
-                    }
-                });
-            ChangeMasterKeyCommand = new RelayCommand(() =>
-                {
-                    if (!string.IsNullOrEmpty(NewMasterKey))
-                    {
-                        EncryptJsonConverter.ChangeEncryption(StoredSecretEncryptionType.CustomKey, NewMasterKey);
-                        NewMasterKey = null;
-                    }
-                    else
-                    {
-                        EncryptJsonConverter.ResetToDefaultMasterKey();
-                    }
+            OpenFavoriteCommand = new AsyncRelayCommand<Favorite>(OpenFavoriteAsync);
+            CreateFavoriteCommand = new AsyncRelayCommand(CreateFavoriteAsync);
+            EditFavoriteCommand = new AsyncRelayCommand<Favorite>(EditFavoriteAsync);
 
-                    RefreshMasterKeyState();
-                    DialogHost.CloseDialogCommand.Execute(null, null);
-                    RefreshFavorites();
-                });
+            RemoveFavoriteCommand = new RelayCommand<Favorite>(RemoveFavorite, fav => fav != null);
         }
-
-        public void RefreshMasterKeyState()
-        {
-            DisplayMasterKey = (EncryptJsonConverter.EncryptionType == StoredSecretEncryptionType.CustomKey);
-            IsDefaultMasterKey = EncryptJsonConverter.IsDefaultMasterKey();
-        }
-
-        protected ISnackbarMessageQueue _snackbarMessageQueue;
 
         private Favorites? _favorites;
 
@@ -163,30 +85,6 @@ namespace Leosac.KeyManager.Domain
             }
         }
 
-        public void RefreshFavorites()
-        {
-            IsLoadingFavorites = true;
-            SearchTerms = string.Empty;
-            Favorites = Favorites.GetSingletonInstance(true);
-            Task.Run(async () =>
-            {
-                // Just to be sure the animation is visible long enough...
-                await Task.Delay(500);
-                IsLoadingFavorites = false;
-            });
-            if (Favorites != null)
-            {
-                FavoritesView = CollectionViewSource.GetDefaultView(Favorites.KeyStores);
-                FavoritesView.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
-                FavoritesView.Filter = FavoritesFilter;
-            }
-        }
-
-        public void RefreshFavoritesView()
-        {
-            FavoritesView?.Refresh();
-        }
-
         private ICollectionView? _favoritesView;
         public ICollectionView? FavoritesView
         {
@@ -194,74 +92,171 @@ namespace Leosac.KeyManager.Domain
             set => SetProperty(ref _favoritesView, value);
         }
 
+        public RelayCommand RefreshFavoritesCommand { get; }
+        public RelayCommand ImportFavoritesCommand { get; }
+        public RelayCommand ExportFavoritesCommand { get; }
+        public AsyncRelayCommand CreateFavoriteCommand { get; }
+        public RelayCommand<Favorite> RemoveFavoriteCommand { get; }
+        public AsyncRelayCommand<Favorite> EditFavoriteCommand { get; }
+        public AsyncRelayCommand<Favorite> OpenFavoriteCommand { get; }
+        public RelayCommand ChangeMasterKeyCommand { get; }
+
+        public AsyncRelayCommand<object>? KeyStoreCommand { private get; set; }
+
+        public void RefreshMasterKeyState()
+        {
+            DisplayMasterKey = (EncryptJsonConverter.EncryptionType == StoredSecretEncryptionType.CustomKey);
+            IsDefaultMasterKey = EncryptJsonConverter.IsDefaultMasterKey();
+        }
+
+        public void RefreshFavorites()
+        {
+            IsLoadingFavorites = true;
+            SearchTerms = string.Empty;
+            Favorites = Favorites.GetSingletonInstance(true);
+            ConfigureFavoritesView();
+            _ = LoadingAnimationAsync();
+        }
+
+        private async Task LoadingAnimationAsync()
+        {
+            await Task.Delay(500);
+            IsLoadingFavorites = false;
+        }
+
+        private void ConfigureFavoritesView()
+        {
+            if (Favorites == null)
+            {
+                FavoritesView = null;
+                return;
+            }
+            FavoritesView = CollectionViewSource.GetDefaultView(Favorites.KeyStores);
+            FavoritesView.SortDescriptions.Clear();
+            FavoritesView.SortDescriptions.Add(new SortDescription(nameof(Favorite.Name), ListSortDirection.Ascending));
+            FavoritesView.Filter = FavoritesFilter;
+        }
+
+        public void RefreshFavoritesView()
+        {
+            FavoritesView?.Refresh();
+        }
+
         protected void ImportFavorites()
         {
-            var ofd = new OpenFileDialog();
-            ofd.Filter = "JSON Files (*.json)|*.json";
-            ofd.CheckFileExists = true;
-            if (ofd.ShowDialog() == true)
+            var ofd = new OpenFileDialog
             {
-                try
-                {
-                    var favorites = Favorites.LoadFromFile(ofd.FileName);
-                    if (favorites != null)
-                    {
-                        favorites.SaveToFile();
-                        RefreshFavorites();
-                    }
-                }
-                catch(Exception ex)
-                {
-                    SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
-                }
+                Filter = "JSON Files (*.json)|*.json",
+                CheckFileExists = true
+            };
+
+            if (ofd.ShowDialog() != true)
+                return;
+
+            try
+            {
+                var imported = Favorites.LoadSafeFromFile(ofd.FileName);
+                var current = Favorites.GetSingletonInstance();
+
+                if (imported == null || current == null)
+                    return;
+
+                current.ReplaceAll(imported.KeyStores);
+                RefreshFavorites();
+                SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "Favorites imported successfully.");
+            }
+            catch (Exception ex)
+            {
+                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
             }
         }
 
         protected void ExportFavorites()
         {
-            var sfd = new SaveFileDialog();
-            sfd.Filter = "JSON Files (*.json)|*.json";
-            if (sfd.ShowDialog() == true)
+            var sfd = new SaveFileDialog { Filter = "JSON Files (*.json)|*.json" };
+            if (sfd.ShowDialog() != true)
+                return;
+            try
             {
-                try
-                {
-                    Favorites.GetSingletonInstance()?.SaveToFile(sfd.FileName);
-                }
-                catch (Exception ex)
-                {
-                    SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
-                }
+                Favorites.GetSingletonInstance()?.SaveToFile(sfd.FileName);
+                SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "Favorites exported successfully.");
+            }
+            catch (Exception ex)
+            {
+                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
             }
         }
 
         private bool FavoritesFilter(object obj)
         {
-            if (string.IsNullOrWhiteSpace(_searchTerms))
-            {
-                return true;
-            }
-
-            if (obj is Favorite item)
-            {
-                var terms = _searchTerms.ToLowerInvariant();
-
-                if (item.Name != null && item.Name.ToLowerInvariant().Contains(terms))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return string.IsNullOrWhiteSpace(_searchTerms)
+                || obj is Favorite item && item.Name?.Contains(_searchTerms, StringComparison.OrdinalIgnoreCase) == true;
         }
 
-        public RelayCommand? RefreshFavoritesCommand { get; set; }
-        public RelayCommand? ImportFavoritesCommand { get; set; }
-        public RelayCommand? ExportFavoritesCommand { get; set; }
-        public AsyncRelayCommand? CreateFavoriteCommand { get; set; }
-        public RelayCommand<Favorite>? RemoveFavoriteCommand { get; set; }
-        public AsyncRelayCommand<Favorite>? EditFavoriteCommand { get; }
-        public AsyncRelayCommand<Favorite>? OpenFavoriteCommand { get; }
-        public RelayCommand? ChangeMasterKeyCommand { get; }
-        public AsyncRelayCommand<object>? KeyStoreCommand { private get; set; }
+        private async Task OpenFavoriteAsync(Favorite? fav)
+        {
+            if (fav == null || !fav.IsResolved)
+            {
+                SnackbarHelper.EnqueueError(_snackbarMessageQueue, "This favorite requires a missing module and cannot be opened.");
+                return;
+            }
+
+            DialogHost.CloseDialogCommand.Execute(null, null);
+            if (KeyStoreCommand != null)
+            {
+                await KeyStoreCommand.ExecuteAsync(fav);
+                SearchTerms = string.Empty;
+            }
+        }
+
+        private async Task CreateFavoriteAsync()
+        {
+            var model = new KeyStoreSelectorDialogViewModel { Message = "Save a new Favorite Key Store" };
+
+            var dialog = new KeyStoreSelectorDialog { DataContext = model };
+
+            object? ret = await DialogHost.Show(dialog, "RootDialog");
+            if (ret == null)
+                return;
+            var store = model.CreateKeyStore();
+            if (store == null)
+                return;
+            Favorites?.CreateFromKeyStore(store);
+        }
+
+        private void RemoveFavorite(Favorite? fav)
+        {
+            if (fav == null || Favorites == null)
+                return;
+            DialogHost.CloseDialogCommand.Execute(null, null);
+            if (!Favorites.Remove(fav))
+                return;
+            log.Info($"Favorite '{fav.Name}' removed.");
+        }
+
+        private async Task EditFavoriteAsync(Favorite? fav)
+        {
+            if (Favorites == null || fav == null || !fav.IsResolved)
+            {
+                SnackbarHelper.EnqueueError(_snackbarMessageQueue, "This favorite requires a missing module and cannot be opened.");
+                return;
+            }
+            await EditKeyStoreControlViewModel.EditFavorite(Favorites, fav);
+            RefreshFavorites();
+        }
+
+        private void ChangeMasterKey()
+        {
+            if (!string.IsNullOrWhiteSpace(NewMasterKey))
+            {
+                EncryptJsonConverter.ChangeEncryption(StoredSecretEncryptionType.CustomKey, NewMasterKey);
+                NewMasterKey = null;
+            }
+            else
+                EncryptJsonConverter.ResetToDefaultMasterKey();
+            RefreshMasterKeyState();
+            DialogHost.CloseDialogCommand.Execute(null, null);
+            RefreshFavorites();
+        }
     }
 }

@@ -22,6 +22,13 @@ namespace Leosac.KeyManager.Domain
     public class EditKeyStoreControlViewModel : ObservableValidator
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType ?? typeof(EditKeyStoreControlViewModel));
+
+        private Favorites? _cachedFavorites;
+
+        private Favorites? GetFavorites() => _cachedFavorites ??= Favorites.GetSingletonInstance();
+
+        private const string RootDialog = "RootDialog";
+
         public EditKeyStoreControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
             _showProgress = false;
@@ -32,7 +39,7 @@ namespace Leosac.KeyManager.Domain
                 () =>
                 {
                     DialogHost.CloseDialogCommand.Execute(null, null);
-                    var favorites = Favorites.GetSingletonInstance();
+                    var favorites = GetFavorites();
                     favorites?.SaveToFile();
                 });
         }
@@ -44,11 +51,9 @@ namespace Leosac.KeyManager.Domain
         {
             if (Favorite != null)
             {
-                var favorites = Favorites.GetSingletonInstance();
+                var favorites = GetFavorites();
                 if (favorites != null)
-                {
                     SaveToFavorite(favorites, Favorite);
-                }
             }
         }
 
@@ -103,6 +108,11 @@ namespace Leosac.KeyManager.Domain
         public AsyncRelayCommand RefreshKeyEntriesCommand { get; }
 
         public RelayCommand SaveFavoriteCommand { get; }
+
+        private void IncrementProgress()
+        {
+            ProgressValue = Interlocked.Increment(ref _progressValue);
+        }
 
         public Task CloseKeyStore()
         {
@@ -187,10 +197,9 @@ namespace Leosac.KeyManager.Domain
 
         public async Task EditFavorite()
         {
-            if (Favorite != null)
-            {
-                await EditFavorite(Favorites.GetSingletonInstance(), Favorite);
-            }
+            if (Favorite == null)
+                return;
+            await EditFavorite(GetFavorites(), Favorite);
         }
 
         public static async Task EditFavorite(Favorites? favorites, Favorite fav)
@@ -212,7 +221,7 @@ namespace Leosac.KeyManager.Domain
                         {
                             DataContext = model
                         };
-                        object? ret = await DialogHost.Show(dialog, "RootDialog");
+                        object? ret = await DialogHost.Show(dialog, RootDialog);
                         if (ret != null)
                         {
                             fav.Properties = model.SelectedFactoryItem.DataContext.Properties;
@@ -225,12 +234,11 @@ namespace Leosac.KeyManager.Domain
 
         private static void SaveToFavorite(Favorites favorites, Favorite fav)
         {
-            int favindex = favorites.KeyStores.IndexOf(fav);
-            if (favindex > -1)
-            {
-                favorites.KeyStores.RemoveAt(favindex);
-            }
-            favorites.KeyStores.Add(fav);
+            var index = favorites.KeyStores.IndexOf(fav);
+            if (index >= 0)
+                favorites.KeyStores[index] = fav;
+            else
+                favorites.KeyStores.Add(fav);
             favorites.SaveToFile();
         }
 
@@ -249,7 +257,7 @@ namespace Leosac.KeyManager.Domain
                     DialogHost.CloseDialogCommand.Execute(ks, null);
                 })
             };
-            var ret = await DialogHost.Show(dialog, "RootDialog");
+            var ret = await DialogHost.Show(dialog, RootDialog);
             return (ret != null);
         }
 
@@ -262,7 +270,7 @@ namespace Leosac.KeyManager.Domain
             if (!string.IsNullOrEmpty(label))
                 model.Label = label;
             dialog.DataContext = model;
-            var ret = await DialogHost.Show(dialog, "RootDialog", closingEventHandler: (_, _) =>
+            var ret = await DialogHost.Show(dialog, RootDialog, closingEventHandler: (_, _) =>
             {
                 dialog.DataContext = null;
             });
@@ -277,7 +285,7 @@ namespace Leosac.KeyManager.Domain
                 };
                 try
                 {
-                    await DialogHost.Show(batchDialog, "RootDialog");
+                    await DialogHost.Show(batchDialog, RootDialog);
                 }
                 finally
                 {
@@ -299,8 +307,8 @@ namespace Leosac.KeyManager.Domain
                     ?? throw new KeyStoreException("Failed to create destination key store.");
                 destStore.Properties = prop;
                 destStore.Options = model.Options;
-                destStore.KeyEntryRetrieved += (_, _) => Interlocked.Increment(ref _progressValue);
-                destStore.KeyEntryUpdated += (_, _) => Interlocked.Increment(ref _progressValue);
+                destStore.KeyEntryRetrieved += (_, _) => IncrementProgress();
+                destStore.KeyEntryUpdated += (_, _) => IncrementProgress();
                 destStore.UserMessageNotified += (_, e) => SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, e);
                 if (KeyStore == null)
                     throw new InvalidOperationException("KeyStore can't be null when running operations.");
@@ -309,7 +317,7 @@ namespace Leosac.KeyManager.Domain
                 {
                     ProgressMaximum = nbEntries * 2;
                 };
-                var favorites = Favorites.GetSingletonInstance();
+                var favorites = GetFavorites();
                 KeyStore? GetFavoriteKeyStore(string favoriteName)
                 {
                     if (string.IsNullOrEmpty(favoriteName))
@@ -344,13 +352,14 @@ namespace Leosac.KeyManager.Domain
             }
         }
 
-        private async Task ExecuteKeyStoreOperation(Func<Task<bool>> operation, string successMessage, string logErrorMessage)
+        private async Task<bool> ExecuteKeyStoreOperation(Func<Task<bool>> operation, string successMessage, string logErrorMessage)
         {
             try
             {
                 if (await operation())
                 {
                     SnackbarHelper.EnqueueMessage(SnackbarMessageQueue, successMessage);
+                    return true;
                 }
             }
             catch (KeyStoreException ex)
@@ -362,36 +371,31 @@ namespace Leosac.KeyManager.Domain
                 log.Error(logErrorMessage, ex);
                 SnackbarHelper.EnqueueError(SnackbarMessageQueue, ex);
             }
+            return false;
         }
 
-        public async Task Publish()
-        {
+        public async Task<bool> Publish() =>
             await ExecuteKeyStoreOperation(
                 async () => KeyStore != null &&
                     await RunOnKeyStore(() => new PublishKeyStoreDialog(), KeyStore.Publish, "Publish Key Entries"),
                 "Key Entries have been successfully published.",
                 "Publishing the Key Entries failed unexpectedly."
             );
-        }
 
-        public async Task Import()
-        {
+        public async Task<bool> Import() =>
             await ExecuteKeyStoreOperation(
                 async () => KeyStore != null &&
                     await RunOnKeyStore(() => new PublishKeyStoreDialog(), KeyStore.Import, Properties.Resources.ImportKeyStore),
                 "Key Entries have been successfully imported.",
                 "Importing the Key Entries failed unexpectedly."
             );
-        }
 
-        public async Task Diff()
-        {
+        public async Task<bool> Diff() =>
             await ExecuteKeyStoreOperation(
                 async () => KeyStore != null &&
-                    await RunOnKeyStore(() => new DiffKeyStoreDialog(), KeyStore.Diff, Properties.Resources.DiffKeyStore),
+                await RunOnKeyStore(() => new DiffKeyStoreDialog(), KeyStore.Diff, Properties.Resources.DiffKeyStore),
                 "No differences found.",
                 "Comparing the Key Entries failed unexpectedly."
             );
-        }
     }
 }

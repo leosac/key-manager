@@ -2,18 +2,9 @@
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
-    public class KeyEntryInfo : IChangeKeyEntry
+    public class KeyEntryInfo(KeyEntryId identifier, KeyEntryClass kClass) : IChangeKeyEntry
     {
-
-        [SetsRequiredMembers]
-        public KeyEntryInfo(KeyEntryId identifier, KeyEntryClass kClass)
-        {
-            Identifier = identifier;
-            KClass = kClass;
-        }
-
-        public required KeyEntryId Identifier { get; set; }
-
-        public required KeyEntryClass KClass { get; init; }
+        public KeyEntryId Identifier { get; set; } = identifier;
+        public KeyEntryClass KClass { get; init; } = kClass;
     }
 }

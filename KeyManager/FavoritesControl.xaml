@@ -26,6 +26,14 @@
             </ResourceDictionary.MergedDictionaries>
             <materialDesign:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed" />
             <materialDesign:BooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" TrueValue="Collapsed" FalseValue="Visible" />
+            <Style x:Key="ResolvedAwareMiniButtonStyle" TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionMiniLightButton}">
+                <Setter Property="Opacity" Value="1"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsResolved}" Value="False">
+                        <Setter Property="Opacity" Value="0.4"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
@@ -157,29 +165,37 @@
                         <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
                             <materialDesign:DialogHost DialogTheme="Inherit">
                                 <materialDesign:DialogHost.DialogContent>
-                                    <kslib:OpenFavoriteControl Title="{x:Static properties:Resources.OpenFavorite}" Command="{Binding DataContext.OpenFavoriteCommand, ElementName=userControl}" />
+                                    <kslib:OpenFavoriteControl Title="{x:Static properties:Resources.OpenFavorite}"
+                           Command="{Binding DataContext.OpenFavoriteCommand, ElementName=userControl}"
+                           DataContext="{Binding}" />
                                 </materialDesign:DialogHost.DialogContent>
-
-                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" ToolTip="{x:Static properties:Resources.OpenFavorite}" Margin="3">
+                                <Button ToolTip="{x:Static properties:Resources.OpenFavorite}" Margin="3">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource ResolvedAwareMiniButtonStyle}">
+                                            <Setter Property="Command" Value="{x:Static materialDesign:DialogHost.OpenDialogCommand}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsResolved}" Value="False">
+                                                    <Setter Property="Command" Value="{Binding DataContext.OpenFavoriteCommand, ElementName=userControl}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
                                     <materialDesign:PackIcon Kind="FolderOpen" Height="24" Width="24" Cursor="Hand" />
                                 </Button>
                             </materialDesign:DialogHost>
-                            <Button Command="{Binding Path=DataContext.EditFavoriteCommand, ElementName=userControl}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="{x:Static properties:Resources.EditFavorite}"
-                                    IsEnabled="{x:Static kslib:UIPreferences.IsUserElevated}" Margin="3">
+                            <Button Style="{StaticResource ResolvedAwareMiniButtonStyle}" Command="{Binding Path=DataContext.EditFavoriteCommand, ElementName=userControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.EditFavorite}" IsEnabled="{x:Static kslib:UIPreferences.IsUserElevated}" Margin="3">
                                 <materialDesign:PackIcon Kind="FolderEdit" Height="24" Width="24" Cursor="Hand" />
                             </Button>
                             <materialDesign:DialogHost DialogTheme="Inherit">
                                 <materialDesign:DialogHost.DialogContent>
                                     <StackPanel Margin="16">
                                         <TextBlock Text="{x:Static properties:Resources.DeleteFavoriteConfirmation}" />
-
                                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                             <Button Margin="0,8,8,0" CommandParameter="{Binding}" Command="{Binding DataContext.RemoveFavoriteCommand, ElementName=userControl}" Content="{x:Static properties:Resources.Confirm}" IsDefault="True" Style="{StaticResource MaterialDesignFlatButton}" />
                                             <Button Margin="0,8,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Content="{x:Static properties:Resources.Cancel}" IsCancel="True" Style="{StaticResource MaterialDesignFlatButton}" />
                                         </StackPanel>
                                     </StackPanel>
                                 </materialDesign:DialogHost.DialogContent>
-
                                 <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" ToolTip="{x:Static properties:Resources.DeleteFavorite}"
                                         IsEnabled="{x:Static kslib:UIPreferences.IsUserElevated}" Margin="3">
                                     <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" Cursor="Hand" />
@@ -188,7 +204,26 @@
                         </WrapPanel>
                         <TextBlock DockPanel.Dock="Right" Text="{Binding CreationDate}" Grid.Column="1" Margin="5" VerticalAlignment="Center" />
                         <WrapPanel>
-                            <TextBlock FontSize="18" FontWeight="Bold" Text="{Binding Name}" Margin="5" VerticalAlignment="Center" />
+                            <StackPanel Orientation="Vertical" Margin="5">
+                                <Grid>
+                                    <StackPanel>
+                                        <TextBlock FontSize="18" FontWeight="Bold" Text="{Binding Name}" />
+                                        <TextBlock FontSize="12" Opacity="0.7" Text="{Binding KeyStoreTypeName}" />
+                                    </StackPanel>
+                                    <materialDesign:Badged HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-4,-4,0" Badge="{materialDesign:PackIcon Kind=Alert}" BadgeColorZoneMode="SecondaryMid" ToolTip="{x:Static properties:Resources.MissingModule}">
+                                        <materialDesign:Badged.Style>
+                                            <Style TargetType="materialDesign:Badged">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsResolved}" Value="False">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </materialDesign:Badged.Style>
+                                    </materialDesign:Badged>
+                                </Grid>
+                            </StackPanel>
                             <ListBox ItemsSource="{Binding Tags}" >
                                 <ListBox.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">

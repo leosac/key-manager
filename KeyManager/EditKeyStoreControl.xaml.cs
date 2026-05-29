@@ -66,15 +66,10 @@ namespace Leosac.KeyManager
         {
             if (DataContext is EditKeyStoreControlViewModel model)
             {
-                var plan = MaintenancePlan.GetSingletonInstance();
-                if (!string.IsNullOrEmpty(plan.LicenseKey))
-                {
+                if (IsLicensed())
                     await model.Publish();
-                }
                 else
-                {
                     MaintenancePlanHelper.OpenRegistration();
-                }
             }
         }
 
@@ -82,11 +77,10 @@ namespace Leosac.KeyManager
         {
             if (DataContext is EditKeyStoreControlViewModel model)
             {
-                var plan = MaintenancePlan.GetSingletonInstance();
-                if (!string.IsNullOrEmpty(plan.LicenseKey))
+                if (IsLicensed())
                 {
-                    await model.Import();
-                    await model.RefreshKeyEntries();
+                    if (await model.Import())
+                        await model.RefreshKeyEntries();
                 }
                 else
                 {
@@ -99,16 +93,17 @@ namespace Leosac.KeyManager
         {
             if (DataContext is EditKeyStoreControlViewModel model)
             {
-                var plan = MaintenancePlan.GetSingletonInstance();
-                if (!string.IsNullOrEmpty(plan.LicenseKey))
-                {
+                if (IsLicensed())
                     await model.Diff();
-                }
                 else
-                {
                     MaintenancePlanHelper.OpenRegistration();
-                }
             }
+        }
+
+        private static bool IsLicensed()
+        {
+            var plan = MaintenancePlan.GetSingletonInstance();
+            return !string.IsNullOrEmpty(plan.LicenseKey);
         }
     }
 }

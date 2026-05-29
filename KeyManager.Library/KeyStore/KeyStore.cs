@@ -2,8 +2,6 @@
 using Leosac.KeyManager.Library.DivInput;
 using Newtonsoft.Json;
 using System.Text;
-using System.Threading;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace Leosac.KeyManager.Library.KeyStore
 {
@@ -332,10 +330,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         protected virtual async Task KeyEntriesAction(KeyStore store, Func<string, KeyStore?>? getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids, Action<KeyStore, KeyEntryClass, int>? initCallback, Func<KeyStore, List<IChangeKeyEntry>, Task> action, bool connectToStore = true)
         {
             var changes = new List<IChangeKeyEntry>();
-            if (ids == null)
-            {
-                ids = await GetAll(keClass);
-            }
+            ids ??= await GetAll(keClass);
             initCallback?.Invoke(this, keClass, ids.Count());
             if (!string.IsNullOrEmpty(Options?.PublishVariable))
             {
@@ -545,8 +540,10 @@ namespace Leosac.KeyManager.Library.KeyStore
                 uint missings = 0, diffs = 0;
                 var details = string.Empty;
 
-                foreach (KeyEntry c in changes)
+                foreach (var item in changes)
                 {
+                    if (item is not KeyEntry c)
+                        continue;
                     if (await store.CheckKeyEntryExists(c.Identifier, keClass))
                     {
                         var ke = await store.Get(c.Identifier, keClass);
@@ -608,15 +605,12 @@ namespace Leosac.KeyManager.Library.KeyStore
         public static string? ComputeDivInput(DivInputContext divContext, IList<DivInputFragment> divInput)
         {
             divContext.CurrentDivInput = null;
-            if (divInput != null && divInput.Count > 0)
-            {
-                divContext.CurrentDivInput = string.Empty;
-                foreach (var input in divInput)
-                {
-                    divContext.CurrentDivInput += input.GetFragment(divContext);
-                }
-            }
-            return divContext.CurrentDivInput;
+            if (divInput == null || divInput.Count == 0)
+                return null;
+            var sb = new StringBuilder();
+            foreach (var input in divInput)
+                sb.Append(input.GetFragment(divContext));
+            return divContext.CurrentDivInput = sb.ToString();
         }
 
         protected void OnKeyEntryRetrieved(KeyEntry keyEntry)
