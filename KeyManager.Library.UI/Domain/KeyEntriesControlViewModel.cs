@@ -199,7 +199,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     }
                 });
 
+
             PrintSelectionCommand = new AsyncRelayCommand(PrintSelection);
+
+            SearchCommand = new RelayCommand(() => RefreshKeyEntriesView());
 
             OrderingCommand = new RelayCommand<string>(Ordering);
 
@@ -258,19 +261,23 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public string? SearchTerms
         {
             get => _searchTerms;
-            set
-            {
-                if (SetProperty(ref _searchTerms, value))
-                {
-                    RefreshKeyEntriesView();
-                }
-            }
+            set => SetProperty(ref _searchTerms, value);
         }
 
         public bool ShowSelection
         {
             get => _showSelection;
             set => SetProperty(ref _showSelection, value);
+        }
+
+        public RelayCommand SearchCommand { get; }
+
+        private bool _isToolbarCollapsed;
+
+        public bool IsToolbarCollapsed
+        {
+            get => _isToolbarCollapsed;
+            set => SetProperty(ref _isToolbarCollapsed, value);
         }
 
         public AsyncRelayCommand CreateKeyEntryCommand { get; }
@@ -285,7 +292,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     try
                     {
                         await KeyStore.Create(model.KeyEntry);
-                        Identifiers.Add(new SelectableKeyEntryId {
+                        Identifiers.Add(new SelectableKeyEntryId
+                        {
                             Selected = false,
                             KeyEntryId = model.KeyEntry.Identifier
                         });
@@ -540,7 +548,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         private static string FormatPropertyNameForDisplay(string propertyName)
         {
-            return _step2.Replace(_step1.Replace(propertyName, "$1 $2"),"$1 $2");
+            return _step2.Replace(_step1.Replace(propertyName, "$1 $2"), "$1 $2");
         }
 
         private async Task PrintSelection()
@@ -579,7 +587,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 if (identifier.KeyEntryId is null || KeyStore is null)
                     continue;
-                
+
                 var ke = await KeyStore.Get(identifier.KeyEntryId, KeyEntryClass);
                 if (ke is null)
                     continue;
@@ -613,10 +621,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
                             continue;
 
                         var hasBrowsableFalse = p.GetCustomAttributes(true).OfType<BrowsableAttribute>().Any(ba => !ba.Browsable);
-                        
+
                         if (hasBrowsableFalse)
                             continue;
-                        
+
                         bool include = (p.PropertyType == typeof(string) || p.PropertyType.IsEnum)
                             ? !string.IsNullOrWhiteSpace(value.ToString()) : p.PropertyType == typeof(bool)
                             ? (bool)value : IsNumericType(p.PropertyType);

@@ -23,51 +23,19 @@ namespace Leosac.KeyManager.Library.UI
         {
             if (e.OldValue != null)
             {
-                KeyEntriesDataContext?.RefreshKeyEntries();
-            }
-        }
-
-        private void KeyEntryEdit_OnDialogClosed(object sender, DialogClosedEventArgs e)
-        {
-            if (e.Parameter is KeyStore.KeyEntry keyEntry)
-            {
-                KeyEntriesDataContext?.KeyStore?.Update(keyEntry);
+                (DataContext as KeyEntriesControlViewModel)?.RefreshKeyEntries();
             }
         }
 
         private void KeyEntryDeletion_OnDialogClosed(object sender, DialogClosedEventArgs e)
         {
-            if (KeyEntriesDataContext?.DeleteKeyEntryCommand != null)
-            {
-                if (e.Parameter is SelectableKeyEntryId identifier)
-                {
-                    KeyEntriesDataContext.DeleteKeyEntryCommand.ExecuteAsync(identifier);
-                }
-                else if (e.Parameter is IList<SelectableKeyEntryId> identifiers)
-                {
-                    var ids = identifiers.Where(id => id.Selected).ToList();
-                    foreach (var id in ids)
-                    {
-                        KeyEntriesDataContext.DeleteKeyEntryCommand.ExecuteAsync(id);
-                    }
-                }
-            }
-        }
+            if (KeyEntriesDataContext == null)
+                return;
 
-        private void btnSearch_Click(object sender, RoutedEventArgs e)
-        {
-            KeyEntriesDataContext!.SearchTerms = SearchTerms.Text;
-            KeyEntriesDataContext.RefreshKeyEntriesView();
-        }
+            if (e.Parameter is null)
+                return;
 
-        private void SearchTerms_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == System.Windows.Input.Key.Enter)
-            {
-                KeyEntriesDataContext!.SearchTerms = SearchTerms.Text;
-                KeyEntriesDataContext.RefreshKeyEntriesView();
-                e.Handled = true;
-            }
+            KeyEntryDeletionHandler.Handle(KeyEntriesDataContext, e.Parameter);
         }
 
         private void HandlePreviewMouseWheel(object sender, MouseWheelEventArgs e)
