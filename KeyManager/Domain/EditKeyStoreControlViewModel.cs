@@ -72,7 +72,7 @@ namespace Leosac.KeyManager.Domain
             set
             {
                 if (SetProperty(ref _keyStore, value))
-                    OnKeyStoreChanged(value);
+                    OnKeyStoreChanged();
             }
         }
 
@@ -309,7 +309,7 @@ namespace Leosac.KeyManager.Domain
             favorites.SaveToFile();
         }
         
-        private void OnKeyStoreChanged(KeyStore? value)
+        private void OnKeyStoreChanged()
         {
             OnPropertyChanged(nameof(IsStickyHeaderVisible));
             OnPropertyChanged(nameof(SupportsStickyHeader));
