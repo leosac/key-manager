@@ -6,11 +6,13 @@ using Leosac.KeyManager.Library.Plugin;
 using Leosac.KeyManager.Library.UI;
 using Leosac.KeyManager.Library.UI.Domain;
 using Leosac.WpfApp;
+using Leosac.WpfApp.Abstractions;
 using log4net;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +21,7 @@ using System.Windows.Input;
 
 namespace Leosac.KeyManager.Domain
 {
-    public class EditKeyStoreControlViewModel : ObservableValidator
+    public class EditKeyStoreControlViewModel : ObservableValidator, IStickyHeaderSupport
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType ?? typeof(EditKeyStoreControlViewModel));
 
@@ -34,6 +36,7 @@ namespace Leosac.KeyManager.Domain
             _showProgress = false;
             SnackbarMessageQueue = snackbarMessageQueue;
             Tabs = new ObservableCollection<TabItem>();
+            Header = new KeyEntriesHeaderViewModel();
             RefreshKeyEntriesCommand = new AsyncRelayCommand(() => RefreshKeyEntries(500));
             SaveFavoriteCommand = new RelayCommand(
                 () =>
@@ -47,6 +50,10 @@ namespace Leosac.KeyManager.Domain
         public ISnackbarMessageQueue SnackbarMessageQueue { get; private set; }
 
         protected readonly IList<KeyEntriesControlViewModel> _keModels = new List<KeyEntriesControlViewModel>();
+
+        private readonly Dictionary<KeyEntriesControlViewModel, EventHandler> _eventHandlers = new();
+        private readonly Dictionary<KeyEntriesControlViewModel, PropertyChangedEventHandler> _keyEntryHandlers = new();
+
         protected void OnKeyStoreUpdated()
         {
             if (Favorite != null)
@@ -62,7 +69,11 @@ namespace Leosac.KeyManager.Domain
         public KeyStore? KeyStore
         {
             get => _keyStore;
-            set => SetProperty(ref _keyStore, value);
+            set
+            {
+                if (SetProperty(ref _keyStore, value))
+                    OnKeyStoreChanged(value);
+            }
         }
 
         private Favorite? _favorite;
@@ -101,6 +112,38 @@ namespace Leosac.KeyManager.Domain
             set => SetProperty(ref _isLoadingKeyEntries, value);
         }
 
+        private bool _supportsStickyHeader;
+        public bool SupportsStickyHeader
+        {
+            get => _supportsStickyHeader;
+            set => SetProperty(ref _supportsStickyHeader, value);
+        }
+
+        private bool _isToolbarCollapsed;
+        public bool IsStickyHeaderVisible =>
+            KeyStore != null && _isToolbarCollapsed;
+
+        public void SetToolbarCollapsed(bool collapsed)
+        {
+            if (_isToolbarCollapsed == collapsed)
+                return;
+            _isToolbarCollapsed = collapsed;
+            OnPropertyChanged(nameof(IsStickyHeaderVisible));
+        }
+
+        private KeyEntriesControlViewModel? _activeKeyEntries;
+        public KeyEntriesControlViewModel? ActiveKeyEntries
+        {
+            get => _activeKeyEntries;
+            set
+            {
+                if (SetProperty(ref _activeKeyEntries, value))
+                    Header.Current = value;
+            }
+        }
+
+        public KeyEntriesHeaderViewModel Header { get; }
+
         public ObservableCollection<TabItem> Tabs { get; set; }
 
         public RelayCommand? HomeCommand { get; set; }
@@ -121,18 +164,30 @@ namespace Leosac.KeyManager.Domain
 
         public async Task CloseKeyStore(bool navigate)
         {
-            if (KeyStore != null)
+            try
             {
-                await KeyStore.Close(true);
-            }
-            KeyStore = null;
-            _keModels.Clear();
-            Tabs.Clear();
-            Favorite = null;
+                if (KeyStore != null)
+                    await KeyStore.Close(true);
+                foreach (var kv in _eventHandlers)
+                    kv.Key.DefaultKeyEntryUpdated -= kv.Value;
+                foreach (var kv in _keyEntryHandlers)
+                    kv.Key.PropertyChanged -= kv.Value;
+                _eventHandlers.Clear();
+                _keyEntryHandlers.Clear();
+                foreach (var model in _keModels)
+                    model.KeyStore = null;
 
-            if (navigate)
+                _keModels.Clear();
+                Tabs.Clear();
+                KeyStore = null;
+                Favorite = null;
+
+                if (navigate)
+                    HomeCommand?.Execute(null);
+            }
+            catch (Exception ex)
             {
-                HomeCommand?.Execute(null);
+                log.Error("CloseKeyStore failed", ex);
             }
         }
 
@@ -151,7 +206,12 @@ namespace Leosac.KeyManager.Domain
                 foreach (var kclass in KeyStore.SupportedClasses)
                 {
                     var model = new KeyEntriesControlViewModel(SnackbarMessageQueue, kclass) { KeyStore = KeyStore };
-                    model.DefaultKeyEntryUpdated += (_, _) => OnKeyStoreUpdated();
+                    PropertyChangedEventHandler Stickyhandler = KeyEntries_PropertyChanged;
+                    EventHandler handler = (_, _) => OnKeyStoreUpdated();
+                    model.PropertyChanged += Stickyhandler;
+                    model.DefaultKeyEntryUpdated += handler;
+                    _keyEntryHandlers[model] = Stickyhandler;
+                    _eventHandlers[model] = handler;
                     tempModels.Add(model);
 
                     tempTabs.Add(new TabItem
@@ -166,12 +226,19 @@ namespace Leosac.KeyManager.Domain
                     _keModels.Add(model);
                 foreach (var tab in tempTabs)
                     Tabs.Add(tab);
+                ActiveKeyEntries = tempModels.FirstOrDefault();
             }
             finally
             {
                 Mouse.OverrideCursor = null;
             }
             await RefreshKeyEntries().ConfigureAwait(true);
+        }
+
+        private void KeyEntries_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(KeyEntriesControlViewModel.IsToolbarCollapsed) && sender is KeyEntriesControlViewModel vm)
+                SetToolbarCollapsed(vm.IsToolbarCollapsed);
         }
 
         public Task RefreshKeyEntries() => RefreshKeyEntries(0);
@@ -240,6 +307,12 @@ namespace Leosac.KeyManager.Domain
             else
                 favorites.KeyStores.Add(fav);
             favorites.SaveToFile();
+        }
+        
+        private void OnKeyStoreChanged(KeyStore? value)
+        {
+            OnPropertyChanged(nameof(IsStickyHeaderVisible));
+            OnPropertyChanged(nameof(SupportsStickyHeader));
         }
 
         public static async Task<bool> AskForKeyStoreSecretIfRequired(KeyStore ks, string? favoriteName)

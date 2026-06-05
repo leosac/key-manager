@@ -147,15 +147,19 @@ namespace Leosac.KeyManager
                     KeyStoreCommand = KeyStoreCommand
                 }
             ));
-            model.MenuItems.Add(new NavItem(
+            var vm = new EditKeyStoreControlViewModel(model.SnackbarMessageQueue)
+            {
+                HomeCommand = HomeCommand,
+                SupportsStickyHeader = true
+            };
+            var keyStoreItem = new NavItem(
                 Properties.Resources.MenuKeyStore,
                 typeof(EditKeyStoreControl),
                 "ShieldKeyOutline",
-                new EditKeyStoreControlViewModel(model.SnackbarMessageQueue)
-                {
-                    HomeCommand = HomeCommand
-                }
-            ));
+                vm
+            );
+            keyStoreItem.StickyHeader = new KeyEntriesHeaderControl{ DataContext = vm.Header };
+            model.MenuItems.Add(keyStoreItem);
         }
 
         public override void InitializeAboutWindow(AboutWindowViewModel model)
