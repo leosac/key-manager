@@ -1,6 +1,6 @@
 ﻿using Leosac.KeyManager.Library.DivInput;
+using Leosac.KeyManager.Library.UI.Helpers;
 using log4net;
-using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;

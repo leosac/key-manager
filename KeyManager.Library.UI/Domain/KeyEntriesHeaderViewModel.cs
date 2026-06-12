@@ -25,6 +25,10 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set { if (Current != null) Current.SearchTerms = value; }
         }
 
+        public int SelectedIdentifiersCount => Current?.SelectedIdentifiersCount ?? 0;
+
+        public int VisibleIdentifiersCount => Current?.VisibleIdentifiersCount ?? 0;
+
         private KeyEntriesControlViewModel? _current;
 
         public KeyEntriesControlViewModel? Current
@@ -52,6 +56,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public ICommand? WizardCommand => Current?.WizardCommand;
         public ICommand? ShowSelectionChangedCommand => Current?.ShowSelectionChangedCommand;
         public ICommand? ToggleSelectionCommand => Current?.ToggleSelectionCommand;
+        public ICommand? ToggleSelectVisibleCommand => Current?.ToggleSelectVisibleCommand;
         public ICommand? PrintSelectionCommand => Current?.PrintSelectionCommand;
         public ICommand? OrderingCommand => Current?.OrderingCommand;
         public ICommand? SearchCommand => Current?.SearchCommand;
@@ -72,6 +77,8 @@ namespace Leosac.KeyManager.Library.UI.Domain
             nameof(KeyEntriesControlViewModel.KeyStore),
             nameof(KeyEntriesControlViewModel.SearchTerms),
             nameof(KeyEntriesControlViewModel.ShowSelection),
+            nameof(KeyEntriesControlViewModel.SelectedIdentifiersCount),
+            nameof(KeyEntriesControlViewModel.VisibleIdentifiersCount)
         };
 
         private void Current_PropertyChanged(object? sender, PropertyChangedEventArgs e)

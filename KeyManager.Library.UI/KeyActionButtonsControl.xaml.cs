@@ -1,5 +1,6 @@
 ﻿using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.UI.Domain;
+using Leosac.KeyManager.Library.UI.Helpers;
 using log4net;
 using Microsoft.Win32;
 using System.Speech.Synthesis;

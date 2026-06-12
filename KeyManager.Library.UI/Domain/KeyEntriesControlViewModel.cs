@@ -3,16 +3,17 @@ using CommunityToolkit.Mvvm.Input;
 using Leosac.KeyManager.Library.KeyGen;
 using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin.UI;
+using Leosac.KeyManager.Library.UI.Helpers;
 using Leosac.WpfApp;
 using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Leosac.KeyManager.Library.UI.Domain
@@ -20,6 +21,9 @@ namespace Leosac.KeyManager.Library.UI.Domain
     public class KeyEntriesControlViewModel : ObservableValidator
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
+
+        private const string RootDialog = "RootDialog";
+
         public KeyEntriesControlViewModel(ISnackbarMessageQueue snackbarMessageQueue, KeyEntryClass keClass)
         {
             _snackbarMessageQueue = snackbarMessageQueue;
@@ -30,184 +34,39 @@ namespace Leosac.KeyManager.Library.UI.Domain
             var factories = WizardFactory.RegisteredFactories.Where(f => f.KeyEntryClasses.Contains(KeyEntryClass));
             WizardFactories = new ObservableCollection<WizardFactory>(factories);
 
-            CreateKeyEntryCommand = new AsyncRelayCommand(
-                async () =>
-            {
-                var model = CreateKeyEntryDialogViewModel();
-                var dialog = new KeyEntryDialog
-                {
-                    DataContext = model
-                };
-                await CreateKeyEntry(dialog);
-            });
-
-            GenerateKeyEntryCommand = new AsyncRelayCommand(
-                async () =>
-                {
-                    var model = CreateKeyEntryDialogViewModel();
-                    model.ShowKeyMaterials = false;
-                    var dialog = new KeyEntryDialog
-                    {
-                        DataContext = model
-                    };
-                    await GenerateKeyEntry(dialog);
-                });
+            CreateKeyEntryCommand = new AsyncRelayCommand(CreateKeyEntryAsync);
+            GenerateKeyEntryCommand = new AsyncRelayCommand(GenerateKeyEntryAsync);
 
             EditDefaultKeyEntryCommand = new AsyncRelayCommand(
                 async () =>
                 {
-                    var model = CreateKeyEntryDialogViewModel(false);
-                    var dialog = new KeyEntryDialog
-                    {
-                        DataContext = model
-                    };
-                    if (await EditDefaultKeyEntry(dialog))
+                    if (await EditDefaultKeyEntryAsync())
                     {
                         OnDefaultKeyEntryUpdated();
                     }
                 });
 
-            EditKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
-                async identifier =>
-            {
-                try
-                {
-                    if (KeyStore != null && identifier?.KeyEntryId != null)
-                    {
-                        var model = CreateKeyEntryDialogViewModel();
-                        model.CanChangeFactory = false;
-                        model.AllowSubmit = KeyStore.CanUpdateKeyEntries;
-                        model.SubmitButtonText = Properties.Resources.Update;
-                        model.SetKeyEntry(await KeyStore.Get(identifier.KeyEntryId, KeyEntryClass));
-                        var dialog = new KeyEntryDialog
-                        {
-                            DataContext = model
-                        };
+            EditKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(EditKeyEntryAsync);
+            CopyKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(CopyKeyEntryAsync);
+            MoveUpKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(MoveUpKeyEntryAsync);
+            MoveDownKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(MoveDownKeyEntryAsync);
+            DeleteKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(DeleteKeyEntryAsync);
+            ImportCryptogramCommand = new AsyncRelayCommand<SelectableKeyEntryId>(ImportCryptogramAsync);
 
-                        if (await UpdateKeyEntry(dialog) && model.KeyEntry != null)
-                        {
-                            identifier.KeyEntryId = model.KeyEntry.Identifier;
-                        }
-                    }
-                }
-                catch (KeyStoreException ex)
-                {
-                    SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Unexpected error occured.", ex);
-                }
-            });
+            WizardCommand = new AsyncRelayCommand<WizardFactory>(RunWizardAsync);
 
-            CopyKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
-                async identifier =>
-                {
-                    try
-                    {
-                        if (KeyStore != null && identifier?.KeyEntryId != null)
-                        {
-                            var model = CreateKeyEntryDialogViewModel();
-                            model.SetKeyEntry(await KeyStore.Get(identifier.KeyEntryId, KeyEntryClass));
-                            var dialog = new KeyEntryDialog
-                            {
-                                DataContext = model
-                            };
-
-                            await CreateKeyEntry(dialog);
-                        }
-                    }
-                    catch (KeyStoreException ex)
-                    {
-                        SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
-                    }
-                    catch (Exception ex)
-                    {
-                        log.Error("Unexpected error occured.", ex);
-                    }
-                });
-
-            MoveUpKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
-                async keyEntryId =>
-            {
-                if (keyEntryId != null)
-                {
-                    await MoveUpKeyEntry(keyEntryId);
-                }
-            });
-
-            MoveDownKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
-                async keyEntryId =>
-            {
-                if (keyEntryId != null)
-                {
-                    await MoveDownKeyEntry(keyEntryId);
-                }
-            });
-
-            DeleteKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
-                async keyEntryId =>
-            {
-                if (keyEntryId != null)
-                {
-                    await DeleteKeyEntry(keyEntryId);
-                }
-            });
-
-            ImportCryptogramCommand = new AsyncRelayCommand<SelectableKeyEntryId>(
-                async keyEntryId =>
-            {
-                var model = new ImportCryptogramDialogViewModel
-                {
-                    CanChangeIdentifier = keyEntryId?.KeyEntryId == null || !keyEntryId.KeyEntryId.IsConfigured()
-                };
-                if (keyEntryId?.KeyEntryId != null)
-                {
-                    model.Cryptogram.Identifier = keyEntryId.KeyEntryId;
-                }
-                var dialog = new ImportCryptogramDialog
-                {
-                    DataContext = model,
-                };
-                await ImportCryptogram(dialog);
-            });
-
-            WizardCommand = new AsyncRelayCommand<WizardFactory>(
-                async factory =>
-            {
-                if (factory != null)
-                {
-                    await RunWizard(factory);
-                }
-            });
-
-            ShowSelectionChangedCommand = new RelayCommand(
-                () =>
-            {
-                if (!ShowSelection)
-                {
-                    ToggleAllSelection(false);
-                }
-            });
-
-            ToggleSelectionCommand = new RelayCommand(
-                () =>
-                {
-                    if (Identifiers.Count > 0)
-                    {
-                        ToggleAllSelection(!Identifiers[0].Selected);
-                    }
-                });
-
-
-            PrintSelectionCommand = new AsyncRelayCommand(PrintSelection);
-
-            SearchCommand = new RelayCommand(() => RefreshKeyEntriesView());
-
-            OrderingCommand = new RelayCommand<string>(Ordering);
+            ShowSelectionChangedCommand = new RelayCommand(OnShowSelectionChanged);
 
             _identifiersView = CollectionViewSource.GetDefaultView(Identifiers);
             _identifiersView.Filter = KeyEntryIdentifiersFilter;
+            Identifiers.CollectionChanged += Identifiers_CollectionChanged;
+
+            ToggleSelectionCommand = new RelayCommand(OnToggleSelection);
+            ToggleSelectVisibleCommand = new RelayCommand(OnToggleSelectVisible);
+
+            PrintSelectionCommand = new AsyncRelayCommand(PrintSelection);
+            SearchCommand = new RelayCommand(() => RefreshKeyEntriesView());
+            OrderingCommand = new RelayCommand<string>(Ordering);
 
             var uipref = UIPreferences.GetSingletonInstance(false);
             if (!string.IsNullOrEmpty(uipref?.DefaultOrdering))
@@ -216,25 +75,75 @@ namespace Leosac.KeyManager.Library.UI.Domain
             }
         }
 
-        protected ISnackbarMessageQueue _snackbarMessageQueue;
+        private readonly ISnackbarMessageQueue _snackbarMessageQueue;
         private readonly object _identifierLock;
         private KeyStore.KeyStore? _keyStore;
         private bool _showSelection;
         private readonly ICollectionView _identifiersView;
         private string? _searchTerms;
 
+        private int _selectedIdentifiersCount;
+
+        public int SelectedIdentifiersCount
+        {
+            get => _selectedIdentifiersCount;
+            private set => SetProperty(ref _selectedIdentifiersCount, value);
+        }
+
+        private int _visibleIdentifiersCount;
+        public int VisibleIdentifiersCount
+        {
+            get => _visibleIdentifiersCount;
+            private set => SetProperty(ref _visibleIdentifiersCount, value);
+        }
+
+        private void UpdateVisibleIdentifiersCount()
+        {
+            VisibleIdentifiersCount = _identifiersView.Cast<object>().Count();
+        }
+
+        private void UpdateSelectedIdentifiersCount()
+        {
+            SelectedIdentifiersCount = Identifiers.Count(i => i.Selected);
+        }
+
+        private void Identifier_PropertyChanged(object? _, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != nameof(SelectableKeyEntryId.Selected))
+                return;
+            UpdateSelectedIdentifiersCount();
+        }
+
+        private void Identifiers_CollectionChanged(object? _, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (SelectableKeyEntryId item in e.NewItems)
+                {
+                    item.PropertyChanged += Identifier_PropertyChanged;
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (SelectableKeyEntryId item in e.OldItems)
+                {
+                    item.PropertyChanged -= Identifier_PropertyChanged;
+                }
+            }
+
+            UpdateVisibleIdentifiersCount();
+            UpdateSelectedIdentifiersCount();
+        }
+
         public event EventHandler? DefaultKeyEntryUpdated;
-        protected void OnDefaultKeyEntryUpdated()
+
+        protected virtual void OnDefaultKeyEntryUpdated()
         {
-            DefaultKeyEntryUpdated?.Invoke(this, new EventArgs());
+            DefaultKeyEntryUpdated?.Invoke(this, EventArgs.Empty);
         }
 
-        protected KeyEntryDialogViewModel CreateKeyEntryDialogViewModel()
-        {
-            return CreateKeyEntryDialogViewModel(true);
-        }
-
-        protected KeyEntryDialogViewModel CreateKeyEntryDialogViewModel(bool keClone)
+        protected KeyEntryDialogViewModel CreateKeyEntryDialogViewModel(bool keClone = true)
         {
             var model = new KeyEntryDialogViewModel(KeyEntryClass);
             if (_keyStore != null)
@@ -282,261 +191,339 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public AsyncRelayCommand CreateKeyEntryCommand { get; }
 
-        private async Task CreateKeyEntry(KeyEntryDialog dialog)
+        private Task CreateKeyEntryAsync()
         {
-            var ret = await DialogHelper.ForceShow(dialog, "RootDialog");
-            if (ret != null && dialog.DataContext is KeyEntryDialogViewModel model)
+            return CreateKeyEntryAsync(CreateKeyEntryDialogViewModel());
+        }
+
+        private async Task CreateKeyEntryAsync(KeyEntryDialogViewModel model)
+        {
+            bool retry;
+            do
             {
-                if (KeyStore != null && model.KeyEntry != null)
+                retry = false;
+                var dialog = new KeyEntryDialog { DataContext = model };
+                var result = await DialogHelper.ForceShow(dialog, RootDialog);
+                if (result == null)
+                    return;
+                if (KeyStore == null || model.KeyEntry == null)
+                    return;
+                try
                 {
-                    try
+                    await KeyStore.Create(model.KeyEntry);
+                    Identifiers.Add(new SelectableKeyEntryId
                     {
-                        await KeyStore.Create(model.KeyEntry);
-                        Identifiers.Add(new SelectableKeyEntryId
-                        {
-                            Selected = false,
-                            KeyEntryId = model.KeyEntry.Identifier
-                        });
-                    }
-                    catch (KeyStoreException ex)
-                    {
-                        SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
-                        await CreateKeyEntry(dialog);
-                    }
-                    catch (Exception ex)
-                    {
-                        log.Error("Creating the Key Entry failed unexpected.", ex);
-                        SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
-                        await CreateKeyEntry(dialog);
-                    }
+                        Selected = false,
+                        KeyEntryId = model.KeyEntry.Identifier
+                    });
+                    return;
                 }
-            }
+                catch (Exception ex)
+                {
+                    HandleOperationException(ex, "Creating the Key Entry");
+                    retry = true;
+                }
+            } while (retry);
         }
 
         public AsyncRelayCommand GenerateKeyEntryCommand { get; }
 
-        private async Task GenerateKeyEntry(KeyEntryDialog dialog)
+        private async Task GenerateKeyEntryAsync()
         {
-            var ret = await DialogHelper.ForceShow(dialog, "RootDialog");
-            if (ret != null && dialog.DataContext is KeyEntryDialogViewModel model)
+            var model = CreateKeyEntryDialogViewModel();
+            model.ShowKeyMaterials = false;
+            bool retry;
+
+            do
             {
-                if (KeyStore != null && model.KeyEntry != null)
+                retry = false;
+                var dialog = new KeyEntryDialog { DataContext = model };
+                var result = await DialogHelper.ForceShow(dialog, RootDialog);
+                if (result == null)
+                    return;
+                if (KeyStore == null || model.KeyEntry == null)
+                    return;
+
+                try
                 {
-                    try
+                    var id = await KeyStore.Generate(model.KeyEntry);
+                    Identifiers.Add(new SelectableKeyEntryId
                     {
-                        var id = await KeyStore.Generate(model.KeyEntry);
-                        Identifiers.Add(new SelectableKeyEntryId
-                        {
-                            Selected = false,
-                            KeyEntryId = id
-                        });
-                    }
-                    catch (KeyStoreException ex)
-                    {
-                        SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
-                        await CreateKeyEntry(dialog);
-                    }
-                    catch (Exception ex)
-                    {
-                        log.Error("Generating the Key Entry failed unexpected.", ex);
-                        SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
-                        await CreateKeyEntry(dialog);
-                    }
+                        Selected = false,
+                        KeyEntryId = id
+                    });
+                    return;
                 }
-            }
+                catch (Exception ex)
+                {
+                    HandleOperationException(ex, "Generating the Key Entry");
+                    retry = true;
+                }
+            } while (retry);
         }
 
         public AsyncRelayCommand EditDefaultKeyEntryCommand { get; }
 
-        private async Task<bool> EditDefaultKeyEntry(KeyEntryDialog dialog)
+        private async Task<bool> EditDefaultKeyEntryAsync()
         {
-            var ret = await DialogHelper.ForceShow(dialog, "RootDialog");
-            if (ret != null && dialog.DataContext is KeyEntryDialogViewModel model)
-            {
-                if (KeyStore != null && model.KeyEntry != null)
-                {
-                    KeyStore.DefaultKeyEntries[KeyEntryClass] = model.KeyEntry;
-                    return true;
-                }
-            }
-            return false;
+            var model = CreateKeyEntryDialogViewModel(false);
+            var dialog = new KeyEntryDialog { DataContext = model };
+            var result = await DialogHelper.ForceShow(dialog, RootDialog);
+            if (result == null)
+                return false;
+            if (KeyStore == null || model.KeyEntry == null)
+                return false;
+            KeyStore.DefaultKeyEntries[KeyEntryClass] = model.KeyEntry;
+            return true;
         }
 
         public AsyncRelayCommand<SelectableKeyEntryId> EditKeyEntryCommand { get; }
 
         public AsyncRelayCommand<SelectableKeyEntryId> CopyKeyEntryCommand { get; }
 
-        private async Task<bool> UpdateKeyEntry(KeyEntryDialog dialog)
+        private async Task EditKeyEntryAsync(SelectableKeyEntryId? identifier)
         {
             try
             {
-                object? ret = await DialogHelper.ForceShow(dialog, "RootDialog");
-                if (ret != null && dialog.DataContext is KeyEntryDialogViewModel model)
+                if (KeyStore == null || identifier?.KeyEntryId == null)
+                    return;
+                var model = CreateKeyEntryDialogViewModel();
+                model.CanChangeFactory = false;
+                model.AllowSubmit = KeyStore.CanUpdateKeyEntries;
+                model.SubmitButtonText = Properties.Resources.Update;
+                model.SetKeyEntry(await KeyStore.Get(identifier.KeyEntryId, KeyEntryClass));
+                if (await UpdateKeyEntryAsync(model))
                 {
-                    if (KeyStore != null && model.KeyEntry != null)
-                    {
-                        await KeyStore.Update(model.KeyEntry);
-                        return true;
-                    }
+                    identifier.KeyEntryId = model.KeyEntry?.Identifier;
                 }
-            }
-            catch (KeyStoreException ex)
-            {
-                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
-                return await UpdateKeyEntry(dialog);
             }
             catch (Exception ex)
             {
-                log.Error("Updating the Key Entry failed unexpected.", ex);
-                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
-                return await UpdateKeyEntry(dialog);
+                HandleOperationException(ex, "Loading the Key Entry for update");
             }
+        }
 
+        private async Task CopyKeyEntryAsync(SelectableKeyEntryId? identifier)
+        {
+            if (KeyStore == null || identifier?.KeyEntryId == null)
+                return;
+
+            try
+            {
+                var model = CreateKeyEntryDialogViewModel();
+                var keyEntry = await KeyStore.Get(identifier.KeyEntryId, KeyEntryClass);
+                if (keyEntry == null)
+                    return;
+
+                model.SetKeyEntry(keyEntry);
+                await CreateKeyEntryAsync(model);
+            }
+            catch (Exception ex)
+            {
+                HandleOperationException(ex, "Copying the Key Entry");
+            }
+        }
+
+        private async Task<bool> UpdateKeyEntryAsync(KeyEntryDialogViewModel model)
+        {
+            bool retry;
+            do
+            {
+                retry = false;
+                var dialog = new KeyEntryDialog { DataContext = model };
+                var result = await DialogHelper.ForceShow(dialog, RootDialog);
+                if (result == null)
+                    return false;
+                if (KeyStore == null || model.KeyEntry == null)
+                    return false;
+                try
+                {
+                    await KeyStore.Update(model.KeyEntry);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    HandleOperationException(ex, "Updating the Key Entry");
+                    retry = true;
+                }
+            } while (retry);
             return false;
         }
 
         public AsyncRelayCommand<SelectableKeyEntryId> DeleteKeyEntryCommand { get; }
 
-        private async Task DeleteKeyEntry(SelectableKeyEntryId identifier)
+        private async Task DeleteKeyEntryAsync(SelectableKeyEntryId? identifier)
         {
+            if (identifier?.KeyEntryId == null || KeyStore == null)
+                return;
             try
             {
-                if (KeyStore != null && identifier.KeyEntryId != null)
-                {
-                    await KeyStore.Delete(identifier.KeyEntryId, KeyEntryClass);
-                }
+                await KeyStore.Delete(identifier.KeyEntryId, KeyEntryClass);
                 Identifiers.Remove(identifier);
-            }
-            catch (KeyStoreException ex)
-            {
-                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
             }
             catch (Exception ex)
             {
-                log.Error("Deleting the Key Entry failed unexpected.", ex);
-                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
+                HandleOperationException(ex, "Deleting the Key Entry");
             }
         }
 
         public AsyncRelayCommand<SelectableKeyEntryId> MoveUpKeyEntryCommand { get; }
 
-        private async Task MoveUpKeyEntry(SelectableKeyEntryId identifier)
+        private async Task MoveUpKeyEntryAsync(SelectableKeyEntryId? identifier)
         {
+            if (identifier?.KeyEntryId == null || KeyStore == null)
+                return;
             try
             {
-                if (KeyStore != null && identifier.KeyEntryId != null)
-                {
-                    await KeyStore.MoveUp(identifier.KeyEntryId, KeyEntryClass);
-                }
+                await KeyStore.MoveUp(identifier.KeyEntryId, KeyEntryClass);
                 var oldIndex = Identifiers.IndexOf(identifier);
                 if (oldIndex > 0)
                 {
                     Identifiers.Move(oldIndex, oldIndex - 1);
                 }
             }
-            catch (KeyStoreException ex)
-            {
-                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
-            }
             catch (Exception ex)
             {
-                log.Error("Moving Up the Key Entry failed unexpected.", ex);
-                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
+                HandleOperationException(ex, "Moving Up the Key Entry");
             }
         }
 
         public AsyncRelayCommand<SelectableKeyEntryId> MoveDownKeyEntryCommand { get; }
 
-        private async Task MoveDownKeyEntry(SelectableKeyEntryId identifier)
+        private async Task MoveDownKeyEntryAsync(SelectableKeyEntryId? identifier)
         {
+            if (identifier?.KeyEntryId == null || KeyStore == null)
+                return;
             try
             {
-                if (KeyStore != null && identifier.KeyEntryId != null)
-                {
-                    await KeyStore.MoveDown(identifier.KeyEntryId, KeyEntryClass);
-                }
+                await KeyStore.MoveDown(identifier.KeyEntryId, KeyEntryClass);
                 var oldIndex = Identifiers.IndexOf(identifier);
                 if (oldIndex != -1 && oldIndex < Identifiers.Count - 1)
                 {
                     Identifiers.Move(oldIndex, oldIndex + 1);
                 }
             }
-            catch (KeyStoreException ex)
-            {
-                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
-            }
             catch (Exception ex)
             {
-                log.Error("Moving Up the Key Entry failed unexpected.", ex);
-                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
+                HandleOperationException(ex, "Moving Down the Key Entry");
             }
         }
 
         public AsyncRelayCommand<SelectableKeyEntryId> ImportCryptogramCommand { get; }
 
-        private async Task ImportCryptogram(ImportCryptogramDialog dialog)
+        private async Task ImportCryptogramAsync(SelectableKeyEntryId? keyEntryId)
         {
-            try
+            var model = new ImportCryptogramDialogViewModel
             {
-                object? ret = await DialogHelper.ForceShow(dialog, "RootDialog");
-                if (ret != null && dialog.DataContext is ImportCryptogramDialogViewModel model)
+                CanChangeIdentifier = keyEntryId?.KeyEntryId == null || !keyEntryId.KeyEntryId.IsConfigured()
+            };
+
+            if (keyEntryId?.KeyEntryId != null)
+            {
+                model.Cryptogram.Identifier = keyEntryId.KeyEntryId;
+            }
+
+            bool retry;
+            do
+            {
+                retry = false;
+                var dialog = new ImportCryptogramDialog
                 {
-                    if (KeyStore != null && !string.IsNullOrEmpty(model.Cryptogram.Value))
-                    {
-                        await KeyStore.Update(model.Cryptogram);
-                    }
+                    DataContext = model
+                };
+
+                var result = await DialogHelper.ForceShow(dialog, RootDialog);
+
+                if (result == null)
+                    return;
+                if (KeyStore == null)
+                    return;
+                if (string.IsNullOrEmpty(model.Cryptogram.Value))
+                    return;
+                try
+                {
+                    await KeyStore.Update(model.Cryptogram);
+                    return;
                 }
-            }
-            catch (KeyStoreException ex)
-            {
-                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex, "Key Store Error");
-                await ImportCryptogram(dialog);
-            }
-            catch (Exception ex)
-            {
-                log.Error("Importing the Key Entry Cryptogram failed unexpected.", ex);
-                SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
-                await ImportCryptogram(dialog);
-            }
+                catch (Exception ex)
+                {
+                    HandleOperationException(ex, "Importing the Key Entry Cryptogram");
+                    retry = true;
+                }
+            } while (retry);
         }
 
         public AsyncRelayCommand<WizardFactory> WizardCommand { get; }
 
-        private async Task RunWizard(WizardFactory factory)
+        private async Task RunWizardAsync(WizardFactory? factory)
         {
+            if (factory == null)
+                return;
             var w = factory.CreateWizardWindow();
             if (w.ShowDialog() == true)
             {
                 try
                 {
+                    if (KeyStore == null)
+                        return;
                     var entries = factory.GetKeyEntries(w);
-                    if (KeyStore != null && entries != null && entries.Count > 0)
-                    {
-                        foreach (var entry in entries)
-                        {
-                            await KeyStore.Update(entry, true);
-                        }
-                        await RefreshKeyEntries();
-                        SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "Wizard completed, key entries updated.");
-                    }
+                    if (entries == null || entries.Count == 0)
+                        return;
+                    foreach (var entry in entries)
+                        await KeyStore.Update(entry, true);
+                    await RefreshKeyEntries();
+                    SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "Wizard completed, key entries updated.");
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Updating the key store with resulting key entries from the wizard failed.", ex);
-                    SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
+                    HandleOperationException(ex, "Updating the key store with resulting key entries from the wizard");
                 }
             }
+        }
+
+        private void OnShowSelectionChanged()
+        {
+            if (!ShowSelection)
+                ToggleAllSelection(false);
+        }
+
+        private void OnToggleSelection()
+        {
+            var firstVisible = _identifiersView.Cast<SelectableKeyEntryId>().FirstOrDefault();
+            if (firstVisible != null)
+                ToggleAllSelection(!firstVisible.Selected);
+        }
+
+        private void OnToggleSelectVisible()
+        {
+            var firstVisible = _identifiersView.Cast<SelectableKeyEntryId>().FirstOrDefault();
+            if (firstVisible != null)
+                AddVisibleToSelection(!firstVisible.Selected);
         }
 
         public RelayCommand ShowSelectionChangedCommand { get; }
 
         public RelayCommand ToggleSelectionCommand { get; }
 
+        public RelayCommand ToggleSelectVisibleCommand { get; }
+
         public AsyncRelayCommand PrintSelectionCommand { get; }
 
         private void ToggleAllSelection(bool selected)
         {
+            var visibleSet = new HashSet<SelectableKeyEntryId>(_identifiersView.Cast<SelectableKeyEntryId>());
             foreach (var identifier in Identifiers)
+            {
+                if (visibleSet.Contains(identifier))
+                    identifier.Selected = selected;
+                else
+                    identifier.Selected = false;
+            }
+        }
+
+        private void AddVisibleToSelection(bool selected)
+        {
+            foreach (SelectableKeyEntryId identifier in _identifiersView)
             {
                 identifier.Selected = selected;
             }
@@ -614,7 +601,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     {
                         if (!p.CanRead || !p.CanWrite)
                             continue;
-
                         var value = p.GetValue(ke.Properties);
 
                         if (value == null)
@@ -753,10 +739,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             typeof(long), typeof(ulong),
             typeof(float), typeof(double), typeof(decimal)];
 
-        private static bool IsNumericType(Type t)
-        {
-            return NumericTypes.Contains(t);
-        }
+        private static bool IsNumericType(Type type) => NumericTypes.Contains(type);
 
         private IEnumerable<SelectableKeyEntryId>? GetSelectedIdentifiers()
         {
@@ -780,43 +763,46 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public RelayCommand<string> OrderingCommand { get; }
         private void Ordering(string? order)
         {
-            Mouse.OverrideCursor = Cursors.Wait;
+            if (string.IsNullOrWhiteSpace(order))
+                return;
 
-            try
+            using (new WaitCursor())
             {
-                _identifiersView.SortDescriptions.Clear();
+                bool isNumeric = KeyStore?.IsNumericKeyId ?? false;
+                ListSortDirection direction =
+                    order.EndsWith("Desc", StringComparison.OrdinalIgnoreCase)
+                    ? ListSortDirection.Descending
+                    : ListSortDirection.Ascending;
 
-                if (string.IsNullOrWhiteSpace(order))
-                    return;
-
-                bool isNumeric = (KeyStore?.IsNumericKeyId).GetValueOrDefault(false);
-                ListSortDirection direction = order.EndsWith("Desc",
-                    StringComparison.OrdinalIgnoreCase) ? ListSortDirection.Descending : ListSortDirection.Ascending;
-
-                void AddSort(string propertyName, ListSortDirection sortDirection)
+                using (_identifiersView.DeferRefresh())
                 {
-                    _identifiersView.SortDescriptions.Add(new SortDescription(propertyName, sortDirection));
-                }
+                    _identifiersView.SortDescriptions.Clear();
 
-                switch (order)
-                {
-                    case "ByIdAsc":
-                    case "ByIdDesc":
-                        AddSort("KeyEntryId.NumericId", direction);
-                        if (!isNumeric)
-                            AddSort("KeyEntryId.Id", direction);
-                        AddSort("KeyEntryId.Label", ListSortDirection.Ascending);
-                        break;
-                    case "ByLabelAsc":
-                    case "ByLabelDesc":
-                        AddSort("KeyEntryId.Label", direction);
-                        AddSort("KeyEntryId.NumericId", direction);
-                        if (!isNumeric)
-                            AddSort("KeyEntryId.Id", direction);
-                        break;
-                    default:
-                        log.Warn($"Unknown ordering mode '{order}'.");
-                        return;
+                    void AddSort(string propertyName, ListSortDirection sortDirection)
+                    {
+                        _identifiersView.SortDescriptions.Add(new SortDescription(propertyName, sortDirection));
+                    }
+
+                    switch (order)
+                    {
+                        case "ByIdAsc":
+                        case "ByIdDesc":
+                            AddSort("KeyEntryId.NumericId", direction);
+                            if (!isNumeric)
+                                AddSort("KeyEntryId.Id", direction);
+                            AddSort("KeyEntryId.Label", ListSortDirection.Ascending);
+                            break;
+                        case "ByLabelAsc":
+                        case "ByLabelDesc":
+                            AddSort("KeyEntryId.Label", direction);
+                            AddSort("KeyEntryId.NumericId", direction);
+                            if (!isNumeric)
+                                AddSort("KeyEntryId.Id", direction);
+                            break;
+                        default:
+                            log.Warn($"Unknown ordering mode '{order}'.");
+                            return;
+                    }
                 }
 
                 UIPreferences preferences = UIPreferences.GetSingletonInstance(false) ?? new UIPreferences();
@@ -827,52 +813,39 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     preferences.SaveToFile();
                 }
             }
-            finally
-            {
-                Mouse.OverrideCursor = null;
-            }
         }
 
         public async Task RefreshKeyEntries()
         {
-            lock (_identifierLock)
+            using (new WaitCursor())
             {
-                Mouse.OverrideCursor = Cursors.Wait;
-                Identifiers.Clear();
-            }
-
-            try
-            {
-                if (KeyStore != null)
+                if (KeyStore == null)
                 {
-                    var ids = await KeyStore.GetAll(KeyEntryClass);
-                    foreach (var id in ids)
+                    lock (_identifierLock)
                     {
-                        lock (_identifierLock)
-                        {
-                            Identifiers.Add(new SelectableKeyEntryId
-                            {
-                                Selected = false,
-                                KeyEntryId = id
-                            });
-                        }
+                        Identifiers.Clear();
                     }
+                    return;
                 }
-            }
-            finally
-            {
+
+                var ids = await KeyStore.GetAll(KeyEntryClass);
+                var keyEntryIds = ids.Select(id => new SelectableKeyEntryId { Selected = false, KeyEntryId = id }).ToList();
                 lock (_identifierLock)
                 {
-                    Mouse.OverrideCursor = null;
+                    Identifiers.Clear();
+                    foreach (var id in keyEntryIds)
+                        Identifiers.Add(id);
                 }
             }
         }
 
         public void RefreshKeyEntriesView()
         {
-            Mouse.OverrideCursor = Cursors.Wait;
-            _identifiersView.Refresh();
-            Mouse.OverrideCursor = null;
+            using (new WaitCursor())
+            {
+                _identifiersView.Refresh();
+                UpdateVisibleIdentifiersCount();
+            }
         }
 
         private bool KeyEntryIdentifiersFilter(object obj)
@@ -882,26 +855,35 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 return true;
             }
 
-            if (obj is SelectableKeyEntryId s && s.KeyEntryId != null)
+            KeyEntryId? keyEntry = obj switch
             {
-                obj = s.KeyEntryId;
+                SelectableKeyEntryId selectable => selectable.KeyEntryId,
+                KeyEntryId entry => entry,
+                _ => null
+            };
+
+            if (keyEntry is null)
+            {
+                return false;
             }
 
-            if (obj is KeyEntryId item)
+            return ContainsIgnoreCase(keyEntry.Id, _searchTerms) || ContainsIgnoreCase(keyEntry.Label, _searchTerms);
+        }
+
+        private static bool ContainsIgnoreCase(string? source, string value)
+        {
+            return !string.IsNullOrEmpty(source) && source.Contains(value, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private void HandleOperationException(Exception ex, string operation)
+        {
+            if (ex is KeyStoreException keyStoreEx)
             {
-                var terms = _searchTerms.ToLowerInvariant();
-                if (item.Id != null && item.Id.ToLowerInvariant().Contains(terms))
-                {
-                    return true;
-                }
-
-                if (item.Label != null && item.Label.ToLowerInvariant().Contains(terms))
-                {
-                    return true;
-                }
+                SnackbarHelper.EnqueueError(_snackbarMessageQueue, keyStoreEx, "Key Store Error");
+                return;
             }
-
-            return false;
+            log.Error($"{operation} failed unexpectedly.", ex);
+            SnackbarHelper.EnqueueError(_snackbarMessageQueue, ex);
         }
     }
 }

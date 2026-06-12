@@ -43,7 +43,7 @@
             </Grid>
             <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,5">
                 <Button Width="140" IsDefault="True" Content="{Binding SubmitButtonText}"
-                        CommandParameter="{Binding KeyEntry}" Command="{Binding BeforeSubmitCommand}" />
+                        Command="{Binding BeforeSubmitCommand}" />
                 <Button Width="140" IsCancel="True" Content="{x:Static properties:Resources.Cancel}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Margin="15,0,0,0"/>
             </WrapPanel>
             <TabControl>
@@ -64,7 +64,7 @@
                     materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryTypeHelper}"
                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryType}">
                             <ComboBox.ItemTemplate>
-                                <DataTemplate DataType="domain:KeyEntryFactory">
+                                <DataTemplate>
                                     <TextBlock Margin="24,4,0,4" Text="{Binding Name}" />
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
@@ -87,7 +87,7 @@
                     materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryVariantHelper}"
                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryVariant}">
                             <ComboBox.ItemTemplate>
-                                <DataTemplate DataType="kslib:KeyEntryVariant">
+                                <DataTemplate DataType="{x:Type kslib:KeyEntryVariant}">
                                     <TextBlock Margin="24,4,0,4" Text="{Binding Name}" />
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
@@ -103,7 +103,7 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding KeyEntry.Variant.KeyContainers}" Padding="5" PreviewMouseWheel="HandlePreviewMouseWheel">
                             <ListBox.ItemTemplate>
-                                <DataTemplate DataType="lib:KeyContainer">
+                                <DataTemplate DataType="{x:Type lib:KeyContainer}">
                                     <materialDesign:Card Grid.Row="3" Grid.ColumnSpan="2">
                                         <StackPanel>
                                             <Expander HorizontalAlignment="Stretch" Header="{Binding Name}" IsExpanded="{Binding DataContext.ExpandKeyContainers, ElementName=userControl, Mode=OneTime}">
@@ -125,7 +125,7 @@
                 </TabItem>
                 <TabItem Header="{x:Static properties:Resources.KeyEntryProperties}" IsEnabled="{Binding KeyEntry, Converter={StaticResource NullToBooleanConverter}}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <ContentControl Margin="16" Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}" DataContext="{Binding SelectedFactoryItem}"></ContentControl>
+                        <ContentControl Margin="16" Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}" DataContext="{Binding SelectedFactoryItem}"/>
                     </ScrollViewer>
                 </TabItem>
             </TabControl>
