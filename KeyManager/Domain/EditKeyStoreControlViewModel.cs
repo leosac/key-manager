@@ -343,7 +343,7 @@ namespace Leosac.KeyManager.Domain
                 favorites.KeyStores.Add(fav);
             favorites.SaveToFile();
         }
-
+        
         private void OnKeyStoreChanged()
         {
             OnPropertyChanged(nameof(IsStickyHeaderVisible));
