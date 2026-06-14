@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Leosac.KeyManager.Library.KeyStore;
 using Leosac.KeyManager.Library.Plugin;
+using Leosac.KeyManager.Library.UI.Helpers;
 using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 
@@ -12,41 +13,14 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public KeyEntryDialogViewModel(KeyEntryClass keClass)
         {
             KClass = keClass;
-            _submitButtonText = Leosac.KeyManager.Library.UI.Properties.Resources.OK;
+            _submitButtonText = Properties.Resources.OK;
             KeyEntryFactories = new ObservableCollection<KeyEntryItem>();
-            ExpandKeyContainers = UIPreferences.GetSingletonInstance(false)?.ExpandKeyContainersByDefault ?? false;
-            foreach (var factory in KeyEntryUIFactory.RegisteredFactories)
-            {
-                if (factory.TargetFactory != null && factory.TargetFactory.KClasses.Contains(KClass))
-                {
-                    KeyEntryFactories.Add(new KeyEntryItem(factory));
-                }
-            }
             Variants = new ObservableCollection<KeyEntryVariant>();
-
-            OpenLinkCommand = new AsyncRelayCommand(async
-                () =>
-                {
-                    if (KeyEntry != null)
-                    {
-                        var model = new KeyEntryLinkDialogViewModel
-                        {
-                            Link = KeyEntry.Link,
-                            Class = KeyEntry.KClass
-                        };
-                        var dialog = new KeyEntryLinkDialog
-                        {
-                            DataContext = model
-                        };
-
-                        await DialogHelper.ForceShow(dialog, "KeyEntryDialog");
-                    }
-                });
-            BeforeSubmitCommand = new RelayCommand(
-                () =>
-                {
-                    DialogHost.CloseDialogCommand.Execute(KeyEntry, null);
-                }, CanSubmit);
+            ExpandKeyContainers = UIPreferences.GetSingletonInstance(false)?.ExpandKeyContainersByDefault ?? false;
+            BuildFactories();
+            OpenLinkCommand = new AsyncRelayCommand(OpenLinkAsync);
+            BeforeSubmitCommand = new RelayCommand(() => DialogHost.CloseDialogCommand.Execute(KeyEntry, null), CanSubmit);
+            ErrorsChanged += (_, _) => InvalidateSubmit();
         }
 
         private bool _canChangeFactory = true;
@@ -82,12 +56,12 @@ namespace Leosac.KeyManager.Library.UI.Domain
             get => _selectedFactoryItem;
             set
             {
-                SetProperty(ref _selectedFactoryItem, value);
-                if (value != null && value?.GetType() != KeyEntry?.GetType() && CanChangeFactory)
-                {
-                    KeyEntry = _selectedFactoryItem?.Factory.TargetFactory?.CreateKeyEntry();
-                    RefreshVariants();
-                }
+                var oldValue = _selectedFactoryItem;
+                if (!SetProperty(ref _selectedFactoryItem, value) ||
+                    value == null || !CanChangeFactory || oldValue?.Factory == value.Factory)
+                    return;
+                KeyEntry = value.Factory.TargetFactory?.CreateKeyEntry();
+                RefreshVariants();
             }
         }
 
@@ -124,25 +98,53 @@ namespace Leosac.KeyManager.Library.UI.Domain
         public bool ExpandKeyContainers
         {
             get => _expandKeyContainers;
-            protected set => SetProperty(ref _expandKeyContainers, value);
+            private set => SetProperty(ref _expandKeyContainers, value);
+        }
+
+        private void BuildFactories()
+        {
+            foreach (var factory in KeyEntryUIFactory.RegisteredFactories)
+            {
+                if (factory.TargetFactory != null &&
+                    factory.TargetFactory.KClasses.Contains(KClass))
+                {
+                    KeyEntryFactories.Add(new KeyEntryItem(factory));
+                }
+            }
+        }
+
+        private async Task OpenLinkAsync()
+        {
+            if (KeyEntry == null)
+                return;
+
+            var model = new KeyEntryLinkDialogViewModel
+            {
+                Link = KeyEntry.Link,
+                Class = KeyEntry.KClass
+            };
+
+            var dialog = new KeyEntryLinkDialog
+            {
+                DataContext = model
+            };
+
+            await DialogHelper.ForceShow(dialog, "KeyEntryDialog");
         }
 
         public void RefreshVariants()
         {
-            if (KeyEntry != null)
-            {
-                Variants.Clear();
-                var variants = KeyEntry.GetAllVariants(KClass);
-                foreach (var variant in variants)
-                {
-                    Variants.Add(variant);
-                }
+            if (KeyEntry == null)
+                return;
+            Variants.Clear();
+            foreach (var variant in KeyEntry.GetAllVariants(KClass))
+                Variants.Add(variant);
+            KeyEntry.Variant ??= Variants.FirstOrDefault();
+        }
 
-                if (KeyEntry.Variant == null)
-                {
-                    KeyEntry.Variant = Variants.FirstOrDefault();
-                }
-            }
+        private void InvalidateSubmit()
+        {
+            BeforeSubmitCommand.NotifyCanExecuteChanged();
         }
 
         private bool CanSubmit()
@@ -152,31 +154,38 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         public void SetKeyEntry(KeyEntry? keyEntry)
         {
-            if (keyEntry != null)
-            {
-                var factory = KeyEntryUIFactory.GetFactoryFromPropertyType(keyEntry!.Properties?.GetType());
-                if (factory != null)
-                {
-                    var variant = keyEntry.Variant;
-                    SelectedFactoryItem = KeyEntryFactories.Where(item => item.Factory == factory).FirstOrDefault();
-                    KeyEntry = keyEntry;
-                    if (variant != null)
-                    {
-                        RefreshVariants();
-                        var emptyv = Variants.Where(v => v.Name == variant.Name).FirstOrDefault();
-                        if (emptyv != null)
-                        {
-                            Variants.Remove(emptyv);
-                        }
-                        Variants.Add(variant);
-                        KeyEntry.Variant = variant;
-                    }
-                }
-            }
-            else
+            if (keyEntry == null)
             {
                 KeyEntry = null;
+                return;
             }
+            var factory = KeyEntryUIFactory.GetFactoryFromPropertyType(keyEntry.Properties?.GetType());
+            if (factory == null)
+                return;
+            ApplyFactory(factory);
+            ApplyKeyEntry(keyEntry);
+        }
+
+        private void ApplyFactory(KeyEntryUIFactory factory) =>
+            SelectedFactoryItem = KeyEntryFactories.FirstOrDefault(x => ReferenceEquals(x.Factory, factory));
+
+        private void ApplyKeyEntry(KeyEntry keyEntry)
+        {
+            var variant = keyEntry.Variant;
+            KeyEntry = keyEntry;
+            if (variant == null)
+                return;
+            RefreshVariants();
+            ApplyVariant(variant);
+        }
+
+        private void ApplyVariant(KeyEntryVariant variant)
+        {
+            var emptyv = Variants.FirstOrDefault(v => v.Name == variant.Name);
+            if (emptyv != null)
+                Variants.Remove(emptyv);
+            Variants.Add(variant);
+            KeyEntry!.Variant = variant;
         }
 
         public AsyncRelayCommand OpenLinkCommand { get; }

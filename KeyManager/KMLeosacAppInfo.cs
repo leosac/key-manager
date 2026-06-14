@@ -69,63 +69,70 @@ namespace Leosac.KeyManager
             var KeyStoreCommand = new AsyncRelayCommand<object>(
                 async parameter =>
                 {
-                    if (parameter != null)
+                    if (parameter == null)
+                        return;
+                    KeyStore? ks = null;
+                    Favorite? fav = null;
+                    if (parameter is KeyStore)
                     {
-                        KeyStore? ks = null;
-                        Favorite? fav = null;
-                        KeyStoreUIFactory? factory = null;
-                        if (parameter is KeyStore)
-                        {
-                            ks = parameter as KeyStore;
-                        }
-                        else if (parameter is Favorite)
-                        {
-                            fav = parameter as Favorite;
-                            ks = fav?.CreateKeyStore();
-                        }
-
-                        if (ks != null)
-                        {
-                            factory = KeyStoreUIFactory.GetFactoryFromPropertyType(ks.Properties!.GetType());
-                            if (factory != null)
-                            {
-                                try
-                                {
-                                    model.SelectedIndex = 2;
-                                    if (model.SelectedItem?.DataContext is EditKeyStoreControlViewModel editModel)
-                                    {
-                                        // Ensure everything is back to original state
-                                        await editModel.CloseKeyStore(false);
-                                        editModel.KeyStore = ks;
-                                        editModel.KeyStore.UserMessageNotified += (sender, e) => SnackbarHelper.EnqueueMessage(editModel.SnackbarMessageQueue, e);
-                                        editModel.Favorite = fav;
-                                        await editModel.OpenKeyStore();
-
-                                        var additionalControls = factory.CreateKeyStoreAdditionalControls();
-                                        foreach (var addition in additionalControls)
-                                        {
-                                            if (addition.Value.DataContext is KeyStoreAdditionalControlViewModel additionalModel)
-                                            {
-                                                additionalModel.KeyStore = ks;
-                                                additionalModel.SnackbarMessageQueue = model.SnackbarMessageQueue;
-                                            }
-                                            editModel.Tabs.Add(new TabItem { Header = addition.Key, Content = addition.Value });
-                                        }
-                                    }
-                                }
-                                catch (KeyStoreException ex)
-                                {
-                                    SnackbarHelper.EnqueueError(model.SnackbarMessageQueue, ex, "Key Store Error");
-                                }
-                                catch (Exception ex)
-                                {
-                                    log.Error("Opening Key Store failed unexpected.", ex);
-                                    SnackbarHelper.EnqueueError(model.SnackbarMessageQueue, ex);
-                                }
-                            }
-                        }
+                        ks = parameter as KeyStore;
                     }
+                    else if (parameter is Favorite)
+                    {
+                        fav = parameter as Favorite;
+                        ks = fav?.CreateKeyStore();
+                    }
+                    if (ks == null)
+                        return;
+                    var propertiesType = ks.Properties?.GetType();
+                    if (propertiesType == null)
+                        return;
+                    var factory = KeyStoreUIFactory.GetFactoryFromPropertyType(propertiesType);
+                    if (factory == null)
+                    {
+                        log.Error($"No UI factory found for {propertiesType.FullName}");
+                        SnackbarHelper.EnqueueError(model.SnackbarMessageQueue, "Unsupported key store type.");
+                        return;
+                    }
+                    try
+                    {
+                        model.SelectedIndex = 2;
+                        if (model.SelectedItem?.DataContext is not EditKeyStoreControlViewModel editModel)
+                        {
+                            log.Warn("EditKeyStoreControlViewModel not available in navigation context.");
+                            return;
+                        }
+                        // Ensure everything is back to original state
+                        await editModel.CloseKeyStore(false);
+                        var snackbar = model.SnackbarMessageQueue;
+                        EventHandler<string>? messageHandler = null;
+                        messageHandler = (_, message) => { SnackbarHelper.EnqueueMessage(snackbar, message); };
+                        editModel.KeyStore = ks;
+                        editModel.KeyStore.UserMessageNotified += messageHandler;
+                        editModel.Favorite = fav;
+                        await editModel.OpenKeyStore();
 
+                        var additionalControls = factory.CreateKeyStoreAdditionalControls();
+                        foreach (var addition in additionalControls)
+                        {
+                            if (addition.Value.DataContext is KeyStoreAdditionalControlViewModel additionalModel)
+                            {
+                                additionalModel.KeyStore = ks;
+                                additionalModel.SnackbarMessageQueue = model.SnackbarMessageQueue;
+                            }
+                            editModel.Tabs.Add(new TabItem { Header = addition.Key, Content = addition.Value });
+                        }
+                        editModel.RegisteredUserMessageHandler = messageHandler;
+                    }
+                    catch (KeyStoreException ex)
+                    {
+                        SnackbarHelper.EnqueueError(model.SnackbarMessageQueue, ex, "Key Store Error");
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error("Opening Key Store failed unexpectedly.", ex);
+                        SnackbarHelper.EnqueueError(model.SnackbarMessageQueue, ex);
+                    }
                 });
 
             model.MenuItems.Add(new NavItem(
@@ -158,7 +165,7 @@ namespace Leosac.KeyManager
                 "ShieldKeyOutline",
                 vm
             );
-            keyStoreItem.StickyHeader = new KeyEntriesHeaderControl{ DataContext = vm.Header };
+            keyStoreItem.StickyHeader = new KeyEntriesHeaderControl { DataContext = vm.Header };
             model.MenuItems.Add(keyStoreItem);
         }
 

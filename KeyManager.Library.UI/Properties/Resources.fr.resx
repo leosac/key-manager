@@ -702,4 +702,7 @@
   <data name="PublishLabel" xml:space="preserve">
     <value>Publier en lot ({0} unité{1}) vers : {2}</value>
   </data>
+  <data name="ToggleSelectVisible" xml:space="preserve">
+    <value>Ajouter les éléments visibles à la sélection actuelle</value>
+  </data>
 </root>

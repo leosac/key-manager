@@ -1,7 +1,7 @@
 ﻿using MaterialDesignThemes.Wpf;
 using System.Windows.Controls;
 
-namespace Leosac.KeyManager.Library.UI
+namespace Leosac.KeyManager.Library.UI.Helpers
 {
     public static class DialogHelper
     {

@@ -57,7 +57,6 @@
                                                     </StackPanel>
                                                 </StackPanel>
                                             </materialDesign:DialogHost.DialogContent>
-                                            
                                             <Button x:Name="btnDeleteKeyEntry" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" ToolTip="{x:Static properties:Resources.DeleteKeyEntry}" Margin="3" Visibility="{Binding DataContext.KeyStore.CanDeleteKeyEntries, ElementName=keyStoreControl, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                 <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" Cursor="Hand" />
                                             </Button>

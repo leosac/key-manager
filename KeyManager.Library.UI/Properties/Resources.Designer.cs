@@ -1744,6 +1744,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add visible elements to current selection.
+        /// </summary>
+        public static string ToggleSelectVisible {
+            get {
+                return ResourceManager.GetString("ToggleSelectVisible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update.
         /// </summary>
         public static string Update {

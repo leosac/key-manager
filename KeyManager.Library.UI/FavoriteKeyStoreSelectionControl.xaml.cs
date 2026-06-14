@@ -1,4 +1,5 @@
 ﻿using Leosac.KeyManager.Library.UI.Domain;
+using Leosac.KeyManager.Library.UI.Helpers;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;

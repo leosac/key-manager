@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
+             xmlns:converters="clr-namespace:Leosac.KeyManager.Library.UI.Converters"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -12,9 +13,12 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
+            
             <materialDesign:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <materialDesign:NullableToVisibilityConverter x:Key="NullableToVisibilityConverter" />
+            
+            <converters:ZeroToNullConverter x:Key="ZeroToNullConverter" />
+            <converters:GreaterThanZeroConverter x:Key="GreaterThanZeroConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid DockPanel.Dock="Top" Margin="5,0,2,0" Background="{DynamicResource MaterialDesignPaper}">
@@ -98,26 +102,34 @@
                         ToolTip="{x:Static properties:Resources.Selection}" Margin="5"
                         Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}">
                         <materialDesign:PopupBox.ToggleContent>
-                            <materialDesign:PackIcon Kind="CheckboxIndeterminateVariant" Height="24" Width="24" Cursor="Hand" />
+                            <materialDesign:Badged Badge="{Binding SelectedIdentifiersCount, Converter={StaticResource ZeroToNullConverter}}" BadgeColorZoneMode="PrimaryDark">
+                                <materialDesign:PackIcon Kind="CheckboxIndeterminateVariant" Height="24" Width="24" Cursor="Hand" />
+                            </materialDesign:Badged>
                         </materialDesign:PopupBox.ToggleContent>
                         <StackPanel Orientation="Vertical">
                             <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
                                     Command="{Binding ToggleSelectionCommand}"
                                     ToolTip="{x:Static properties:Resources.ToggleSelectAll}" Margin="5">
-                                <materialDesign:Badged BadgeColorZoneMode="PrimaryDark" Badge="{Binding Identifiers.Count}">
+                                <materialDesign:Badged BadgeColorZoneMode="PrimaryDark" Badge="{Binding VisibleIdentifiersCount}">
                                     <materialDesign:PackIcon Kind="CheckAll" Height="24" Width="24" Cursor="Hand" />
+                                </materialDesign:Badged>
+                            </Button>
+                            <Button Style="{StaticResource MaterialDesignFloatingActionButton}" Command="{Binding ToggleSelectVisibleCommand}" ToolTip="{x:Static properties:Resources.ToggleSelectVisible}" Margin="5">
+                                <materialDesign:Badged BadgeColorZoneMode="PrimaryDark" Badge="{Binding VisibleIdentifiersCount}">
+                                    <materialDesign:PackIcon Kind="PlaylistPlus" Height="24" Width="24" Cursor="Hand" />
                                 </materialDesign:Badged>
                             </Button>
                             <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
                                 Command="{Binding PrintSelectionCommand}"
-                                ToolTip="{x:Static properties:Resources.PrintSelection}" Margin="5">
+                                ToolTip="{x:Static properties:Resources.PrintSelection}" Margin="5"
+                                IsEnabled="{Binding SelectedIdentifiersCount, Converter={StaticResource GreaterThanZeroConverter}}">
                                 <materialDesign:PackIcon Kind="Printer" Height="24" Width="24" Cursor="Hand" />
                             </Button>
-                            
                             <Button x:Name="btnDeleteKeyEntry" Style="{StaticResource MaterialDesignFloatingActionButton}"
                                     Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
                                     ToolTip="{x:Static properties:Resources.DeleteKeyEntry}"
                                     Visibility="{Binding KeyStore.CanDeleteKeyEntries, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    IsEnabled="{Binding SelectedIdentifiersCount, Converter={StaticResource GreaterThanZeroConverter}}"
                                     Margin="5">
                                 <materialDesign:PackIcon Kind="Delete" Height="24" Width="24" Cursor="Hand" />
                             </Button>

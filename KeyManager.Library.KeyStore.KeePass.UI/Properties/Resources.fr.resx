@@ -243,4 +243,13 @@
   <data name="Tools" xml:space="preserve">
     <value>Outils</value>
   </data>
+  <data name="StoreSecret" xml:space="preserve">
+    <value>Enregistrer</value>
+  </data>
+  <data name="ExhaustiveInfo" xml:space="preserve">
+    <value>Afficher uniquement les profils valides</value>
+  </data>
+  <data name="SilentInfo" xml:space="preserve">
+    <value>Ignorer les clés incorrectes dans le magasin de clés</value>
+  </data>
 </root>
