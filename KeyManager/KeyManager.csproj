@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
 	<EnableWindowsTargeting>true</EnableWindowsTargeting>
-	<Version>1.25.0</Version>
+	<Version>1.26.0</Version>
 	<Product>Leosac Key Manager</Product>
 	<Description>Key Manager for Access Control and RFID related technologies, by Leosac.</Description>
 	<Company>Leosac SAS</Company>

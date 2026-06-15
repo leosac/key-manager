@@ -1,3 +1,8 @@
+# v1.26.0 - 06/15/2026
+ - Improve multiple key entries manual selection
+ - Make the key entries action buttons sticky to the top
+ - Refactor of Favorites to support missing plug-in
+
 # v1.25.0 - 05/27/2026
  - Add numeric properties to the print summary (to have change key references information on SAM key entries)
  - Allow AES192 and AES256 as NXP SAM Authentication Key
