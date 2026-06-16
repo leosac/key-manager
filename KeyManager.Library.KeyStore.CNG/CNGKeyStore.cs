@@ -234,7 +234,7 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
                 var raw = GetRawProperties(properties);
                 foreach (var p in raw.Keys)
                 {
-                    r = NCryptSetProperty(phKey, p, raw[p], (uint)raw[p].Length, SetPropFlags.NCRYPT_PERSIST_FLAG | SetPropFlags.NCRYPT_SILENT_FLAG);
+                    r = NCryptSetProperty(phKey, p, raw[p], SetPropFlags.NCRYPT_PERSIST_FLAG | SetPropFlags.NCRYPT_SILENT_FLAG);
                     if (r != HRESULT.S_OK)
                     {
                         log.Error(string.Format("NCryptSetProperty for property `{0}` failed with code: {1}", p, r));

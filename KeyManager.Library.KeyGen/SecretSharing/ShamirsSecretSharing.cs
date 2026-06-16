@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using SecretSharingDotNet.Cryptography;
+using System.Numerics;
 
 namespace Leosac.KeyManager.Library.KeyGen.SecretSharing
 {
@@ -18,8 +19,8 @@ namespace Leosac.KeyManager.Library.KeyGen.SecretSharing
             }
             var min = (int)Math.Ceiling((double)nbFragments * 2 / 3);
             var gcd = new SecretSharingDotNet.Math.ExtendedEuclideanAlgorithm<BigInteger>();
-            var sss = new SecretSharingDotNet.Cryptography.ShamirsSecretSharing<BigInteger>(gcd);
-            var shares = sss.MakeShares(min, nbFragments, secret);
+            var splitter = new SecretSharingDotNet.Cryptography.ShamirsSecretSharing.SecretSplitter<BigInteger>();
+            var shares = splitter.MakeShares(min, nbFragments, secret);
             var fragments = new string[shares.Count];
             for (int i = 0; i < fragments.Length; ++i)
             {
@@ -31,9 +32,10 @@ namespace Leosac.KeyManager.Library.KeyGen.SecretSharing
         public override byte[]? ComputeFragments(string[] fragments)
         {
             var gcd = new SecretSharingDotNet.Math.ExtendedEuclideanAlgorithm<BigInteger>();
-            var combine = new SecretSharingDotNet.Cryptography.ShamirsSecretSharing<BigInteger>(gcd);
-            var shares = string.Join(Environment.NewLine, fragments);
-            var secret = combine.Reconstruction(shares);
+            var combine = new SecretSharingDotNet.Cryptography.ShamirsSecretSharing.SecretReconstructor<BigInteger>(gcd);
+            var sharesblob = string.Join(Environment.NewLine, fragments);
+            //var shares = Shares<BigInteger>.FromText(sharesblob);
+            var secret = combine.Reconstruction(sharesblob);
             return secret.ToByteArray();
         }
     }
