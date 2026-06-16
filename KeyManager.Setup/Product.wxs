@@ -446,9 +446,6 @@
       <Component Id="VanaraPInvokeCryptographyComponent">
         <File Id="___var.Vanara.PInvoke.Cryptography.dll_" Source="$(var.KeyManager.Library.KeyStore.CNG.TargetDir)\Vanara.PInvoke.Cryptography.dll" />
       </Component>
-      <Component Id="VanaraPInvokeSharedComponent">
-        <File Id="___var.Vanara.PInvoke.Shared.dll_" Source="$(var.KeyManager.Library.KeyStore.CNG.TargetDir)\Vanara.PInvoke.Shared.dll" />
-      </Component>
     </ComponentGroup>
     <ComponentGroup Id="SAM_SEPluginDependenciesComponents" Directory="SAM_SEPLUGIN">
       <Component Id="LibFT260Component">
