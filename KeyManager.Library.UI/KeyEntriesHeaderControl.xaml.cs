@@ -87,5 +87,13 @@ namespace Leosac.KeyManager.Library.UI
             if (vm.IsToolbarCollapsed != collapsed)
                 vm.IsToolbarCollapsed = collapsed;
         }
+
+        private void TextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                btnSearch.Command?.Execute(null);
+            }
+        }
     }
 }

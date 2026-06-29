@@ -11,6 +11,6 @@
              x:Name="userControl">
     <StackPanel Orientation="Vertical" VerticalAlignment="Center">
         <Image Source="{Binding Path=QrCode, ElementName=userControl}" Width="384" Height="384" Margin="8" />
-        <Button Content="{x:Static properties:Resources.Close}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
+        <Button Content="{x:Static properties:Resources.Close}" IsCancel="True" IsDefault="True" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
     </StackPanel>
 </UserControl>

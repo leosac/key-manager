@@ -1,3 +1,7 @@
+# v1.26.1 - 06/29/2026
+ - Define default Cancel buttons to quickly escape dialogs
+ - Fix UI library dependencies mismatch
+
 # v1.26.0 - 06/15/2026
  - Improve multiple key entries manual selection
  - Make the key entries action buttons sticky to the top

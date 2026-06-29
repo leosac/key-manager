@@ -181,6 +181,7 @@
             <TextBox Text="{Binding SearchTerms, UpdateSourceTrigger=PropertyChanged}"
                 Margin="3"
                 materialDesign:HintAssist.Hint="{x:Static properties:Resources.SearchTerms}"
+                KeyDown="TextBox_KeyDown"
                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
         </DockPanel>
     </Grid>

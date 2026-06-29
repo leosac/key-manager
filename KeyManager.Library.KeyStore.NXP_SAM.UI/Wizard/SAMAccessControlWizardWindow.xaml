@@ -24,7 +24,7 @@
     </Window.Resources>
     <DockPanel>
         <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
-            <Button x:Name="btnOK" Width="100" IsCancel="True" Content="{x:Static properties:Resources.OK}" Margin="10" Click="btnOK_Click"/>
+            <Button x:Name="btnOK" Width="100" IsDefault="True" Content="{x:Static properties:Resources.OK}" Margin="10" Click="btnOK_Click"/>
             <Button x:Name="btnCancel" Width="100" IsCancel="True" Content="{x:Static properties:Resources.Cancel}" Margin="10" Click="btnCancel_Click"/>
         </WrapPanel>
         <StackPanel Orientation="Vertical">
