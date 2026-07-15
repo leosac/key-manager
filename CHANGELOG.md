@@ -1,3 +1,6 @@
+# v1.27.0 - 07/15/2026
+ - Update to .NET10
+
 # v1.26.1 - 06/29/2026
  - Define default Cancel buttons to quickly escape dialogs
  - Fix UI library dependencies mismatch

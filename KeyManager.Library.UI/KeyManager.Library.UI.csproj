@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	<UseWPF>true</UseWPF>
@@ -12,7 +12,7 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>Leosac.$(AssemblyName)</PackageId>
-    <Version>1.26.1</Version>
+    <Version>1.27.0</Version>
     <Title>Leosac Key Manager UI Library</Title>
     <Company>Leosac SAS</Company>
     <Product>Leosac Key Manager</Product>
@@ -32,12 +32,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Leosac.WpfApp" Version="1.28.1" />
+    <PackageReference Include="Leosac.WpfApp" Version="1.29.0" />
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
     <PackageReference Include="Net.Codecrete.QrCodeGenerator" Version="3.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="SkiaSharp" Version="3.119.4" />
-    <PackageReference Include="System.Speech" Version="10.0.9" />
+    <PackageReference Include="SkiaSharp" Version="4.150.1" />
+    <PackageReference Include="System.Speech" Version="10.0.10" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
 	<EnableWindowsTargeting>true</EnableWindowsTargeting>
-	<Version>1.26.1</Version>
+	<Version>1.27.0</Version>
 	<Product>Leosac Key Manager</Product>
 	<Description>Key Manager for Access Control and RFID related technologies, by Leosac.</Description>
 	<Company>Leosac SAS</Company>
@@ -26,8 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Leosac.WpfApp" Version="1.28.1" />
-    <PackageReference Include="log4net" Version="3.3.1" />
+    <PackageReference Include="Leosac.WpfApp" Version="1.29.0" />
+    <PackageReference Include="log4net" Version="3.3.2" />
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>

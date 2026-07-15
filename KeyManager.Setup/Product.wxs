@@ -81,7 +81,7 @@
     <WixVariable Id="WixUIDialogBmp" Value="dialog.bmp" />
     <WixVariable Id="WixUIInfoIco" Value="leosac.ico" />
 
-    <netfx:DotNetCompatibilityCheck RuntimeType="desktop" Platform="$(var.Platform)" RollForward="latestMinor" Version ="8.0.0" Property="NETCORESTATUS" />
+    <netfx:DotNetCompatibilityCheck RuntimeType="desktop" Platform="$(var.Platform)" RollForward="latestMinor" Version ="10.0.0" Property="NETCORESTATUS" />
     <Launch Condition="Installed OR NETCORESTATUS=&quot;0&quot;" Message="!(loc.DotNetRequiredError)" />
 
     <!-- Launch the application after setup exits -->
@@ -130,7 +130,7 @@
             <Directory Id="APPRUNTIMES" Name="runtimes">
               <Directory Id="RUNTIMEWIN" Name="win">
                 <Directory Id="RUNTIMEWINLIB" Name="lib">
-                  <Directory Id="RUNTIMEWINLIBNET8" Name="net8.0" />
+                  <Directory Id="RUNTIMEWINLIBNET10" Name="net10.0" />
                 </Directory>
               </Directory>
               <Directory Id="RUNTIMEWINX64" Name="win-x64">
@@ -375,9 +375,9 @@
         <File Id="___var.WpfApp.dll_" Source="$(var.KeyManager.TargetDir)\WpfApp.dll" />
       </Component>
     </ComponentGroup>
-    <ComponentGroup Id="WinRuntimeComponents" Directory="RUNTIMEWINLIBNET8">
+    <ComponentGroup Id="WinRuntimeComponents" Directory="RUNTIMEWINLIBNET10">
       <Component Id="SystemSpeech_winxComponent">
-        <File Id="___var.System.Speech.dllWin_" Source="$(var.KeyManager.TargetDir)\runtimes\win\lib\net8.0\System.Speech.dll" />
+        <File Id="___var.System.Speech.dllWin_" Source="$(var.KeyManager.TargetDir)\runtimes\win\lib\net10.0\System.Speech.dll" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="NativeWinx64RuntimeComponents" Directory="RUNTIMEWINX64NATIVE">

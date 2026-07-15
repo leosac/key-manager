@@ -77,7 +77,7 @@ namespace Leosac.KeyManager.Library.UI
         {
             try
             {
-                return SaveToFile(GetFavoritesPath());
+                return SaveToFile(GetFavoritesPath(true));
             }
             catch (Exception ex)
             {
@@ -86,11 +86,11 @@ namespace Leosac.KeyManager.Library.UI
             }
         }
 
-        private static string GetFavoritesPath()
+        private static string GetFavoritesPath(bool createFolders = false)
         {
             return !string.IsNullOrWhiteSpace(_settings?.FavoritesPath)
                 ? _settings!.FavoritesPath
-                : GetConfigFilePath(GetDefaultFileName(), true);
+                : GetConfigFilePath(GetDefaultFileName(), createFolders, true);
         }
 
         public Favorite? Get(string favoriteIdOrName)
