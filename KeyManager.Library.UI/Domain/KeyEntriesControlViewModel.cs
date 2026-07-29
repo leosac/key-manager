@@ -287,6 +287,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 if (KeyStore == null || identifier?.KeyEntryId == null)
                     return;
+                identifier.Highlighted = true;
                 var model = CreateKeyEntryDialogViewModel();
                 model.CanChangeFactory = false;
                 model.AllowSubmit = KeyStore.CanUpdateKeyEntries;
@@ -296,6 +297,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 {
                     identifier.KeyEntryId = model.KeyEntry?.Identifier;
                 }
+                identifier.Highlighted = false;
             }
             catch (Exception ex)
             {

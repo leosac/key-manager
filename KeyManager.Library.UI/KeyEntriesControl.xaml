@@ -22,6 +22,8 @@
             <materialDesign:NullableToVisibilityConverter x:Key="NullableToVisibilityConverter" />
             <s:Boolean x:Key="True">True</s:Boolean>
             <s:Boolean x:Key="False">False</s:Boolean>
+            <SolidColorBrush x:Key="ItemHoverBrush" Color="#14000000"/>
+            <SolidColorBrush x:Key="ItemSelectedBrush" Color="#22007ACC"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
@@ -32,7 +34,10 @@
             <ItemsControl ItemsSource="{Binding Identifiers}" Margin="5,15,5,5" PreviewMouseWheel="HandlePreviewMouseWheel">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border x:Name="ItemBorder" Padding="5">
+                        <Border x:Name="ItemBorder" Padding="5" BorderThickness="1">
+                            <Border.BorderBrush>
+                                <SolidColorBrush x:Name="ItemBorderBrush" Color="Transparent"/>
+                            </Border.BorderBrush>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="20" />
@@ -90,8 +95,36 @@
                             </Grid>
                         </Border>
                         <DataTemplate.Triggers>
+                            <Trigger SourceName="ItemBorder" Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource ItemHoverBrush}" />
+                            </Trigger>
                             <DataTrigger Binding="{Binding Selected}" Value="True">
-                                <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource MaterialDesignSelection}" />
+                                <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource ItemSelectedBrush}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Highlighted}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation
+                            Storyboard.TargetName="ItemBorderBrush"
+                            Storyboard.TargetProperty="Color"
+                            To="LightGray"
+                            Duration="0:0:0.1"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation
+                            Storyboard.TargetName="ItemBorderBrush"
+                            Storyboard.TargetProperty="Color"
+                            To="Transparent"
+                            Duration="0:0:3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
                             </DataTrigger>
                         </DataTemplate.Triggers>
                     </DataTemplate>

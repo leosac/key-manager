@@ -12,6 +12,13 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _selected, value);
         }
 
+        private bool _highlighted;
+        public bool Highlighted
+        {
+            get => _highlighted;
+            set => SetProperty(ref _highlighted, value);
+        }
+
         private KeyEntryId? _keyEntryId;
         public KeyEntryId? KeyEntryId
         {
