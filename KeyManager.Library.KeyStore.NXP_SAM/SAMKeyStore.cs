@@ -1,5 +1,6 @@
 ﻿using Leosac.KeyManager.Library.Crypto;
 using LibLogicalAccess;
+using LibLogicalAccess.Card;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 {
@@ -7,6 +8,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
     {
         public static uint SAM_AV2_MAX_SYMMETRIC_ENTRIES => 128;
         public static byte SAM_AV2_MAX_USAGE_COUNTERS => 16;
+        public static uint SAM_AV2_MAX_ASYMMETRIC_RSA_ENTRIES => 3;
+        public static uint SAM_AV3_MAX_ASYMMETRIC_ECC_ENTRIES => 8;
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
@@ -38,7 +41,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
         public override IEnumerable<KeyEntryClass> SupportedClasses
         {
-            get => [KeyEntryClass.Symmetric];
+            get => [KeyEntryClass.Symmetric, KeyEntryClass.Asymmetric];
         }
 
         public override Task Open()
@@ -379,6 +382,17 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     entries.Add(new KeyEntryId { Id = i.ToString() });
                 }
             }
+            if (keClass == null || keClass == KeyEntryClass.Asymmetric)
+            {
+                for (uint i = 0; i < SAM_AV2_MAX_ASYMMETRIC_RSA_ENTRIES; ++i)
+                {
+                    entries.Add(new KeyEntryId { Id = $"RSA - {i.ToString()}" });
+                }
+                for (uint i = 0; i < SAM_AV3_MAX_ASYMMETRIC_ECC_ENTRIES; ++i)
+                {
+                    entries.Add(new KeyEntryId { Id = $"ECC - {i.ToString()}" });
+                }
+            }
             log.Info(string.Format("{0} key entries returned.", entries.Count));
             return Task.FromResult(entries);
         }
@@ -485,7 +499,6 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
                         infoav2.cekno = samkey.SAMProperties.ChangeKeyRefId;
                         infoav2.cekv = samkey.SAMProperties.ChangeKeyRefVersion;
-
                         infoav2.ExtSET |= (byte)(Convert.ToByte(samkey.SAMProperties.AllowDumpSecretKey) << 3);
                         infoav2.ExtSET |= (byte)(Convert.ToByte(samkey.SAMProperties.AllowDumpSecretKeyWithDiv) << 4);
                         infoav2.ExtSET |= (byte)(Convert.ToByte(samkey.SAMProperties.ReservedForPerso) << 5);

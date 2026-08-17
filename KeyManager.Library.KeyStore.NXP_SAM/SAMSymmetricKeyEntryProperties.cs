@@ -2,7 +2,7 @@
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 {
-    public class SAMSymmetricKeyEntryProperties : KeyEntryProperties
+    public class SAMSymmetricKeyEntryProperties : SAMKeyEntryProperties
     {
         private SAMKeyEntryType _samKeyEntryType = SAMKeyEntryType.Host;
         public SAMKeyEntryType SAMKeyEntryType
@@ -81,13 +81,6 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             set => SetProperty(ref _disableGenerateMACFromPICC, value);
         }
 
-        private bool _disableKeyEntry;
-        public bool DisableKeyEntry
-        {
-            get => _disableKeyEntry;
-            set => SetProperty(ref _disableKeyEntry, value);
-        }
-
         private bool _allowDumpSecretKey;
         public bool AllowDumpSecretKey
         {
@@ -123,27 +116,6 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         {
             get => _desfireKeyNum;
             set => SetProperty(ref _desfireKeyNum, value);
-        }
-
-        private byte? keyUsageCounter = null;
-        public byte? KeyUsageCounter
-        {
-            get => keyUsageCounter;
-            set => SetProperty(ref keyUsageCounter, value);
-        }
-
-        private byte _changeKeyRefId;
-        public byte ChangeKeyRefId
-        {
-            get => _changeKeyRefId;
-            set => SetProperty(ref _changeKeyRefId, value);
-        }
-
-        private byte _changeKeyRefVersion;
-        public byte ChangeKeyRefVersion
-        {
-            get => _changeKeyRefVersion;
-            set => SetProperty(ref _changeKeyRefVersion, value);
         }
     }
 }
