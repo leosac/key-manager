@@ -31,9 +31,30 @@ namespace Leosac.KeyManager.Library.KeyStore
             {
                 if (Id != null)
                 {
-                    if (long.TryParse(Id, out long id))
+                    string idstr = Id;
+                    if (idstr.Contains('-') && idstr.Length > 0)
+                    {
+                        idstr = idstr.Substring(idstr.IndexOf('-') + 1).Trim();
+                    }
+                    if (long.TryParse(idstr, out long id))
                     {
                         return id;
+                    }
+                }
+                return null;
+            }
+        }
+
+        public string? IdPrefix
+        {
+            get
+            {
+                if (Id != null)
+                {
+                    string idstr = Id;
+                    if (idstr.Contains('-') && idstr.Length > 0)
+                    {
+                        return idstr.Substring(0, idstr.IndexOf('-')).Trim();
                     }
                 }
                 return null;

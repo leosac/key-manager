@@ -190,11 +190,19 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 return Task.FromResult(false);
             }
 
-            if (uint.TryParse(identifier.Id, out uint entry))
+            if (keClass == KeyEntryClass.Symmetric)
             {
-                if (keClass == KeyEntryClass.Symmetric)
+                return Task.FromResult(identifier.NumericId < SAM_AV2_MAX_SYMMETRIC_ENTRIES);
+            }
+            else if (keClass == KeyEntryClass.Asymmetric)
+            {
+                if (identifier.IdPrefix == "RSA")
                 {
-                    return Task.FromResult(entry < SAM_AV2_MAX_SYMMETRIC_ENTRIES);
+                    return Task.FromResult(identifier.NumericId < SAM_AV2_MAX_ASYMMETRIC_RSA_ENTRIES);
+                }
+                else if (identifier.IdPrefix == "ECC")
+                {
+                    return Task.FromResult(identifier.NumericId < SAM_AV3_MAX_ASYMMETRIC_ECC_ENTRIES);
                 }
             }
 
@@ -253,7 +261,6 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 throw new KeyStoreException("The key entry do not exists.");
             }
 
-            byte entry = byte.Parse(identifier.Id!);
             var cmd = Chip?.getCommands();
             if (cmd == null)
             {
@@ -266,7 +273,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             {
                 if (keClass == KeyEntryClass.Symmetric)
                 {
-                    var av2entry = av2cmd.getKeyEntry(entry);
+                    var av2entry = av2cmd.getKeyEntry((byte)identifier.NumericId!);
                     var set = av2entry.getSETStruct();
                     keyEntry = CreateKeyEntryFromKeyType(av2entry.getKeyType());
                     keyEntry.Identifier = identifier;
@@ -811,12 +818,20 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             };
             if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
             {
-                var kucEntry = av2cmd.getKUCEntry(identifier);
-                var entry = kucEntry.getKucEntryStruct();
-                counter.ChangeKeyRefId = entry.keynockuc;
-                counter.ChangeKeyRefVersion = entry.keyvckuc;
-                counter.Limit = BitConverter.ToUInt32(entry.limit, 0);
-                counter.Value = BitConverter.ToUInt32(entry.curval, 0);
+                try
+                {
+                    var kucEntry = av2cmd.getKUCEntry(identifier);
+                    var entry = kucEntry.getKucEntryStruct();
+                    counter.ChangeKeyRefId = entry.keynockuc;
+                    counter.ChangeKeyRefVersion = entry.keyvckuc;
+                    counter.Limit = BitConverter.ToUInt32(entry.limit, 0);
+                    counter.Value = BitConverter.ToUInt32(entry.curval, 0);
+                }
+                catch (LibLogicalAccessException ex)
+                {
+                    log.Error(string.Format("Failed to get key usage counter `{0}`.", identifier), ex);
+                    throw new KeyStoreException("Failed to get key usage counter.", ex);
+                }
             }
             else if (cmd is LibLogicalAccess.Reader.SAMAV1ISO7816Commands)
             {
@@ -871,6 +886,12 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 throw new KeyStoreException("Wrapping Key Entry Identifier parameter is expected.");
             }
 
+            if (keClass != KeyEntryClass.Symmetric)
+            {
+                log.Error("Key Entry Class parameter must be Symmetric.");
+                throw new KeyStoreException("Key Entry Class parameter must be Symmetric.");
+            }
+
             var cmd = Chip?.getCommands();
             if (cmd is LibLogicalAccess.Reader.SAMAV3ISO7816Commands av3cmd)
             {
@@ -880,11 +901,11 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     _unlocked = true;
                 }
 
-                byte entry = byte.Parse(keyIdentifier.Id!);
+                byte entry = (byte)keyIdentifier.NumericId!;
                 byte targetEntry = entry;
                 if (targetKeyIdentifier != null)
                 {
-                    targetEntry = byte.Parse(targetKeyIdentifier.Id!);
+                    targetEntry = (byte)targetKeyIdentifier.NumericId!;
                 }
 
                 byte[] div;
@@ -894,12 +915,12 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 }
                 else
                 {
-                    div = Array.Empty<byte>();
+                    div = [];
                 }
 
-                var keyCipheredVector = av3cmd.encipherKeyEntry(entry, targetEntry, wrappingKey.ChangeCounter ?? 0, 0x00, [], new ByteVector(div));
+                var keyCipheredVector = av3cmd.encipherKeyEntry(entry, targetEntry, wrappingKey.ChangeCounter ?? 0, 0x00, [], [.. div]);
                 log.Info("Key link completed.");
-                return Task.FromResult<string?>(Convert.ToHexString(keyCipheredVector.ToArray()));
+                return Task.FromResult<string?>(Convert.ToHexString([.. keyCipheredVector]));
             }
             else
             {
@@ -910,15 +931,22 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
         public override async Task<string?> ResolveKeyLink(KeyEntryId keyIdentifier, KeyEntryClass keClass, string? containerSelector, string? divInput)
         {
-            byte[] div;
             log.Info(string.Format("Resolving key link with Key Entry Identifier `{0}`, Key Version `{1}`, Div Input `{2}`...", keyIdentifier, containerSelector, divInput));
+
+            if (keClass != KeyEntryClass.Symmetric)
+            {
+                log.Error("Key Entry Class parameter must be Symmetric.");
+                throw new KeyStoreException("Key Entry Class parameter must be Symmetric.");
+            }
+
+            byte[] div;
             if (!string.IsNullOrEmpty(divInput))
             {
                 div = Convert.FromHexString(divInput);
             }
             else
             {
-                div = Array.Empty<byte>();
+                div = [];
             }
 
             if (!await CheckKeyEntryExists(keyIdentifier, keClass))
@@ -927,8 +955,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 throw new KeyStoreException("The key entry doesn't exist.");
             }
 
-            byte entry = byte.Parse(keyIdentifier.Id!);
-
+            byte entry = (byte)keyIdentifier.NumericId!;
             var cmd = Chip?.getCommands();
             if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
             {
@@ -942,9 +969,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 {
                     log.Warn("Cannot parse the container selector as a key version, falling back to version 0.");
                 }
-                var keyVector = av2cmd.dumpSecretKey(entry, keyVersion, new LibLogicalAccess.ByteVector(div));
+                
+                var keyVector = av2cmd.dumpSecretKey(entry, keyVersion, [.. div]);
                 log.Info("Key link completed.");
-                return Convert.ToHexString(keyVector.ToArray());
+                return Convert.ToHexString([.. keyVector]);
             }
             else
             {
@@ -960,6 +988,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 if (keClass == KeyEntryClass.Symmetric)
                 {
                     keyEntry = new SAMSymmetricKeyEntry();
+                }
+                else if (keClass == KeyEntryClass.Asymmetric)
+                {
+                    keyEntry = new SAMAsymmetricRSAKeyEntry();
                 }
             }
             return keyEntry;
