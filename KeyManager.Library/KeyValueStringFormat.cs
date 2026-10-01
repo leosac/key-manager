@@ -3,6 +3,8 @@
     public enum KeyValueStringFormat
     {
         HexString,
-        HexStringWithSpace
+        HexStringWithSpace,
+        Der,
+        Pem
     }
 }

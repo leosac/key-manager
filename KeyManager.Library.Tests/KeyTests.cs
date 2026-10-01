@@ -45,6 +45,42 @@
         }
 
         [TestMethod]
+        public void OneMaterial_GetAggregatedValue_HexStringFromHexStringWithSpace()
+        {
+            var key = new Key(null, 16, "00 11 22 33");
+            key.Materials[0].ValueFormat = KeyValueStringFormat.HexStringWithSpace;
+            var v = key.GetAggregatedValueAsString(KeyValueStringFormat.HexString);
+            Assert.AreEqual("00112233", v, true);
+        }
+
+        [TestMethod]
+        public void ConvertValueFormat_ConvertsFromHexStringWithSpace()
+        {
+            var v = KeyMaterial.ConvertValueFormat("00 11 22 33", KeyValueStringFormat.HexString, KeyValueStringFormat.HexStringWithSpace);
+            Assert.AreEqual("00112233", v, true);
+        }
+
+        [TestMethod]
+        public void ConvertValueFormat_ConvertsHexStringToDerAndBack()
+        {
+            var der = KeyMaterial.ConvertValueFormat("00112233", KeyValueStringFormat.Der, KeyValueStringFormat.HexString);
+            var hex = KeyMaterial.ConvertValueFormat(der, KeyValueStringFormat.HexString, KeyValueStringFormat.Der);
+
+            Assert.AreEqual("ABEiMw==", der);
+            Assert.AreEqual("00112233", hex, true);
+        }
+
+        [TestMethod]
+        public void ConvertValueFormat_ConvertsHexStringToPemAndBack()
+        {
+            var pem = KeyMaterial.ConvertValueFormat("00112233", KeyValueStringFormat.Pem, KeyValueStringFormat.HexString);
+            var hex = KeyMaterial.ConvertValueFormat(pem, KeyValueStringFormat.HexString, KeyValueStringFormat.Pem);
+
+            Assert.AreEqual("-----BEGIN KEY-----\nABEiMw==\n-----END KEY-----", pem);
+            Assert.AreEqual("00112233", hex, true);
+        }
+
+        [TestMethod]
         public void TwoMaterials_GetAggregatedValue_HexString()
         {
             var key = new Key(null, 8, new KeyMaterial("0011223344556677"), new KeyMaterial("8899AABBCCDDEEFF"));

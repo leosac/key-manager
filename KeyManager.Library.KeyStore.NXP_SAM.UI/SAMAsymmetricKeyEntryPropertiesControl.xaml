@@ -1,0 +1,97 @@
+﻿<UserControl x:Class="Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.SAMAsymmetricKeyEntryPropertiesControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:domain="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain"
+             xmlns:local="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI"
+             xmlns:libuidomain="clr-namespace:Leosac.KeyManager.Library.UI.Domain;assembly=KeyManager.Library.UI"
+             xmlns:libui="clr-namespace:Leosac.KeyManager.Library.UI;assembly=KeyManager.Library.UI"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Properties"
+             xmlns:wpfappctrls="clr-namespace:Leosac.WpfApp.Controls;assembly=WpfApp"
+             xmlns:wpfappdomain="clr-namespace:Leosac.WpfApp.Domain;assembly=WpfApp"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance domain:SAMAsymmetricKeyEntryPropertiesControlViewModel}"
+             d:DesignHeight="500" d:DesignWidth="500">
+    <UserControl.Resources>
+        <wpfappdomain:ByteArrayToStringConverter x:Key="ByteArrayToStringConverter" />
+        <libuidomain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+    </UserControl.Resources>
+    <StackPanel>
+        <materialDesign:Card>
+            <StackPanel>
+                <Expander HorizontalAlignment="Stretch" Header="{x:Static properties:Resources.Options}" IsExpanded="True">
+                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="24,8,24,16">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.AllowEncipherKeyEntries}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.AllowEncipherKeyEntries}" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.DisableEncryptData}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.DisableEncryptData}" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.AllowPrivateKeyExport}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.AllowPrivateKeyExport}" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.DisableSignData}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.DisableSignData}" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.ForceHostInternalChange}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.ForceHostInternalChange}" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.ForceHostInternalUsage}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.ForceHostInternalUsage}" Padding="3" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.DisableKeyEntry}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.DisableKeyEntry}" Padding="3" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </materialDesign:Card>
+        <materialDesign:Card>
+            <StackPanel>
+                <Expander HorizontalAlignment="Stretch" Header="{x:Static properties:Resources.KUC}">
+                    <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="24,8,24,16">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="0" Margin="5">
+                                <ToggleButton IsChecked="{Binding Properties.KeyUsageCounter, Mode=TwoWay, Converter={StaticResource NullToBooleanConverter}}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                                <TextBlock Text="{x:Static properties:Resources.Enabled}" Padding="3" />
+                            </StackPanel>
+                            <wpfappctrls:NumericUpDownControl MinValue="0" MaxValue="15" CurrentValue="{Binding Properties.KeyUsageCounter, Mode=TwoWay, TargetNullValue=0}" Grid.Row="1"
+                                                        IsEnabled="{Binding Properties.KeyUsageCounter, Mode=OneWay, Converter={StaticResource NullToBooleanConverter}}"
+                                                        HelperText="{x:Static properties:Resources.KUCReferenceHelper}"
+                                                        Hint="{x:Static properties:Resources.KUCReference}"/>
+                        </Grid>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </materialDesign:Card>
+        <materialDesign:Card>
+            <StackPanel/>
+        </materialDesign:Card>
+        <local:ChangeKeyReferenceControl ChangeKeyRefId="{Binding Properties.ChangeKeyRefId, Mode=TwoWay}" ChangeKeyRefVersion="{Binding Properties.ChangeKeyRefVersion, Mode=TwoWay}"/>
+    </StackPanel>
+</UserControl>

@@ -132,6 +132,12 @@
   <data name="AllowDumpSecretKeyWithDiv" xml:space="preserve">
     <value>Allow dump SecretKey with div</value>
   </data>
+  <data name="AllowEncipherKeyEntries" xml:space="preserve">
+    <value>Allow Encipher Key Entries</value>
+  </data>
+  <data name="AllowPrivateKeyExport" xml:space="preserve">
+    <value>Allow Private Key Export</value>
+  </data>
   <data name="Authenticate" xml:space="preserve">
     <value>Authenticate</value>
   </data>
@@ -201,6 +207,9 @@
   <data name="DisableKeyEntry" xml:space="preserve">
     <value>Disable Key Entry</value>
   </data>
+  <data name="DisableSignData" xml:space="preserve">
+    <value>Disable Sign Data</value>
+  </data>
   <data name="DisableVerifyMACFromPICC" xml:space="preserve">
     <value>Disable Verify MAC From PICC</value>
   </data>
@@ -230,6 +239,12 @@
   </data>
   <data name="ForceCardTypeHelper" xml:space="preserve">
     <value>By default the software will automatically detect the SAM type/version. Such automatic detection can be overriden.</value>
+  </data>
+  <data name="ForceHostInternalChange" xml:space="preserve">
+    <value>Force Host Internal Change</value>
+  </data>
+  <data name="ForceHostInternalUsage" xml:space="preserve">
+    <value>Force Host Internal Usage</value>
   </data>
   <data name="GenerateSAMMasterKey" xml:space="preserve">
     <value>Generate new SAM Master Key</value>

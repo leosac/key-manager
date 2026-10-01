@@ -132,6 +132,12 @@
   <data name="AllowDumpSecretKeyWithDiv" xml:space="preserve">
     <value>Autoriser le dump de la clé secrète avec diversification</value>
   </data>
+  <data name="AllowEncipherKeyEntries" xml:space="preserve">
+    <value>Autoriser le chiffrement de clés</value>
+  </data>
+  <data name="AllowPrivateKeyExport" xml:space="preserve">
+    <value>Autoriser l'export de la clé privée</value>
+  </data>
   <data name="Authenticate" xml:space="preserve">
     <value>Authentification</value>
   </data>
@@ -201,6 +207,9 @@
   <data name="DisableKeyEntry" xml:space="preserve">
     <value>Désactiver la clé</value>
   </data>
+  <data name="DisableSignData" xml:space="preserve">
+    <value>Désactiver la signature de données</value>
+  </data>
   <data name="DisableVerifyMACFromPICC" xml:space="preserve">
     <value>Désactiver la vérification du MAC à partir d'une carte PICC</value>
   </data>
@@ -230,6 +239,12 @@
   </data>
   <data name="ForceCardTypeHelper" xml:space="preserve">
     <value>Par défaut le logiciel détermine automatiquement le type / la version de SAM utilisés. Ce comportement peut être forcé à une version en particulier.</value>
+  </data>
+  <data name="ForceHostInternalChange" xml:space="preserve">
+    <value>Restreint le changement à l'hôte interne</value>
+  </data>
+  <data name="ForceHostInternalUsage" xml:space="preserve">
+    <value>Restreint l'usage à l'hôte interne</value>
   </data>
   <data name="GenerateSAMMasterKey" xml:space="preserve">
     <value>Générer une nouvelle clé maitre SAM</value>

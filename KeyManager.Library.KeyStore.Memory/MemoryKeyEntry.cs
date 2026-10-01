@@ -46,8 +46,8 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
                 var rsavar = new KeyEntryVariant { Name = "RSA" };
                 rsavar.KeyContainers.Add(new KeyContainer("Key", new Key(new[] { "RSA", KeyEntryClass.Asymmetric.ToString() }, 0, new[]
                 {
-                    new KeyMaterial("", KeyMaterial.PRIVATE_KEY),
-                    new KeyMaterial("", KeyMaterial.PUBLIC_KEY)
+                    new KeyMaterial("", KeyMaterial.PRIVATE_KEY) { ValueFormat = KeyValueStringFormat.Pem },
+                    new KeyMaterial("", KeyMaterial.PUBLIC_KEY) { ValueFormat = KeyValueStringFormat.Pem }
                 })));
                 variants.Add(rsavar);
             }

@@ -1,6 +1,7 @@
 ﻿using Leosac.KeyManager.Library.Crypto;
 using LibLogicalAccess;
 using LibLogicalAccess.Card;
+using System.Security.Cryptography;
 
 namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 {
@@ -14,7 +15,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         private const string ATTRIBUTE_UID = "uid";
-
+        private const string AV1_DEPRECATED_MSG = "Inserted SAM is not in AV2 mode, AV1 support has been deprecated, please check to option to auto switch to AV2 or manually perform a Switch.";
         private bool _unlocked;
 
         public LibLogicalAccess.ReaderProvider? ReaderProvider { get; private set; }
@@ -268,21 +269,22 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 throw new KeyStoreException("No Command associated with the SAM chip.");
             }
 
-            SAMSymmetricKeyEntry keyEntry;
+            KeyEntry keyEntry;
             if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
             {
                 if (keClass == KeyEntryClass.Symmetric)
                 {
+                    SAMSymmetricKeyEntry? samKeyEntry = null;
                     var av2entry = av2cmd.getKeyEntry((byte)identifier.NumericId!);
                     var set = av2entry.getSETStruct();
-                    keyEntry = CreateKeyEntryFromKeyType(av2entry.getKeyType());
-                    keyEntry.Identifier = identifier;
+                    samKeyEntry = CreateKeyEntryFromKeyType(av2entry.getKeyType());
+                    samKeyEntry.Identifier = identifier;
                     var infoav2 = av2entry.getKeyEntryInformation();
-                    ParseKeyEntryProperties(infoav2, set, keyEntry.SAMProperties);
-                    if (keyEntry.Variant != null)
+                    ParseKeyEntryProperties(infoav2, set, samKeyEntry.SAMProperties);
+                    if (samKeyEntry.Variant != null)
                     {
                         var keysdata = av2entry.getKeysData();
-                        var keyVersions = keyEntry.Variant.KeyContainers.OfType<KeyVersion>().ToArray();
+                        var keyVersions = samKeyEntry.Variant.KeyContainers.OfType<KeyVersion>().ToArray();
                         if (keysdata.Count < 1 || keysdata.Count != keyVersions.Length)
                         {
                             log.Error(string.Format("Unexpected number of keys ({0}) on the SAM Key Entry.", keysdata.Count));
@@ -292,24 +294,78 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                         keyVersions[0].Key.SetAggregatedValueAsString(string.Empty);
                         keyVersions[0].Version = infoav2.vera;
                         keyVersions[0].TrackChanges();
-                        if (keyEntry.Variant.KeyContainers.Count >= 2)
+                        if (samKeyEntry.Variant.KeyContainers.Count >= 2)
                         {
                             keyVersions[1].Key.SetAggregatedValueAsString(string.Empty);
                             keyVersions[1].Version = infoav2.verb;
                             keyVersions[1].TrackChanges();
                         }
 
-                        if (keyEntry.Variant.KeyContainers.Count >= 3)
+                        if (samKeyEntry.Variant.KeyContainers.Count >= 3)
                         {
                             keyVersions[2].Key.SetAggregatedValueAsString(string.Empty);
                             keyVersions[2].Version = infoav2.verc;
                             keyVersions[2].TrackChanges();
                         }
                     }
+                    keyEntry = samKeyEntry;
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    // Temporary workaround to retrieve the public key of an asymmetric key entry (RSA or ECC) from the SAM
+                    // Shouldn't be required on further LLA update
+                    av2cmd.authenticateHost(GetAuthenticationKey(), GetSAMProperties().AuthenticateKeyEntryIdentifier);
+
+                    var samKeyEntry = new SAMAsymmetricKeyEntry();
+                    if (identifier.IdPrefix == "RSA")
+                    {
+                        samKeyEntry.SetVariant("RSA");
+                        try
+                        {
+                            var pubkey = av2cmd.PKI_ExportPublicKey((byte)identifier.NumericId!);
+                            if (pubkey != null)
+                            {
+                                samKeyEntry.SAMProperties!.KeyUsageCounter = (pubkey.refNoKUC != 0xff) ? pubkey.refNoKUC : null;
+                                samKeyEntry.SAMProperties!.ChangeKeyRefId = pubkey.keyNoCEK;
+                                samKeyEntry.SAMProperties.ChangeKeyRefVersion = pubkey.keyVCEK;
+
+                                samKeyEntry.SAMProperties.AllowPrivateKeyExport = pubkey.config.privateKeyExportAllowed();
+                                samKeyEntry.SAMProperties.DisableEncryptData = pubkey.config.encryptionDisabled();
+                                samKeyEntry.SAMProperties.DisableSignData = pubkey.config.signatureDisabled();
+                                samKeyEntry.SAMProperties.ForceHostInternalChange = pubkey.config.hostChangeForced();
+                                samKeyEntry.SAMProperties.ForceHostInternalUsage = pubkey.config.hostUsageForced();
+                                samKeyEntry.SAMProperties.AllowEncipherKeyEntries = pubkey.config.encipherKeyEntriesEnabled();
+                                samKeyEntry.SAMProperties.DisableKeyEntry = pubkey.config.disabled();
+
+                                if (pubkey.eLen > 0 && pubkey.nLen > 0)
+                                {
+                                    var rsa = System.Security.Cryptography.RSA.Create();
+                                    rsa.ImportParameters(new RSAParameters
+                                    {
+                                        Modulus = pubkey.n.ToArray(),
+                                        Exponent = pubkey.e.ToArray()
+                                    });
+                                    var pem = rsa.ExportSubjectPublicKeyInfoPem();
+                                    samKeyEntry.Variant!.KeyContainers[0].Key.Materials.FirstOrDefault(k => k.Name == KeyMaterial.PUBLIC_KEY)?.SetValueAsString(pem, KeyValueStringFormat.Pem);
+                                }
+                            }
+                        }
+                        catch(LibLogicalAccessException ex)
+                        {
+                            if (ex.Message.EndsWith("Conditions of use not satisfied, invalid key type, invalid CID, or key limit reached"))
+                            {
+                                var msg = "Cannot retrieve RSA key public information. Falling back to default value.";
+                                log.Warn(msg, ex);
+                                OnUserMessageNotified(msg);
+
+                                samKeyEntry.SAMProperties!.DisableKeyEntry = true;
+                            }
+                            else
+                                throw;
+                        }
+                    }
+
+                    keyEntry = samKeyEntry;
                 }
             }
             else if (cmd is LibLogicalAccess.Reader.SAMAV1ISO7816Commands)
@@ -395,10 +451,10 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 {
                     entries.Add(new KeyEntryId { Id = $"RSA - {i.ToString()}" });
                 }
-                for (uint i = 0; i < SAM_AV3_MAX_ASYMMETRIC_ECC_ENTRIES; ++i)
+                /*for (uint i = 0; i < SAM_AV3_MAX_ASYMMETRIC_ECC_ENTRIES; ++i)
                 {
                     entries.Add(new KeyEntryId { Id = $"ECC - {i.ToString()}" });
-                }
+                }*/
             }
             log.Info(string.Format("{0} key entries returned.", entries.Count));
             return Task.FromResult(entries);
@@ -621,8 +677,55 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 }
                 else
                 {
-                    log.Error("Inserted SAM is not in AV2 mode, AV1 support has been deprecated, please check to option to auto switch to AV2 or manually perform a Switch.");
-                    throw new KeyStoreException("Inserted SAM is not in AV2 mode, AV1 support has been deprecated, please check to option to auto switch to AV2 or manually perform a Switch.");
+                    log.Error(AV1_DEPRECATED_MSG);
+                    throw new KeyStoreException(AV1_DEPRECATED_MSG);
+                }
+            }
+            else if (change is SAMAsymmetricKeyEntry asamkey)
+            {
+                var cmd = Chip?.getCommands();
+                if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
+                {
+                    byte kuc = 0xff, cekno = 0x00, cekv = 0x00;
+                    PKISet pkiSet = new PKISet();
+                    if (asamkey.SAMProperties != null)
+                    {
+                        kuc = asamkey.SAMProperties.KeyUsageCounter ?? 0xff;
+                        cekno = asamkey.SAMProperties.ChangeKeyRefId;
+                        cekv = asamkey.SAMProperties.ChangeKeyRefVersion;
+
+                        pkiSet.setAllowPrivateExport(asamkey.SAMProperties.AllowPrivateKeyExport);
+                        pkiSet.setEncipherKeyEntries(asamkey.SAMProperties.AllowEncipherKeyEntries);
+                        pkiSet.setDisabled(asamkey.SAMProperties.DisableKeyEntry);
+                        pkiSet.setEncryptionDisabled(asamkey.SAMProperties.DisableEncryptData);
+                        pkiSet.setSignatureDisabled(asamkey.SAMProperties.DisableSignData);
+                        pkiSet.setForceHostChange(asamkey.SAMProperties.ForceHostInternalChange);
+                        pkiSet.setForceHostUsage(asamkey.SAMProperties.ForceHostInternalUsage);
+                    }
+
+                    bool updateSettingsOnly = true;
+                    if (asamkey.Variant != null)
+                    {
+                        var containers = asamkey.Variant.KeyContainers;
+                        var keys = new LibLogicalAccess.UCharCollectionCollection(containers.Count)
+                        {
+                            new LibLogicalAccess.ByteVector(containers[0].Key.GetAggregatedValueAsBinary(true))
+                        };
+                        if (containers[0].IsConfigured())
+                        {
+                            log.Info("Updating value for key");
+                            updateSettingsOnly = false;
+                        }
+                    }
+
+                    // We don't take care of AuthenticationMode here as key entry update always requires Host Authentication
+                    av2cmd.authenticateHost(key, GetSAMProperties().AuthenticateKeyEntryIdentifier);
+                    //av2cmd.PKI_ImportKey((byte)Convert.ToDecimal(asamkey.Identifier.Id), pkiSet, cekno, cekv, kuc);
+                }
+                else
+                {
+                    log.Error(AV1_DEPRECATED_MSG);
+                    throw new KeyStoreException(AV1_DEPRECATED_MSG);
                 }
             }
             else if (change is KeyEntryCryptogram cryptogram)
@@ -707,7 +810,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             key.setKeyType(keyType);
             if (!string.IsNullOrEmpty(keyValue))
             {
-                key.fromString(KeyMaterial.GetValueAsString(keyValue, KeyValueStringFormat.HexStringWithSpace));
+                key.fromString(KeyMaterial.ConvertValueFormat(keyValue, KeyValueStringFormat.HexStringWithSpace));
             }
             return key;
         }
@@ -740,7 +843,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 {
                     key.setLength(24);
                 }
-                key.fromString(KeyMaterial.GetValueAsString(kv, KeyValueStringFormat.HexStringWithSpace));
+                key.fromString(KeyMaterial.ConvertValueFormat(kv, KeyValueStringFormat.HexStringWithSpace));
             }
             else
             {
@@ -991,7 +1094,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 }
                 else if (keClass == KeyEntryClass.Asymmetric)
                 {
-                    keyEntry = new SAMAsymmetricRSAKeyEntry();
+                    keyEntry = new SAMAsymmetricKeyEntry();
                 }
             }
             return keyEntry;

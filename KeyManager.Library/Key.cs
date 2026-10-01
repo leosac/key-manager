@@ -189,7 +189,7 @@ namespace Leosac.KeyManager.Library
             }
             else
             {
-                var invariant = KeyMaterial.GetInvariantStringValue(value, format);
+                var invariant = KeyMaterial.ConvertValueFormat(value, KeyValueStringFormat.HexString, format) ?? string.Empty;
                 if (!string.IsNullOrEmpty(invariant))
                 {
                     int i = 0;

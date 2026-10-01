@@ -9,6 +9,20 @@
             set => SetProperty(ref _disableKeyEntry, value);
         }
 
+        private bool _forceHostInternalChange;
+        public bool ForceHostInternalChange
+        {
+            get => _forceHostInternalChange;
+            set => SetProperty(ref _forceHostInternalChange, value);
+        }
+
+        private bool _forceHostInternalUsage;
+        public bool ForceHostInternalUsage
+        {
+            get => _forceHostInternalUsage;
+            set => SetProperty(ref _forceHostInternalUsage, value);
+        }
+
         private byte? keyUsageCounter = null;
         public byte? KeyUsageCounter
         {
