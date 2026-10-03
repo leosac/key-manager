@@ -24,7 +24,7 @@
             <TextBlock DockPanel.Dock="Top" Text="{x:Static properties:Resources.KeyGeneration}" FontSize="18" Margin="8" />
             <Expander DockPanel.Dock="Top" Header="{x:Static properties:Resources.Key}" Margin="5">
                 <StackPanel Orientation="Vertical">
-                    <wpfappctrls:NumericUpDownControl Hint="{x:Static properties:Resources.KeySize}" HelperText="{x:Static properties:Resources.KeySizeHelper}" MinValue="8" CurrentValue="{Binding KeySize, ElementName=userControl, Mode=TwoWay}" Margin="8" />
+                    <wpfappctrls:NumericUpDownControl Hint="{x:Static properties:Resources.KeySizeInBytes}" HelperText="{x:Static properties:Resources.KeySizeInBytesHelper}" MinValue="8" CurrentValue="{Binding KeySize, ElementName=userControl, Mode=TwoWay}" Margin="8" />
                     <PasswordBox Margin="5"
                          materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyValueHelper}"
                          materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyValue}"

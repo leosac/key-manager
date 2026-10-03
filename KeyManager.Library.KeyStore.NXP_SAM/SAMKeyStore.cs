@@ -623,11 +623,11 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                         var samkt = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_DES;
                         if (containers[0].Key.Tags.Contains("AES"))
                         {
-                            if (containers[0].Key.KeySize == 32)
+                            if (containers[0].Key.KeySize == 256)
                             {
                                 samkt = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES256;
                             }
-                            else if (containers[0].Key.KeySize == 24)
+                            else if (containers[0].Key.KeySize == 192)
                             {
                                 samkt = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_AES192;
                             }
@@ -642,7 +642,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                         }
                         else
                         {
-                            if (containers[0].Key.KeySize > 16)
+                            if (containers[0].Key.KeySize > 128)
                             {
                                 samkt = LibLogicalAccess.Card.SAMKeyType.SAM_KEY_3K3DES;
                             }

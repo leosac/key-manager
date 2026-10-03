@@ -391,7 +391,7 @@
     <value>Size</value>
   </data>
   <data name="KeySizeHelper" xml:space="preserve">
-    <value>Key Size</value>
+    <value>Key Size (bits)</value>
   </data>
   <data name="KeyStoreAttribute" xml:space="preserve">
     <value>Key Store Attribute</value>
@@ -704,5 +704,11 @@
   </data>
   <data name="ToggleSelectVisible" xml:space="preserve">
     <value>Add visible elements to current selection</value>
+  </data>
+  <data name="KeySizeInBytes" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="KeySizeInBytesHelper" xml:space="preserve">
+    <value>Key Size (bytes)</value>
   </data>
 </root>

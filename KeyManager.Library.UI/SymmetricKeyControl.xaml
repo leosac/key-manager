@@ -20,7 +20,7 @@
             </ResourceDictionary.MergedDictionaries>
             <materialDesign:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed" />
             <materialDesign:BooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" TrueValue="Collapsed" FalseValue="Visible" />
-            <wpfappdomain:ByteLengthToCharLengthConverter x:Key="ByteLengthToCharLengthConverter" />
+             <domain:BitLengthToCharLengthConverter x:Key="BitLengthToCharLengthConverter" />
             <domain:KeyChecksumConverter x:Key="KeyChecksumConverter" />
             <domain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
             <s:Boolean x:Key="True">True</s:Boolean>
@@ -45,7 +45,7 @@
                             <TextBox Margin="0,5,0,20" MinWidth="350"
                                      materialDesign:HintAssist.HelperText="{x:Static properties:Resources.GenericValue}"
                                      materialDesign:HintAssist.Hint="{x:Static properties:Resources.GenericValue}"
-                                     MaxLength="{Binding Path=OverrideSize, Converter={StaticResource ByteLengthToCharLengthConverter}}"
+                                     MaxLength="{Binding Path=OverrideSize, Converter={StaticResource BitLengthToCharLengthConverter}}"
                                      Text="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
                         </DockPanel>
                         <DockPanel Grid.Row="1" LastChildFill="True" Visibility="{Binding IsRealKeyMateriel, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -87,7 +87,7 @@
                                          materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyValue}"
                                          materialDesign:TextFieldAssist.HasClearButton="True"
                                          materialDesign:TextFieldAssist.CharacterCounterVisibility="Visible"
-                                         MaxLength="{Binding Path=Key.KeySize, Converter={StaticResource ByteLengthToCharLengthConverter}, ElementName=keyControl}"
+                                         MaxLength="{Binding Path=Key.KeySize, Converter={StaticResource BitLengthToCharLengthConverter}, ElementName=keyControl}"
                                          Style="{StaticResource MaterialDesignFloatingHintRevealPasswordBox}"
                                          materialDesign:PasswordBoxAssist.Password="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
                         </DockPanel>

@@ -41,6 +41,15 @@ namespace Leosac.KeyManager.Library.UI
         public static readonly DependencyProperty ShowKeyLinkProperty = DependencyProperty.Register(nameof(ShowKeyLink), typeof(bool), typeof(KeyActionButtonsControl),
             new FrameworkPropertyMetadata(true));
 
+        public bool ShowKeyGen
+        {
+            get { return (bool)GetValue(ShowKeyGenProperty); }
+            set { SetValue(ShowKeyGenProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowKeyGenProperty = DependencyProperty.Register(nameof(ShowKeyGen), typeof(bool), typeof(KeyActionButtonsControl),
+            new FrameworkPropertyMetadata(true));
+
         public KeyEntryClass KClass
         {
             get { return (KeyEntryClass)GetValue(KClassProperty); }

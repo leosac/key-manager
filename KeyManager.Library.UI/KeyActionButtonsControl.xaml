@@ -21,12 +21,13 @@
     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8">
         <materialDesign:DialogHost Identifier="KeyGenerationDialog" DialogTheme="Inherit" DataContext="{Binding Path=Key, ElementName=userControl}">
             <materialDesign:DialogHost.DialogContent>
-                <local:SymmetricKeyGenerationDialog KeySize="{Binding Path=KeySize, Mode=OneWay}" KeyValue="{Binding Materials[0].Value, Mode=TwoWay}" />
+                <local:SymmetricKeyGenerationDialog KeySize="{Binding Path=KeySizeInBytes, Mode=OneWay}" KeyValue="{Binding Materials[0].Value, Mode=TwoWay}" />
             </materialDesign:DialogHost.DialogContent>
             <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
                     Width="24" Height="24" Margin="3"
                     ToolTip="{x:Static properties:Resources.KeyGeneration}"
-                    IsEnabled="{Binding Path=Link.KeyStoreFavorite, Converter={StaticResource NullToBooleanConverter}, ConverterParameter={StaticResource True}}">
+                    IsEnabled="{Binding Path=Link.KeyStoreFavorite, Converter={StaticResource NullToBooleanConverter}, ConverterParameter={StaticResource True}}"
+                    Visibility="{Binding ShowKeyGen, ElementName=userControl, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <materialDesign:PackIcon Kind="Seedling" Height="16" Width="16"/>
             </Button>
         </materialDesign:DialogHost>

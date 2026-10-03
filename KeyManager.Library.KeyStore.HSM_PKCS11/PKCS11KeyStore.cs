@@ -195,22 +195,22 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
                 {
                     mechanism = _session!.Factories.MechanismFactory.Create(CKM.CKM_AES_KEY_GEN);
                 }
-                else if (key.Tags.Contains("DES") && key.KeySize == 8)
+                else if (key.Tags.Contains("DES") && key.KeySize == 64)
                 {
                     mechanism = _session!.Factories.MechanismFactory.Create(CKM.CKM_DES_KEY_GEN);
                 }
-                else if (key.Tags.Contains("DES") && key.KeySize == 16)
+                else if (key.Tags.Contains("DES") && key.KeySize == 128)
                 {
                     mechanism = _session!.Factories.MechanismFactory.Create(CKM.CKM_DES2_KEY_GEN);
                 }
-                else if (key.Tags.Contains("DES") && key.KeySize == 24)
+                else if (key.Tags.Contains("DES") && key.KeySize == 192)
                 {
                     mechanism = _session!.Factories.MechanismFactory.Create(CKM.CKM_DES3_KEY_GEN);
                 }
 
                 if (key.KeySize > 0)
                 {
-                    attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE_LEN, key.KeySize));
+                    attributes.Add(_session!.Factories.ObjectAttributeFactory.Create(CKA.CKA_VALUE_LEN, key.KeySizeInBytes));
                 }
             }
 

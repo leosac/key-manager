@@ -404,8 +404,11 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
                 if (kcObj["Key"] is JObject keyObj)
                 {
                     var key = container.Key;
-                    key.KeySize = (ushort)(keyObj["KeySize"]?.Value<int>() ?? 16);
                     key.Tags = keyObj["Tags"]?.ToObject<ObservableCollection<string>>() ?? new ObservableCollection<string>();
+                    var storedKeySize = keyObj["KeySize"]?.Value<uint>() ?? 16;
+                    key.KeySize = key.Tags.Contains("AES") || key.Tags.Contains("DES")
+                        ? (storedKeySize <= 32 ? checked(storedKeySize * 8) : storedKeySize)
+                        : storedKeySize;
                     key.Link = keyObj["Link"]?.ToObject<KeyLink>() ?? new KeyLink();
                     if (keyObj["Materials"] is JArray materialsArray && materialsArray.Count > 0)
                     {
@@ -596,7 +599,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
                 .Append(Environment.NewLine)
                 .Append($"Class : {keyEntry.KClass}")
                 .Append(Environment.NewLine)
-                .Append($"Size : {(variant.KeyContainers[0].Key.KeySize * 8)} bits")
+                .Append($"Size : {variant.KeyContainers[0].Key.KeySize} bits")
                 .Append(Environment.NewLine);
             var firstTags = variant.KeyContainers[0].Key.Tags;
             if (firstTags?.Count > 0)
@@ -608,7 +611,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
             {
                 var container = variant.KeyContainers[i];
                 var name = container.Name ?? $"V{i + 1}";
-                var size = container.Key.KeySize * 8;
+                var size = container.Key.KeySize;
                 var tagsPreview = string.Join("/", container.Key.Tags?.Take(2) ?? []);
                 sb.Append($"  ↳ {name} : {size}b ({tagsPreview})").Append(Environment.NewLine); //UTF-8 symbol for pretty output
             }

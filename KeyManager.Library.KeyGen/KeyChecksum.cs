@@ -29,7 +29,7 @@
             uint keySize = 0;
             if (!string.IsNullOrEmpty(key))
             {
-                keySize = (uint)key.Length / 2;
+                keySize = checked((uint)key.Length * 4);
             }
             return Convert.ToHexString(ComputeKCV(new Key(tags, keySize, key), ivb));
         }

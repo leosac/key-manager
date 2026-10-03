@@ -1069,11 +1069,29 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Key Size.
+        ///   Looks up a localized string similar to Key Size (bits).
         /// </summary>
         public static string KeySizeHelper {
             get {
                 return ResourceManager.GetString("KeySizeHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string KeySizeInBytes {
+            get {
+                return ResourceManager.GetString("KeySizeInBytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key Size (bytes).
+        /// </summary>
+        public static string KeySizeInBytesHelper {
+            get {
+                return ResourceManager.GetString("KeySizeInBytesHelper", resourceCulture);
             }
         }
         

@@ -25,19 +25,19 @@ namespace Leosac.KeyManager.Library.KeyStore.Memory
             if (classFilter == null || classFilter == KeyEntryClass.Symmetric)
             {
                 var desvar = new KeyEntryVariant { Name = "DES" };
-                desvar.KeyContainers.Add(new KeyContainer("Key", new Key(new[] { "DES", KeyEntryClass.Symmetric.ToString() }, 16)));
+                desvar.KeyContainers.Add(new KeyContainer("Key", new Key(new[] { "DES", KeyEntryClass.Symmetric.ToString() }, 64)));
                 variants.Add(desvar);
                 var tk3desvar = new KeyEntryVariant { Name = "TK3DES" };
-                tk3desvar.KeyContainers.Add(new KeyContainer("Key", new Key(new[] { "DES", KeyEntryClass.Symmetric.ToString() }, 24)));
+                tk3desvar.KeyContainers.Add(new KeyContainer("Key", new Key(new[] { "DES", KeyEntryClass.Symmetric.ToString() }, 192)));
                 variants.Add(tk3desvar);
                 var aes128var = new KeyEntryVariant { Name = "AES128" };
-                aes128var.KeyContainers.Add(new KeyContainer("Key", new Key(new[] { "AES", KeyEntryClass.Symmetric.ToString() }, 16)));
+                aes128var.KeyContainers.Add(new KeyContainer("Key", new Key(new[] { "AES", KeyEntryClass.Symmetric.ToString() }, 128)));
                 variants.Add(aes128var);
                 var aes192var = new KeyEntryVariant { Name = "AES192" };
-                aes192var.KeyContainers.Add(new KeyContainer("Key", new Key(new[] { "AES", KeyEntryClass.Symmetric.ToString() }, 24)));
+                aes192var.KeyContainers.Add(new KeyContainer("Key", new Key(new[] { "AES", KeyEntryClass.Symmetric.ToString() }, 192)));
                 variants.Add(aes192var);
                 var aes256var = new KeyEntryVariant { Name = "AES256" };
-                aes256var.KeyContainers.Add(new KeyContainer("Key", new Key(new[] { "AES", KeyEntryClass.Symmetric.ToString() }, 32)));
+                aes256var.KeyContainers.Add(new KeyContainer("Key", new Key(new[] { "AES", KeyEntryClass.Symmetric.ToString() }, 256)));
                 variants.Add(aes256var);
             }
 

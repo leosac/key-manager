@@ -2,6 +2,7 @@
 using Leosac.KeyManager.Library.Policy;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Leosac.KeyManager.Library
@@ -86,6 +87,24 @@ namespace Leosac.KeyManager.Library
             set => SetProperty(ref _keySize, value);
         }
 
+        [JsonIgnore]
+        public uint KeySizeInBytes
+        {
+            get => KeySize == 0 ? 0 : KeyGeneration.BitsToBytes(KeySize);
+            set => KeySize = KeyGeneration.BytesToBits(value);
+        }
+
+        [OnDeserialized]
+        private void MigrateLegacyByteKeySize(StreamingContext context)
+        {
+            if (Tags.Any(tag => string.Equals(tag, "AES", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(tag, "DES", StringComparison.OrdinalIgnoreCase))
+                && KeySize is 8 or 16 or 24 or 32)
+            {
+                KeySize *= 8;
+            }
+        }
+
         public ObservableCollection<KeyMaterial> Materials { get; set; }
 
         public ObservableCollection<string> Tags { get; set; }
@@ -114,6 +133,31 @@ namespace Leosac.KeyManager.Library
             foreach (var policy in Policies)
             {
                 policy.Validate(value);
+            }
+        }
+
+        public void Generate()
+        {
+            Generate(KeyGeneration.Generate(this));
+        }
+
+        public void Generate(string algorithm)
+        {
+            Generate(KeyGeneration.Generate(this, algorithm));
+        }
+
+        private void Generate(IEnumerable<KeyMaterial> materials)
+        {
+            var generatedMaterials = materials.ToList();
+            if (generatedMaterials.Count == 0)
+            {
+                throw new InvalidOperationException("The key generator returned no materials.");
+            }
+
+            Materials.Clear();
+            foreach (var material in generatedMaterials)
+            {
+                Materials.Add(material);
             }
         }
 
@@ -166,7 +210,7 @@ namespace Leosac.KeyManager.Library
                 if (mdata != null)
                 {
                     data.AddRange(mdata);
-                    var padsize = m.OverrideSize > 0 ? m.OverrideSize : KeySize;
+                    var padsize = m.OverrideSize > 0 ? m.OverrideSizeInBytes : KeySizeInBytes;
                     if (padKeySize && padsize > 0 && mdata.Length < padsize)
                     {
                         data.AddRange(new byte[padsize - mdata.Length]);
@@ -196,7 +240,7 @@ namespace Leosac.KeyManager.Library
                     int pos = 0;
                     do
                     {
-                        int length = (int)(Materials[i].OverrideSize > 0 ? Materials[i].OverrideSize : KeySize) * 2;
+                        int length = checked((int)((Materials[i].OverrideSize > 0 ? Materials[i].OverrideSize : KeySize) / 4));
                         var sub = invariant.Substring(pos, (pos + length) < invariant.Length ? length : (invariant.Length - pos));
                         Materials[i++].SetValueAsString(sub, KeyValueStringFormat.HexString);
                         pos += length;

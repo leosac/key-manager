@@ -2,9 +2,9 @@
 {
     public class KeyLengthPolicy : IKeyPolicy
     {
-        public KeyLengthPolicy(uint byteLength)
+        public KeyLengthPolicy(uint bitLength)
         {
-            ByteLength = byteLength;
+            BitLength = bitLength;
         }
 
         public void Validate(Key key)
@@ -24,13 +24,19 @@
                     throw new KeyPolicyException("Key is not correctly formated to be parsed to a byte array.");
                 }
 
-                if (value.Length / 2 != ByteLength)
+                if (value.Length * 4 != BitLength)
                 {
                     throw new KeyPolicyException("Wrong key length.");
                 }
             }
         }
 
-        public uint ByteLength { get; set; }
+        public uint BitLength { get; set; }
+
+        public uint ByteLength
+        {
+            get => checked((BitLength + 7) / 8);
+            set => BitLength = checked(value * 8);
+        }
     }
 }

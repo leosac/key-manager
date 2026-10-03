@@ -391,7 +391,7 @@
     <value>Taille</value>
   </data>
   <data name="KeySizeHelper" xml:space="preserve">
-    <value>Taille de la clé</value>
+    <value>Taille de la clé (bits)</value>
   </data>
   <data name="KeyStoreAttribute" xml:space="preserve">
     <value>Attribut du magasin de clés</value>
@@ -704,5 +704,11 @@
   </data>
   <data name="ToggleSelectVisible" xml:space="preserve">
     <value>Ajouter les éléments visibles à la sélection actuelle</value>
+  </data>
+  <data name="KeySizeInBytes" xml:space="preserve">
+    <value>Taille</value>
+  </data>
+  <data name="KeySizeInBytesHelper" xml:space="preserve">
+    <value>Taille de la clé (bytes)</value>
   </data>
 </root>

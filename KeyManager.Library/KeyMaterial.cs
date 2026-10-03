@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
+using System.Runtime.Serialization;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
 namespace Leosac.KeyManager.Library
@@ -72,6 +74,18 @@ namespace Leosac.KeyManager.Library
         {
             get => _overrideSize;
             set { SetProperty(ref _overrideSize, value); }
+        }
+
+        [JsonIgnore]
+        public uint OverrideSizeInBytes => OverrideSize == 0 ? 0 : KeyGeneration.BitsToBytes(OverrideSize);
+
+        [OnDeserialized]
+        private void MigrateLegacyByteOverrideSize(StreamingContext context)
+        {
+            if (OverrideSize is > 0 and <= 4)
+            {
+                OverrideSize *= 8;
+            }
         }
 
         private bool _validatePolicies = true;

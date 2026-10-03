@@ -70,22 +70,22 @@ namespace Leosac.KeyManager.Library.KeyStore.LCP
             if (keyType == "aes128")
             {
                 algo = "AES";
-                keySize = 16;
+                keySize = 128;
             }
             else if (keyType == "aes256")
             {
                 algo = "AES";
-                keySize = 32;
+                keySize = 256;
             }
             else if (keyType == "2k3des")
             {
                 algo = "DES";
-                keySize = 16;
+                keySize = 128;
             }
             else if (keyType == "3k3des")
             {
                 algo = "DES";
-                keySize = 24;
+                keySize = 192;
             }
             else if (keyType == "rsa-public" || keyType == "rsa-private")
             {

@@ -161,23 +161,12 @@ namespace Leosac.KeyManager.Library.KeyStore
         /// <returns>The key entry identifier</returns>
         public virtual async Task<KeyEntryId> Generate(KeyEntry keyEntry)
         {
-            if (keyEntry.Variant != null && keyEntry.KClass == KeyEntryClass.Symmetric)
+            if (keyEntry.Variant == null)
+                throw new KeyStoreException("Cannot generate a key entry without a key variant.");
+
+            foreach (var kv in keyEntry.Variant.KeyContainers)
             {
-                foreach (var kv in keyEntry.Variant.KeyContainers)
-                {
-                    if (kv.Key.KeySize > 0)
-                    {
-                        foreach (var m in kv.Key.Materials)
-                        {
-                            m.SetValueAsBinary(KeyGeneration.Random(kv.Key.KeySize));
-                        }
-                    }
-                }
-            }
-            else
-            {
-                log.Error(string.Format("The key store doesn't support key entry generation for class `{0}`.", keyEntry.KClass));
-                throw new NotImplementedException();
+                kv.Key.Generate();
             }
 
             await Create(keyEntry);
@@ -197,16 +186,29 @@ namespace Leosac.KeyManager.Library.KeyStore
                 return await Generate(keyEntry);
             }
 
-            if (CanUpdateKeyEntries && keyEntry.Variant != null && keyEntry.KClass == KeyEntryClass.Symmetric)
+            if (CanUpdateKeyEntries && keyEntry.Variant != null)
             {
-                foreach (var keyContainer in keyEntry.Variant.KeyContainers)
+                if (keyEntry.KClass == KeyEntryClass.Symmetric)
                 {
-                    if (keyContainer.Key.KeySize > 0)
+                    foreach (var keyContainer in keyEntry.Variant.KeyContainers)
                     {
-                        foreach (var material in keyContainer.Key.Materials)
+                        if (keyContainer.Key.KeySize > 0)
                         {
-                            material.SetValueAsBinary(KeyGeneration.Random(keyContainer.Key.KeySize));
+                            foreach (var material in keyContainer.Key.Materials)
+                            {
+                                material.SetValueAsBinary(KeyGeneration.RandomBits(keyContainer.Key.KeySize));
+                            }
                         }
+                    }
+                }
+                else if(keyEntry.KClass == KeyEntryClass.Asymmetric)
+                {
+                    foreach (var keyContainer in keyEntry.Variant.KeyContainers)
+                    {
+                        /*if (keyContainer.Key is AsymmetricKey asymmetricKey)
+                        {
+                            asymmetricKey.GenerateNewKeyPair();
+                        }*/
                     }
                 }
 
