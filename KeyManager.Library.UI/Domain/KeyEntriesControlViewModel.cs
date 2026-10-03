@@ -35,7 +35,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
             WizardFactories = new ObservableCollection<WizardFactory>(factories);
 
             CreateKeyEntryCommand = new AsyncRelayCommand(CreateKeyEntryAsync);
-            GenerateKeyEntryCommand = new AsyncRelayCommand(GenerateKeyEntryAsync);
+            GenerateKeyEntryCommand = new AsyncRelayCommand<SelectableKeyEntryId?>(GenerateKeyEntryAsync);
 
             EditDefaultKeyEntryCommand = new AsyncRelayCommand(
                 async () =>
@@ -226,40 +226,19 @@ namespace Leosac.KeyManager.Library.UI.Domain
             } while (retry);
         }
 
-        public AsyncRelayCommand GenerateKeyEntryCommand { get; }
+        public AsyncRelayCommand<SelectableKeyEntryId?> GenerateKeyEntryCommand { get; }
 
-        private async Task GenerateKeyEntryAsync()
+        private async Task GenerateKeyEntryAsync(SelectableKeyEntryId? identifier)
         {
-            var model = CreateKeyEntryDialogViewModel();
-            model.ShowKeyMaterials = false;
-            bool retry;
-
-            do
+            if (identifier?.KeyEntryId == null)
             {
-                retry = false;
-                var dialog = new KeyEntryDialog { DataContext = model };
-                var result = await DialogHelper.ForceShow(dialog, RootDialog);
-                if (result == null)
-                    return;
-                if (KeyStore == null || model.KeyEntry == null)
-                    return;
+                var model = CreateKeyEntryDialogViewModel();
+                model.ShowKeyMaterials = false;
+                await SaveKeyEntryAsync(model, true, false);
+                return;
+            }
 
-                try
-                {
-                    var id = await KeyStore.Generate(model.KeyEntry);
-                    Identifiers.Add(new SelectableKeyEntryId
-                    {
-                        Selected = false,
-                        KeyEntryId = id
-                    });
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    HandleOperationException(ex, "Generating the Key Entry");
-                    retry = true;
-                }
-            } while (retry);
+            await EditKeyEntryAsync(identifier, true);
         }
 
         public AsyncRelayCommand EditDefaultKeyEntryCommand { get; }
@@ -283,6 +262,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
 
         private async Task EditKeyEntryAsync(SelectableKeyEntryId? identifier)
         {
+            await EditKeyEntryAsync(identifier, false);
+        }
+
+        private async Task EditKeyEntryAsync(SelectableKeyEntryId? identifier, bool generate)
+        {
             try
             {
                 if (KeyStore == null || identifier?.KeyEntryId == null)
@@ -290,10 +274,11 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 identifier.Highlighted = true;
                 var model = CreateKeyEntryDialogViewModel();
                 model.CanChangeFactory = false;
-                model.AllowSubmit = KeyStore.CanUpdateKeyEntries;
-                model.SubmitButtonText = Properties.Resources.Update;
+                model.ShowKeyMaterials = !generate;
+                model.AllowSubmit = generate || KeyStore.CanUpdateKeyEntries;
+                model.SubmitButtonText = generate ? Properties.Resources.GenerateKeyEntry : Properties.Resources.Update;
                 model.SetKeyEntry(await KeyStore.Get(identifier.KeyEntryId, KeyEntryClass));
-                if (await UpdateKeyEntryAsync(model))
+                if (await SaveKeyEntryAsync(model, generate, true))
                 {
                     identifier.KeyEntryId = model.KeyEntry?.Identifier;
                 }
@@ -303,6 +288,50 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 HandleOperationException(ex, "Loading the Key Entry for update");
             }
+        }
+
+        private async Task<bool> SaveKeyEntryAsync(KeyEntryDialogViewModel model, bool generate, bool replaceExisting)
+        {
+            bool retry;
+            do
+            {
+                retry = false;
+                var dialog = new KeyEntryDialog { DataContext = model };
+                var result = await DialogHelper.ForceShow(dialog, RootDialog);
+                if (result == null)
+                    return false;
+                if (KeyStore == null || model.KeyEntry == null)
+                    return false;
+
+                try
+                {
+                    if (generate)
+                    {
+                        var id = await KeyStore.Generate(model.KeyEntry, replaceExisting);
+                        if (!replaceExisting)
+                        {
+                            Identifiers.Add(new SelectableKeyEntryId
+                            {
+                                Selected = false,
+                                KeyEntryId = id
+                            });
+                        }
+                    }
+                    else
+                    {
+                        await KeyStore.Update(model.KeyEntry);
+                    }
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    HandleOperationException(ex, generate ? "Generating the Key Entry" : "Updating the Key Entry");
+                    retry = true;
+                }
+            } while (retry);
+
+            return false;
         }
 
         private async Task CopyKeyEntryAsync(SelectableKeyEntryId? identifier)
@@ -324,32 +353,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
             {
                 HandleOperationException(ex, "Copying the Key Entry");
             }
-        }
-
-        private async Task<bool> UpdateKeyEntryAsync(KeyEntryDialogViewModel model)
-        {
-            bool retry;
-            do
-            {
-                retry = false;
-                var dialog = new KeyEntryDialog { DataContext = model };
-                var result = await DialogHelper.ForceShow(dialog, RootDialog);
-                if (result == null)
-                    return false;
-                if (KeyStore == null || model.KeyEntry == null)
-                    return false;
-                try
-                {
-                    await KeyStore.Update(model.KeyEntry);
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    HandleOperationException(ex, "Updating the Key Entry");
-                    retry = true;
-                }
-            } while (retry);
-            return false;
         }
 
         public AsyncRelayCommand<SelectableKeyEntryId> DeleteKeyEntryCommand { get; }

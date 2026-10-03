@@ -184,6 +184,40 @@ namespace Leosac.KeyManager.Library.KeyStore
             return keyEntry.Identifier;
         }
 
+        /// <summary>
+        /// Generate a key entry, optionally replacing an existing entry.
+        /// </summary>
+        /// <param name="keyEntry">The key entry details</param>
+        /// <param name="replaceExisting">True to replace the existing key entry, false to create a new one.</param>
+        /// <returns>The key entry identifier</returns>
+        public virtual async Task<KeyEntryId> Generate(KeyEntry keyEntry, bool replaceExisting)
+        {
+            if (!replaceExisting)
+            {
+                return await Generate(keyEntry);
+            }
+
+            if (CanUpdateKeyEntries && keyEntry.Variant != null && keyEntry.KClass == KeyEntryClass.Symmetric)
+            {
+                foreach (var keyContainer in keyEntry.Variant.KeyContainers)
+                {
+                    if (keyContainer.Key.KeySize > 0)
+                    {
+                        foreach (var material in keyContainer.Key.Materials)
+                        {
+                            material.SetValueAsBinary(KeyGeneration.Random(keyContainer.Key.KeySize));
+                        }
+                    }
+                }
+
+                await Update(keyEntry);
+                return keyEntry.Identifier;
+            }
+
+            await Delete(keyEntry.Identifier, keyEntry.KClass);
+            return await Generate(keyEntry);
+        }
+
         public virtual Task<byte[]?> GenerateBytes(byte size)
         {
             return Task.FromResult<byte[]?>(KeyGeneration.Random(size));
