@@ -176,7 +176,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             return Generate(keyEntry);
         }
 
-        public override Task<KeyEntryId> Generate(KeyEntry keyEntry)
+        protected override Task GenerateCore(KeyEntry keyEntry, bool update)
         {
             log.Info(string.Format("Generating key entry `{0}`...", keyEntry.Identifier));
 
@@ -218,7 +218,7 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
 
             _session!.GenerateKey(mechanism, attributes);
             log.Info(string.Format("Key entry `{0}` generated.", keyEntry.Identifier));
-            return Task.FromResult(keyEntry.Identifier);
+            return Task.CompletedTask;
         }
 
         private List<IObjectAttribute> GetKeyEntryAttributes(KeyEntry? entry)

@@ -253,6 +253,56 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             return Task.FromResult<byte[]?>(av2cmd.getRandom(size).ToArray());
         }
 
+        protected override Task GenerateCore(KeyEntry keyEntry, bool update)
+        {
+            if (keyEntry.KClass == KeyEntryClass.Asymmetric && keyEntry.Variant?.Name == "RSA")
+            {
+                var cmd = Chip?.getCommands();
+                if (cmd == null)
+                {
+                    log.Error("No Command associated with the SAM chip.");
+                    throw new KeyStoreException("No Command associated with the SAM chip.");
+                }
+
+                if (cmd is not LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
+                {
+                    log.Error("Unexpected Command associated with the SAM chip.");
+                    throw new KeyStoreException("Unexpected Command associated with the SAM chip.");
+                }
+
+                byte keyNoCEK = 0;
+                byte keyVCEK = 0;
+                byte refNoKUC = 0xff;
+                PKISet pkiSet = new();
+                if (keyEntry is SAMAsymmetricKeyEntry samKeyEntry)
+                {
+                    if (samKeyEntry.SAMProperties != null)
+                    {
+                        refNoKUC = samKeyEntry.SAMProperties.KeyUsageCounter ?? 0xff;
+                        keyNoCEK = samKeyEntry.SAMProperties.ChangeKeyRefId;
+                        keyVCEK = samKeyEntry.SAMProperties.ChangeKeyRefVersion;
+                        pkiSet.setAllowPrivateExport(samKeyEntry.SAMProperties.AllowPrivateKeyExport);
+                        pkiSet.setEncipherKeyEntries(samKeyEntry.SAMProperties.AllowEncipherKeyEntries);
+                        pkiSet.setDisabled(samKeyEntry.SAMProperties.DisableKeyEntry);
+                        pkiSet.setEncryptionDisabled(samKeyEntry.SAMProperties.DisableEncryptData);
+                        pkiSet.setSignatureDisabled(samKeyEntry.SAMProperties.DisableSignData);
+                        pkiSet.setForceHostChange(samKeyEntry.SAMProperties.ForceHostInternalChange);
+                        pkiSet.setForceHostUsage(samKeyEntry.SAMProperties.ForceHostInternalUsage);
+                        pkiSet.setCRT(true);
+                        pkiSet.setPrivateKey(true);
+                    }
+                }
+
+                av2cmd.authenticateHost(GetAuthenticationKey(), GetSAMProperties().AuthenticateKeyEntryIdentifier);
+                av2cmd.PKI_GenerateKeyPair((byte)keyEntry.Identifier.NumericId.GetValueOrDefault(0), pkiSet, keyNoCEK, keyVCEK, refNoKUC, new AEKVAEK());
+                return Task.CompletedTask;
+            }
+            else
+            {
+                return base.GenerateCore(keyEntry, update);
+            }
+        }
+
         public override async Task<KeyEntry?> Get(KeyEntryId identifier, KeyEntryClass keClass)
         {
             log.Info(string.Format("Getting key entry `{0}`...", identifier));
@@ -319,6 +369,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     var samKeyEntry = new SAMAsymmetricKeyEntry();
                     if (identifier.IdPrefix == "RSA")
                     {
+                        samKeyEntry.Identifier.Id = string.Format("RSA - {0}", identifier.NumericId);
                         samKeyEntry.SetVariant("RSA");
                         try
                         {

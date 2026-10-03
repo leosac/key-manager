@@ -294,7 +294,7 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
             return Generate(keyEntry);
         }
 
-        public override Task<KeyEntryId> Generate(KeyEntry entry)
+        protected override Task GenerateCore(KeyEntry entry, bool update)
         {
             if (_phProvider.IsInvalid || _phProvider.IsClosed)
             {
@@ -316,7 +316,7 @@ namespace Leosac.KeyManager.Library.KeyStore.CNG
             SetKeyPropertiesAndFinalize(phKey, entry.Properties as CNGKeyEntryProperties);
 
             log.Info(string.Format("Key entry `{0}` generated.", entry.Identifier));
-            return Task.FromResult(entry.Identifier);
+            return Task.CompletedTask;
         }
 
         public override async Task Delete(KeyEntryId identifier, KeyEntryClass keClass, bool ignoreIfMissing)

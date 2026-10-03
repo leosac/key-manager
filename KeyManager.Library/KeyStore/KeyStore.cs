@@ -155,69 +155,39 @@ namespace Leosac.KeyManager.Library.KeyStore
         }
 
         /// <summary>
-        /// Generate a new key entry.
-        /// </summary>
-        /// <param name="keyEntry">The new key entry</param>
-        /// <returns>The key entry identifier</returns>
-        public virtual async Task<KeyEntryId> Generate(KeyEntry keyEntry)
-        {
-            if (keyEntry.Variant == null)
-                throw new KeyStoreException("Cannot generate a key entry without a key variant.");
-
-            foreach (var kv in keyEntry.Variant.KeyContainers)
-            {
-                kv.Key.Generate();
-            }
-
-            await Create(keyEntry);
-            return keyEntry.Identifier;
-        }
-
-        /// <summary>
         /// Generate a key entry, optionally replacing an existing entry.
         /// </summary>
         /// <param name="keyEntry">The key entry details</param>
         /// <param name="replaceExisting">True to replace the existing key entry, false to create a new one.</param>
         /// <returns>The key entry identifier</returns>
-        public virtual async Task<KeyEntryId> Generate(KeyEntry keyEntry, bool replaceExisting)
+        public virtual async Task<KeyEntryId> Generate(KeyEntry keyEntry, bool replaceExisting = false)
         {
-            if (!replaceExisting)
+            if (CanDeleteKeyEntries && CanCreateKeyEntries && replaceExisting)
             {
-                return await Generate(keyEntry);
+                await Delete(keyEntry.Identifier, keyEntry.KClass);
             }
 
-            if (CanUpdateKeyEntries && keyEntry.Variant != null)
-            {
-                if (keyEntry.KClass == KeyEntryClass.Symmetric)
-                {
-                    foreach (var keyContainer in keyEntry.Variant.KeyContainers)
-                    {
-                        if (keyContainer.Key.KeySize > 0)
-                        {
-                            foreach (var material in keyContainer.Key.Materials)
-                            {
-                                material.SetValueAsBinary(KeyGeneration.RandomBits(keyContainer.Key.KeySize));
-                            }
-                        }
-                    }
-                }
-                else if(keyEntry.KClass == KeyEntryClass.Asymmetric)
-                {
-                    foreach (var keyContainer in keyEntry.Variant.KeyContainers)
-                    {
-                        /*if (keyContainer.Key is AsymmetricKey asymmetricKey)
-                        {
-                            asymmetricKey.GenerateNewKeyPair();
-                        }*/
-                    }
-                }
+            await GenerateCore(keyEntry, CanUpdateKeyEntries && replaceExisting);
+            return keyEntry.Identifier;
+        }
 
+        protected virtual async Task GenerateCore(KeyEntry keyEntry, bool update)
+        {
+            if (keyEntry.Variant == null)
+                throw new KeyStoreException("Cannot generate a key entry without a key variant.");
+            foreach (var kv in keyEntry.Variant.KeyContainers)
+            {
+                kv.Key.Generate();
+            }
+
+            if (update)
+            {
                 await Update(keyEntry);
-                return keyEntry.Identifier;
             }
-
-            await Delete(keyEntry.Identifier, keyEntry.KClass);
-            return await Generate(keyEntry);
+            else
+            {
+                await Create(keyEntry);
+            }
         }
 
         public virtual Task<byte[]?> GenerateBytes(byte size)
