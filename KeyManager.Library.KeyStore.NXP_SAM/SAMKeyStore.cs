@@ -1188,21 +1188,9 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 {
                     if (keyIdentifier.IdPrefix == "RSA")
                     {
-                        var publicKey = av2cmd.PKI_ExportPublicKey(entry);
-                        if (publicKey == null || publicKey.nLen == 0 || publicKey.eLen == 0)
-                        {
-                            throw new KeyStoreException("Cannot retrieve the RSA public key.");
-                        }
-
+                        string? privateKeyPem = null, publicKeyPem = null;
                         var rsa = RSA.Create();
-                        rsa.ImportParameters(new RSAParameters
-                        {
-                            Modulus = publicKey.n.ToArray(),
-                            Exponent = publicKey.e.ToArray()
-                        });
-
-                        string? privateKeyPem = null;
-                        if (publicKey.config.privateKeyExportAllowed())
+                        try
                         {
                             var privateKey = av2cmd.PKI_ExportPrivateKey(entry);
                             if (privateKey != null && privateKey.pLen > 0 && privateKey.qLen > 0)
@@ -1218,10 +1206,30 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                                     InverseQ = privateKey.ipq.ToArray()
                                 });
                                 privateKeyPem = rsa.ExportPkcs8PrivateKeyPem();
+                                publicKeyPem = rsa.ExportRSAPublicKeyPem();
                             }
                         }
+                        catch(LibLogicalAccessException ex)
+                        {
+                            log.Warn("Failed to export the RSA private key.", ex);
+                        }
 
-                        var publicKeyPem = rsa.ExportSubjectPublicKeyInfoPem();
+                        if (string.IsNullOrEmpty(publicKeyPem))
+                        {
+                            var publicKey = av2cmd.PKI_ExportPublicKey(entry);
+                            if (publicKey == null || publicKey.nLen == 0 || publicKey.eLen == 0)
+                            {
+                                throw new KeyStoreException("Cannot retrieve the RSA public key.");
+                            }
+
+                            rsa.ImportParameters(new RSAParameters
+                            {
+                                Modulus = publicKey.n.ToArray(),
+                                Exponent = publicKey.e.ToArray()
+                            });
+
+                            publicKeyPem = rsa.ExportSubjectPublicKeyInfoPem();
+                        }
                         return privateKeyPem == null ? publicKeyPem : $"{privateKeyPem}{Environment.NewLine}{publicKeyPem}";
                     }
                     else
