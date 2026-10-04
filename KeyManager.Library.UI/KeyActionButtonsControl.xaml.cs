@@ -50,6 +50,15 @@ namespace Leosac.KeyManager.Library.UI
         public static readonly DependencyProperty ShowKeyGenProperty = DependencyProperty.Register(nameof(ShowKeyGen), typeof(bool), typeof(KeyActionButtonsControl),
             new FrameworkPropertyMetadata(true));
 
+        public bool ShowMenu
+        {
+            get { return (bool)GetValue(ShowMenuProperty); }
+            set { SetValue(ShowMenuProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowMenuProperty = DependencyProperty.Register(nameof(ShowMenu), typeof(bool), typeof(KeyActionButtonsControl),
+            new FrameworkPropertyMetadata(true));
+
         public KeyEntryClass KClass
         {
             get { return (KeyEntryClass)GetValue(KClassProperty); }
@@ -91,7 +100,7 @@ namespace Leosac.KeyManager.Library.UI
             var ofd = new OpenFileDialog
             {
                 CheckFileExists = true,
-                Filter = "Binary Files (*.bin)|*.bin|Text Files (*.txt)|*.txt|PEM Files (*.pem)|*.pem"
+                Filter = "Binary Files (*.bin)|*.bin|Text Files (*.txt)|*.txt"
             };
             if (ofd.ShowDialog() == true)
             {
@@ -111,7 +120,7 @@ namespace Leosac.KeyManager.Library.UI
         {
             var sfd = new SaveFileDialog
             {
-                Filter = "Binary Files (*.bin)|*.bin|Text Files (*.txt)|*.txt|PEM Files (*.pem)|*.pem"
+                Filter = "Binary Files (*.bin)|*.bin|Text Files (*.txt)|*.txt"
             };
             if (sfd.ShowDialog() == true)
             {

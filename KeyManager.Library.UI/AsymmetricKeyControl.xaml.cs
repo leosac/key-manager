@@ -1,4 +1,5 @@
-﻿using Leosac.KeyManager.Library.UI.Domain;
+﻿using Leosac.KeyManager.Library;
+using Leosac.KeyManager.Library.UI.Domain;
 using Leosac.KeyManager.Library.Policy;
 using System;
 using System.Collections.Generic;
@@ -26,12 +27,16 @@ namespace Leosac.KeyManager.Library.UI
     /// </summary>
     public partial class AsymmetricKeyControl : UserControl
     {
+        private bool _isChangingKeyFormat;
+
         public AsymmetricKeyControl()
         {
             InitializeComponent();
 
             Key = new KeyManager.Library.Key();
         }
+
+        public Array KeyFormats => Enum.GetValues<KeyValueStringFormat>();
 
         public KeyManager.Library.Key Key
         {
@@ -50,5 +55,29 @@ namespace Leosac.KeyManager.Library.UI
 
         public static readonly DependencyProperty ShowKeyLinkProperty = DependencyProperty.Register(nameof(ShowKeyLink), typeof(bool), typeof(AsymmetricKeyControl),
             new FrameworkPropertyMetadata(true));
+
+        private void KeyFormat_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_isChangingKeyFormat || sender is not ComboBox comboBox
+                || e.RemovedItems.Count != 1 || e.AddedItems.Count != 1
+                || comboBox.DataContext is not KeyManager.Library.KeyMaterial material
+                || e.RemovedItems[0] is not KeyValueStringFormat previousFormat
+                || e.AddedItems[0] is not KeyValueStringFormat newFormat)
+            {
+                return;
+            }
+
+            try
+            {
+                material.Value = KeyManager.Library.KeyMaterial.ConvertValueFormat(material.Value, newFormat, previousFormat) ?? string.Empty;
+            }
+            catch (FormatException)
+            {
+                _isChangingKeyFormat = true;
+                material.ValueFormat = previousFormat;
+                comboBox.SelectedItem = previousFormat;
+                _isChangingKeyFormat = false;
+            }
+        }
     }
 }

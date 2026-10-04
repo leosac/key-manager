@@ -23,9 +23,9 @@
     </UserControl.Resources>
     <DockPanel LastChildFill="True">
         <local:KeyActionButtonsControl DockPanel.Dock="Top" Key="{Binding Path=Key, ElementName=keyControl}"
-                                       ShowKeyLink="{Binding Path=ShowKeyLink, ElementName=keyControl}"
-                                       ShowKeyGen="False"
-                                       KClass="Asymmetric" HorizontalAlignment="Right" />
+                               ShowKeyLink="{Binding Path=ShowKeyLink, ElementName=keyControl}"
+                               ShowKeyGen="False" ShowMenu="False"
+                               KClass="Asymmetric" HorizontalAlignment="Right" />
         <ListBox ItemsSource="{Binding Path=Key.Materials, ElementName=keyControl}" HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -34,7 +34,20 @@
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" HorizontalAlignment="Right" Text="{Binding Name}" />
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="180" />
+                                <ColumnDefinition Width="50" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" HorizontalAlignment="Right" Text="{Binding Name}" />
+                            <ComboBox Grid.Column="1" Margin="8,0,0,0"
+                                      ItemsSource="{Binding Path=KeyFormats, ElementName=keyControl}"
+                                      SelectedItem="{Binding Path=ValueFormat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      materialDesign:HintAssist.Hint="Key Format"
+                                      SelectionChanged="KeyFormat_SelectionChanged" />
+                            <local:KeyMaterialActionButtonsControl Grid.Column="2" KeyMaterial="{Binding}" HorizontalAlignment="Right" />
+                        </Grid>
                         <TextBox Grid.Row="1" Margin="8,8,8,20" Width="380" Height="100"
                                      materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyValueHelper}"
                                      materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyValue}"
