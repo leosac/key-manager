@@ -1173,14 +1173,68 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                     _unlocked = true;
                 }
 
-                if (!byte.TryParse(containerSelector, out byte keyVersion))
+                if (keClass == KeyEntryClass.Symmetric)
                 {
-                    log.Warn("Cannot parse the container selector as a key version, falling back to version 0.");
+                    if (!byte.TryParse(containerSelector, out byte keyVersion))
+                    {
+                        log.Warn("Cannot parse the container selector as a key version, falling back to version 0.");
+                    }
+
+                    var keyVector = av2cmd.dumpSecretKey(entry, keyVersion, [.. div]);
+                    log.Info("Key link completed.");
+                    return Convert.ToHexString([.. keyVector]);
                 }
-                
-                var keyVector = av2cmd.dumpSecretKey(entry, keyVersion, [.. div]);
-                log.Info("Key link completed.");
-                return Convert.ToHexString([.. keyVector]);
+                else if (keClass == KeyEntryClass.Asymmetric)
+                {
+                    if (keyIdentifier.IdPrefix == "RSA")
+                    {
+                        var publicKey = av2cmd.PKI_ExportPublicKey(entry);
+                        if (publicKey == null || publicKey.nLen == 0 || publicKey.eLen == 0)
+                        {
+                            throw new KeyStoreException("Cannot retrieve the RSA public key.");
+                        }
+
+                        var rsa = RSA.Create();
+                        rsa.ImportParameters(new RSAParameters
+                        {
+                            Modulus = publicKey.n.ToArray(),
+                            Exponent = publicKey.e.ToArray()
+                        });
+
+                        string? privateKeyPem = null;
+                        if (publicKey.config.privateKeyExportAllowed())
+                        {
+                            var privateKey = av2cmd.PKI_ExportPrivateKey(entry);
+                            if (privateKey != null && privateKey.pLen > 0 && privateKey.qLen > 0)
+                            {
+                                rsa.ImportParameters(new RSAParameters
+                                {
+                                    Modulus = privateKey.n.ToArray(),
+                                    Exponent = privateKey.e.ToArray(),
+                                    P = privateKey.p.ToArray(),
+                                    Q = privateKey.q.ToArray(),
+                                    DP = privateKey.dP.ToArray(),
+                                    DQ = privateKey.dQ.ToArray(),
+                                    InverseQ = privateKey.ipq.ToArray()
+                                });
+                                privateKeyPem = rsa.ExportPkcs8PrivateKeyPem();
+                            }
+                        }
+
+                        var publicKeyPem = rsa.ExportSubjectPublicKeyInfoPem();
+                        return privateKeyPem == null ? publicKeyPem : $"{privateKeyPem}{Environment.NewLine}{publicKeyPem}";
+                    }
+                    else
+                    {
+                        log.Error(string.Format("Unsupported asymmetric key entry variant `{0}`.", keyIdentifier.IdPrefix));
+                        throw new KeyStoreException(string.Format("Unsupported asymmetric key entry variant `{0}`.", keyIdentifier.IdPrefix));
+                    }
+                }
+                else
+                {
+                    log.Error("Unsupported Key Entry Class for this operation.");
+                    throw new KeyStoreException("Unsupported Key Entry Class for this operation.");
+                }
             }
             else
             {
