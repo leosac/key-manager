@@ -91,7 +91,7 @@ namespace Leosac.KeyManager.Library.UI
             var ofd = new OpenFileDialog
             {
                 CheckFileExists = true,
-                Filter = "Binary Files (*.bin)|*.bin|Text Files (*.txt)|*.txt"
+                Filter = "Binary Files (*.bin)|*.bin|Text Files (*.txt)|*.txt|PEM Files (*.pem)|*.pem"
             };
             if (ofd.ShowDialog() == true)
             {
@@ -111,7 +111,7 @@ namespace Leosac.KeyManager.Library.UI
         {
             var sfd = new SaveFileDialog
             {
-                Filter = "Binary Files (*.bin)|*.bin|Text Files (*.txt)|*.txt"
+                Filter = "Binary Files (*.bin)|*.bin|Text Files (*.txt)|*.txt|PEM Files (*.pem)|*.pem"
             };
             if (sfd.ShowDialog() == true)
             {

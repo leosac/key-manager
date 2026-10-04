@@ -397,7 +397,12 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                                         Exponent = pubkey.e.ToArray()
                                     });
                                     var pem = rsa.ExportSubjectPublicKeyInfoPem();
-                                    samKeyEntry.Variant!.KeyContainers[0].Key.Materials.FirstOrDefault(k => k.Name == KeyMaterial.PUBLIC_KEY)?.SetValueAsString(pem, KeyValueStringFormat.Pem);
+                                    var pubKeyMaterial = samKeyEntry.Variant!.KeyContainers[0].Key.Materials.FirstOrDefault(k => k.Name == KeyMaterial.PUBLIC_KEY);
+                                    if (pubKeyMaterial != null)
+                                    {
+                                        pubKeyMaterial.ValueFormat = KeyValueStringFormat.Pem;
+                                        pubKeyMaterial.SetValueAsString(pem, KeyValueStringFormat.Pem);
+                                    }
                                 }
                             }
                         }
@@ -734,44 +739,93 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
             }
             else if (change is SAMAsymmetricKeyEntry asamkey)
             {
+                if (asamkey.Variant == null)
+                {
+                    log.Error("Asymmetric key entry variant is not specified.");
+                    throw new KeyStoreException("Asymmetric key entry variant is not specified.");
+                }
+
                 var cmd = Chip?.getCommands();
                 if (cmd is LibLogicalAccess.Reader.SAMAV2ISO7816Commands av2cmd)
                 {
-                    byte kuc = 0xff, cekno = 0x00, cekv = 0x00;
-                    PKISet pkiSet = new PKISet();
-                    if (asamkey.SAMProperties != null)
+                    if (asamkey.Variant.Name == "RSA")
                     {
-                        kuc = asamkey.SAMProperties.KeyUsageCounter ?? 0xff;
-                        cekno = asamkey.SAMProperties.ChangeKeyRefId;
-                        cekv = asamkey.SAMProperties.ChangeKeyRefVersion;
-
-                        pkiSet.setAllowPrivateExport(asamkey.SAMProperties.AllowPrivateKeyExport);
-                        pkiSet.setEncipherKeyEntries(asamkey.SAMProperties.AllowEncipherKeyEntries);
-                        pkiSet.setDisabled(asamkey.SAMProperties.DisableKeyEntry);
-                        pkiSet.setEncryptionDisabled(asamkey.SAMProperties.DisableEncryptData);
-                        pkiSet.setSignatureDisabled(asamkey.SAMProperties.DisableSignData);
-                        pkiSet.setForceHostChange(asamkey.SAMProperties.ForceHostInternalChange);
-                        pkiSet.setForceHostUsage(asamkey.SAMProperties.ForceHostInternalUsage);
-                    }
-
-                    bool updateSettingsOnly = true;
-                    if (asamkey.Variant != null)
-                    {
-                        var containers = asamkey.Variant.KeyContainers;
-                        var keys = new LibLogicalAccess.UCharCollectionCollection(containers.Count)
+                        byte kuc = 0xff, cekno = 0x00, cekv = 0x00;
+                        PKISet pkiSet = new PKISet();
+                        if (asamkey.SAMProperties != null)
                         {
-                            new LibLogicalAccess.ByteVector(containers[0].Key.GetAggregatedValueAsBinary(true))
-                        };
-                        if (containers[0].IsConfigured())
-                        {
-                            log.Info("Updating value for key");
-                            updateSettingsOnly = false;
+                            kuc = asamkey.SAMProperties.KeyUsageCounter ?? 0xff;
+                            cekno = asamkey.SAMProperties.ChangeKeyRefId;
+                            cekv = asamkey.SAMProperties.ChangeKeyRefVersion;
+
+                            pkiSet.setAllowPrivateExport(asamkey.SAMProperties.AllowPrivateKeyExport);
+                            pkiSet.setEncipherKeyEntries(asamkey.SAMProperties.AllowEncipherKeyEntries);
+                            pkiSet.setDisabled(asamkey.SAMProperties.DisableKeyEntry);
+                            pkiSet.setEncryptionDisabled(asamkey.SAMProperties.DisableEncryptData);
+                            pkiSet.setSignatureDisabled(asamkey.SAMProperties.DisableSignData);
+                            pkiSet.setForceHostChange(asamkey.SAMProperties.ForceHostInternalChange);
+                            pkiSet.setForceHostUsage(asamkey.SAMProperties.ForceHostInternalUsage);
                         }
-                    }
 
-                    // We don't take care of AuthenticationMode here as key entry update always requires Host Authentication
-                    av2cmd.authenticateHost(key, GetSAMProperties().AuthenticateKeyEntryIdentifier);
-                    //av2cmd.PKI_ImportKey((byte)Convert.ToDecimal(asamkey.Identifier.Id), pkiSet, cekno, cekv, kuc);
+                        bool updateSettingsOnly = true;
+                        var n = new ByteVector();
+                        var e = new ByteVector();
+                        var p = new ByteVector();
+                        var q = new ByteVector();
+                        var dP = new ByteVector();
+                        var dQ = new ByteVector();
+                        var ipq = new ByteVector();
+                        var containers = asamkey.Variant.KeyContainers;
+                        if (containers.Count > 0)
+                        {
+                            if (containers[0].IsConfigured())
+                            {
+                                log.Info("Updating value for key");
+                                updateSettingsOnly = false;
+
+                                var hasPrivateKey = containers[0].Key.Materials.Any(k => k.Name == KeyMaterial.PRIVATE_KEY && !string.IsNullOrEmpty(k.Value));
+                                if (hasPrivateKey)
+                                {
+                                    pkiSet.setPrivateKey(hasPrivateKey);
+                                    pkiSet.setCRT(true);
+                                }
+                                var pem = containers[0].Key.GetAggregatedValueAsString(KeyValueStringFormat.Pem);
+                                var rsa = System.Security.Cryptography.RSA.Create();
+                                rsa.ImportFromPem(pem);
+                                var rsaParams = rsa.ExportParameters(hasPrivateKey);
+                                if (rsaParams.Modulus != null)
+                                    n = [.. rsaParams.Modulus];
+                                if (rsaParams.Exponent != null)
+                                {
+                                    e = [.. rsaParams.Exponent];
+                                    if (e.Count == 3 && e[0] == 0x01 && e[1] == 0x00 && e[2] == 0x01)
+                                    {
+                                        // we add the leading 0x00 byte to avoid the exponent being interpreted as a negative number
+                                        e.Insert(0, 0x00);
+                                    }
+                                }
+                                if (rsaParams.P != null)
+                                    p = [.. rsaParams.P];
+                                if (rsaParams.Q != null)
+                                    q = [.. rsaParams.Q];
+                                if (rsaParams.DP != null)
+                                    dP = [.. rsaParams.DP];
+                                if (rsaParams.DQ != null)
+                                    dQ = [.. rsaParams.DQ];
+                                if (rsaParams.InverseQ != null)
+                                    ipq = [.. rsaParams.InverseQ];
+                            }
+                        }
+
+                        // We don't take care of AuthenticationMode here as key entry update always requires Host Authentication
+                        av2cmd.authenticateHost(key, GetSAMProperties().AuthenticateKeyEntryIdentifier);
+                        av2cmd.PKI_ImportKey((byte)asamkey.Identifier.NumericId.GetValueOrDefault(0), pkiSet, cekno, cekv, kuc, n, e, p, q, dP, dQ, ipq);
+                    }
+                    else
+                    {
+                        log.Error(string.Format("Unsupported asymmetric key entry variant `{0}`.", asamkey.Variant.Name));
+                        throw new KeyStoreException(string.Format("Unsupported asymmetric key entry variant `{0}`.", asamkey.Variant.Name));
+                    }
                 }
                 else
                 {

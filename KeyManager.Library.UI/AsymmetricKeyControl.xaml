@@ -40,6 +40,7 @@
                                      materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyValue}"
                                      materialDesign:TextFieldAssist.HasClearButton="True"
                                      TextWrapping="Wrap"
+                                     AcceptsReturn="True"
                                      Text="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
                     </Grid>
                 </DataTemplate>

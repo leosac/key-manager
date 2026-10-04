@@ -108,6 +108,11 @@ namespace Leosac.KeyManager.Library
                 return null;
             }
 
+            if (currentFormat == outputFormat)
+            {
+                return value;
+            }
+
             var binaryValue = currentFormat switch
             {
                 KeyValueStringFormat.HexString or KeyValueStringFormat.HexStringWithSpace => Convert.FromHexString(value.Replace(" ", string.Empty)),
@@ -133,7 +138,7 @@ namespace Leosac.KeyManager.Library
 
         public void SetValueAsString(string? value, KeyValueStringFormat format)
         {
-            Value = ConvertValueFormat(value, KeyValueStringFormat.HexString, format) ?? string.Empty;
+            Value = ConvertValueFormat(value, ValueFormat, format) ?? string.Empty;
         }
 
         public byte[]? GetValueAsBinary()
