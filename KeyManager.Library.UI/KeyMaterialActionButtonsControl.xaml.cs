@@ -53,8 +53,7 @@ namespace Leosac.KeyManager.Library.UI
 
             KeyFileDialogHelper.Export(
                 () => KeyMaterial.GetValueAsBinary() ?? [],
-                format => KeyMaterial.GetValueAsString(format ?? KeyMaterial.ValueFormat) ?? string.Empty,
-                password => KeyFileDialogHelper.CreatePkcs12(KeyMaterial.GetValueAsString(KeyValueStringFormat.Pem) ?? string.Empty, password));
+                format => KeyMaterial.GetValueAsString(format ?? KeyMaterial.ValueFormat) ?? string.Empty);
         }
     }
 }

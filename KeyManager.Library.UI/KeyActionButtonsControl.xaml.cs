@@ -108,8 +108,7 @@ namespace Leosac.KeyManager.Library.UI
         {
             KeyFileDialogHelper.Export(
                 () => Convert.FromHexString(Key.GetAggregatedValueAsString() ?? ""),
-                format => Key.GetAggregatedValueAsString(format ?? KeyValueStringFormat.HexString) ?? string.Empty,
-                password => KeyFileDialogHelper.CreatePkcs12(Key.GetAggregatedValueAsString(KeyValueStringFormat.Pem) ?? string.Empty, password));
+                format => Key.GetAggregatedValueAsString(format ?? KeyValueStringFormat.HexString) ?? string.Empty);
         }
 
         private void BtnPrint_Click(object sender, RoutedEventArgs e)
