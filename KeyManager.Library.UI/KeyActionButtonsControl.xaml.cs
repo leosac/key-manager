@@ -98,14 +98,18 @@ namespace Leosac.KeyManager.Library.UI
         {
             KeyFileDialogHelper.Import(
                 key => Key.SetAggregatedValueAsString(Convert.ToHexString(key)),
-                (value, format) => Key.SetAggregatedValueAsString(value, format ?? KeyValueStringFormat.HexString));
+                (value, format) => Key.SetAggregatedValueAsString(value, format ?? KeyValueStringFormat.HexString),
+                (privateKey, publicKey) => Key.SetAggregatedValueAsString(
+                    string.Join(Environment.NewLine, new[] { privateKey, publicKey }.Where(value => !string.IsNullOrEmpty(value))),
+                    KeyValueStringFormat.Pem));
         }
 
         private void BtnExport_Click(object sender, RoutedEventArgs e)
         {
             KeyFileDialogHelper.Export(
                 () => Convert.FromHexString(Key.GetAggregatedValueAsString() ?? ""),
-                format => Key.GetAggregatedValueAsString(format ?? KeyValueStringFormat.HexString) ?? string.Empty);
+                format => Key.GetAggregatedValueAsString(format ?? KeyValueStringFormat.HexString) ?? string.Empty,
+                password => KeyFileDialogHelper.CreatePkcs12(Key.GetAggregatedValueAsString(KeyValueStringFormat.Pem) ?? string.Empty, password));
         }
 
         private void BtnPrint_Click(object sender, RoutedEventArgs e)

@@ -38,7 +38,10 @@ namespace Leosac.KeyManager.Library.UI
 
             KeyFileDialogHelper.Import(
                 value => KeyMaterial.SetValueAsBinary(value),
-                (value, format) => KeyMaterial.SetValueAsString(value, format ?? KeyMaterial.ValueFormat));
+                (value, format) => KeyMaterial.SetValueAsString(value, format ?? KeyMaterial.ValueFormat),
+                (privateKey, publicKey) => KeyMaterial.SetValueAsString(
+                    KeyMaterial.Name == KeyManager.Library.KeyMaterial.PRIVATE_KEY ? privateKey ?? publicKey : publicKey ?? privateKey,
+                    KeyValueStringFormat.Pem));
         }
 
         private void BtnExport_Click(object sender, RoutedEventArgs e)
@@ -50,7 +53,8 @@ namespace Leosac.KeyManager.Library.UI
 
             KeyFileDialogHelper.Export(
                 () => KeyMaterial.GetValueAsBinary() ?? [],
-                format => KeyMaterial.GetValueAsString(format ?? KeyMaterial.ValueFormat) ?? string.Empty);
+                format => KeyMaterial.GetValueAsString(format ?? KeyMaterial.ValueFormat) ?? string.Empty,
+                password => KeyFileDialogHelper.CreatePkcs12(KeyMaterial.GetValueAsString(KeyValueStringFormat.Pem) ?? string.Empty, password));
         }
     }
 }
