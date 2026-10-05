@@ -81,6 +81,21 @@
         }
 
         [TestMethod]
+        public void TwoMaterials_SetAggregatedValue_PemAssignsBlocksByKeyType()
+        {
+            var key = new Key(null, 0,
+                new KeyMaterial("", KeyMaterial.PRIVATE_KEY),
+                new KeyMaterial("", KeyMaterial.PUBLIC_KEY));
+            var publicKey = "-----BEGIN PUBLIC KEY-----\r\nBAUG\r\n-----END PUBLIC KEY-----";
+            var privateKey = "-----BEGIN PRIVATE KEY-----\nAAEC\nAw==\n-----END PRIVATE KEY-----";
+
+            key.SetAggregatedValueAsString($"{publicKey}\r\n{privateKey}", KeyValueStringFormat.Pem);
+
+            Assert.AreEqual("00010203", key.Materials[0].Value, true);
+            Assert.AreEqual("040506", key.Materials[1].Value, true);
+        }
+
+        [TestMethod]
         public void TwoMaterials_GetAggregatedValue_HexString()
         {
             var key = new Key(null, 64, new KeyMaterial("0011223344556677"), new KeyMaterial("8899AABBCCDDEEFF"));

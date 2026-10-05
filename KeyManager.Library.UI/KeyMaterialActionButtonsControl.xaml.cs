@@ -1,4 +1,4 @@
-using Microsoft.Win32;
+using Leosac.KeyManager.Library.UI.Helpers;
 using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,22 +36,9 @@ namespace Leosac.KeyManager.Library.UI
                 return;
             }
 
-            var ofd = new OpenFileDialog
-            {
-                CheckFileExists = true,
-                Filter = "Binary Files (*.bin)|*.bin|Text Files (*.txt)|*.txt|PEM Files (*.pem)|*.pem"
-            };
-            if (ofd.ShowDialog() == true)
-            {
-                if (ofd.FilterIndex == 1)
-                {
-                    KeyMaterial?.SetValueAsBinary(System.IO.File.ReadAllBytes(ofd.FileName));
-                }
-                else
-                {
-                    KeyMaterial?.SetValueAsString(System.IO.File.ReadAllText(ofd.FileName), ofd.FilterIndex == 3 ? KeyValueStringFormat.Pem : KeyMaterial.ValueFormat);
-                }
-            }
+            KeyFileDialogHelper.Import(
+                value => KeyMaterial.SetValueAsBinary(value),
+                (value, format) => KeyMaterial.SetValueAsString(value, format ?? KeyMaterial.ValueFormat));
         }
 
         private void BtnExport_Click(object sender, RoutedEventArgs e)
@@ -61,21 +48,9 @@ namespace Leosac.KeyManager.Library.UI
                 return;
             }
 
-            var sfd = new SaveFileDialog
-            {
-                Filter = "Binary Files (*.bin)|*.bin|Text Files (*.txt)|*.txt|PEM Files (*.pem)|*.pem"
-            };
-            if (sfd.ShowDialog() == true)
-            {
-                if (sfd.FilterIndex == 1)
-                {
-                    System.IO.File.WriteAllBytes(sfd.FileName, KeyMaterial?.GetValueAsBinary() ?? []);
-                }
-                else
-                {
-                    System.IO.File.WriteAllText(sfd.FileName, KeyMaterial?.GetValueAsString(sfd.FilterIndex == 3 ? KeyValueStringFormat.Pem : KeyMaterial.ValueFormat) ?? string.Empty);
-                }
-            }
+            KeyFileDialogHelper.Export(
+                () => KeyMaterial.GetValueAsBinary() ?? [],
+                format => KeyMaterial.GetValueAsString(format ?? KeyMaterial.ValueFormat) ?? string.Empty);
         }
     }
 }

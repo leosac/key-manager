@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Leosac.KeyManager.Library
 {
@@ -229,7 +230,14 @@ namespace Leosac.KeyManager.Library
         {
             if (KeySize == 0)
             {
-                SetAggregatedValueAsString(value, format, Environment.NewLine);
+                if (format == KeyValueStringFormat.Pem)
+                {
+                    SetAggregatedPemValue(value);
+                }
+                else
+                {
+                    SetAggregatedValueAsString(value, format, Environment.NewLine);
+                }
             }
             else
             {
@@ -245,6 +253,47 @@ namespace Leosac.KeyManager.Library
                         Materials[i++].SetValueAsString(sub, KeyValueStringFormat.HexString);
                         pos += length;
                     } while (i < Materials.Count && invariant.Length > pos);
+                }
+            }
+        }
+
+        private void SetAggregatedPemValue(string? value)
+        {
+            var pemBlocks = Regex.Matches(value ?? string.Empty,
+                @"-----BEGIN (?<label>[A-Z0-9][A-Z0-9 -]*)-----[\r\n]+.*?-----END \k<label>-----",
+                RegexOptions.Singleline | RegexOptions.CultureInvariant)
+                .Cast<Match>()
+                .ToList();
+
+            if (pemBlocks.Count == 0)
+            {
+                SetAggregatedValueAsString(value, KeyValueStringFormat.Pem, null);
+                return;
+            }
+
+            var availableMaterials = Enumerable.Range(0, Materials.Count).ToList();
+            foreach (var pemBlock in pemBlocks)
+            {
+                var label = pemBlock.Groups["label"].Value;
+                var materialIndex = -1;
+                if (label.Contains("PRIVATE KEY", StringComparison.OrdinalIgnoreCase))
+                {
+                    materialIndex = availableMaterials.FirstOrDefault(i => Materials[i].Name == KeyMaterial.PRIVATE_KEY, -1);
+                }
+                else if (label.Contains("PUBLIC KEY", StringComparison.OrdinalIgnoreCase))
+                {
+                    materialIndex = availableMaterials.FirstOrDefault(i => Materials[i].Name == KeyMaterial.PUBLIC_KEY, -1);
+                }
+
+                if (materialIndex < 0 && availableMaterials.Count > 0)
+                {
+                    materialIndex = availableMaterials[0];
+                }
+
+                if (materialIndex >= 0)
+                {
+                    Materials[materialIndex].SetValueAsString(pemBlock.Value, KeyValueStringFormat.Pem);
+                    availableMaterials.Remove(materialIndex);
                 }
             }
         }
