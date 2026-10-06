@@ -283,9 +283,10 @@ namespace Leosac.KeyManager.Library.KeyStore
 
             foreach (var change in changes)
             {
+                bool generateKey = (Options?.GenerateKeys).GetValueOrDefault(false) && ShouldGenerate(change.KClass);
                 if (await CheckKeyEntryExists(change.Identifier, change.KClass))
                 {
-                    if (!(Options?.GenerateKeys).GetValueOrDefault(false))
+                    if (!generateKey)
                     {
                         await Update(change);
                     }
@@ -298,7 +299,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                 }
                 else
                 {
-                    if ((Options?.GenerateKeys).GetValueOrDefault(false))
+                    if (generateKey)
                     {
                         if (change is KeyEntry ke)
                         {
@@ -317,6 +318,12 @@ namespace Leosac.KeyManager.Library.KeyStore
             }
 
             log.Info("Key Entries storing completed.");
+        }
+
+        private bool ShouldGenerate(KeyEntryClass keyEntryClass)
+        {
+            return Options?.GenerateForKeyEntryClasses is not { Count: > 0 } selectedClasses
+                || selectedClasses.Contains(keyEntryClass);
         }
 
         public virtual async Task Publish(KeyStore store, Func<string, KeyStore?>? getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, Action<KeyStore, KeyEntryClass, int>? initCallback)

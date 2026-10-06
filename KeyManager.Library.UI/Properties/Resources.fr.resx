@@ -711,4 +711,7 @@
   <data name="KeySizeInBytesHelper" xml:space="preserve">
     <value>Taille de la clé (bytes)</value>
   </data>
+  <data name="KeyEntryClasses" xml:space="preserve">
+    <value>Types de clés</value>
+  </data>
 </root>
