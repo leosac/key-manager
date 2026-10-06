@@ -111,7 +111,7 @@
                                             <ColorAnimation
                             Storyboard.TargetName="ItemBorderBrush"
                             Storyboard.TargetProperty="Color"
-                            To="LightGray"
+                            To="DimGray"
                             Duration="0:0:0.1"/>
                                         </Storyboard>
                                     </BeginStoryboard>
@@ -124,7 +124,7 @@
                             Storyboard.TargetName="ItemBorderBrush"
                             Storyboard.TargetProperty="Color"
                             To="Transparent"
-                            Duration="0:0:3"/>
+                            Duration="0:0:4"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </DataTrigger.ExitActions>
