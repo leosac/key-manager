@@ -46,14 +46,20 @@
                                 <CheckBox Grid.Column="0" VerticalAlignment="Center" IsChecked="{Binding Selected}" Visibility="{Binding DataContext.ShowSelection, ElementName=keyStoreControl, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                 <DockPanel Grid.Column="1" LastChildFill="True">
                                     <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal" IsEnabled="{x:Static local:UIPreferences.IsUserElevated}">
-                                        <materialDesign:Badged Margin="1" BadgeBackground="Transparent">
-                                            <materialDesign:Badged.Badge>
-                                                <materialDesign:PackIcon Kind="CheckDecagram" Height="16" Width="16" Visibility="{Binding Reviewed, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                            </materialDesign:Badged.Badge>
-                                            <Button x:Name="btnEditKeyEntry" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.EditKeyEntryCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.EditKeyEntry}">
-                                                <materialDesign:PackIcon Kind="Edit" Height="24" Width="24" Cursor="Hand" />
-                                            </Button>
-                                        </materialDesign:Badged>
+                                        <Button x:Name="btnEditKeyEntry" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.EditKeyEntryCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.EditKeyEntry}">
+                                            <materialDesign:PackIcon Height="24" Width="24" Cursor="Hand">
+                                                <materialDesign:PackIcon.Style>
+                                                    <Style TargetType="materialDesign:PackIcon">
+                                                        <Setter Property="Kind" Value="Edit" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Reviewed}" Value="True">
+                                                                <Setter Property="Kind" Value="EditOutline" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </materialDesign:PackIcon.Style>
+                                            </materialDesign:PackIcon>
+                                        </Button>
                                         <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding DataContext.ImportCryptogramCommand, ElementName=keyStoreControl}" CommandParameter="{Binding}" ToolTip="{x:Static properties:Resources.ImportKeyEntryCryptogram}" Visibility="{Binding DataContext.KeyStore.CanUpdateKeyEntries, ElementName=keyStoreControl, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="3">
                                             <materialDesign:PackIcon Kind="KeyArrowRight" Height="24" Width="24" Cursor="Hand" />
                                         </Button>
