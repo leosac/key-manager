@@ -19,6 +19,13 @@ namespace Leosac.KeyManager.Library.UI.Domain
             set => SetProperty(ref _highlighted, value);
         }
 
+        private bool _reviewed;
+        public bool Reviewed
+        {
+            get => _reviewed;
+            set => SetProperty(ref _reviewed, value);
+        }
+
         private KeyEntryId? _keyEntryId;
         public KeyEntryId? KeyEntryId
         {

@@ -214,6 +214,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     Identifiers.Add(new SelectableKeyEntryId
                     {
                         Selected = false,
+                        Reviewed = true,
                         KeyEntryId = model.KeyEntry.Identifier
                     });
                     return;
@@ -283,6 +284,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                     identifier.KeyEntryId = model.KeyEntry?.Identifier;
                 }
                 identifier.Highlighted = false;
+                identifier.Reviewed = true;
             }
             catch (Exception ex)
             {
