@@ -277,7 +277,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
         {
             return new JObject
             {
-                ["KeySize"] = 16u,
+                ["KeySize"] = 128u,
                 ["Tags"] = new JArray(),
                 ["Materials"] = new JArray(),
                 ["Link"] = new JObject
@@ -405,7 +405,7 @@ namespace Leosac.KeyManager.Library.KeyStore.KeePass
                 {
                     var key = container.Key;
                     key.Tags = keyObj["Tags"]?.ToObject<ObservableCollection<string>>() ?? new ObservableCollection<string>();
-                    var storedKeySize = keyObj["KeySize"]?.Value<uint>() ?? 16;
+                    var storedKeySize = keyObj["KeySize"]?.Value<uint>() ?? 128;
                     key.KeySize = key.Tags.Contains("AES") || key.Tags.Contains("DES")
                         ? (storedKeySize <= 32 ? checked(storedKeySize * 8) : storedKeySize)
                         : storedKeySize;

@@ -25,7 +25,7 @@ namespace Leosac.KeyManager.Library.Tests
         [DataRow(32)]
         public void Test_FromPassword(int keySize)
         {
-            var key = Convert.ToHexString(KeyGeneration.FromPassword("test", "Security Freedom", keySize));
+            var key = Convert.ToHexString(KeyGeneration.FromPassword("test", "Security Freedom", (uint)keySize));
             var rkey = "E088566240571EAD486818BE1199F53EB407411014BA1E36101C242FC34DEBAF"[..(keySize * 2)];
             Assert.AreEqual(rkey, key, true);
         }
@@ -92,7 +92,7 @@ namespace Leosac.KeyManager.Library.Tests
 
         private sealed class PluginGenerator : IKeyGenerator
         {
-            public IEnumerable<KeyMaterial> Generate(Key key)
+            public IEnumerable<KeyMaterial> Generate(Key key, uint explicitKeySize = 0)
             {
                 return [new KeyMaterial("AABB")];
             }

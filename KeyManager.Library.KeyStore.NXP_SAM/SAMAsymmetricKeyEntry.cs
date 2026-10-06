@@ -6,7 +6,7 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
     {
         public SAMAsymmetricKeyEntry()
         {
-            Identifier.Id = "0";
+            Identifier.Id = "RSA - 0";
             Properties = new SAMAsymmetricKeyEntryProperties();
         }
 

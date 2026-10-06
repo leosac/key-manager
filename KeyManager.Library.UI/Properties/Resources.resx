@@ -714,4 +714,7 @@
   <data name="KeyEntryClasses" xml:space="preserve">
     <value>Key entry classes</value>
   </data>
+  <data name="GenerateOnlyIfMissing" xml:space="preserve">
+    <value>Generate Only if Missing</value>
+  </data>
 </root>

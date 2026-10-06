@@ -8,10 +8,11 @@
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
+             xmlns:converters="clr-namespace:Leosac.KeyManager.Library.UI.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <UserControl.Resources>
-        <domain:KeyLeakUriConverter x:Key="KeyLeakUriConverter" />
+        <converters:KeyLeakUriConverter x:Key="KeyLeakUriConverter" />
     </UserControl.Resources>
     <Grid>
         <DockPanel>

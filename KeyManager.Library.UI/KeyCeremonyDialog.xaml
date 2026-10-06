@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
+             xmlns:converters="clr-namespace:Leosac.KeyManager.Library.UI.Converters"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
@@ -20,7 +21,7 @@
     <Window.Resources>
         <s:Boolean x:Key="True">True</s:Boolean>
         <s:Boolean x:Key="False">False</s:Boolean>
-        <domain:OffByOneToBoolConverter x:Key="OffByOneToBoolConverter" />
+        <converters:OffByOneToBoolConverter x:Key="OffByOneToBoolConverter" />
     </Window.Resources>
     <DockPanel LastChildFill="True">
         <ProgressBar DockPanel.Dock="Top" Height="10" Value="{Binding SelectedIndex, ElementName=transition}" Maximum="{Binding Items.Count, ElementName=transition}" />

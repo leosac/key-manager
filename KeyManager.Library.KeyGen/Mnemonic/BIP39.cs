@@ -134,7 +134,7 @@ namespace Leosac.KeyManager.Library.KeyGen.Mnemonic
             return MnemonicToSeed(mnemonic, password, 64);
         }
 
-        private byte[] MnemonicToSeed(string mnemonic, string password, int keySize)
+        private byte[] MnemonicToSeed(string mnemonic, string password, uint keySize)
         {
             if (mnemonic == null)
             {
@@ -144,8 +144,7 @@ namespace Leosac.KeyManager.Library.KeyGen.Mnemonic
             var mnemonicBytes = Encoding.UTF8.GetBytes(mnemonic.Normalize(NormalizationForm.FormKD));
             var saltBytes = Encoding.UTF8.GetBytes(Salt(password.Normalize(NormalizationForm.FormKD)));
 
-            var deriv = new Rfc2898DeriveBytes(mnemonicBytes, saltBytes, 2048, HashAlgorithmName.SHA512);
-            return deriv.GetBytes(keySize);
+            return Rfc2898DeriveBytes.Pbkdf2(mnemonicBytes, saltBytes, 10000, HashAlgorithmName.SHA512, (int)keySize);
         }
 
         public string MnemonicToSeedHex(string mnemonic, string password)
@@ -153,7 +152,7 @@ namespace Leosac.KeyManager.Library.KeyGen.Mnemonic
             return MnemonicToSeedHex(mnemonic, password, 64);
         }
 
-        public string MnemonicToSeedHex(string mnemonic, string password, int keySize)
+        public string MnemonicToSeedHex(string mnemonic, string password, uint keySize)
         {
             var key = MnemonicToSeed(mnemonic, password, keySize);
             return Convert.ToHexString(key);

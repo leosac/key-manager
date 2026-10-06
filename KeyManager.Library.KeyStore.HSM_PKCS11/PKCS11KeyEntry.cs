@@ -64,15 +64,15 @@ namespace Leosac.KeyManager.Library.KeyStore.HSM_PKCS11
             uint size = 0;
             if (ckk == CKK.CKK_DES)
             {
-                size = 8;
+                size = 64;
             }
             else if (ckk == CKK.CKK_DES2 || ckk == CKK.CKK_AES)
             {
-                size = 16;
+                size = 128;
             }
             else if (ckk == CKK.CKK_DES3)
             {
-                size = 24;
+                size = 192;
             }
             return size;
         }

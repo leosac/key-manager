@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace Leosac.KeyManager.Library.UI.Domain
+namespace Leosac.KeyManager.Library.UI.Converters
 {
     public class NullToBooleanConverter : IValueConverter
     {

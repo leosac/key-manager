@@ -668,8 +668,7 @@ namespace Leosac.KeyManager.Library.UI.Domain
                             store: target,
                             getFavoriteKeyStore: null,
                             askForKeyStoreSecretIfRequired: null,
-                            keClass: keyEntry.KClass,
-                            ids: new List<KeyEntryId> { keyId.Identifier },
+                            keyEntries: new[] { (keyEntry.KClass, (IEnumerable<KeyEntryId>?)new List<KeyEntryId> { keyId.Identifier }) },
                             initCallback: null
                         );
                         published = true;

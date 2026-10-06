@@ -4,6 +4,7 @@ using Leosac.WpfApp;
 using log4net;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
+using System.Linq;
 
 namespace Leosac.KeyManager.Library.KeyStore.File.UI.Domain
 {
@@ -85,7 +86,8 @@ namespace Leosac.KeyManager.Library.KeyStore.File.UI.Domain
                     ResolveKeyLinks = false,
                     ResolveVariables = false
                 };
-                await KeyStore.Publish(NewKeyStore, null, null, null);
+                await KeyStore.Publish(NewKeyStore, null, null,
+                    NewKeyStore.SupportedClasses.Select(keClass => (keClass, (IEnumerable<KeyEntryId>?)null)), null);
                 KeyStore.Properties = NewKeyStore.Properties;
 
                 DialogHost.CloseDialogCommand.Execute(null, null);

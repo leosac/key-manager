@@ -137,14 +137,14 @@ namespace Leosac.KeyManager.Library
             }
         }
 
-        public void Generate()
+        public void Generate(uint keySize = 0)
         {
-            Generate(KeyGeneration.Generate(this));
+            Generate(KeyGeneration.Generate(this, keySize));
         }
 
-        public void Generate(string algorithm)
+        public void Generate(string algorithm, uint keySize = 0)
         {
-            Generate(KeyGeneration.Generate(this, algorithm));
+            Generate(KeyGeneration.Generate(this, algorithm, keySize));
         }
 
         private void Generate(IEnumerable<KeyMaterial> materials)

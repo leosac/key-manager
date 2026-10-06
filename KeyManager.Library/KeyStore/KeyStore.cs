@@ -284,31 +284,29 @@ namespace Leosac.KeyManager.Library.KeyStore
             foreach (var change in changes)
             {
                 bool generateKey = (Options?.GenerateKeys).GetValueOrDefault(false) && ShouldGenerate(change.KClass);
-                if (await CheckKeyEntryExists(change.Identifier, change.KClass))
+                bool keyEntryExists = await CheckKeyEntryExists(change.Identifier, change.KClass);
+                if (keyEntryExists)
                 {
                     if (!generateKey)
                     {
                         await Update(change);
                     }
-                    else
+                    else if ((Options?.GenerateOnlyIfMissing).GetValueOrDefault(true))
                     {
                         string msg = string.Format("Key Entry `{0}` already exists, skipping key generation update.", change.Identifier);
                         log.Info(msg);
                         OnUserMessageNotified(msg);
+                    }
+                    else
+                    {
+                        await GenerateKey(change);
                     }
                 }
                 else
                 {
                     if (generateKey)
                     {
-                        if (change is KeyEntry ke)
-                        {
-                            await Generate(ke);
-                        }
-                        else
-                        {
-                            await Generate(change.Identifier, change.KClass);
-                        }
+                        await GenerateKey(change);
                     }
                     else
                     {
@@ -320,6 +318,13 @@ namespace Leosac.KeyManager.Library.KeyStore
             log.Info("Key Entries storing completed.");
         }
 
+        private Task<KeyEntryId> GenerateKey(IChangeKeyEntry change)
+        {
+            return change is KeyEntry keyEntry
+                ? Generate(keyEntry)
+                : Generate(change.Identifier, change.KClass);
+        }
+
         private bool ShouldGenerate(KeyEntryClass keyEntryClass)
         {
             return Options?.GenerateForKeyEntryClasses is not { Count: > 0 } selectedClasses
@@ -328,11 +333,8 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         public virtual async Task Publish(KeyStore store, Func<string, KeyStore?>? getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
-            var classes = SupportedClasses;
-            foreach (var keClass in classes)
-            {
-                await Publish(store, getFavoriteKeyStore, askForKeyStoreSecretIfRequired, keClass, initCallback);
-            }
+            await Publish(store, getFavoriteKeyStore, askForKeyStoreSecretIfRequired,
+                SupportedClasses.Select(keClass => (keClass, (IEnumerable<KeyEntryId>?)null)), initCallback);
         }
 
         public virtual async Task Publish(KeyStore store, Func<string, KeyStore?>? getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, KeyEntryClass keClass, Action<KeyStore, KeyEntryClass, int>? initCallback)
@@ -523,6 +525,32 @@ namespace Leosac.KeyManager.Library.KeyStore
             }));
         }
 
+        public virtual async Task Publish(KeyStore store, Func<string, KeyStore?>? getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, IEnumerable<(KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids)> keyEntries, Action<KeyStore, KeyEntryClass, int>? initCallback)
+        {
+            await store.Open();
+            try
+            {
+                foreach (var (keClass, ids) in keyEntries)
+                {
+                    await KeyEntriesAction(store, getFavoriteKeyStore, askForKeyStoreSecretIfRequired, keClass, ids, initCallback, new Func<KeyStore, List<IChangeKeyEntry>, Task>(async (s, changes) =>
+                    {
+                        if (!(Options?.DryRun).GetValueOrDefault(false))
+                        {
+                            await s.Store(changes);
+                        }
+                        else
+                        {
+                            log.Info("Dry Run, skipping the storage of key entries.");
+                        }
+                    }), false);
+                }
+            }
+            finally
+            {
+                await store.Close(true);
+            }
+        }
+
         public virtual Task Import(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
             store.Open();
@@ -543,6 +571,32 @@ namespace Leosac.KeyManager.Library.KeyStore
             finally
             {
                 store.Close(true);
+            }
+        }
+
+        public virtual async Task Import(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, IEnumerable<(KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids)> keyEntries, Action<KeyStore, KeyEntryClass, int>? initCallback)
+        {
+            await store.Open();
+            try
+            {
+                foreach (var (keClass, ids) in keyEntries)
+                {
+                    await store.KeyEntriesAction(this, getFavoriteKeyStore, askForKeyStoreSecretIfRequired, keClass, ids, initCallback, new Func<KeyStore, List<IChangeKeyEntry>, Task>(async (s, changes) =>
+                    {
+                        if (!(Options?.DryRun).GetValueOrDefault(false))
+                        {
+                            await s.Store(changes);
+                        }
+                        else
+                        {
+                            log.Info("Dry Run, skipping the storage of key entries.");
+                        }
+                    }), false);
+                }
+            }
+            finally
+            {
+                await store.Close(true);
             }
         }
 
@@ -613,6 +667,86 @@ namespace Leosac.KeyManager.Library.KeyStore
                     throw new KeyStoreException(differror);
                 }
             }));
+        }
+
+        public virtual async Task Diff(KeyStore store, Func<string, KeyStore?> getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, IEnumerable<(KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids)> keyEntries, Action<KeyStore, KeyEntryClass, int>? initCallback)
+        {
+            await store.Open();
+            try
+            {
+                foreach (var (keClass, ids) in keyEntries)
+                {
+                    await KeyEntriesAction(store, getFavoriteKeyStore, askForKeyStoreSecretIfRequired, keClass, ids, initCallback, new Func<KeyStore, List<IChangeKeyEntry>, Task>(async (s, changes) =>
+                    {
+                        uint missings = 0, diffs = 0;
+                        var details = string.Empty;
+
+                        foreach (var item in changes)
+                        {
+                            if (item is not KeyEntry c)
+                                continue;
+                            if (await store.CheckKeyEntryExists(c.Identifier, keClass))
+                            {
+                                var ke = await store.Get(c.Identifier, keClass);
+                                if (ke != null)
+                                {
+                                    if (JsonConvert.SerializeObject(ke.Properties) == JsonConvert.SerializeObject(c.Properties))
+                                    {
+                                        if (c.Variant?.Name == ke.Variant?.Name)
+                                        {
+                                            if (c.Variant != null)
+                                            {
+                                                for (int i = 0; i < c.Variant.KeyContainers.Count; i++)
+                                                {
+                                                    if (c.Variant.KeyContainers[i].Key.GetAggregatedValueAsString() != ke.Variant!.KeyContainers[i].Key.GetAggregatedValueAsString())
+                                                    {
+                                                        diffs++;
+                                                        details += string.Format("Key Container `{0}` (#{1}) of {2} doesn't match.", c.Variant.KeyContainers[i].Name, i, c.Identifier) + Environment.NewLine;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            diffs++;
+                                            details += string.Format("Variant of {0} doesn't match.", c.Identifier) + Environment.NewLine;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        diffs++;
+                                        details += string.Format("Properties of {0} doesn't match.", c.Identifier) + Environment.NewLine;
+                                    }
+                                }
+                                else
+                                {
+                                    diffs++;
+                                    details += string.Format("Cannot load details of {0}.", c.Identifier) + Environment.NewLine;
+                                }
+                            }
+                            else
+                            {
+                                missings++;
+                                details += string.Format("{0} is missing.", c.Identifier) + Environment.NewLine;
+                            }
+                        }
+
+                        if (missings > 0 || diffs > 0)
+                        {
+                            var differror = "Key Entries on both Key Store doesn't match." + Environment.NewLine
+                                               + string.Format("Missing: {0} - Differences: {1}", missings, diffs) + Environment.NewLine
+                                               + details;
+                            log.Info(differror);
+                            throw new KeyStoreException(differror);
+                        }
+                    }), false);
+                }
+            }
+            finally
+            {
+                await store.Close(true);
+            }
         }
 
         public static string? ComputeDivInput(DivInputContext divContext, IList<DivInputFragment> divInput)

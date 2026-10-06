@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
+             xmlns:converters="clr-namespace:Leosac.KeyManager.Library.UI.Converters"
              xmlns:kslib="clr-namespace:Leosac.KeyManager.Library.KeyStore;assembly=KeyManager.Library"
              xmlns:lib="clr-namespace:Leosac.KeyManager.Library;assembly=KeyManager.Library"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
@@ -20,7 +21,7 @@
         <s:Boolean x:Key="True">True</s:Boolean>
         <s:Boolean x:Key="False">False</s:Boolean>
         <materialDesign:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <domain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+        <converters:NullToBooleanConverter x:Key="NullToBooleanConverter" />
     </UserControl.Resources>
     <materialDesign:DialogHost DialogTheme="Inherit"
                              Identifier="KeyEntryDialog">

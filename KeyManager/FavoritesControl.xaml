@@ -53,7 +53,7 @@
                                              Width="400" Margin="3" />
                                 <materialDesign:DialogHost Identifier="KeyGenerationDialog" DialogTheme="Inherit">
                                     <materialDesign:DialogHost.DialogContent>
-                                        <kslib:SymmetricKeyGenerationDialog KeySize="32" KeyValue="{Binding NewMasterKey, Mode=TwoWay}" />
+                                        <kslib:KeyGenerationDialog KeySize="256" KeyValue="{Binding NewMasterKey, Mode=TwoWay}" />
                                     </materialDesign:DialogHost.DialogContent>
                                     <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
                                             Width="24" Height="24" Margin="3"

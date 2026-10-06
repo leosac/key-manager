@@ -101,7 +101,7 @@ namespace Leosac.KeyManager.Library
             return ConvertValueFormat(value, format, KeyValueStringFormat.HexString);
         }
 
-        public static string? ConvertValueFormat(string? value, KeyValueStringFormat outputFormat, KeyValueStringFormat currentFormat)
+        public static string? ConvertValueFormat(string? value, KeyValueStringFormat outputFormat, KeyValueStringFormat currentFormat, string? name = null)
         {
             if (value == null)
             {
@@ -121,31 +121,37 @@ namespace Leosac.KeyManager.Library
                 _ => throw new ArgumentOutOfRangeException(nameof(currentFormat), currentFormat, null)
             };
 
+            var pemLabel = name == PRIVATE_KEY
+                ? "PRIVATE KEY"
+                : name == PUBLIC_KEY
+                    ? "PUBLIC KEY"
+                    : null;
+
             return outputFormat switch
             {
                 KeyValueStringFormat.HexString => Convert.ToHexString(binaryValue),
                 KeyValueStringFormat.HexStringWithSpace => HexStringRegex().Replace(Convert.ToHexString(binaryValue), "$0 ").TrimEnd(),
                 KeyValueStringFormat.Der => Convert.ToBase64String(binaryValue),
-                KeyValueStringFormat.Pem => ConvertBinaryToPem(binaryValue),
+                KeyValueStringFormat.Pem => ConvertBinaryToPem(binaryValue, pemLabel),
                 _ => throw new ArgumentOutOfRangeException(nameof(outputFormat), outputFormat, null)
             };
         }
 
         public string? GetValueAsString(KeyValueStringFormat format)
         {
-            return ConvertValueFormat(Value, format, ValueFormat);
+            return ConvertValueFormat(Value, format, ValueFormat, Name);
         }
 
         public void SetValueAsString(string? value, KeyValueStringFormat format)
         {
-            Value = ConvertValueFormat(value, ValueFormat, format) ?? string.Empty;
+            Value = ConvertValueFormat(value, ValueFormat, format, Name) ?? string.Empty;
         }
 
         public byte[]? GetValueAsBinary()
         {
             if (Value != null)
             {
-                return Convert.FromHexString(ConvertValueFormat(Value, KeyValueStringFormat.HexString, ValueFormat) ?? string.Empty);
+                return Convert.FromHexString(ConvertValueFormat(Value, KeyValueStringFormat.HexString, ValueFormat, Name) ?? string.Empty);
             }
 
             return null;
@@ -158,6 +164,11 @@ namespace Leosac.KeyManager.Library
 
         private static byte[] ConvertPemToBinary(string value)
         {
+            if (string.IsNullOrEmpty(value))
+            {
+                return Array.Empty<byte>();
+            }
+
             var lines = value.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             if (lines.Length < 3 || !lines[0].StartsWith("-----BEGIN ") || !lines[^1].StartsWith("-----END "))
             {
@@ -174,12 +185,16 @@ namespace Leosac.KeyManager.Library
             return Convert.FromBase64String(string.Concat(lines[1..^1]));
         }
 
-        private static string ConvertBinaryToPem(byte[] value)
+        private static string ConvertBinaryToPem(byte[] value, string? pemLabel)
         {
+            if (value.Length == 0)
+                return string.Empty;
+
             var base64 = Convert.ToBase64String(value);
             var lines = Enumerable.Range(0, (base64.Length + 63) / 64)
                 .Select(i => base64.Substring(i * 64, Math.Min(64, base64.Length - i * 64)));
-            return $"-----BEGIN KEY-----\n{string.Join("\n", lines)}\n-----END KEY-----";
+            pemLabel ??= "KEY";
+            return $"-----BEGIN {pemLabel}-----\n{string.Join("\n", lines)}\n-----END {pemLabel}-----";
         }
 
         [GeneratedRegex(".{2}")]

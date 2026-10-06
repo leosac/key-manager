@@ -3,7 +3,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:Leosac.KeyManager.Library.UI.Converters"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:libuidomain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -15,13 +16,13 @@
         <ResourceDictionary>
             <s:Boolean x:Key="True">True</s:Boolean>
             <materialDesign:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <libuidomain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+            <converters:NullToBooleanConverter x:Key="NullToBooleanConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8">
         <materialDesign:DialogHost Identifier="KeyGenerationDialog" DialogTheme="Inherit" DataContext="{Binding Path=Key, ElementName=userControl}">
             <materialDesign:DialogHost.DialogContent>
-                <local:SymmetricKeyGenerationDialog KeySize="{Binding Path=KeySizeInBytes, Mode=OneWay}" KeyValue="{Binding Materials[0].Value, Mode=TwoWay}" />
+                <local:KeyGenerationDialog KeySize="{Binding Path=KeySize, Mode=OneWay}" Key="{Binding}" />
             </materialDesign:DialogHost.DialogContent>
             <Button Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
                     Width="24" Height="24" Margin="3"

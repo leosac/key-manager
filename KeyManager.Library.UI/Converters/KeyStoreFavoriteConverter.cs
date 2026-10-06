@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
 
-namespace Leosac.KeyManager.Library.UI.Domain
+namespace Leosac.KeyManager.Library.UI.Converters
 {
     public class KeyStoreFavoriteConverter : IValueConverter
     {

@@ -1,28 +1,28 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Windows.Data;
 
-namespace Leosac.KeyManager.Library.UI.Domain
+namespace Leosac.KeyManager.Library.UI.Converters
 {
-    public class HexStringLengthConverter : IValueConverter
+    public class BitLengthToCharLengthConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null || value is not int length)
+            if (value is not uint bitLength)
             {
                 return Binding.DoNothing;
             }
 
-            return length / 2;
+            return bitLength / 4;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null || value is not int length)
+            if (value is not int characterLength)
             {
                 return Binding.DoNothing;
             }
 
-            return length * 2;
+            return characterLength * 4u;
         }
     }
 }

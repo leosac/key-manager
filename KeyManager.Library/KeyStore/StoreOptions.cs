@@ -9,6 +9,7 @@ namespace Leosac.KeyManager.Library.KeyStore
         {
             _wrappingKey = new WrappingKey();
             _generateForkeyEntryClasses = new ObservableCollection<KeyEntryClass>();
+            _generateOnlyIfMissing = true;
             _resolveKeyLinks = true;
             _resolveVariables = true;
         }
@@ -25,6 +26,13 @@ namespace Leosac.KeyManager.Library.KeyStore
         {
             get => _generateKeys;
             set => SetProperty(ref _generateKeys, value);
+        }
+
+        private bool _generateOnlyIfMissing;
+        public bool GenerateOnlyIfMissing
+        {
+            get => _generateOnlyIfMissing;
+            set => SetProperty(ref _generateOnlyIfMissing, value);
         }
 
         private ObservableCollection<KeyEntryClass> _generateForkeyEntryClasses;

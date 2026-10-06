@@ -783,13 +783,25 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                                 log.Info("Updating value for key");
                                 updateSettingsOnly = false;
 
-                                var hasPrivateKey = containers[0].Key.Materials.Any(k => k.Name == KeyMaterial.PRIVATE_KEY && !string.IsNullOrEmpty(k.Value));
-                                if (hasPrivateKey)
+                                bool hasPrivateKey = false;
+                                var keyMaterial = containers[0].Key.Materials.FirstOrDefault(k => k.Name == KeyMaterial.PRIVATE_KEY && !string.IsNullOrEmpty(k.Value));
+                                if (keyMaterial != null)
                                 {
+                                    hasPrivateKey = true;
                                     pkiSet.setPrivateKey(hasPrivateKey);
                                     pkiSet.setCRT(true);
                                 }
-                                var pem = containers[0].Key.GetAggregatedValueAsString(KeyValueStringFormat.Pem);
+                                else
+                                {
+                                    keyMaterial = containers[0].Key.Materials.FirstOrDefault(k => !string.IsNullOrEmpty(k.Value));
+                                }
+                                if (keyMaterial == null)
+                                {
+                                    log.Error("No key material found for the asymmetric key entry.");
+                                    throw new KeyStoreException("No key material found for the asymmetric key entry.");
+                                }
+
+                                var pem = keyMaterial.GetValueAsString(KeyValueStringFormat.Pem);
                                 var rsa = System.Security.Cryptography.RSA.Create();
                                 rsa.ImportFromPem(pem);
                                 var rsaParams = rsa.ExportParameters(hasPrivateKey);

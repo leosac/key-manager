@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:domain="clr-namespace:Leosac.KeyManager.Library.KeyStore.SAM_SE.UI.Domain"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.KeyStore.SAM_SE.UI"
+             xmlns:converters="clr-namespace:Leosac.KeyManager.Library.UI.Converters;assembly=KeyManager.Library.UI"
              xmlns:libuidomain="clr-namespace:Leosac.KeyManager.Library.UI.Domain;assembly=KeyManager.Library.UI"
              xmlns:libui="clr-namespace:Leosac.KeyManager.Library.UI;assembly=KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -16,7 +17,7 @@
              d:DesignHeight="800" d:DesignWidth="500">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <libuidomain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+        <converters:NullToBooleanConverter x:Key="NullToBooleanConverter" />
     </UserControl.Resources>
     <StackPanel>
         <materialDesign:Card>

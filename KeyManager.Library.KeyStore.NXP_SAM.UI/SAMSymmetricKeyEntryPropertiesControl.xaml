@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:domain="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI.Domain"
+             xmlns:converters="clr-namespace:Leosac.KeyManager.Library.UI.Converters;assembly=KeyManager.Library.UI"
              xmlns:sam="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM;assembly=KeyManager.Library.KeyStore.NXP_SAM"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.KeyStore.NXP_SAM.UI"
              xmlns:libuidomain="clr-namespace:Leosac.KeyManager.Library.UI.Domain;assembly=KeyManager.Library.UI"
@@ -17,7 +18,7 @@
              d:DesignHeight="500" d:DesignWidth="500">
     <UserControl.Resources>
         <wpfappdomain:ByteArrayToStringConverter x:Key="ByteArrayToStringConverter" />
-        <libuidomain:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+        <converters:NullToBooleanConverter x:Key="NullToBooleanConverter" />
         <domain:SAMKeyEntryTypeToBooleanConverter x:Key="SAMKeyEntryTypeToBooleanConverter" />
     </UserControl.Resources>
     <StackPanel>

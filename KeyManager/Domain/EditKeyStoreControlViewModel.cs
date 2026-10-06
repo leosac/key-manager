@@ -369,7 +369,7 @@ namespace Leosac.KeyManager.Domain
             return ret != null;
         }
 
-        public async Task<bool> RunOnKeyStore(Func<UserControl> createDialog, Func<KeyStore, Func<string, KeyStore?>, Func<KeyStore, string?, Task<bool>>?, KeyEntryClass, IEnumerable<KeyEntryId>?, Action<KeyStore, KeyEntryClass, int>?, Task> action, string? label = null)
+        public async Task<bool> RunOnKeyStore(Func<UserControl> createDialog, Func<KeyStore, Func<string, KeyStore?>, Func<KeyStore, string?, Task<bool>>?, IEnumerable<(KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids)>, Action<KeyStore, KeyEntryClass, int>?, Task> action, string? label = null)
         {
             if (KeyStore == null)
                 return false;
@@ -439,19 +439,19 @@ namespace Leosac.KeyManager.Domain
                     log.Error($"Cannot found the favorite Key Store `{favoriteName}`.");
                     throw new KeyStoreException("Cannot found the favorite Key Store.");
                 }
-                foreach (var keModel in _keModels)
+                var keyEntries = _keModels.Select(keModel =>
                 {
                     IEnumerable<KeyEntryId>? entries = null;
                     if (keModel.ShowSelection)
                         entries = keModel.Identifiers.Where(k => k.Selected && k.KeyEntryId != null).Select(k => k.KeyEntryId!);
-                    await action(destStore,
-                        GetFavoriteKeyStore,
-                        AskForKeyStoreSecretIfRequired,
-                        keModel.KeyEntryClass,
-                        entries,
-                        initCallback
-                    );
-                }
+                    return (keModel.KeyEntryClass, entries);
+                }).ToList();
+                await action(destStore,
+                    GetFavoriteKeyStore,
+                    AskForKeyStoreSecretIfRequired,
+                    keyEntries,
+                    initCallback
+                );
                 return true;
             }
             finally

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:domain="clr-namespace:Leosac.KeyManager.Library.UI.Domain"
+             xmlns:converters="clr-namespace:Leosac.KeyManager.Library.UI.Converters"
              xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
@@ -18,7 +19,7 @@
             <s:Boolean x:Key="True">True</s:Boolean>
             <s:Boolean x:Key="False">False</s:Boolean>
             <materialDesign:NullableToVisibilityConverter x:Key="NullableToVisibilityConverter" />
-            <domain:KeyStoreFavoriteConverter x:Key="KeyStoreFavoriteConverter" />
+            <converters:KeyStoreFavoriteConverter x:Key="KeyStoreFavoriteConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <materialDesign:DrawerHost x:Name="DrawerHost" BorderBrush="{DynamicResource MaterialDesign.Brush.TextBox.HoverBackground}" BorderThickness="2">

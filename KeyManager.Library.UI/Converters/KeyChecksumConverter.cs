@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
 
-namespace Leosac.KeyManager.Library.UI.Domain
+namespace Leosac.KeyManager.Library.UI.Converters
 {
     public class KeyChecksumConverter : IMultiValueConverter
     {
@@ -22,7 +22,14 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 return Binding.DoNothing;
             }
 
-            return value1.ComputeKCV(value2, values.Length >= 2 ? values[2] as string : null );
+            try
+            {
+                return value1.ComputeKCV(value2, values.Length >= 2 ? values[2] as string : null);
+            }
+            catch(Exception)
+            {
+                return string.Empty;
+            }
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

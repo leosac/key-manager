@@ -1,3 +1,11 @@
+# v1.28.0 - 10/06/2026
+ - Fix Key Entry background brush on hover or selection
+ - Add temporary border highlight on latest edited Key Entry
+ - Add Asymmetric RSA key entry support on NXP SAM AV2/AV3
+ - Add local random Key Generation for RSA
+ - Add DER/PEM/P12 format parsing for RSA
+ - Add options to better setup behavior of key generation during Publish operation
+
 # v1.27.0 - 07/15/2026
  - Update to .NET10
 

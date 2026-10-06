@@ -592,6 +592,15 @@ namespace Leosac.KeyManager.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Generate Only if Missing.
+        /// </summary>
+        public static string GenerateOnlyIfMissing {
+            get {
+                return ResourceManager.GetString("GenerateOnlyIfMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Generate Random Key.
         /// </summary>
         public static string GenerateRandom {

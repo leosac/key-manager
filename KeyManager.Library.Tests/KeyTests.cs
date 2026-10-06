@@ -81,6 +81,16 @@
         }
 
         [TestMethod]
+        public void KeyMaterial_UsesKeyNameInPemLabel()
+        {
+            var privateKey = new KeyMaterial("00112233", KeyMaterial.PRIVATE_KEY);
+            var publicKey = new KeyMaterial("00112233", KeyMaterial.PUBLIC_KEY);
+
+            Assert.AreEqual("-----BEGIN PRIVATE KEY-----\nABEiMw==\n-----END PRIVATE KEY-----", privateKey.GetValueAsString(KeyValueStringFormat.Pem));
+            Assert.AreEqual("-----BEGIN PUBLIC KEY-----\nABEiMw==\n-----END PUBLIC KEY-----", publicKey.GetValueAsString(KeyValueStringFormat.Pem));
+        }
+
+        [TestMethod]
         public void TwoMaterials_SetAggregatedValue_PemAssignsBlocksByKeyType()
         {
             var key = new Key(null, 0,

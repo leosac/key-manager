@@ -6,7 +6,7 @@ namespace Leosac.KeyManager.Library
 {
     public interface IKeyGenerator
     {
-        IEnumerable<KeyMaterial> Generate(Key key);
+        IEnumerable<KeyMaterial> Generate(Key key, uint explicitKeySize = 0);
     }
 
     public static class KeyGeneration
@@ -45,11 +45,9 @@ namespace Leosac.KeyManager.Library
             return checked(keySize * 8);
         }
 
-        public static byte[] FromPassword(string password, string salt, int keySize)
+        public static byte[] FromPassword(string password, string salt, uint keySize)
         {
-            var deriv = new Rfc2898DeriveBytes(password, Encoding.UTF8.GetBytes(salt), 10000, HashAlgorithmName.SHA256);
-            var key = deriv.GetBytes(keySize);
-            return key;
+            return Rfc2898DeriveBytes.Pbkdf2(Encoding.UTF8.GetBytes(password), Encoding.UTF8.GetBytes(salt), 10000, HashAlgorithmName.SHA256, (int)keySize);
         }
 
         public static byte[] CreateRandomSalt(uint length)
@@ -70,21 +68,21 @@ namespace Leosac.KeyManager.Library
             return Generators.TryRemove(algorithm, out _);
         }
 
-        public static IEnumerable<KeyMaterial> Generate(Key key)
+        public static IEnumerable<KeyMaterial> Generate(Key key, uint keySize = 0)
         {
             ArgumentNullException.ThrowIfNull(key);
             foreach (var tag in key.Tags)
             {
                 if (Generators.TryGetValue(tag, out var generator))
                 {
-                    return generator.Generate(key) ?? throw new InvalidOperationException($"The key generator registered for '{tag}' returned no materials.");
+                    return generator.Generate(key, keySize) ?? throw new InvalidOperationException($"The key generator registered for '{tag}' returned no materials.");
                 }
             }
 
             throw new NotSupportedException("The key does not contain a registered key-generation tag.");
         }
 
-        public static IEnumerable<KeyMaterial> Generate(Key key, string algorithm)
+        public static IEnumerable<KeyMaterial> Generate(Key key, string algorithm, uint keySize = 0)
         {
             ArgumentNullException.ThrowIfNull(key);
             ArgumentException.ThrowIfNullOrWhiteSpace(algorithm);
@@ -93,14 +91,14 @@ namespace Leosac.KeyManager.Library
                 throw new NotSupportedException($"No key generator is registered for '{algorithm}'.");
             }
 
-            return generator.Generate(key) ?? throw new InvalidOperationException($"The key generator registered for '{algorithm}' returned no materials.");
+            return generator.Generate(key, keySize) ?? throw new InvalidOperationException($"The key generator registered for '{algorithm}' returned no materials.");
         }
 
         private sealed class SymmetricKeyGenerator(uint defaultSize, IReadOnlySet<uint> supportedSizes) : IKeyGenerator
         {
-            public IEnumerable<KeyMaterial> Generate(Key key)
+            public IEnumerable<KeyMaterial> Generate(Key key, uint explicitKeySize = 0)
             {
-                var size = key.KeySize == 0 ? defaultSize : key.KeySize;
+                var size = explicitKeySize == 0 ? (key.KeySize == 0 ? defaultSize : key.KeySize) : explicitKeySize;
                 if (!supportedSizes.Contains(size))
                 {
                     throw new ArgumentOutOfRangeException(nameof(key.KeySize), size, "The key size is not supported by this algorithm.");
@@ -112,10 +110,10 @@ namespace Leosac.KeyManager.Library
 
         private sealed class RsaKeyGenerator : IKeyGenerator
         {
-            public IEnumerable<KeyMaterial> Generate(Key key)
+            public IEnumerable<KeyMaterial> Generate(Key key, uint explicitKeySize = 0)
             {
-                var size = key.KeySize == 0 ? 2048 : checked((int)key.KeySize);
-                using var rsa = RSA.Create(size);
+                var size = explicitKeySize == 0 ? (key.KeySize == 0 ? 2048 : key.KeySize) : explicitKeySize;
+                using var rsa = RSA.Create(checked((int)size));
                 yield return CreateDerMaterial(KeyMaterial.PRIVATE_KEY, rsa.ExportPkcs8PrivateKey());
                 yield return CreateDerMaterial(KeyMaterial.PUBLIC_KEY, rsa.ExportSubjectPublicKeyInfo());
             }
@@ -123,9 +121,10 @@ namespace Leosac.KeyManager.Library
 
         private sealed class EccKeyGenerator : IKeyGenerator
         {
-            public IEnumerable<KeyMaterial> Generate(Key key)
+            public IEnumerable<KeyMaterial> Generate(Key key, uint explicitKeySize = 0)
             {
-                var curve = key.KeySize switch
+                var size = explicitKeySize == 0 ? key.KeySize : explicitKeySize;
+                var curve = size switch
                 {
                     0 or 256 => ECCurve.NamedCurves.nistP256,
                     384 => ECCurve.NamedCurves.nistP384,

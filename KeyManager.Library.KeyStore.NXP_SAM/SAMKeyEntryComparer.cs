@@ -19,6 +19,10 @@
             if (y == null)
                 return 1;
 
+            var classComparison = GetClassOrder(x.KClass).CompareTo(GetClassOrder(y.KClass));
+            if (classComparison != 0)
+                return classComparison;
+
             if (x.Identifier.Id == _properties.AuthenticateKeyEntryIdentifier.ToString())
                 return 1;
 
@@ -33,6 +37,16 @@
             {
                 return 0;
             }
+        }
+
+        private static int GetClassOrder(KeyEntryClass keyEntryClass)
+        {
+            return keyEntryClass switch
+            {
+                KeyEntryClass.Asymmetric => 0,
+                KeyEntryClass.Symmetric => 1,
+                _ => 2 + (int)keyEntryClass
+            };
         }
 
     }

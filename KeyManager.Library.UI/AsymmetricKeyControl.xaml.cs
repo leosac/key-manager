@@ -69,7 +69,9 @@ namespace Leosac.KeyManager.Library.UI
 
             try
             {
-                material.Value = KeyManager.Library.KeyMaterial.ConvertValueFormat(material.Value, newFormat, previousFormat) ?? string.Empty;
+                var convertedValue = KeyManager.Library.KeyMaterial.ConvertValueFormat(material.Value, newFormat, previousFormat, material.Name) ?? string.Empty;
+                material.ValueFormat = newFormat;
+                material.Value = convertedValue;
             }
             catch (FormatException)
             {

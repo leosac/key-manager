@@ -6,11 +6,11 @@ using System.Windows.Input;
 namespace Leosac.KeyManager.Library.UI
 {
     /// <summary>
-    /// Interaction logic for SymmetricKeyGenerationDialog.xaml
+    /// Interaction logic for KeyGenerationDialog.xaml
     /// </summary>
-    public partial class SymmetricKeyGenerationDialog : UserControl
+    public partial class KeyGenerationDialog : UserControl
     {
-        public SymmetricKeyGenerationDialog()
+        public KeyGenerationDialog()
         {
             MnemonicLanguages = new ObservableCollection<KeyGen.Mnemonic.WordlistLang>(Enum.GetValues<KeyGen.Mnemonic.WordlistLang>());
             MnemonicWords = new ObservableCollection<string>();
@@ -27,7 +27,7 @@ namespace Leosac.KeyManager.Library.UI
             set { SetValue(SelectedMnemonicLanguageProperty, value); }
         }
 
-        public static readonly DependencyProperty SelectedMnemonicLanguageProperty = DependencyProperty.Register(nameof(SelectedMnemonicLanguage), typeof(KeyGen.Mnemonic.WordlistLang), typeof(SymmetricKeyGenerationDialog),
+        public static readonly DependencyProperty SelectedMnemonicLanguageProperty = DependencyProperty.Register(nameof(SelectedMnemonicLanguage), typeof(KeyGen.Mnemonic.WordlistLang), typeof(KeyGenerationDialog),
             new FrameworkPropertyMetadata(KeyGen.Mnemonic.WordlistLang.English));
 
         public ObservableCollection<Favorite> RandomGenerators { get; set; }
@@ -38,25 +38,85 @@ namespace Leosac.KeyManager.Library.UI
             set { SetValue(SelectedRandomGeneratorProperty, value); }
         }
 
-        public static readonly DependencyProperty SelectedRandomGeneratorProperty = DependencyProperty.Register(nameof(SelectedRandomGenerator), typeof(Favorite), typeof(SymmetricKeyGenerationDialog),
+        public static readonly DependencyProperty SelectedRandomGeneratorProperty = DependencyProperty.Register(nameof(SelectedRandomGenerator), typeof(Favorite), typeof(KeyGenerationDialog),
             new FrameworkPropertyMetadata(null));
 
-        public int KeySize
+        public uint KeySize
         {
-            get { return (int)GetValue(KeySizeProperty); }
+            get { return (uint)GetValue(KeySizeProperty); }
             set { SetValue(KeySizeProperty, value); }
         }
 
-        public static readonly DependencyProperty KeySizeProperty = DependencyProperty.Register(nameof(KeySize), typeof(int), typeof(SymmetricKeyGenerationDialog),
-            new FrameworkPropertyMetadata(16));
+        public static readonly DependencyProperty KeySizeProperty = DependencyProperty.Register(nameof(KeySize), typeof(uint), typeof(KeyGenerationDialog),
+            new FrameworkPropertyMetadata((uint)128));
 
         public string? KeyValue
         {
-            get { return (string)GetValue(KeyValueProperty); }
-            set { SetValue(KeyValueProperty, value); }
+            get { return Key?.GetAggregatedValueAsString() ?? (string?)GetValue(KeyValueProperty); }
+            set
+            {
+                if (Key is Key key)
+                {
+                    try
+                    {
+                        key.SetAggregatedValueAsString(value);
+                        SynchronizeKeyValue(key);
+                    }
+                    catch (Exception) { }
+                }
+                else
+                {
+                    SetValue(KeyValueProperty, value);
+                }
+            }
         }
 
-        public static readonly DependencyProperty KeyValueProperty = DependencyProperty.Register(nameof(KeyValue), typeof(string), typeof(SymmetricKeyGenerationDialog));
+        public static readonly DependencyProperty KeyValueProperty = DependencyProperty.Register(nameof(KeyValue), typeof(string), typeof(KeyGenerationDialog),
+            new FrameworkPropertyMetadata(null, OnKeyValueChanged));
+
+        public Key? Key
+        {
+            get { return (Key?)GetValue(KeyProperty); }
+            set { SetValue(KeyProperty, value); }
+        }
+
+        public static readonly DependencyProperty KeyProperty = DependencyProperty.Register(nameof(Key), typeof(Key), typeof(KeyGenerationDialog),
+            new FrameworkPropertyMetadata(null, OnKeyChanged));
+
+        private static void OnKeyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue is Key key)
+            {
+                ((KeyGenerationDialog)d).SynchronizeKeyValue(key);
+            }
+        }
+
+        private static void OnKeyValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (((KeyGenerationDialog)d).Key is Key key)
+            {
+                try
+                {
+                    key.SetAggregatedValueAsString(e.NewValue as string);
+                    ((KeyGenerationDialog)d).SynchronizeKeyValue(key);
+                }
+                catch (Exception) { }
+            }
+        }
+
+        private void SynchronizeKeyValue(Key key)
+        {
+            var value = string.Empty;
+            try
+            {
+                value = key.GetAggregatedValueAsString();
+            }
+            catch (Exception) { }
+            if (!Equals(GetValue(KeyValueProperty), value))
+            {
+                SetCurrentValue(KeyValueProperty, value);
+            }
+        }
 
         public ObservableCollection<string> MnemonicWords { get; set; }
 
@@ -66,7 +126,7 @@ namespace Leosac.KeyManager.Library.UI
             set { SetValue(SelectedWordIndexProperty, value); }
         }
 
-        public static readonly DependencyProperty SelectedWordIndexProperty = DependencyProperty.Register(nameof(SelectedWordIndex), typeof(int), typeof(SymmetricKeyGenerationDialog));
+        public static readonly DependencyProperty SelectedWordIndexProperty = DependencyProperty.Register(nameof(SelectedWordIndex), typeof(int), typeof(KeyGenerationDialog));
 
         public bool KeyGenerated
         {
@@ -74,11 +134,11 @@ namespace Leosac.KeyManager.Library.UI
             set { SetValue(KeyGeneratedProperty, value); }
         }
 
-        public static readonly DependencyProperty KeyGeneratedProperty = DependencyProperty.Register(nameof(KeyGenerated), typeof(bool), typeof(SymmetricKeyGenerationDialog));
+        public static readonly DependencyProperty KeyGeneratedProperty = DependencyProperty.Register(nameof(KeyGenerated), typeof(bool), typeof(KeyGenerationDialog));
 
         private async void BtnRandom_Click(object sender, RoutedEventArgs e)
         {
-            var keySize = (byte)(KeySize > 0 ? KeySize : 16);
+            var keySize = (byte)(KeySize > 0 ? KeySize : 128);
             byte[]? bytes = null;
             if (SelectedRandomGenerator != null)
             {
@@ -88,7 +148,7 @@ namespace Leosac.KeyManager.Library.UI
                     try
                     {
                         await ks.Open();
-                        bytes = await ks.GenerateBytes(keySize);
+                        bytes = await ks.GenerateBytes((byte)KeyGeneration.BitsToBytes(keySize));
                         await ks.Close(true);
                     }
                     catch(Exception ex)
@@ -99,7 +159,16 @@ namespace Leosac.KeyManager.Library.UI
             }
             else
             {
-                bytes = KeyGeneration.Random(keySize);
+                if (Key != null)
+                {
+                    Key.Generate(KeySize);
+                    SynchronizeKeyValue(Key);
+                    ShowKeyComputationConfirmation();
+                }
+                else
+                {
+                    bytes = KeyGeneration.RandomBits(keySize);
+                }
             }
 
             if (bytes != null)
@@ -111,14 +180,14 @@ namespace Leosac.KeyManager.Library.UI
 
         private void BtnPassword_Click(object sender, RoutedEventArgs e)
         {
-            KeyValue = Convert.ToHexString(KeyGeneration.FromPassword(tbxPassword.Password, tbxSalt.Text, KeySize));
+            KeyValue = Convert.ToHexString(KeyGeneration.FromPassword(tbxPassword.Password, tbxSalt.Text, KeyGeneration.BitsToBytes(KeySize)));
             ShowKeyComputationConfirmation();
         }
 
         private void BtnImportMnemonic_Click(object sender, RoutedEventArgs e)
         {
             var bip39 = new KeyGen.Mnemonic.BIP39();
-            KeyValue = bip39.MnemonicToSeedHex(String.Join(" ", MnemonicWords), tbxMnemonicPassphrase.Password, KeySize);
+            KeyValue = bip39.MnemonicToSeedHex(String.Join(" ", MnemonicWords), tbxMnemonicPassphrase.Password, KeyGeneration.BitsToBytes(KeySize));
             ShowKeyComputationConfirmation();
         }
 

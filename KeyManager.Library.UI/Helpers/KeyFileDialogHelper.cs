@@ -6,7 +6,7 @@ namespace Leosac.KeyManager.Library.UI.Helpers
 {
     public static class KeyFileDialogHelper
     {
-        private const string FileFilter = "Binary Files (*.bin)|*.bin|Text Files (*.txt)|*.txt|PEM Files (*.pem)|*.pem|PKCS#12 Files (*.p12;*.pfx)|*.p12;*.pfx";
+        private const string FileFilter = "Binary Files (*.bin)|*.bin|Text Files (*.txt)|*.txt|PEM Files (*.pem)|*.pem";
         private const string ImportFileFilter = FileFilter + "|PKCS#12 Files (*.p12;*.pfx)|*.p12;*.pfx";
 
         public static void Import(Action<byte[]> importBinary, Action<string, KeyValueStringFormat?> importText, Action<string?, string?> importPkcs12)
