@@ -18,7 +18,24 @@ namespace Leosac.KeyManager.Library.KeyGen
 
         public static string? GetAlgorithmName(Key key)
         {
-            return key.Tags.FirstOrDefault(t => t == "AES" || t == "DES" || t == "Blowfish");
+            string? algoName = null;
+            if (key.Tags.Contains("AES"))
+            {
+                algoName = "AES";
+            }
+            else if (key.Tags.Contains("DES") && key.KeySize > 8)
+            {
+                algoName = "DESEDE";
+            }
+            else if (key.Tags.Contains("DES"))
+            {
+                algoName = "DES";
+            }
+            else if (key.Tags.Contains("Blowfish"))
+            {
+                algoName = "Blowfish";
+            }
+            return algoName;
         }
 
         public static IBufferedCipher? GetSymmetricAlgorithm(Key key)
