@@ -29,7 +29,7 @@ namespace Leosac.KeyManager
             ApplicationLogo = "/images/leosac_key.png";
             SettingsCommand = new RelayCommand(() =>
             {
-                if (UIPreferences.IsUserElevated)
+                if (UserRoleContext.IsAdministrator)
                 {
                     var settings = KMSettings.LoadFromFile(false);
                     if (settings != null && settings.EnsureElevation())
@@ -46,10 +46,6 @@ namespace Leosac.KeyManager
         public override void InitializeMainWindow(MainWindowViewModel model)
         {
             var settings = KMSettings.LoadFromFile(false);
-            if (!UIPreferences.IsUserElevated)
-            {
-                UIPreferences.IsUserElevated = string.IsNullOrEmpty(settings?.ElevationCode);
-            }
             EncryptJsonConverter.ChangeEncryption((settings?.EncryptionType).GetValueOrDefault(StoredSecretEncryptionType.CustomKey));
             if (!string.IsNullOrEmpty(settings?.DefaultFavoriteLink))
             {

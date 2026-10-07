@@ -26,7 +26,7 @@
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <WrapPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" IsEnabled="{x:Static local:UIPreferences.IsUserElevated}">
+        <WrapPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" IsEnabled="{x:Static local:UserRoleContext.IsAdministrator}">
             <materialDesign:PopupBox
                 PlacementMode="BottomAndAlignCentres"
                 ToolTip="{x:Static properties:Resources.NewKeyEntry}" Margin="5"

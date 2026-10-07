@@ -21,8 +21,36 @@ namespace Leosac.KeyManager
         private static void InitializeApplication()
         {
             InitializeApplicationInfo();
+            InitializeUserRole();
             InitializePlugins();
             InitializeFavorites();
+        }
+
+        private static void InitializeUserRole()
+        {
+            try
+            {
+                UserRoleContext.Initialize(KMSettings.LoadFromFile(false));
+            }
+            catch (Exception ex)
+            {
+                log.Error("Failed to initialize user role.", ex);
+                UserRoleContext.Initialize(null);
+            }
+
+            if (UserRoleContext.IsEnabled)
+            {
+                log.Debug($"User role context initialized. User: {UserRoleContext.UserName}, Role: {UserRoleContext.Role}");
+                if (UserRoleContext.Role == UserRole.None)
+                {
+                    log.Debug("The user doesn't have a role, leaving the application.");
+                    Application.Current.Shutdown();
+                }
+            }
+            else
+            {
+                log.Debug("User role context is disabled.");
+            }
         }
 
         private static void InitializeApplicationInfo()

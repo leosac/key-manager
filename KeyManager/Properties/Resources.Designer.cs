@@ -70,6 +70,24 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Administrators Windows group.
+        /// </summary>
+        public static string AdministratorsGroup {
+            get {
+                return ResourceManager.GetString("AdministratorsGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Members are mapped to the administrator role..
+        /// </summary>
+        public static string AdministratorsGroupHelper {
+            get {
+                return ResourceManager.GetString("AdministratorsGroupHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Back.
         /// </summary>
         public static string Back {
@@ -178,20 +196,11 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Elevation Code.
+        ///   Looks up a localized string similar to Enable User Roles.
         /// </summary>
-        public static string ElevationCode {
+        public static string EnableUserRoles {
             get {
-                return ResourceManager.GetString("ElevationCode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Elevation Code.
-        /// </summary>
-        public static string ElevationCodeHelper {
-            get {
-                return ResourceManager.GetString("ElevationCodeHelper", resourceCulture);
+                return ResourceManager.GetString("EnableUserRoles", resourceCulture);
             }
         }
         
@@ -498,6 +507,24 @@ namespace Leosac.KeyManager.Properties {
         public static string SecretHelper {
             get {
                 return ResourceManager.GetString("SecretHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users Windows group.
+        /// </summary>
+        public static string UsersGroup {
+            get {
+                return ResourceManager.GetString("UsersGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Members are mapped to the user role..
+        /// </summary>
+        public static string UsersGroupHelper {
+            get {
+                return ResourceManager.GetString("UsersGroupHelper", resourceCulture);
             }
         }
     }

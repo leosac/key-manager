@@ -24,16 +24,18 @@ namespace Leosac.KeyManager.Domain
             _snackbarMessageQueue = snackbarMessageQueue;
 
             RefreshFavoritesCommand = new RelayCommand(RefreshFavorites);
-            ImportFavoritesCommand = new RelayCommand(ImportFavorites);
-            ExportFavoritesCommand = new RelayCommand(ExportFavorites);
-            ChangeMasterKeyCommand = new RelayCommand(ChangeMasterKey);
+            ImportFavoritesCommand = new RelayCommand(ImportFavorites, CanManageFavorites);
+            ExportFavoritesCommand = new RelayCommand(ExportFavorites, CanManageFavorites);
+            ChangeMasterKeyCommand = new RelayCommand(ChangeMasterKey, CanManageFavorites);
 
             OpenFavoriteCommand = new AsyncRelayCommand<Favorite>(OpenFavoriteAsync);
-            CreateFavoriteCommand = new AsyncRelayCommand(CreateFavoriteAsync);
-            EditFavoriteCommand = new AsyncRelayCommand<Favorite>(EditFavoriteAsync);
+            CreateFavoriteCommand = new AsyncRelayCommand(CreateFavoriteAsync, CanManageFavorites);
+            EditFavoriteCommand = new AsyncRelayCommand<Favorite>(EditFavoriteAsync, fav => CanManageFavorites() && fav != null);
 
-            RemoveFavoriteCommand = new RelayCommand<Favorite>(RemoveFavorite, fav => fav != null);
+            RemoveFavoriteCommand = new RelayCommand<Favorite>(RemoveFavorite, fav => CanManageFavorites() && fav != null);
         }
+
+        private bool CanManageFavorites() => UserRoleContext.IsAdministrator;
 
         private Favorites? _favorites;
 
@@ -144,6 +146,9 @@ namespace Leosac.KeyManager.Domain
 
         protected void ImportFavorites()
         {
+            if (!CanManageFavorites())
+                return;
+
             var ofd = new OpenFileDialog
             {
                 Filter = "JSON Files (*.json)|*.json",
@@ -173,6 +178,9 @@ namespace Leosac.KeyManager.Domain
 
         protected void ExportFavorites()
         {
+            if (!CanManageFavorites())
+                return;
+
             var sfd = new SaveFileDialog { Filter = "JSON Files (*.json)|*.json" };
             if (sfd.ShowDialog() != true)
                 return;
@@ -211,6 +219,9 @@ namespace Leosac.KeyManager.Domain
 
         private async Task CreateFavoriteAsync()
         {
+            if (!CanManageFavorites())
+                return;
+
             var model = new KeyStoreSelectorDialogViewModel { Message = "Save a new Favorite Key Store" };
 
             var dialog = new KeyStoreSelectorDialog { DataContext = model };
@@ -226,7 +237,7 @@ namespace Leosac.KeyManager.Domain
 
         private void RemoveFavorite(Favorite? fav)
         {
-            if (fav == null || Favorites == null)
+            if (!CanManageFavorites() || fav == null || Favorites == null)
                 return;
             DialogHost.CloseDialogCommand.Execute(null, null);
             if (!Favorites.Remove(fav))
@@ -236,7 +247,7 @@ namespace Leosac.KeyManager.Domain
 
         private async Task EditFavoriteAsync(Favorite? fav)
         {
-            if (Favorites == null || fav == null || !fav.IsResolved)
+            if (!CanManageFavorites() || Favorites == null || fav == null || !fav.IsResolved)
             {
                 SnackbarHelper.EnqueueError(_snackbarMessageQueue, "This favorite requires a missing module and cannot be opened.");
                 return;

@@ -14,17 +14,28 @@ namespace Leosac.KeyManager.Library.UI
             set => SetProperty(ref _favoritesPath, value);
         }
 
-        public string? ElevationCode { get; set; }
+        public StoredSecretEncryptionType EncryptionType { get; set; } = StoredSecretEncryptionType.CustomKey;
 
-        private string? _elevationCodePlain;
-        [JsonIgnore]
-        public string? ElevationCodePlain
+        private bool _userRolesEnabled;
+        public bool UserRolesEnabled
         {
-            get => _elevationCodePlain;
-            set => SetProperty(ref _elevationCodePlain, value);
+            get => _userRolesEnabled;
+            set => SetProperty(ref _userRolesEnabled, value);
         }
 
-        public StoredSecretEncryptionType EncryptionType { get; set; } = StoredSecretEncryptionType.CustomKey;
+        private string? _administratorsGroup;
+        public string? AdministratorsGroup
+        {
+            get => _administratorsGroup;
+            set => SetProperty(ref _administratorsGroup, value);
+        }
+
+        private string? _usersGroup;
+        public string? UsersGroup
+        {
+            get => _usersGroup;
+            set => SetProperty(ref _usersGroup, value);
+        }
 
         private string? _defaultFavoriteLink;
         public string? DefaultFavoriteLink
@@ -41,14 +52,6 @@ namespace Leosac.KeyManager.Library.UI
             }
 
             return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes("LKM;" + code)));
-        }
-
-        public void Elevate(string code)
-        {
-            if (!string.IsNullOrEmpty(ElevationCode) && ComputeCodeHash(code) == ElevationCode)
-            {
-                UIPreferences.IsUserElevated = true;
-            }
         }
     }
 }

@@ -11,41 +11,16 @@ namespace Leosac.KeyManager.Domain
     {
         public HomeControlViewModel(ISnackbarMessageQueue snackbarMessageQueue)
         {
-            ElevateCommand = new RelayCommand(Elevate);
         }
 
-        private string? _elevationCode;
-        public string? ElevationCode
-        {
-            get => _elevationCode;
-            set => SetProperty(ref _elevationCode, value);
-        }
+        public bool UserRolesEnabled => UserRoleContext.IsEnabled;
 
-        private void Elevate()
-        {
-            if (!string.IsNullOrEmpty(ElevationCode))
-            {
-                var kmsettings = KMSettings.LoadFromFile(false);
-                kmsettings?.Elevate(ElevationCode);
-                DialogHost.CloseDialogCommand.Execute(null, null);
+        public string UserName => UserRoleContext.UserName;
 
-                if (UIPreferences.IsUserElevated)
-                {
-                    // At this moment we have to recreate all controls as some bindings are static
-                    var oldWindow = Application.Current.MainWindow;
-                    oldWindow.Hide();
-                    var newWindow = new WpfApp.MainWindow();
-                    Application.Current.MainWindow = newWindow;
-                    newWindow.Show();
-                    oldWindow.Close();
-                }
-            }
-        }
+        public string UserRole => UserRoleContext.Role.ToString();
 
         public AsyncRelayCommand<object>? KeyStoreCommand { get; set; }
 
         public RelayCommand? FavoritesCommand { get; set; }
-
-        public RelayCommand? ElevateCommand { get; set; }
     }
 }

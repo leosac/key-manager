@@ -33,18 +33,23 @@
                                      materialDesign:HintAssist.HelperText="{x:Static properties:Resources.FavoritesPathHelper}"
                                      materialDesign:HintAssist.Hint="{x:Static properties:Resources.FavoritesPath}"/>
                         </DockPanel>
-                        <DockPanel LastChildFill="True">
-                            <Button Content="{x:Static properties:Resources.Change}" Click="ChangeCode_Click" DockPanel.Dock="Right" Margin="5" />
-                            <PasswordBox materialDesign:PasswordBoxAssist.Password="{Binding ElevationCodePlain, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         materialDesign:TextFieldAssist.HasClearButton="True" Margin="5"
-                                         materialDesign:HintAssist.HelperText="{x:Static properties:Resources.ElevationCodeHelper}"
-                                         materialDesign:HintAssist.Hint="{x:Static properties:Resources.ElevationCode}" />
-                        </DockPanel>
                         <ComboBox ItemsSource="{Binding EncryptionTypes, ElementName=window}"
                                   SelectedItem="{Binding EncryptionType}"
                                   materialDesign:HintAssist.HelperText="{x:Static properties:Resources.EncryptionTypeHelper}"
                                   materialDesign:HintAssist.Hint="{x:Static properties:Resources.EncryptionType}"
                                   Margin="5,15,5,15"/>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5">
+                            <ToggleButton IsChecked="{Binding UserRolesEnabled}" Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                            <TextBlock Text="{x:Static properties:Resources.EnableUserRoles}" Padding="3" />
+                        </StackPanel>
+                        <TextBox Text="{Binding AdministratorsGroup, UpdateSourceTrigger=PropertyChanged}" Margin="5"
+                                 IsEnabled="{Binding UserRolesEnabled}"
+                                 materialDesign:HintAssist.Hint="{x:Static properties:Resources.AdministratorsGroup}"
+                                 materialDesign:HintAssist.HelperText="{x:Static properties:Resources.AdministratorsGroupHelper}" />
+                        <TextBox Text="{Binding UsersGroup, UpdateSourceTrigger=PropertyChanged}" Margin="5"
+                                 IsEnabled="{Binding UserRolesEnabled}"
+                                 materialDesign:HintAssist.Hint="{x:Static properties:Resources.UsersGroup}"
+                                 materialDesign:HintAssist.HelperText="{x:Static properties:Resources.UsersGroupHelper}" />
                     </StackPanel>
                 </TabItem>
             </TabControl>

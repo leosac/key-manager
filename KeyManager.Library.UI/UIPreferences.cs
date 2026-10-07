@@ -47,8 +47,5 @@ namespace Leosac.KeyManager.Library.UI
             get { return _expandKeyContainersByDefault; }
             set { SetProperty(ref _expandKeyContainersByDefault, value); }
         }
-
-        [JsonIgnore]
-        public static bool IsUserElevated { get; set; }
     }
 }

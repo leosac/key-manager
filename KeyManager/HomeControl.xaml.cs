@@ -19,6 +19,9 @@ namespace Leosac.KeyManager
 
         private async void OpenKeyStore_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (!UserRoleContext.IsAdministrator)
+                return;
+
             var model = new KeyStoreSelectorDialogViewModel { Message = Properties.Resources.OpenKeyStore };
             var dialog = new KeyStoreSelectorDialog
             {
@@ -27,12 +30,12 @@ namespace Leosac.KeyManager
             object? ret = await DialogHost.Show(dialog, "RootDialog");
             if (ret != null)
             {
-                if (DataContext is HomeControlViewModel homeModel)
+                if (DataContext is HomeControlViewModel modelViewModel)
                 {
                     var store = model.CreateKeyStore();
-                    if (homeModel.KeyStoreCommand != null)
+                    if (modelViewModel.KeyStoreCommand != null)
                     {
-                        await homeModel.KeyStoreCommand.ExecuteAsync(store);
+                        await modelViewModel.KeyStoreCommand.ExecuteAsync(store);
                     }
                 }
             }

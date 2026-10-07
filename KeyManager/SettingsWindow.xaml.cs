@@ -46,13 +46,5 @@ namespace Leosac.KeyManager
                 settings.FavoritesPath = ofd.FileName;
             }
         }
-
-        private void ChangeCode_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is KMSettings settings)
-            {
-                settings.ElevationCode = KMSettings.ComputeCodeHash(settings.ElevationCodePlain);
-            }
-        }
     }
 }

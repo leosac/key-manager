@@ -246,12 +246,6 @@
   <data name="SecretHelper" xml:space="preserve">
     <value>The key store secret</value>
   </data>
-  <data name="ElevationCode" xml:space="preserve">
-    <value>Elevation Code</value>
-  </data>
-  <data name="ElevationCodeHelper" xml:space="preserve">
-    <value>Elevation Code</value>
-  </data>
   <data name="Change" xml:space="preserve">
     <value>Change</value>
   </data>
@@ -263,5 +257,20 @@
   </data>
   <data name="MissingModule" xml:space="preserve">
     <value>This favorite cannot be opened because a required module is missing.</value>
+  </data>
+  <data name="EnableUserRoles" xml:space="preserve">
+    <value>Enable User Roles</value>
+  </data>
+  <data name="AdministratorsGroup" xml:space="preserve">
+    <value>Administrators Windows group</value>
+  </data>
+  <data name="AdministratorsGroupHelper" xml:space="preserve">
+    <value>Members are mapped to the administrator role.</value>
+  </data>
+  <data name="UsersGroup" xml:space="preserve">
+    <value>Users Windows group</value>
+  </data>
+  <data name="UsersGroupHelper" xml:space="preserve">
+    <value>Members are mapped to the user role.</value>
   </data>
 </root>

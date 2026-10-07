@@ -204,8 +204,14 @@
   <data name="NewFavorite" xml:space="preserve">
     <value>Nouveau magasin de clés favori</value>
   </data>
+  <data name="Offline" xml:space="preserve">
+    <value>Hors ligne</value>
+  </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>En ligne</value>
   </data>
   <data name="Open" xml:space="preserve">
     <value>Ouvrir</value>
@@ -240,12 +246,6 @@
   <data name="SecretHelper" xml:space="preserve">
     <value>Le secret du magasin</value>
   </data>
-  <data name="ElevationCode" xml:space="preserve">
-    <value>Code</value>
-  </data>
-  <data name="ElevationCodeHelper" xml:space="preserve">
-    <value>Code d'administration</value>
-  </data>
   <data name="Change" xml:space="preserve">
     <value>Changer</value>
   </data>
@@ -257,5 +257,20 @@
   </data>
   <data name="MissingModule" xml:space="preserve">
     <value>Ce favori ne peut pas être ouvert car le module requis est manquant.</value>
+  </data>
+  <data name="EnableUserRoles" xml:space="preserve">
+    <value>Activer les rôles utilisateur</value>
+  </data>
+  <data name="AdministratorsGroup" xml:space="preserve">
+    <value>Groupe Windows des administrateurs</value>
+  </data>
+  <data name="AdministratorsGroupHelper" xml:space="preserve">
+    <value>Les membres sont associés au rôle d'administrateur.</value>
+  </data>
+  <data name="UsersGroup" xml:space="preserve">
+    <value>Groupe Windows des utilisateurs</value>
+  </data>
+  <data name="UsersGroupHelper" xml:space="preserve">
+    <value>Les membres sont associés au rôle d'utilisateur.</value>
   </data>
 </root>
