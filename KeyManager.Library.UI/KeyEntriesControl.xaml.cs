@@ -1,9 +1,11 @@
 ﻿using Leosac.KeyManager.Library.UI.Domain;
 using Leosac.WpfApp;
+using System.Globalization;
 using MaterialDesignThemes.Wpf;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 
 namespace Leosac.KeyManager.Library.UI
 {
@@ -12,12 +14,23 @@ namespace Leosac.KeyManager.Library.UI
     /// </summary>
     public partial class KeyEntriesControl : UserControl
     {
+        public static readonly Duration KeyEntryFadeOutAnimationDuration = LoadKeyEntryFadeOutAnimationDuration();
+
         public KeyEntriesControl()
         {
             InitializeComponent();
         }
 
         public KeyEntriesControlViewModel? KeyEntriesDataContext => DataContext as KeyEntriesControlViewModel;
+
+        private static Duration LoadKeyEntryFadeOutAnimationDuration()
+        {
+            var configuredDuration = UIPreferences.GetSingletonInstance(false)?.KeyEntryFadeOutDuration;
+            if (TimeSpan.TryParse(configuredDuration, CultureInfo.InvariantCulture, out var duration))
+                return new Duration(duration);
+
+            return new Duration(TimeSpan.FromSeconds(4));
+        }
 
         private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {

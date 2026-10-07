@@ -27,6 +27,13 @@ namespace Leosac.KeyManager.Library.UI
             IsUserConfiguration = true;
         }
 
+        private string _keyEntryFadeOutDuration = "0:0:4";
+        public string KeyEntryFadeOutDuration
+        {
+            get { return _keyEntryFadeOutDuration; }
+            set { SetProperty(ref _keyEntryFadeOutDuration, value); }
+        }
+
         private int _defaultChecksumAlgorithm;
         public int DefaultChecksumAlgorithm
         {

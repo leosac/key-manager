@@ -135,7 +135,7 @@
                             Storyboard.TargetName="ItemBorderBrush"
                             Storyboard.TargetProperty="Color"
                             To="Transparent"
-                            Duration="0:0:4"/>
+                            Duration="{x:Static local:KeyEntriesControl.KeyEntryFadeOutAnimationDuration}"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </DataTrigger.ExitActions>
