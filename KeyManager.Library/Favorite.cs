@@ -42,6 +42,15 @@ namespace Leosac.KeyManager.Library
         [JsonIgnore]
         public bool IsResolved => Properties != null;
 
+        private bool _isShared;
+
+        [JsonIgnore]
+        public bool IsShared
+        {
+            get => _isShared;
+            set => SetProperty(ref _isShared, value);
+        }
+
         [JsonIgnore]
         public JObject? UnresolvedModule { get; set; }
 

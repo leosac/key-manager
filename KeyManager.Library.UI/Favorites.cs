@@ -12,20 +12,24 @@ namespace Leosac.KeyManager.Library.UI
     public class Favorites : PermanentConfig<Favorites>
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
-        private static readonly object _instanceLock = new();
-        private static Favorites? _singleton;
         private static KMSettings? _settings;
 
         private readonly Dictionary<string, Favorite> _index = new(StringComparer.OrdinalIgnoreCase);
+        private readonly string _filePath;
 
         private const string RootName = nameof(KeyStores);
 
         public ObservableCollection<Favorite> KeyStores { get; private set; } = new();
 
-        public static event EventHandler? SingletonCreated;
-
         public Favorites()
+            : this(GetFavoritesPath())
         {
+        }
+
+        public Favorites(string filePath)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
+            _filePath = filePath;
             IsUserConfiguration = true;
             KeyStores.CollectionChanged += KeyStores_CollectionChanged;
         }
@@ -51,33 +55,22 @@ namespace Leosac.KeyManager.Library.UI
             }
         }
 
-        public static Favorites? GetSingletonInstance(bool forceRecreate = false)
+        public string FilePath => _filePath;
+
+        internal static string GetFavoritesPath(bool createFolders = false)
         {
-            lock (_instanceLock)
-            {
-                if (_singleton == null || forceRecreate)
-                {
-                    try
-                    {
-                        _settings ??= KMSettings.LoadFromFile(false);
-                        var path = GetFavoritesPath();
-                        _singleton = LoadSafeFromFile(path);
-                        OnSingletonCreated();
-                    }
-                    catch (Exception ex)
-                    {
-                        log.Error("Cannot load Favorites from file.", ex);
-                    }
-                }
-                return _singleton;
-            }
+            return GetConfigFilePath(GetDefaultFileName(), createFolders, true);
         }
 
         public override bool SaveToFile()
         {
             try
             {
-                return SaveToFile(GetFavoritesPath(true));
+                var directory = Path.GetDirectoryName(_filePath);
+                if (!string.IsNullOrEmpty(directory))
+                    Directory.CreateDirectory(directory);
+
+                return SaveToFile(_filePath);
             }
             catch (Exception ex)
             {
@@ -86,11 +79,12 @@ namespace Leosac.KeyManager.Library.UI
             }
         }
 
-        private static string GetFavoritesPath(bool createFolders = false)
+        internal static string GetSharedFavoritesPath(bool createFolders = false)
         {
+            _settings ??= KMSettings.LoadFromFile(false);
             return !string.IsNullOrWhiteSpace(_settings?.FavoritesPath)
                 ? _settings!.FavoritesPath
-                : GetConfigFilePath(GetDefaultFileName(), createFolders, true);
+                : GetConfigFilePath(GetDefaultFileName(), createFolders, false);
         }
 
         public Favorite? Get(string favoriteIdOrName)
@@ -172,7 +166,7 @@ namespace Leosac.KeyManager.Library.UI
 
         public static Favorites LoadSafeFromFile(string path)
         {
-            var favorites = new Favorites();
+            var favorites = new Favorites(path);
 
             if (!File.Exists(path))
             {
@@ -305,13 +299,6 @@ namespace Leosac.KeyManager.Library.UI
                 log.Warn($"Missing plugin for favorite '{name}' ({typeName}).");
 
             return (factory, typeName);
-        }
-
-        private static void OnSingletonCreated()
-        {
-            var instance = _singleton;
-            if (instance != null)
-                SingletonCreated?.Invoke(instance, EventArgs.Empty);
         }
 
         public void ReplaceAll(IEnumerable<Favorite> favorites)

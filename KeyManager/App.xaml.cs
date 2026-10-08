@@ -75,7 +75,8 @@ namespace Leosac.KeyManager
         {
             try
             {
-                _ = Favorites.GetSingletonInstance();
+                _ = FavoritesManager.User;
+                _ = FavoritesManager.Shared;
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -14,7 +15,7 @@ namespace Leosac.KeyManager.Library.UI
         {
             MnemonicLanguages = new ObservableCollection<KeyGen.Mnemonic.WordlistLang>(Enum.GetValues<KeyGen.Mnemonic.WordlistLang>());
             MnemonicWords = new ObservableCollection<string>();
-            RandomGenerators = Favorites.GetSingletonInstance()?.KeyStores ?? new ObservableCollection<Favorite>();
+            RandomGenerators = FavoritesManager.AvailableKeyStores;
 
             InitializeComponent();
         }
@@ -30,7 +31,7 @@ namespace Leosac.KeyManager.Library.UI
         public static readonly DependencyProperty SelectedMnemonicLanguageProperty = DependencyProperty.Register(nameof(SelectedMnemonicLanguage), typeof(KeyGen.Mnemonic.WordlistLang), typeof(KeyGenerationDialog),
             new FrameworkPropertyMetadata(KeyGen.Mnemonic.WordlistLang.English));
 
-        public ObservableCollection<Favorite> RandomGenerators { get; set; }
+        public IEnumerable<Favorite> RandomGenerators { get; set; }
 
         public Favorite? SelectedRandomGenerator
         {

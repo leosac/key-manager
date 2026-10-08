@@ -1,5 +1,6 @@
 ﻿using Leosac.KeyManager.Library.UI.Domain;
 using Leosac.KeyManager.Library.UI.Helpers;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,18 +17,23 @@ namespace Leosac.KeyManager.Library.UI
         {
             InitializeComponent();
 
-            Favorites = DesignerProperties.GetIsInDesignMode(this) ? new Favorites() : Favorites.GetSingletonInstance();
-
+            AvailableFavorites = DesignerProperties.GetIsInDesignMode(this) ? new Favorite[0] : FavoritesManager.AvailableKeyStores;
             ConfigureFavoritesView();
         }
 
-        public Favorites? Favorites
+        public IEnumerable<Favorite>? AvailableFavorites
         {
-            get => (Favorites?)GetValue(FavoritesProperty);
-            set => SetValue(FavoritesProperty, value);
+            get => (IEnumerable<Favorite>?)GetValue(AvailableFavoritesProperty);
+            private set => SetValue(AvailableFavoritesPropertyKey, value);
         }
 
-        public static readonly DependencyProperty FavoritesProperty = DependencyProperty.Register(nameof(Favorites), typeof(Favorites), typeof(FavoriteKeyStoreSelectionControl), new PropertyMetadata(null, OnFavoritesChanged));
+        private static readonly DependencyPropertyKey AvailableFavoritesPropertyKey = DependencyProperty.RegisterReadOnly(
+                nameof(AvailableFavorites),
+                typeof(IEnumerable<Favorite>),
+                typeof(FavoriteKeyStoreSelectionControl),
+                new PropertyMetadata(null));
+
+        public static readonly DependencyProperty AvailableFavoritesProperty = AvailableFavoritesPropertyKey.DependencyProperty;
 
         public Favorite? SelectedKeyStoreFavorite
         {
@@ -59,12 +65,7 @@ namespace Leosac.KeyManager.Library.UI
 
         private void ConfigureFavoritesView()
         {
-            if (Favorites == null)
-            {
-                ResolvedFavoritesView = null;
-                return;
-            }
-            var view = CollectionViewSource.GetDefaultView(Favorites.KeyStores);
+            var view = CollectionViewSource.GetDefaultView(AvailableFavorites);
             view.Filter = static obj => obj is Favorite fav && fav.IsResolved;
             view.SortDescriptions.Clear();
             view.SortDescriptions.Add(new SortDescription(nameof(Favorite.Name), ListSortDirection.Ascending));
@@ -84,7 +85,7 @@ namespace Leosac.KeyManager.Library.UI
             if (store == null)
                 return;
 
-            var favorite = Favorites?.CreateFromKeyStore(store);
+            var favorite = FavoritesManager.User?.CreateFromKeyStore(store);
             if (favorite?.IsResolved == true)
             {
                 SelectedKeyStoreFavorite = favorite;

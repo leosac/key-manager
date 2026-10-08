@@ -5,18 +5,11 @@ namespace Leosac.KeyManager.Library.UI.Converters
 {
     public class KeyStoreFavoriteConverter : IValueConverter
     {
-        public KeyStoreFavoriteConverter()
-        {
-            _favorites = Favorites.GetSingletonInstance();
-        }
-
-        private readonly Favorites? _favorites;
-
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (_favorites != null && value != null && value is string v)
+            if (value != null && value is string v)
             {
-                return _favorites.Get(v);
+                return FavoritesManager.Get(v);
             }
 
             return null;

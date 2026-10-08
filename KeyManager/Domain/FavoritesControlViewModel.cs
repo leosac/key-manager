@@ -7,6 +7,7 @@ using Leosac.WpfApp;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -33,6 +34,7 @@ namespace Leosac.KeyManager.Domain
             EditFavoriteCommand = new AsyncRelayCommand<Favorite>(EditFavoriteAsync, fav => CanManageFavorites() && fav != null);
 
             RemoveFavoriteCommand = new RelayCommand<Favorite>(RemoveFavorite, fav => CanManageFavorites() && fav != null);
+            ToggleFavoriteSharingCommand = new RelayCommand<Favorite>(ToggleFavoriteSharing, fav => CanManageFavorites() && fav != null);
         }
 
         private bool CanManageFavorites() => UserRoleContext.IsAdministrator;
@@ -44,6 +46,8 @@ namespace Leosac.KeyManager.Domain
             get => _favorites;
             set => SetProperty(ref _favorites, value);
         }
+
+        public ReadOnlyObservableCollection<Favorite> AvailableFavorites => FavoritesManager.AvailableKeyStores;
 
         private bool _isLoadingFavorites;
         public bool IsLoadingFavorites
@@ -99,6 +103,7 @@ namespace Leosac.KeyManager.Domain
         public RelayCommand ExportFavoritesCommand { get; }
         public AsyncRelayCommand CreateFavoriteCommand { get; }
         public RelayCommand<Favorite> RemoveFavoriteCommand { get; }
+        public RelayCommand<Favorite> ToggleFavoriteSharingCommand { get; }
         public AsyncRelayCommand<Favorite> EditFavoriteCommand { get; }
         public AsyncRelayCommand<Favorite> OpenFavoriteCommand { get; }
         public RelayCommand ChangeMasterKeyCommand { get; }
@@ -115,7 +120,8 @@ namespace Leosac.KeyManager.Domain
         {
             IsLoadingFavorites = true;
             SearchTerms = string.Empty;
-            Favorites = Favorites.GetSingletonInstance(true);
+            FavoritesManager.Reload();
+            Favorites = FavoritesManager.User;
             ConfigureFavoritesView();
             _ = LoadingAnimationAsync();
         }
@@ -133,7 +139,7 @@ namespace Leosac.KeyManager.Domain
                 FavoritesView = null;
                 return;
             }
-            FavoritesView = CollectionViewSource.GetDefaultView(Favorites.KeyStores);
+            FavoritesView = CollectionViewSource.GetDefaultView(AvailableFavorites);
             FavoritesView.SortDescriptions.Clear();
             FavoritesView.SortDescriptions.Add(new SortDescription(nameof(Favorite.Name), ListSortDirection.Ascending));
             FavoritesView.Filter = FavoritesFilter;
@@ -161,7 +167,7 @@ namespace Leosac.KeyManager.Domain
             try
             {
                 var imported = Favorites.LoadSafeFromFile(ofd.FileName);
-                var current = Favorites.GetSingletonInstance();
+                var current = FavoritesManager.User;
 
                 if (imported == null || current == null)
                     return;
@@ -186,7 +192,7 @@ namespace Leosac.KeyManager.Domain
                 return;
             try
             {
-                Favorites.GetSingletonInstance()?.SaveToFile(sfd.FileName);
+                FavoritesManager.User.SaveToFile(sfd.FileName);
                 SnackbarHelper.EnqueueMessage(_snackbarMessageQueue, "Favorites exported successfully.");
             }
             catch (Exception ex)
@@ -243,6 +249,15 @@ namespace Leosac.KeyManager.Domain
             if (!Favorites.Remove(fav))
                 return;
             log.Info($"Favorite '{fav.Name}' removed.");
+        }
+
+        private void ToggleFavoriteSharing(Favorite? fav)
+        {
+            if (!CanManageFavorites() || fav == null)
+                return;
+
+            if (FavoritesManager.ToggleShared(fav))
+                RefreshFavoritesView();
         }
 
         private async Task EditFavoriteAsync(Favorite? fav)

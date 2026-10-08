@@ -30,8 +30,8 @@
                         <DockPanel LastChildFill="True">
                             <Button Content="{x:Static properties:Resources.Browse}" Click="Browse_Click" DockPanel.Dock="Right" Margin="5" />
                             <TextBox Text="{Binding FavoritesPath}" Margin="5,5,5,15"
-                                     materialDesign:HintAssist.HelperText="{x:Static properties:Resources.FavoritesPathHelper}"
-                                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.FavoritesPath}"/>
+                                     materialDesign:HintAssist.HelperText="{x:Static properties:Resources.SharedFavoritesPathHelper}"
+                                     materialDesign:HintAssist.Hint="{x:Static properties:Resources.SharedFavoritesPath}"/>
                         </DockPanel>
                         <ComboBox ItemsSource="{Binding EncryptionTypes, ElementName=window}"
                                   SelectedItem="{Binding EncryptionType}"

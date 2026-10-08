@@ -82,41 +82,38 @@ namespace Leosac.KeyManager.Library.UI.Domain
             LinkError = null;
             if (Link != null && !string.IsNullOrEmpty(Link.KeyStoreFavorite) && Link.KeyIdentifier.IsConfigured())
             {
-                var favorites = Favorites.GetSingletonInstance();
-                if (favorites != null)
+                var fav = FavoritesManager.Get(Link.KeyStoreFavorite);
+                if (fav != null)
                 {
-                    var fav = favorites.Get(Link.KeyStoreFavorite);
-                    if (fav != null)
+                    var ks = fav.CreateKeyStore();
+                    if (ks != null)
                     {
-                        var ks = fav.CreateKeyStore();
-                        if (ks != null)
+                        try
                         {
+                            await ks.Open();
                             try
                             {
-                                await ks.Open();
-                                try
-                                {
-                                    await RunLinkImpl(ks);
-                                }
-                                finally
-                                {
-                                    await ks.Close(true);
-                                }
+                                await RunLinkImpl(ks);
+                            }
+                            finally
+                            {
+                                await ks.Close(true);
+                            }
 
-                                log.Info("Link execution completed.");
-                            }
-                            catch (KeyStoreException ex)
-                            {
-                                LinkError = ex.Message;
-                                ks.CleanupSecret();
-                            }
-                            catch (Exception ex)
-                            {
-                                log.Error(string.Format("Unexpected error when resolving the link: {0}", ex.Message));
-                                LinkError = string.Format("Unexpected error: {0}", ex.Message);
-                                ks.CleanupSecret();
-                            }
+                            log.Info("Link execution completed.");
                         }
+                        catch (KeyStoreException ex)
+                        {
+                            LinkError = ex.Message;
+                            ks.CleanupSecret();
+                        }
+                        catch (Exception ex)
+                        {
+                            log.Error(string.Format("Unexpected error when resolving the link: {0}", ex.Message));
+                            LinkError = string.Format("Unexpected error: {0}", ex.Message);
+                            ks.CleanupSecret();
+                        }
+                    }
                         else
                         {
                             log.Error(string.Format("Cannot create the key store from Favorite `{0}`.", Link.KeyStoreFavorite));
@@ -128,7 +125,6 @@ namespace Leosac.KeyManager.Library.UI.Domain
                         log.Error(string.Format("Cannot found the linked key store `{0}`.", Link.KeyStoreFavorite));
                         LinkError = "Cannot found the linked key store.";
                     }
-                }
             }
             else
             {

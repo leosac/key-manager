@@ -268,24 +268,6 @@ namespace Leosac.KeyManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Favorites file path.
-        /// </summary>
-        public static string FavoritesPath {
-            get {
-                return ResourceManager.GetString("FavoritesPath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The path to the JSON file where favorites are saved. If undefined, the default path will be used..
-        /// </summary>
-        public static string FavoritesPathHelper {
-            get {
-                return ResourceManager.GetString("FavoritesPathHelper", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to General.
         /// </summary>
         public static string General {
@@ -507,6 +489,33 @@ namespace Leosac.KeyManager.Properties {
         public static string SecretHelper {
             get {
                 return ResourceManager.GetString("SecretHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared Favorites file path.
+        /// </summary>
+        public static string SharedFavoritesPath {
+            get {
+                return ResourceManager.GetString("SharedFavoritesPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The path to the JSON file where shared favorites are saved. If undefined, the default path will be used..
+        /// </summary>
+        public static string SharedFavoritesPathHelper {
+            get {
+                return ResourceManager.GetString("SharedFavoritesPathHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle shared favorite.
+        /// </summary>
+        public static string ToggleSharedFavorite {
+            get {
+                return ResourceManager.GetString("ToggleSharedFavorite", resourceCulture);
             }
         }
         

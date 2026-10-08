@@ -27,7 +27,7 @@ namespace Leosac.KeyManager.Domain
 
         private Favorites? _cachedFavorites;
 
-        private Favorites? GetFavorites() => _cachedFavorites ??= Favorites.GetSingletonInstance();
+        private Favorites GetFavorites() => _cachedFavorites ??= FavoritesManager.User;
 
         private const string RootDialog = "RootDialog";
 

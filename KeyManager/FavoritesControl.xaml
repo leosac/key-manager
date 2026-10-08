@@ -148,7 +148,7 @@
                 </materialDesign:PopupBox>
             </WrapPanel>
             <WrapPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left">
-                <materialDesign:Badged Badge="{Binding Favorites.KeyStores.Count}">
+                <materialDesign:Badged Badge="{Binding AvailableFavorites.Count}">
                     <TextBlock FontSize="28" FontWeight="Bold" Text="{x:Static properties:Resources.Favorites}" />
                 </materialDesign:Badged>
             </WrapPanel>
@@ -202,7 +202,42 @@
                                 </Button>
                             </materialDesign:DialogHost>
                         </WrapPanel>
-                        <TextBlock DockPanel.Dock="Right" Text="{Binding CreationDate}" Grid.Column="1" Margin="5" VerticalAlignment="Center" />
+                        <WrapPanel DockPanel.Dock="Right">
+                            <TextBlock Text="{Binding CreationDate}" Margin="5" VerticalAlignment="Center" />
+                            <Button Style="{StaticResource MaterialDesignToolButton}"
+                                    Command="{Binding DataContext.ToggleFavoriteSharingCommand, ElementName=userControl}"
+                                    CommandParameter="{Binding}"
+                                    ToolTip="{x:Static properties:Resources.ToggleSharedFavorite}"
+                                    IsEnabled="{x:Static kslib:UserRoleContext.IsAdministrator}"
+                                    Margin="0">
+                                <Grid>
+                                    <materialDesign:PackIcon Kind="ShareVariant" Height="20" Width="20" Cursor="Hand">
+                                        <materialDesign:PackIcon.Style>
+                                            <Style TargetType="materialDesign:PackIcon">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsShared}" Value="False">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </materialDesign:PackIcon.Style>
+                                    </materialDesign:PackIcon>
+                                    <materialDesign:PackIcon Kind="User" Height="20" Width="20" Cursor="Hand">
+                                        <materialDesign:PackIcon.Style>
+                                            <Style TargetType="materialDesign:PackIcon">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsShared}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </materialDesign:PackIcon.Style>
+                                    </materialDesign:PackIcon>
+                                </Grid>
+                            </Button>
+                        </WrapPanel>
                         <WrapPanel>
                             <StackPanel Orientation="Vertical" Margin="5">
                                 <Grid>

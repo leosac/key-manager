@@ -31,8 +31,7 @@ namespace Leosac.KeyManager
             {
                 if (model.Favorite == null)
                 {
-                    var favorites = Favorites.GetSingletonInstance();
-                    model.Favorite = favorites?.CreateFromKeyStore(model.KeyStore!);
+                    model.Favorite = FavoritesManager.User.CreateFromKeyStore(model.KeyStore!);
                 }
             }
         }
@@ -43,8 +42,8 @@ namespace Leosac.KeyManager
             {
                 if (model.Favorite != null)
                 {
-                    var favorites = Favorites.GetSingletonInstance();
-                    if (favorites != null && favorites.KeyStores.Contains(model.Favorite))
+                    var favorites = FavoritesManager.User;
+                    if (favorites.KeyStores.Contains(model.Favorite))
                     {
                         favorites.KeyStores.Remove(model.Favorite);
                         favorites.SaveToFile();

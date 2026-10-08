@@ -8,6 +8,9 @@ namespace Leosac.KeyManager.Library.UI
     public class KMSettings : PermanentConfig<KMSettings>
     {
         private string? _favoritesPath;
+        /// <summary>
+        /// Path to the shared favorites file. If null, the default path will be used.
+        /// </summary>
         public string? FavoritesPath
         {
             get => _favoritesPath;

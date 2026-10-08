@@ -168,11 +168,11 @@
   <data name="Favorites" xml:space="preserve">
     <value>Key Store Favorites</value>
   </data>
-  <data name="FavoritesPath" xml:space="preserve">
-    <value>Favorites file path</value>
+  <data name="SharedFavoritesPath" xml:space="preserve">
+    <value>Shared Favorites file path</value>
   </data>
-  <data name="FavoritesPathHelper" xml:space="preserve">
-    <value>The path to the JSON file where favorites are saved. If undefined, the default path will be used.</value>
+  <data name="SharedFavoritesPathHelper" xml:space="preserve">
+    <value>The path to the JSON file where shared favorites are saved. If undefined, the default path will be used.</value>
   </data>
   <data name="General" xml:space="preserve">
     <value>General</value>
@@ -272,5 +272,8 @@
   </data>
   <data name="UsersGroupHelper" xml:space="preserve">
     <value>Members are mapped to the user role.</value>
+  </data>
+  <data name="ToggleSharedFavorite" xml:space="preserve">
+    <value>Toggle shared favorite</value>
   </data>
 </root>
