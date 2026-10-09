@@ -413,6 +413,7 @@ namespace Leosac.KeyManager.Library.KeyStore
                                         }
                                         finally
                                         {
+
                                             await ks.Close(false);
                                         }
                                     }
@@ -470,7 +471,6 @@ namespace Leosac.KeyManager.Library.KeyStore
                                                     }
                                                     finally
                                                     {
-
                                                         await ks.Close(false);
                                                     }
                                                 }
@@ -527,22 +527,26 @@ namespace Leosac.KeyManager.Library.KeyStore
 
         public virtual async Task Publish(KeyStore store, Func<string, KeyStore?>? getFavoriteKeyStore, Func<KeyStore, string?, Task<bool>>? askForKeyStoreSecretIfRequired, IEnumerable<(KeyEntryClass keClass, IEnumerable<KeyEntryId>? ids)> keyEntries, Action<KeyStore, KeyEntryClass, int>? initCallback)
         {
+            var allChanges = new List<IChangeKeyEntry>();
             await store.Open();
             try
             {
                 foreach (var (keClass, ids) in keyEntries)
                 {
-                    await KeyEntriesAction(store, getFavoriteKeyStore, askForKeyStoreSecretIfRequired, keClass, ids, initCallback, new Func<KeyStore, List<IChangeKeyEntry>, Task>(async (s, changes) =>
+                    await KeyEntriesAction(store, getFavoriteKeyStore, askForKeyStoreSecretIfRequired, keClass, ids, initCallback, new Func<KeyStore, List<IChangeKeyEntry>, Task>((_, changes) =>
                     {
-                        if (!(Options?.DryRun).GetValueOrDefault(false))
-                        {
-                            await s.Store(changes);
-                        }
-                        else
-                        {
-                            log.Info("Dry Run, skipping the storage of key entries.");
-                        }
+                        allChanges.AddRange(changes);
+                        return Task.CompletedTask;
                     }), false);
+                }
+
+                if (!(Options?.DryRun).GetValueOrDefault(false))
+                {
+                    await store.Store(allChanges);
+                }
+                else
+                {
+                    log.Info("Dry Run, skipping the storage of key entries.");
                 }
             }
             finally
