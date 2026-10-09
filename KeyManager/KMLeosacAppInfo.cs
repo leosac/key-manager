@@ -69,20 +69,20 @@ namespace Leosac.KeyManager
                         return;
                     KeyStore? ks = null;
                     Favorite? fav = null;
+                    KeyStoreProperties? properties = null;
                     if (parameter is KeyStore)
                     {
                         ks = parameter as KeyStore;
+                        properties = ks?.Properties;
                     }
                     else if (parameter is Favorite)
                     {
                         fav = parameter as Favorite;
-                        ks = fav?.CreateKeyStore();
+                        properties = fav?.Properties;
                     }
-                    if (ks == null)
+                    if (properties == null)
                         return;
-                    var propertiesType = ks.Properties?.GetType();
-                    if (propertiesType == null)
-                        return;
+                    var propertiesType = properties.GetType();
                     var factory = KeyStoreUIFactory.GetFactoryFromPropertyType(propertiesType);
                     if (factory == null)
                     {
@@ -100,6 +100,12 @@ namespace Leosac.KeyManager
                         }
                         // Ensure everything is back to original state
                         await editModel.CloseKeyStore(false);
+                        if (fav != null)
+                        {
+                            ks = fav.CreateKeyStore();
+                            if (ks == null)
+                                return;
+                        }
                         var snackbar = model.SnackbarMessageQueue;
                         EventHandler<string>? messageHandler = null;
                         messageHandler = (_, message) => { SnackbarHelper.EnqueueMessage(snackbar, message); };
