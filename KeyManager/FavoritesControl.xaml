@@ -163,11 +163,44 @@
                 <DataTemplate DataType="lib:Favorite">
                     <DockPanel LastChildFill="True">
                         <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Style="{StaticResource MaterialDesignToolButton}"
+                                    Command="{Binding DataContext.ToggleFavoriteSharingCommand, ElementName=userControl}"
+                                    CommandParameter="{Binding}"
+                                    ToolTip="{x:Static properties:Resources.ToggleSharedFavorite}"
+                                    IsEnabled="{x:Static kslib:UserRoleContext.IsAdministrator}"
+                                    Margin="3">
+                                <Grid>
+                                    <materialDesign:PackIcon Kind="ShareVariant" Height="24" Width="24" Cursor="Hand">
+                                        <materialDesign:PackIcon.Style>
+                                            <Style TargetType="materialDesign:PackIcon">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsShared}" Value="False">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </materialDesign:PackIcon.Style>
+                                    </materialDesign:PackIcon>
+                                    <materialDesign:PackIcon Kind="User" Height="24" Width="24" Cursor="Hand">
+                                        <materialDesign:PackIcon.Style>
+                                            <Style TargetType="materialDesign:PackIcon">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsShared}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </materialDesign:PackIcon.Style>
+                                    </materialDesign:PackIcon>
+                                </Grid>
+                            </Button>
                             <materialDesign:DialogHost DialogTheme="Inherit">
                                 <materialDesign:DialogHost.DialogContent>
                                     <kslib:OpenFavoriteControl Title="{x:Static properties:Resources.OpenFavorite}"
-                           Command="{Binding DataContext.OpenFavoriteCommand, ElementName=userControl}"
-                           DataContext="{Binding}" />
+                                                               Command="{Binding DataContext.OpenFavoriteCommand, ElementName=userControl}"
+                                                               DataContext="{Binding}" />
                                 </materialDesign:DialogHost.DialogContent>
                                 <Button ToolTip="{x:Static properties:Resources.OpenFavorite}" Margin="3">
                                     <Button.Style>
@@ -204,39 +237,6 @@
                         </WrapPanel>
                         <WrapPanel DockPanel.Dock="Right">
                             <TextBlock Text="{Binding CreationDate}" Margin="5" VerticalAlignment="Center" />
-                            <Button Style="{StaticResource MaterialDesignToolButton}"
-                                    Command="{Binding DataContext.ToggleFavoriteSharingCommand, ElementName=userControl}"
-                                    CommandParameter="{Binding}"
-                                    ToolTip="{x:Static properties:Resources.ToggleSharedFavorite}"
-                                    IsEnabled="{x:Static kslib:UserRoleContext.IsAdministrator}"
-                                    Margin="0">
-                                <Grid>
-                                    <materialDesign:PackIcon Kind="ShareVariant" Height="20" Width="20" Cursor="Hand">
-                                        <materialDesign:PackIcon.Style>
-                                            <Style TargetType="materialDesign:PackIcon">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsShared}" Value="False">
-                                                        <Setter Property="Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </materialDesign:PackIcon.Style>
-                                    </materialDesign:PackIcon>
-                                    <materialDesign:PackIcon Kind="User" Height="20" Width="20" Cursor="Hand">
-                                        <materialDesign:PackIcon.Style>
-                                            <Style TargetType="materialDesign:PackIcon">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsShared}" Value="True">
-                                                        <Setter Property="Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </materialDesign:PackIcon.Style>
-                                    </materialDesign:PackIcon>
-                                </Grid>
-                            </Button>
                         </WrapPanel>
                         <WrapPanel>
                             <StackPanel Orientation="Vertical" Margin="5">
