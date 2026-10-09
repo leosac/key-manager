@@ -283,13 +283,13 @@ namespace Leosac.KeyManager.Library.UI.Domain
                 {
                     identifier.KeyEntryId = model.KeyEntry?.Identifier;
                 }
-                identifier.Highlighted = false;
                 identifier.Reviewed = true;
             }
             catch (Exception ex)
             {
                 HandleOperationException(ex, "Loading the Key Entry for update");
             }
+            identifier?.Highlighted = false;
         }
 
         private async Task<bool> SaveKeyEntryAsync(KeyEntryDialogViewModel model, bool generate, bool replaceExisting)
