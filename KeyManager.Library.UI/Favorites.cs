@@ -1,5 +1,7 @@
 ﻿using Leosac.KeyManager.Library.Plugin;
+using Leosac.KeyManager.Library.KeyStore;
 using Leosac.SharedServices;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -248,7 +250,8 @@ namespace Leosac.KeyManager.Library.UI
         {
             try
             {
-                favorite = obj.ToObject<Favorite>();
+                var serializer = JsonSerializer.Create(KeyEntry.CreateJsonSerializerSettings());
+                favorite = obj.ToObject<Favorite>(serializer);
                 return favorite != null;
             }
             catch (Exception ex)
