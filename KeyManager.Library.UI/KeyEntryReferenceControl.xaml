@@ -1,0 +1,42 @@
+<UserControl x:Class="Leosac.KeyManager.Library.UI.KeyEntryReferenceControl"
+             x:Name="userControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:Leosac.KeyManager.Library.UI.Converters"
+             xmlns:local="clr-namespace:Leosac.KeyManager.Library.UI"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:Leosac.KeyManager.Library.UI.Properties"
+             mc:Ignorable="d"
+             d:DesignHeight="100" d:DesignWidth="500">
+    <UserControl.Resources>
+        <converters:KeyStoreFavoriteConverter x:Key="KeyStoreFavoriteConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <local:FavoriteKeyStoreSelectionControl Grid.Row="0"
+                                                SelectedKeyStoreFavorite="{Binding KeyStoreFavorite, Mode=TwoWay, Converter={StaticResource KeyStoreFavoriteConverter}, ElementName=userControl}" />
+        <GroupBox Grid.Row="1" Header="{x:Static properties:Resources.KeyEntry}" BorderThickness="0" Margin="5,14,5,5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap"
+                         Text="{Binding KeyEntryId.Id, Mode=TwoWay, ElementName=userControl}" Margin="5,0,5,0"
+                         materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifierHelper}"
+                         materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" Grid.ColumnSpan="3" />
+                <TextBox Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap"
+                         Text="{Binding KeyEntryId.Label, Mode=TwoWay, ElementName=userControl}" Margin="5,0,5,0"
+                         materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryLabelHelper}"
+                         materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryLabel}"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

@@ -21,7 +21,6 @@
         <materialDesign:NullableToVisibilityConverter x:Key="NullableToVisibilityConverter" />
         <materialDesign:NullableToVisibilityConverter x:Key="ReverseNullableToVisibilityConverter" NullValue="Visible" NotNullValue="Collapsed" />
         <converters:NullToBooleanConverter x:Key="NullToBooleanConverter" />
-        <converters:KeyStoreFavoriteConverter x:Key="KeyStoreFavoriteConverter" />
     </UserControl.Resources>
     <materialDesign:DrawerHost x:Name="DrawerHost" BorderBrush="{DynamicResource MaterialDesign.Brush.TextBox.HoverBackground}" BorderThickness="2">
         <materialDesign:DrawerHost.BottomDrawerContent>
@@ -73,25 +72,9 @@
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <local:FavoriteKeyStoreSelectionControl Grid.Row="0" SelectedKeyStoreFavorite="{Binding Link.KeyStoreFavorite, Mode=TwoWay, Converter={StaticResource KeyStoreFavoriteConverter}}" />
-                <GroupBox Grid.Row="1" Header="{x:Static properties:Resources.KeyEntry}" BorderThickness="0" Margin="5,14,5,5">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap"
-                                 Text="{Binding Link.KeyIdentifier.Id, Mode=TwoWay}" Margin="5,0,5,0"
-                                 materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifierHelper}"
-                                 materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"
-                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" Grid.ColumnSpan="3"/>
-                        <TextBox Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap"
-                                 Text="{Binding Link.KeyIdentifier.Label, Mode=TwoWay}" Margin="5,0,5,0"
-                                 materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryLabelHelper}"
-                                 materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryLabel}"
-                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                    </Grid>
-                </GroupBox>
+                <local:KeyEntryReferenceControl Grid.Row="0" Grid.RowSpan="2"
+                                                KeyStoreFavorite="{Binding Link.KeyStoreFavorite, Mode=TwoWay}"
+                                                KeyEntryId="{Binding Link.KeyIdentifier, Mode=TwoWay}" />
                 <TextBox Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding KeyLink.ContainerSelector, Mode=TwoWay}" Margin="5"
                          materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyVersionHelper}"
                          materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyVersion}"
