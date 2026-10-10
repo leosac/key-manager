@@ -137,6 +137,25 @@ namespace Leosac.KeyManager.Library.KeyStore
         public abstract Task<IList<KeyEntryId>> GetAll(KeyEntryClass? keClass);
 
         /// <summary>
+        /// Search key entry identifiers.
+        /// </summary>
+        /// <param name="searchTerms">The terms to search for in the identifier or label.</param>
+        /// <param name="maxResults">The maximum number of results to return.</param>
+        /// <returns>List of matching key entry identifiers</returns>
+        public virtual async Task<IList<KeyEntryId>> Search(string? searchTerms, int maxResults = 5)
+        {
+            var identifiers = await GetAll(null);
+            if (string.IsNullOrWhiteSpace(searchTerms))
+                return identifiers;
+
+            return identifiers
+                .Where(identifier =>
+                    identifier.Id?.Contains(searchTerms, StringComparison.OrdinalIgnoreCase) == true
+                    || identifier.Label?.Contains(searchTerms, StringComparison.OrdinalIgnoreCase) == true)
+                .Take(maxResults).ToList();
+        }
+
+        /// <summary>
         /// Create a new key entry.
         /// </summary>
         /// <param name="keyEntry">The key entry details</param>

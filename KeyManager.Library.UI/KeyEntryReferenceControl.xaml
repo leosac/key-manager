@@ -12,8 +12,10 @@
              d:DesignHeight="100" d:DesignWidth="500">
     <UserControl.Resources>
         <converters:KeyStoreFavoriteConverter x:Key="KeyStoreFavoriteConverter" />
+        <converters:NullToBooleanConverter x:Key="NullToBooleanConverter" />
     </UserControl.Resources>
-    <Grid>
+    <materialDesign:DialogHost Identifier="{Binding SearchDialogIdentifier, ElementName=userControl}">
+        <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
@@ -25,18 +27,23 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBox Grid.Column="0" VerticalAlignment="Center" TextWrapping="Wrap"
                          Text="{Binding KeyEntryId.Id, Mode=TwoWay, ElementName=userControl}" Margin="5,0,5,0"
                          materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryIdentifierHelper}"
                          materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryIdentifier}"
-                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" Grid.ColumnSpan="3" />
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
                 <TextBox Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap"
                          Text="{Binding KeyEntryId.Label, Mode=TwoWay, ElementName=userControl}" Margin="5,0,5,0"
                          materialDesign:HintAssist.HelperText="{x:Static properties:Resources.KeyEntryLabelHelper}"
                          materialDesign:HintAssist.Hint="{x:Static properties:Resources.KeyEntryLabel}"
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                <Button Grid.Column="2" Click="SearchButton_Click" Margin="5,0,0,0" ToolTip="Search key entries" IsEnabled="{Binding KeyStoreFavorite, ElementName=userControl, Converter={StaticResource NullToBooleanConverter}}" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Width="20" Height="20">
+                    <materialDesign:PackIcon Kind="Magnify" />
+                </Button>
             </Grid>
         </GroupBox>
-    </Grid>
+        </Grid>
+    </materialDesign:DialogHost>
 </UserControl>
