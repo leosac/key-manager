@@ -294,7 +294,8 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
                 }
 
                 av2cmd.authenticateHost(GetAuthenticationKey(), GetSAMProperties().AuthenticateKeyEntryIdentifier);
-                av2cmd.PKI_GenerateKeyPair((byte)keyEntry.Identifier.NumericId.GetValueOrDefault(0), pkiSet, keyNoCEK, keyVCEK, refNoKUC, new AEKVAEK());
+                // nLen and eLen values to match 2048-bit RSA key
+                av2cmd.PKI_GenerateKeyPair((byte)keyEntry.Identifier.NumericId.GetValueOrDefault(0), pkiSet, keyNoCEK, keyVCEK, refNoKUC, new AEKVAEK(), 0x100, 0x04);
                 return Task.CompletedTask;
             }
             else
