@@ -1,3 +1,14 @@
+# v1.28.1 - 10/13/2026
+ - Make latest edited key entry highlight more visible
+ - Add Reviewed information to Key Entry edition by changing Edit icon to outline version
+ - Remove Elevation Code and add basic support for user roles, based on current Windows user
+ - Set duration of key entry highlight fade out to a new KeyEntryFadeOutDuration parameter on UIPreferences
+ - Handle per User and Shared favorites explicitly
+ - Add KeyEntryId search dialog and use it on Key/KeyEntry links
+ - Fix Favorite deserialization when a default Key Entry configuration is defined
+ - Fix key store favorite loss of stored secret (since v1.28.0)
+ - Regroup all Publish changes into one call (used to be separate call per key entry classification)
+
 # v1.28.0 - 10/06/2026
  - Fix Key Entry background brush on hover or selection
  - Add temporary border highlight on latest edited Key Entry
