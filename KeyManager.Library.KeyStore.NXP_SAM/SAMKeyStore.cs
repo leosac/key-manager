@@ -391,18 +391,25 @@ namespace Leosac.KeyManager.Library.KeyStore.NXP_SAM
 
                                 if (pubkey.eLen > 0 && pubkey.nLen > 0)
                                 {
-                                    var rsa = System.Security.Cryptography.RSA.Create();
-                                    rsa.ImportParameters(new RSAParameters
+                                    try
                                     {
-                                        Modulus = pubkey.n.ToArray(),
-                                        Exponent = pubkey.e.ToArray()
-                                    });
-                                    var pem = rsa.ExportSubjectPublicKeyInfoPem();
-                                    var pubKeyMaterial = samKeyEntry.Variant!.KeyContainers[0].Key.Materials.FirstOrDefault(k => k.Name == KeyMaterial.PUBLIC_KEY);
-                                    if (pubKeyMaterial != null)
+                                        var rsa = System.Security.Cryptography.RSA.Create();
+                                        rsa.ImportParameters(new RSAParameters
+                                        {
+                                            Modulus = pubkey.n.ToArray(),
+                                            Exponent = pubkey.e.ToArray()
+                                        });
+                                        var pem = rsa.ExportSubjectPublicKeyInfoPem();
+                                        var pubKeyMaterial = samKeyEntry.Variant!.KeyContainers[0].Key.Materials.FirstOrDefault(k => k.Name == KeyMaterial.PUBLIC_KEY);
+                                        if (pubKeyMaterial != null)
+                                        {
+                                            pubKeyMaterial.ValueFormat = KeyValueStringFormat.Pem;
+                                            pubKeyMaterial.SetValueAsString(pem, KeyValueStringFormat.Pem);
+                                        }
+                                    }
+                                    catch(CryptographicException ex)
                                     {
-                                        pubKeyMaterial.ValueFormat = KeyValueStringFormat.Pem;
-                                        pubKeyMaterial.SetValueAsString(pem, KeyValueStringFormat.Pem);
+                                        log.Error("Cannot interpret RSA public key from the SAM key entry.", ex);
                                     }
                                 }
                             }

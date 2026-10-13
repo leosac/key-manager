@@ -1,4 +1,4 @@
-# v1.28.1 - 10/13/2026
+# v1.29.0 - 10/13/2026
  - Make latest edited key entry highlight more visible
  - Add Reviewed information to Key Entry edition by changing Edit icon to outline version
  - Remove Elevation Code and add basic support for user roles, based on current Windows user
